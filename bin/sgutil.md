@@ -26,10 +26,10 @@ ETHZ-HACC CLI brings Systems Group’s designs to your terminal and allows you t
 <!-- ### Options -->
 <code>-h, --help</code>
 <p>
-&nbsp; &nbsp; Help to use this application.
+&nbsp; &nbsp; Help to use sgutil.
 </p>
 
 <code>-v, --version</code>
 <p>
-  &nbsp; &nbsp; Reports CLI version.
+  &nbsp; &nbsp; Reports sgutil version.
 </p>
