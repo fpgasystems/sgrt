@@ -14,7 +14,7 @@
 
 XXX
 ## Sections
-* [API](./lib/README.md)
+* [API](./lib/lib.md)
 * [CLI](./bin/sgutil.md)
 * [Examples]()
 
