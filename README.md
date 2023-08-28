@@ -18,6 +18,8 @@ XXX
 * [CLI](./bin/sgutil.md)
 * [Examples]()
 
+## License
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Copyright (c) 2023 FPGA @ Systems Group, ETH Zurich
