@@ -15,7 +15,7 @@
 XXX
 ## Sections
 * [API](./lib/README.md)
-* [CLI](./sgutil/README.md)
+* [CLI](./bin/README.md)
 * [Examples]()
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
