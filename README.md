@@ -17,6 +17,7 @@ XXX
 * [API](./lib/lib.md)
 * [CLI](./bin/sgutil.md)
 * [Examples]()
+* [Installation](./lib/lib.md)
 
 # License
 
