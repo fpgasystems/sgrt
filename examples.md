@@ -5,3 +5,9 @@
 </p>
 
 # Examples
+
+# Infrastructure validation
+The following are guided experiments that help you to validate ETHZ-HACC’s infrastructure—setting along a baseline of the performance that should always be met. These experiments are based on *sgutil validate* commands.
+
+* [Networking validation with iperf](./examples/sgutil-validate-iperf.md#networking-validation-with-iperf)
+* [Message passing interface validation with mpich](./examples/sgutil-validate-mpi.md#message-passing-interface-validation-with-mpich)
