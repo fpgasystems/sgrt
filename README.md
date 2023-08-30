@@ -16,8 +16,8 @@
 
 ## Sections
 * [Installation](#installation)
-* [API](./api/manual.md)
-* [CLI](./cli/manual.md)
+* [API](./api/manual.md#api)
+* [CLI](./cli/manual.md#cli)
 * [Examples](#examples)
 * [License](#license)
 
