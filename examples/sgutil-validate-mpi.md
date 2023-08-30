@@ -5,7 +5,7 @@
 </p>
 
 # Message passing interface validation with mpich
-In this experiment, we are using CLI’s [sgutil validate mpi](../cli/manual/sgutil-validate-mpi.md#sgutil-validate-mpi) command to verify MPI message-passing standard on the ETHZ-HACC network.
+In this experiment, we are using CLI’s [`sgutil validate mpi`](../cli/manual/sgutil-validate-mpi.md#sgutil-validate-mpi) command to verify MPI message-passing standard on the ETHZ-HACC network.
 
 ### Prerrequisites
 * You must have a valid authentication key pairs for SSH in your **~/.ssh** directory, and
