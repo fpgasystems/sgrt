@@ -52,5 +52,5 @@ The following table has been derived after booking the **ten** U55C servers that
 
 ### Inter-cluster measurements
 
-![sgutil validate iperf between clusters.](../imgs/inter-cluster.png "sgutil validate iperf between clusters.")
+![sgutil validate iperf between clusters.](./sgutil-validate-iperf-inter-cluster.png "sgutil validate iperf between clusters.")
 *sgutil validate iperf between clusters.*
