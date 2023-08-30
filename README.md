@@ -14,8 +14,8 @@
 
 XXX
 ## Sections
-* [API](./lib/lib.md)
-* [CLI](./bin/sgutil.md)
+* [API](./api/manual.md)
+* [CLI](./cli/manual.md)
 * [Examples]()
 * [Installation](./docs/installation.md)
 
