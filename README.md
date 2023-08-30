@@ -12,18 +12,14 @@
   Systems Group RunTime
 </h1> 
 
-**sgrt** is the Systems Group RunTime developed for ETHZ-[HACC](https://github.com/fpgasystems/hacc). While [`sgutil`](./cli/manual.md) allows you to create your projects and setup the infrastructure according to your needs, the [API](./api/manual.md) helps you to develop your applications faster. 
+**sgrt** is the Systems Group RunTime developed for ETHZ-[HACC](https://github.com/fpgasystems/hacc). While [`sgutil`](./cli/manual.md#cli) allows you to create your projects and setup the infrastructure according to your needs, the [API](./api/manual.md) helps you to develop your applications faster. 
 
 ## Sections
-* [Installation](#installation)
 * [API](./api/manual.md#api)
 * [CLI](./cli/manual.md#cli)
-* [Examples](#examples)
+* [Examples](./examples.md#examples)
+* [Installation](./installation.md#installation)
 * [License](#license)
-
-# Installation
-
-# Examples
 
 # License
 
