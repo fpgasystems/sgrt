@@ -1,0 +1,1 @@
+This folder is used for documentation related to developing the API and CLI. Docs for the API and `sgutil` usage are available at [https://github.com/fpgasystems/sgrt/blob/main/api/manual.md](https://github.com/fpgasystems/sgrt/blob/main/api/manual.md) and [https://github.com/fpgasystems/sgrt/blob/main/cli/manual.md](https://github.com/fpgasystems/sgrt/blob/main/cli/manual.md).

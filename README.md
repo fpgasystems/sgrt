@@ -10,14 +10,18 @@
 
 <h1 align="center">
   Systems Group RunTime
-</h1>
+</h1> 
 
-XXX
+**sgrt** is the Systems Group RunTime developed for ETHZ-[HACC](https://github.com/fpgasystems/hacc). While `sgutil` allows you to configure all the devices with your desired workflow (Vitis, Vivado, or any other [Integrations](#integrations)), our [API](./api/manual.md) helps develop your applications faster. 
+
 ## Sections
 * [API](./api/manual.md)
 * [CLI](./cli/manual.md)
 * [Examples]()
-* [Installation](./docs/installation.md)
+
+# Installation
+
+# Integrations
 
 # License
 
