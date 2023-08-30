@@ -1,11 +1,11 @@
 <div id="readme" class="Box-body readme blob js-code-block-container">
 <article class="markdown-body entry-content p-3 p-md-6" itemprop="text">
 <p align="right">
-<a href="https://github.com/fpgasystems/sgrt/blob/main/examples.md#examples">Back examples</a>
+<a href="https://github.com/fpgasystems/sgrt/blob/main/examples.md#examples">Back to examples</a>
 </p>
 
 # Message passing interface validation with mpich
-In this experiment, we are using CLI’s [sgutil validate mpi](../cli/docs/sgutil-validate-mpi.md) command to verify MPI message-passing standard on the ETHZ-HACC network.
+In this experiment, we are using CLI’s [sgutil validate mpi](../cli/manual/sgutil-validate-mpi.md#sgutil-validate-mpi) command to verify MPI message-passing standard on the ETHZ-HACC network.
 
 ### Prerrequisites
 * You must have a valid authentication key pairs for SSH in your **~/.ssh** directory, and
