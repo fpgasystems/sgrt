@@ -1,7 +1,7 @@
 <div id="readme" class="Box-body readme blob js-code-block-container">
 <article class="markdown-body entry-content p-3 p-md-6" itemprop="text">
 <p align="right">
-<a href="https://github.com/fpgasystems/hacc/blob/main/cli/docs/sgutil-set.md#sgutil-set">Back to sgutil set</a>
+<a href="https://github.com/fpgasystems/sgrt/blob/main/cli/manual/sgutil-set.md#sgutil-set">Back to sgutil set</a>
 </p>
 
 ## sgutil set keys
