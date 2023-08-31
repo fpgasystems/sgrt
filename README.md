@@ -21,6 +21,12 @@
 * [Installation](./installation.md#installation)
 * [License](#license)
 
+# Releases
+
+| XRT:           | HIP / ROCm:    | SGRT:          |
+| -------------- | -------------- | -------------- |
+| 2022.2         | 5.4.3 / 1.1    | 2022.2_5.4.3   |
+
 # License
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
