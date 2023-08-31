@@ -23,9 +23,32 @@
 
 # Releases
 
-| XRT:           | HIP / ROCm:    | SGRT:          |
-| -------------- | -------------- | -------------- |
-| 2022.2         | 5.4.3 / 1.1    | 2022.2_5.4.3   |
+<table class="tg">
+<thead>
+  <tr style="text-align:center">
+    <th class="tg-0pky" rowspan="2"><div align="center">SGRT</div></th>
+    <th class="tg-0pky" colspan="2" style="text-align:center"><div align="center">XRT Release</div></th>
+    <th class="tg-0pky" colspan="2" style="text-align:center"><div align="center">HIP Release</div></th>
+  </tr>
+  <tr>
+    <th class="tg-0pky" style="text-align:center">2022.1</th>
+    <th class="tg-0pky" style="text-align:center">2022.2</th>
+    <th class="tg-0pky" style="text-align:center">5.4.1</th>
+    <th class="tg-0pky" style="text-align:center">5.4.3</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-0pky"><div align="center">2022.2_5.4.3</div></td>
+    <td class="tg-0pky" align="center"></td>
+    <td class="tg-0pky" align="center">&#9679;</td>
+    <td class="tg-0pky" align="center"></td>
+    <td class="tg-0pky" align="center">&#9679;</td>
+  </tr>
+</tbody>
+<tfoot><tr><td colspan="5">&#9675; Existing release.</td></tr></tfoot>
+<tfoot><tr><td colspan="5">&#9679; Existing release installed on the cluster.</td></tr></tfoot>
+</table>
 
 # License
 
