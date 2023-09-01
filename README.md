@@ -27,7 +27,7 @@
 <thead>
   <tr style="text-align:center">
     <th class="tg-0pky" rowspan="2"><div align="center">SGRT</div></th>
-    <th class="tg-0pky" colspan="2" style="text-align:center"><div align="center">XRT Release</div></th>
+    <th class="tg-0pky" colspan="2" style="text-align:center"><div align="center">Xilinx Tools Release</div></th>
     <th class="tg-0pky" colspan="2" style="text-align:center"><div align="center">HIP Release</div></th>
   </tr>
   <tr>
