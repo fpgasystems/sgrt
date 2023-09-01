@@ -1,21 +1,200 @@
 ---
 
 - hosts: 
-    - hacc-build
-    - alveo-u250
-    - alveo-u280
-    - alveo-u50d
-    - alveo-u55c
-    - versal-vck5000
-    - hacc-boxes
+    #- hacc-build
+    #- alveo-u250
+    #- alveo-u280
+    #- alveo-u50d
+    #- alveo-u55c
+    #- versal-vck5000
+    #- hacc-boxes
     #- alveo-u55c-01.inf.ethz.ch
-    #- hacc-box-01.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
   ignore_unreachable: true
   vars:
     ansible_python_interpreter: /usr/bin/python3
-  #vars_files: vars.yml  
+    #installation control (all means we attempt to create and copy all directories, files, and scripts)
+    all: false
+    build: false
+    constants: false
+    common: true
+    coyote: false
+    enable: false
+    examine: false
+    get: false
+    hip: false
+    mpi: false
+    program: false
+    reboot: false
+    run: false
+    set: false
+    sgutil: false
+    templates: false
+    validate: false
+    vitis: false
+    #paths definition
+    sgrt_base_path: /opt/cli 
   tasks:
-    - include_tasks: ./tasks/cli-install.yml
+    #- include_tasks: ./tasks/cli-install.yml
+
+    #creating directories
+    - name: creating directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      when: all
+      loop:
+        - "{{ sgrt_base_path }}"
+        - "{{ sgrt_base_path }}/build"
+        - "{{ sgrt_base_path }}/common"
+        - "{{ sgrt_base_path }}/constants"
+        - "{{ sgrt_base_path }}/enable"
+        - "{{ sgrt_base_path }}/get"
+        - "{{ sgrt_base_path }}/new"
+        - "{{ sgrt_base_path }}/program"
+        - "{{ sgrt_base_path }}/run"
+        - "{{ sgrt_base_path }}/set"
+        - "{{ sgrt_base_path }}/templates"
+        - "{{ sgrt_base_path }}/validate"
+
+    #copying files
+    - name: copying version
+      copy:
+        src: "../cli/VERSION"
+        dest: "{{ sgrt_base_path }}/VERSION"
+        mode: 0644
+      when: all
+
+    #copying templates
+    #coyote
+    - name: removing coyote template
+      file:
+        path: "{{ sgrt_base_path }}/templates/coyote"
+        state: absent
+      when: all or (templates and coyote)
+    - name: copying coyote template
+      copy:
+        src: "../cli/templates/coyote"
+        dest: "{{ sgrt_base_path }}/templates"
+        mode: 0755
+      when: all or (templates and coyote)
+    #hip
+    - name: removing hip template
+      file:
+        path: "{{ sgrt_base_path }}/templates/hip"
+        state: absent
+      when: all or (templates and hip)
+    - name: copying hip template
+      copy:
+        src: "../cli/templates/hip"
+        dest: "{{ sgrt_base_path }}/templates"
+        mode: 0755
+      when: all or (templates and hip)
+    #mpi
+    - name: removing mpi template
+      file:
+        path: "{{ sgrt_base_path }}/templates/mpi"
+        state: absent
+      when: all or (templates and mpi)
+    - name: copying mpi template
+      copy:
+        src: "../cli/templates/mpi"
+        dest: "{{ sgrt_base_path }}/templates"
+        mode: 0755
+      when: all or (templates and mpi)
+    #vitis  
+    - name: removing vitis template
+      file:
+        path: "{{ sgrt_base_path }}/templates/vitis"
+        state: absent
+      when: all or (templates and vitis)
+    - name: copying vitis template
+      copy:
+        src: "../cli/templates/vitis"
+        dest: "{{ sgrt_base_path }}/templates"
+        mode: 0755
+      when: all or (templates and vitis)
+
+    #copying scripts 
+    - name: copying sgutil
+      copy:
+        src: "../cli/sgutil.sh"
+        dest: "{{ sgrt_base_path }}/sgutil"
+        mode: 0755
+      when: all or sgutil
+
+    - name: copying sgutil_completion
+      copy:
+        src: "../cli/sgutil_completion.sh"
+        dest: /usr/share/bash-completion/completions/sgutil
+        mode: 0755
+      when: all or sgutil
+    #build
+    - name: copying build scripts
+      copy:
+        src: "../cli/build/{{ item }}.sh"
+        dest: "{{ sgrt_base_path }}/build/{{ item }}"
+        mode: "0755"
+      when: all or build
+      loop:
+        - coyote
+        - hip
+        - mpi
+        - vitis
+    #common
+    
+    - name: copying common scripts
+      copy:
+        src: "../cli/common/{{ item }}.sh"
+        dest: "{{ sgrt_base_path }}/common/{{ item }}"
+        mode: "0755"
+      when: all or common
+      loop:
+        - bitstream_dialog_check
+        - deployment_dialog
+        - deployment_dialog_check
+        - device_dialog
+        - device_dialog_check
+        - device_dialog_gpu
+        - device_list_check
+        - driver_dialog_check
+        - get_booking_system_db_passwd
+        - get_booking_system_db_user
+        - get_booking_system_host
+        - get_booking_system_servers_list
+        - get_constant
+        - get_email
+        - get_files
+        - get_multiple_devices
+        - get_servers
+        - get_vivado_devices
+        - is_acap
+        - is_cpu
+        - is_fpga
+        - is_gpu
+        - is_member
+        - is_virtualized
+        - platform_dialog
+        - platform_dialog_check
+        - project_dialog
+        - project_dialog_check
+        - ssh_key_add
+        - target_dialog
+        - target_dialog_check
+        - version_dialog
+        - version_dialog_check
+    - name: removing common scripts
+      file:
+        path: "{{ sgrt_base_path }}/common/{{ item }}"
+        state: absent
+      when: all or common
+      loop:
+        - get_server_type
+
+        
+        
+
+    
