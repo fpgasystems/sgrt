@@ -20,7 +20,6 @@
 * [Examples](./examples.md#examples)
 * [Installation](./installation.md#installation)
 * [License](#license)
-* [sgrt_install](https://3.basecamp.com/5241674/buckets/25107010/documents/6507506374)
 
 # Releases
 
