@@ -19,9 +19,10 @@
     #installation control (all means we attempt to create and copy all directories, files, and scripts)
     all: false
     build: false
-    constants: false
-    common: true
+    common: false
+    #constants_force: true
     coyote: false
+    #devices_force: false
     enable: false
     examine: false
     get: false
@@ -60,17 +61,81 @@
         - "{{ sgrt_base_path }}/templates"
         - "{{ sgrt_base_path }}/validate"
 
-    #copying files
+    #copying files (only if they do not exist on the remote)
+    #constants
+    - name: checking constants
+      stat:
+        path: "{{ sgrt_base_path }}/constants/{{ item }}"
+      register: constants_stat
+      when: all
+    - name: copying constants
+      copy:
+        src: "../cli/constants/{{ item }}"
+        dest: "{{ sgrt_base_path }}/constants/{{ item }}"
+        mode: "0644"
+      when: not constants_stat.stat.exists
+      loop:
+        - ACAP_SERVERS_LIST
+        - CPU_SERVERS_LIST
+        - FPGA_SERVERS_LIST
+        - GPU_SERVERS_LIST
+        - LOCAL_PATH
+        - MPICH_PATH
+        - MY_PROJECTS_PATH
+        - ROCM_PATH  
+        - VIRTUALIZED_SERVERS_LIST
+        - VIVADO_DEVICES_MAX
+        - XILINX_PLATFORMS_PATH
+        - XILINX_TOOLS_PATH
+        - XRT_PATH
+    - name: deleting constants
+      file:
+        path: "{{ sgrt_base_path }}/constants/{{ item }}"
+        state: absent
+      when: all or constants
+      loop:
+        - HACC_PATH
+    #devices
+    #devices_acap_fpga
+    - name: checking devices_acap_fpga
+      stat:
+        path: "{{ sgrt_base_path }}/devices_acap_fpga"
+      register: devices_acap_fpga_stat
+      when: all
+    - name: copying devices_acap_fpga 
+      copy:
+        src: "../cli/devices_acap_fpga"
+        dest: "{{ sgrt_base_path }}/devices_acap_fpga"
+        mode: "0644"
+      when: not devices_acap_fpga_stat.stat.exists
+    #devices_gpu
+    - name: checking devices_gpu
+      stat:
+        path: "{{ sgrt_base_path }}/devices_gpu"
+      register: devices_gpu_stat
+      when: all
+    - name: copying devices_gpu 
+      copy:
+        src: "../cli/devices_gpu"
+        dest: "{{ sgrt_base_path }}/devices_gpu"
+        mode: "0644"
+      when: not devices_gpu_stat.stat.exists
+    #version
+    - name: checking version
+      stat:
+        path: "{{ sgrt_base_path }}/version"
+      register: version_stat
+      when: all
     - name: copying version
       copy:
         src: "../cli/VERSION"
         dest: "{{ sgrt_base_path }}/VERSION"
-        mode: 0644
-      when: all
+        mode: "0644"
+      when: not version_stat
 
     #copying templates
     #coyote
-    - name: removing coyote template
+    - name: deleting coyote template
       file:
         path: "{{ sgrt_base_path }}/templates/coyote"
         state: absent
@@ -79,10 +144,10 @@
       copy:
         src: "../cli/templates/coyote"
         dest: "{{ sgrt_base_path }}/templates"
-        mode: 0755
+        mode: "0755"
       when: all or (templates and coyote)
     #hip
-    - name: removing hip template
+    - name: deleting hip template
       file:
         path: "{{ sgrt_base_path }}/templates/hip"
         state: absent
@@ -91,10 +156,10 @@
       copy:
         src: "../cli/templates/hip"
         dest: "{{ sgrt_base_path }}/templates"
-        mode: 0755
+        mode: "0755"
       when: all or (templates and hip)
     #mpi
-    - name: removing mpi template
+    - name: deleting mpi template
       file:
         path: "{{ sgrt_base_path }}/templates/mpi"
         state: absent
@@ -103,10 +168,10 @@
       copy:
         src: "../cli/templates/mpi"
         dest: "{{ sgrt_base_path }}/templates"
-        mode: 0755
+        mode: "0755"
       when: all or (templates and mpi)
     #vitis  
-    - name: removing vitis template
+    - name: deleting vitis template
       file:
         path: "{{ sgrt_base_path }}/templates/vitis"
         state: absent
@@ -115,23 +180,10 @@
       copy:
         src: "../cli/templates/vitis"
         dest: "{{ sgrt_base_path }}/templates"
-        mode: 0755
+        mode: "0755"
       when: all or (templates and vitis)
 
     #copying scripts 
-    - name: copying sgutil
-      copy:
-        src: "../cli/sgutil.sh"
-        dest: "{{ sgrt_base_path }}/sgutil"
-        mode: 0755
-      when: all or sgutil
-
-    - name: copying sgutil_completion
-      copy:
-        src: "../cli/sgutil_completion.sh"
-        dest: /usr/share/bash-completion/completions/sgutil
-        mode: 0755
-      when: all or sgutil
     #build
     - name: copying build scripts
       copy:
@@ -145,7 +197,6 @@
         - mpi
         - vitis
     #common
-    
     - name: copying common scripts
       copy:
         src: "../cli/common/{{ item }}.sh"
@@ -186,13 +237,47 @@
         - target_dialog_check
         - version_dialog
         - version_dialog_check
-    - name: removing common scripts
+    - name: deleting common scripts
       file:
         path: "{{ sgrt_base_path }}/common/{{ item }}"
         state: absent
       when: all or common
       loop:
         - get_server_type
+    #enable
+    - name: copying enable scripts
+      copy:
+        src: "../cli/enable/{{ item }}.sh"
+        dest: "{{ sgrt_base_path }}/enable/{{ item }}"
+        mode: "0755"
+      when: all or enable
+      loop:
+        - vitis
+        - vivado
+        - xrt
+    #examine
+    - name: copying examine
+      copy:
+        src: "../cli/examine.sh"
+        dest: "{{ sgrt_base_path }}/examine"
+        mode: "0755"
+      when: all or examine
+
+
+
+    #sgutil
+    - name: copying sgutil
+      copy:
+        src: "../cli/sgutil.sh"
+        dest: "{{ sgrt_base_path }}/sgutil"
+        mode: 0755
+      when: all or sgutil
+    - name: copying sgutil_completion
+      copy:
+        src: "../cli/sgutil_completion.sh"
+        dest: /usr/share/bash-completion/completions/sgutil
+        mode: 0755
+      when: all or sgutil
 
         
         
