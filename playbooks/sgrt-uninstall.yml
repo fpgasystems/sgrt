@@ -17,7 +17,7 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
     #paths definition
-    sgrt_base_path: /opt/cli #/opt/sgrt
+    sgrt_base_path: /opt/sgrt #/opt/cli
     cli_name: sgutil
     #installation control (all means we attempt to delete all directories, files, and scripts)
     all: false
