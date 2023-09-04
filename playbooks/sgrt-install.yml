@@ -17,7 +17,8 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
     #paths definition
-    sgrt_base_path: /opt/cli #/opt/sgrt
+    sgrt_base_path: /opt/sgrt #/opt/sgrt
+    cli_path: "{{ sgrt_base_path }}/cli"
     cli_name: sgutil
     #installation control (all means we attempt to create and copy all directories, files, and scripts)
     all: false
@@ -36,9 +37,9 @@
     templates: false
     validate: false
     #workflows
-    coyote: false
+    coyote: true
     hip: false
-    mpi: false
+    mpi: true
     vitis: false
   tasks:
 
@@ -62,19 +63,20 @@
         - "{{ sgrt_base_path }}/templates"
         - "{{ sgrt_base_path }}/validate"
 
-    #copying files (only if they do not exist on the remote)
+    #copying files (when all/only if they do not exist on the remote)
     #constants
     - name: checking constants
-      stat:
-        path: "{{ sgrt_base_path }}/constants/{{ item }}"
-      register: constants_stat
+      find:
+        paths: "{{ sgrt_base_path }}/constants"
+        recurse: no
+      register: constants_contents
       when: all
-    - name: copying constants
+    - name: copying constants (if folder is empty)
       copy:
         src: "../cli/constants/{{ item }}"
         dest: "{{ sgrt_base_path }}/constants/{{ item }}"
         mode: "0644"
-      when: not constants_stat.stat.exists
+      when: all and constants_contents.matched == 0
       loop:
         - ACAP_SERVERS_LIST
         - CPU_SERVERS_LIST
@@ -89,13 +91,6 @@
         - XILINX_PLATFORMS_PATH
         - XILINX_TOOLS_PATH
         - XRT_PATH
-    #- name: deleting constants
-    #  file:
-    #    path: "{{ sgrt_base_path }}/constants/{{ item }}"
-    #    state: absent
-    #  when: all
-    #  loop:
-    #    - HACC_PATH
     #devices
     #devices_acap_fpga
     - name: checking devices_acap_fpga
@@ -108,7 +103,7 @@
         src: "../cli/devices_acap_fpga"
         dest: "{{ sgrt_base_path }}/devices_acap_fpga"
         mode: "0644"
-      when: not devices_acap_fpga_stat.stat.exists
+      when: all and not devices_acap_fpga_stat.stat.exists
     #devices_gpu
     - name: checking devices_gpu
       stat:
@@ -120,11 +115,11 @@
         src: "../cli/devices_gpu"
         dest: "{{ sgrt_base_path }}/devices_gpu"
         mode: "0644"
-      when: not devices_gpu_stat.stat.exists
+      when: all and not devices_gpu_stat.stat.exists
     #version
     - name: checking version
       stat:
-        path: "{{ sgrt_base_path }}/version"
+        path: "{{ sgrt_base_path }}/VERSION"
       register: version_stat
       when: all
     - name: copying version
@@ -132,7 +127,7 @@
         src: "../cli/VERSION"
         dest: "{{ sgrt_base_path }}/VERSION"
         mode: "0644"
-      when: not version_stat.stat.exists
+      when: all and not version_stat.stat.exists
 
     #copying templates
     #coyote
@@ -147,7 +142,7 @@
         src: "../cli/templates/coyote"
         dest: "{{ sgrt_base_path }}/templates"
         mode: "0755"
-      when: coyote_templates #all or (templates and coyote)
+      when: coyote_templates.changed
     #hip
     - name: deleting hip template
       file:
@@ -160,7 +155,7 @@
         src: "../cli/templates/hip"
         dest: "{{ sgrt_base_path }}/templates"
         mode: "0755"
-      when: hip_templates #all or (templates and hip)
+      when: hip_templates.changed
     #mpi
     - name: deleting mpi template
       file:
@@ -173,7 +168,7 @@
         src: "../cli/templates/mpi"
         dest: "{{ sgrt_base_path }}/templates"
         mode: "0755"
-      when: mpi_templates #all or (templates and mpi)
+      when: mpi_templates.changed
     #vitis  
     - name: deleting vitis template
       file:
@@ -186,7 +181,7 @@
         src: "../cli/templates/vitis"
         dest: "{{ sgrt_base_path }}/templates"
         mode: "0755"
-      when: vitis_templates #all or (templates and vitis)
+      when: vitis_templates.changed
 
     #copying scripts 
     #build
@@ -242,13 +237,6 @@
         - target_dialog_check
         - version_dialog
         - version_dialog_check
-    #- name: deleting common scripts
-    #  file:
-    #    path: "{{ sgrt_base_path }}/common/{{ item }}"
-    #    state: absent
-    #  when: all
-    #  loop:
-    #    - get_server_type
     #enable
     - name: copying enable scripts
       copy:
@@ -308,14 +296,21 @@
         - coyote
         - enable_N_REGIONS
         - enable_regions
-        - flash_bitstream.tcl
-        - flash_xrt_bitstream.tcl
         - fpga_chmod
         - pci_hot_plug
         - reset
         - revert
         - vitis
         - vivado
+    - name: copying program tcl
+      copy:
+        src: "../cli/program/{{ item }}"
+        dest: "{{ sgrt_base_path }}/program/{{ item }}"
+        mode: "0755"
+      when: all or program
+      loop:
+        - flash_bitstream.tcl
+        - flash_xrt_bitstream.tcl
     #reboot
     - name: copying reboot
       copy:
@@ -343,7 +338,7 @@
         mode: "0755"
       when: all or set
       loop:
-        - set
+        - gh
         - keys
     #sgutil
     - name: copying sgutil
@@ -358,7 +353,7 @@
         src: "../cli/{{ cli_name }}_completion.sh"
         dest: /usr/share/bash-completion/completions/{{ cli_name }}
         mode: 0755
-      when: sgutil_copy #all or sgutil
+      when: sgutil_copy.changed
     #validate
     - name: copying validate scripts
       copy:
@@ -376,53 +371,106 @@
     #copying workflows
     #coyote
     - name: copying coyote workflow
-      copy:
-        src: "../cli/coyote/{{ item }}.sh"
-        dest: "{{ sgrt_base_path }}/coyote/{{ item }}"
-        mode: "0755"
+      block:
+        - name: copying coyote workflow
+          debug:
+            msg: ""
+        - name: new
+          copy:
+            src: "../cli/new/coyote.sh"
+            dest: "{{ sgrt_base_path }}/new/coyote"
+            mode: "0755"
+        - name: build
+          copy:
+            src: "../cli/build/coyote.sh"
+            dest: "{{ sgrt_base_path }}/build/coyote"
+            mode: "0755"
+        - name: program
+          copy:
+            src: "../cli/program/coyote.sh"
+            dest: "{{ sgrt_base_path }}/program/coyote"
+            mode: "0755"
+        - name: run
+          copy:
+            src: "../cli/run/coyote.sh"
+            dest: "{{ sgrt_base_path }}/run/coyote"
+            mode: "0755"
       when: all or coyote
-      loop:
-        - new
-        - build
-        - program
-        - run
     #hip
     - name: copying hip workflow
-      copy:
-        src: "../cli/hip/{{ item }}.sh"
-        dest: "{{ sgrt_base_path }}/hip/{{ item }}"
-        mode: "0755"
-      when: all or coyote
-      loop:
-        - new
-        - build
-        - run
+      block:
+        - name: copying hip workflow
+          debug:
+            msg: ""
+        - name: new
+          copy:
+            src: "../cli/new/hip.sh"
+            dest: "{{ sgrt_base_path }}/new/hip"
+            mode: "0755"
+        - name: build
+          copy:
+            src: "../cli/build/hip.sh"
+            dest: "{{ sgrt_base_path }}/build/hip"
+            mode: "0755"
+        - name: run
+          copy:
+            src: "../cli/run/hip.sh"
+            dest: "{{ sgrt_base_path }}/run/hip"
+            mode: "0755"
+      when: all or hip
     #mpi
     - name: copying mpi workflow
-      copy:
-        src: "../cli/mpi/{{ item }}.sh"
-        dest: "{{ sgrt_base_path }}/mpi/{{ item }}"
-        mode: "0755"
-      when: all or coyote
-      loop:
-        - new
-        - build
-        - run
+      block:
+        - name: copying mpi workflow
+          debug:
+            msg: ""
+        - name: new
+          copy:
+            src: "../cli/new/mpi.sh"
+            dest: "{{ sgrt_base_path }}/new/mpi"
+            mode: "0755"
+        - name: build
+          copy:
+            src: "../cli/build/mpi.sh"
+            dest: "{{ sgrt_base_path }}/build/mpi"
+            mode: "0755"
+        - name: run
+          copy:
+            src: "../cli/run/mpi.sh"
+            dest: "{{ sgrt_base_path }}/run/mpi"
+            mode: "0755"
+      when: all or mpi
     #vitis
     - name: copying vitis workflow
-      copy:
-        src: "../cli/vitis/{{ item }}.sh"
-        dest: "{{ sgrt_base_path }}/vitis/{{ item }}"
-        mode: "0755"
-      when: all or coyote
-      loop:
-        - new
-        - build
-        - program
-        - run
+      block:
+        - name: copying vitis workflow
+          debug:
+            msg: ""
+        - name: new
+          copy:
+            src: "../cli/new/vitis.sh"
+            dest: "{{ sgrt_base_path }}/new/vitis"
+            mode: "0755"
+        - name: build
+          copy:
+            src: "../cli/build/vitis.sh"
+            dest: "{{ sgrt_base_path }}/build/vitis"
+            mode: "0755"
+        - name: program
+          copy:
+            src: "../cli/program/vitis.sh"
+            dest: "{{ sgrt_base_path }}/program/vitis"
+            mode: "0755"
+        - name: run
+          copy:
+            src: "../cli/run/vitis.sh"
+            dest: "{{ sgrt_base_path }}/run/vitis"
+            mode: "0755"
+      when: all or vitis
 
     #copying to profile.d
     - name: add to system-wide $PATH.
       copy:
         dest: "/etc/profile.d/{{ cli_name }}.sh" #cli.sh
         content: 'PATH=$PATH:{{ sgrt_base_path }}'
+      when: all
