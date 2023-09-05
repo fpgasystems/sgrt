@@ -18,10 +18,11 @@
     ansible_python_interpreter: /usr/bin/python3
     #paths definition
     sgrt_base_path: /opt/sgrt #/opt/sgrt
+    api_path: "{{ sgrt_base_path }}/api"
     cli_path: "{{ sgrt_base_path }}/cli"
     cli_name: sgutil
     #installation control (all means we attempt to create and copy all directories, files, and scripts)
-    all: false
+    all: true
     #scripts
     build: false
     common: false
@@ -37,9 +38,9 @@
     templates: false
     validate: false
     #workflows
-    coyote: true
+    coyote: false
     hip: false
-    mpi: true
+    mpi: false
     vitis: false
   tasks:
 
@@ -51,30 +52,31 @@
       when: all
       loop:
         - "{{ sgrt_base_path }}"
-        - "{{ sgrt_base_path }}/build"
-        - "{{ sgrt_base_path }}/common"
-        - "{{ sgrt_base_path }}/constants"
-        - "{{ sgrt_base_path }}/enable"
-        - "{{ sgrt_base_path }}/get"
-        - "{{ sgrt_base_path }}/new"
-        - "{{ sgrt_base_path }}/program"
-        - "{{ sgrt_base_path }}/run"
-        - "{{ sgrt_base_path }}/set"
-        - "{{ sgrt_base_path }}/templates"
-        - "{{ sgrt_base_path }}/validate"
+        - "{{ cli_path }}"
+        - "{{ cli_path }}/build"
+        - "{{ cli_path }}/common"
+        - "{{ cli_path }}/constants"
+        - "{{ cli_path }}/enable"
+        - "{{ cli_path }}/get"
+        - "{{ cli_path }}/new"
+        - "{{ cli_path }}/program"
+        - "{{ cli_path }}/run"
+        - "{{ cli_path }}/set"
+        - "{{ cli_path }}/templates"
+        - "{{ cli_path }}/validate"
 
     #copying files (when all/only if they do not exist on the remote)
     #constants
     - name: checking constants
       find:
-        paths: "{{ sgrt_base_path }}/constants"
+        paths: "{{ cli_path }}/constants"
         recurse: no
       register: constants_contents
       when: all
     - name: copying constants (if folder is empty)
       copy:
         src: "../cli/constants/{{ item }}"
-        dest: "{{ sgrt_base_path }}/constants/{{ item }}"
+        dest: "{{ cli_path }}/constants/{{ item }}"
         mode: "0644"
       when: all and constants_contents.matched == 0
       loop:
@@ -95,25 +97,25 @@
     #devices_acap_fpga
     - name: checking devices_acap_fpga
       stat:
-        path: "{{ sgrt_base_path }}/devices_acap_fpga"
+        path: "{{ cli_path }}/devices_acap_fpga"
       register: devices_acap_fpga_stat
       when: all
     - name: copying devices_acap_fpga 
       copy:
         src: "../cli/devices_acap_fpga"
-        dest: "{{ sgrt_base_path }}/devices_acap_fpga"
+        dest: "{{ cli_path }}/devices_acap_fpga"
         mode: "0644"
       when: all and not devices_acap_fpga_stat.stat.exists
     #devices_gpu
     - name: checking devices_gpu
       stat:
-        path: "{{ sgrt_base_path }}/devices_gpu"
+        path: "{{ cli_path }}/devices_gpu"
       register: devices_gpu_stat
       when: all
     - name: copying devices_gpu 
       copy:
         src: "../cli/devices_gpu"
-        dest: "{{ sgrt_base_path }}/devices_gpu"
+        dest: "{{ cli_path }}/devices_gpu"
         mode: "0644"
       when: all and not devices_gpu_stat.stat.exists
     #version
@@ -131,64 +133,80 @@
 
     #copying templates
     #coyote
-    - name: deleting coyote template
-      file:
-        path: "{{ sgrt_base_path }}/templates/coyote"
-        state: absent
-      register: coyote_templates
+    - name: managing coyote template
+      block:
+        - name: managing coyote template
+          debug:
+            msg: ""
+        - name: deleting coyote template
+          file:
+            path: "{{ sgrt_base_path }}/templates/coyote"
+            state: absent
+          register: coyote_templates
+        - name: copying coyote template
+          copy:
+            src: "../cli/templates/coyote"
+            dest: "{{ sgrt_base_path }}/templates"
+            mode: "0755"
       when: all or (templates and coyote)
-    - name: copying coyote template
-      copy:
-        src: "../cli/templates/coyote"
-        dest: "{{ sgrt_base_path }}/templates"
-        mode: "0755"
-      when: coyote_templates.changed
     #hip
-    - name: deleting hip template
-      file:
-        path: "{{ sgrt_base_path }}/templates/hip"
-        state: absent
-      register: hip_templates
+    - name: managing hip template
+      block:
+        - name: managing hip template
+          debug:
+            msg: ""
+        - name: deleting hip template
+          file:
+            path: "{{ sgrt_base_path }}/templates/hip"
+            state: absent
+          register: hip_templates
+        - name: copying hip template
+          copy:
+            src: "../cli/templates/hip"
+            dest: "{{ sgrt_base_path }}/templates"
+            mode: "0755"
       when: all or (templates and hip)
-    - name: copying hip template
-      copy:
-        src: "../cli/templates/hip"
-        dest: "{{ sgrt_base_path }}/templates"
-        mode: "0755"
-      when: hip_templates.changed
     #mpi
-    - name: deleting mpi template
-      file:
-        path: "{{ sgrt_base_path }}/templates/mpi"
-        state: absent
-      register: mpi_templates
+    - name: managing mpi template
+      block:
+        - name: managing mpi template
+          debug:
+            msg: ""
+        - name: deleting mpi template
+          file:
+            path: "{{ sgrt_base_path }}/templates/mpi"
+            state: absent
+          register: mpi_templates
+        - name: copying mpi template
+          copy:
+            src: "../cli/templates/mpi"
+            dest: "{{ sgrt_base_path }}/templates"
+            mode: "0755"
       when: all or (templates and mpi)
-    - name: copying mpi template
-      copy:
-        src: "../cli/templates/mpi"
-        dest: "{{ sgrt_base_path }}/templates"
-        mode: "0755"
-      when: mpi_templates.changed
     #vitis  
-    - name: deleting vitis template
-      file:
-        path: "{{ sgrt_base_path }}/templates/vitis"
-        state: absent
-      register: vitis_templates
+    - name: managing vitis template
+      block:
+        - name: managing vitis template
+          debug:
+            msg: ""
+        - name: deleting vitis template
+          file:
+            path: "{{ sgrt_base_path }}/templates/vitis"
+            state: absent
+          register: vitis_templates
+        - name: copying vitis template
+          copy:
+            src: "../cli/templates/vitis"
+            dest: "{{ sgrt_base_path }}/templates"
+            mode: "0755"
       when: all or (templates and vitis)
-    - name: copying vitis template
-      copy:
-        src: "../cli/templates/vitis"
-        dest: "{{ sgrt_base_path }}/templates"
-        mode: "0755"
-      when: vitis_templates.changed
 
     #copying scripts 
     #build
     - name: copying build scripts
       copy:
         src: "../cli/build/{{ item }}.sh"
-        dest: "{{ sgrt_base_path }}/build/{{ item }}"
+        dest: "{{ cli_path }}/build/{{ item }}"
         mode: "0755"
       when: all or build
       loop:
@@ -200,7 +218,7 @@
     - name: copying common scripts
       copy:
         src: "../cli/common/{{ item }}.sh"
-        dest: "{{ sgrt_base_path }}/common/{{ item }}"
+        dest: "{{ cli_path }}/common/{{ item }}"
         mode: "0755"
       when: all or common
       loop:
@@ -241,7 +259,7 @@
     - name: copying enable scripts
       copy:
         src: "../cli/enable/{{ item }}.sh"
-        dest: "{{ sgrt_base_path }}/enable/{{ item }}"
+        dest: "{{ cli_path }}/enable/{{ item }}"
         mode: "0755"
       when: all or enable
       loop:
@@ -252,14 +270,14 @@
     - name: copying examine
       copy:
         src: "../cli/examine.sh"
-        dest: "{{ sgrt_base_path }}/examine"
+        dest: "{{ cli_path }}/examine"
         mode: "0755"
       when: all or examine
     #get
     - name: copying get scripts
       copy:
         src: "../cli/get/{{ item }}.sh"
-        dest: "{{ sgrt_base_path }}/get/{{ item }}"
+        dest: "{{ cli_path }}/get/{{ item }}"
         mode: "0755"
       when: all or get
       loop:
@@ -277,7 +295,7 @@
     - name: copying new scripts
       copy:
         src: "../cli/new/{{ item }}.sh"
-        dest: "{{ sgrt_base_path }}/new/{{ item }}"
+        dest: "{{ cli_path }}/new/{{ item }}"
         mode: "0755"
       when: all or new
       loop:
@@ -289,7 +307,7 @@
     - name: copying program scripts
       copy:
         src: "../cli/program/{{ item }}.sh"
-        dest: "{{ sgrt_base_path }}/program/{{ item }}"
+        dest: "{{ cli_path }}/program/{{ item }}"
         mode: "0755"
       when: all or program
       loop:
@@ -305,7 +323,7 @@
     - name: copying program tcl
       copy:
         src: "../cli/program/{{ item }}"
-        dest: "{{ sgrt_base_path }}/program/{{ item }}"
+        dest: "{{ cli_path }}/program/{{ item }}"
         mode: "0755"
       when: all or program
       loop:
@@ -315,14 +333,14 @@
     - name: copying reboot
       copy:
         src: "../cli/reboot.sh"
-        dest: "{{ sgrt_base_path }}/reboot"
+        dest: "{{ cli_path }}/reboot"
         mode: "0755"
       when: all or reboot
     #run
     - name: copying run scripts
       copy:
         src: "../cli/run/{{ item }}.sh"
-        dest: "{{ sgrt_base_path }}/run/{{ item }}"
+        dest: "{{ cli_path }}/run/{{ item }}"
         mode: "0755"
       when: all or run
       loop:
@@ -334,31 +352,36 @@
     - name: copying set scripts
       copy:
         src: "../cli/set/{{ item }}.sh"
-        dest: "{{ sgrt_base_path }}/set/{{ item }}"
+        dest: "{{ cli_path }}/set/{{ item }}"
         mode: "0755"
       when: all or set
       loop:
         - gh
         - keys
     #sgutil
-    - name: copying sgutil
-      copy:
-        src: "../cli/{{ cli_name }}.sh"
-        dest: "{{ sgrt_base_path }}/{{ cli_name }}"
-        mode: 0755
-      register: sgutil_copy
+    - name: managing sgutil
+      block:
+        - name: managing sgutil
+          debug:
+            msg: ""
+        - name: copying sgutil
+          copy:
+            src: "../cli/{{ cli_name }}.sh"
+            dest: "{{ cli_path }}/{{ cli_name }}"
+            mode: 0755
+          register: sgutil_copy
+        - name: copying sgutil_completion
+          copy:
+            src: "../cli/{{ cli_name }}_completion.sh"
+            dest: /usr/share/bash-completion/completions/{{ cli_name }}
+            mode: 0755
       when: all or sgutil
-    - name: copying sgutil_completion
-      copy:
-        src: "../cli/{{ cli_name }}_completion.sh"
-        dest: /usr/share/bash-completion/completions/{{ cli_name }}
-        mode: 0755
-      when: sgutil_copy.changed
+
     #validate
     - name: copying validate scripts
       copy:
         src: "../cli/validate/{{ item }}.sh"
-        dest: "{{ sgrt_base_path }}/validate/{{ item }}"
+        dest: "{{ cli_path }}/validate/{{ item }}"
         mode: "0755"
       when: all or validate
       loop:
@@ -378,22 +401,22 @@
         - name: new
           copy:
             src: "../cli/new/coyote.sh"
-            dest: "{{ sgrt_base_path }}/new/coyote"
+            dest: "{{ cli_path }}/new/coyote"
             mode: "0755"
         - name: build
           copy:
             src: "../cli/build/coyote.sh"
-            dest: "{{ sgrt_base_path }}/build/coyote"
+            dest: "{{ cli_path }}/build/coyote"
             mode: "0755"
         - name: program
           copy:
             src: "../cli/program/coyote.sh"
-            dest: "{{ sgrt_base_path }}/program/coyote"
+            dest: "{{ cli_path }}/program/coyote"
             mode: "0755"
         - name: run
           copy:
             src: "../cli/run/coyote.sh"
-            dest: "{{ sgrt_base_path }}/run/coyote"
+            dest: "{{ cli_path }}/run/coyote"
             mode: "0755"
       when: all or coyote
     #hip
@@ -405,17 +428,17 @@
         - name: new
           copy:
             src: "../cli/new/hip.sh"
-            dest: "{{ sgrt_base_path }}/new/hip"
+            dest: "{{ cli_path }}/new/hip"
             mode: "0755"
         - name: build
           copy:
             src: "../cli/build/hip.sh"
-            dest: "{{ sgrt_base_path }}/build/hip"
+            dest: "{{ cli_path }}/build/hip"
             mode: "0755"
         - name: run
           copy:
             src: "../cli/run/hip.sh"
-            dest: "{{ sgrt_base_path }}/run/hip"
+            dest: "{{ cli_path }}/run/hip"
             mode: "0755"
       when: all or hip
     #mpi
@@ -427,17 +450,17 @@
         - name: new
           copy:
             src: "../cli/new/mpi.sh"
-            dest: "{{ sgrt_base_path }}/new/mpi"
+            dest: "{{ cli_path }}/new/mpi"
             mode: "0755"
         - name: build
           copy:
             src: "../cli/build/mpi.sh"
-            dest: "{{ sgrt_base_path }}/build/mpi"
+            dest: "{{ cli_path }}/build/mpi"
             mode: "0755"
         - name: run
           copy:
             src: "../cli/run/mpi.sh"
-            dest: "{{ sgrt_base_path }}/run/mpi"
+            dest: "{{ cli_path }}/run/mpi"
             mode: "0755"
       when: all or mpi
     #vitis
@@ -449,22 +472,22 @@
         - name: new
           copy:
             src: "../cli/new/vitis.sh"
-            dest: "{{ sgrt_base_path }}/new/vitis"
+            dest: "{{ cli_path }}/new/vitis"
             mode: "0755"
         - name: build
           copy:
             src: "../cli/build/vitis.sh"
-            dest: "{{ sgrt_base_path }}/build/vitis"
+            dest: "{{ cli_path }}/build/vitis"
             mode: "0755"
         - name: program
           copy:
             src: "../cli/program/vitis.sh"
-            dest: "{{ sgrt_base_path }}/program/vitis"
+            dest: "{{ cli_path }}/program/vitis"
             mode: "0755"
         - name: run
           copy:
             src: "../cli/run/vitis.sh"
-            dest: "{{ sgrt_base_path }}/run/vitis"
+            dest: "{{ cli_path }}/run/vitis"
             mode: "0755"
       when: all or vitis
 
@@ -472,5 +495,5 @@
     - name: add to system-wide $PATH.
       copy:
         dest: "/etc/profile.d/{{ cli_name }}.sh" #cli.sh
-        content: 'PATH=$PATH:{{ sgrt_base_path }}'
+        content: 'PATH=$PATH:{{ cli_path }}'
       when: all
