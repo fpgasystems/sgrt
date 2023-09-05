@@ -26,10 +26,20 @@
   tasks:
 
     #deleting sgrt
-    - name: deleting sgrt
-      file:
-        path: "{{ sgrt_base_path }}"
-        state: absent
+    - name: managing sgrt
+      block:
+        - name: deleting sgrt
+          file:
+            path: "{{ sgrt_base_path }}"
+            state: absent
+        - name: deleting sgutil_completion
+          file:
+            path: /usr/share/bash-completion/completions/{{ cli_name }}
+            state: absent
+        - name: remove from system-wide $PATH.
+          file:
+            path: "/etc/profile.d/{{ cli_name }}.sh"
+            state: absent
       when: all
 
     #deleting individual items
@@ -47,10 +57,3 @@
       when: all or common
       loop:
         - get_server_type
-
-     #deleting from profile.d
-    - name: remove from system-wide $PATH.
-      file:
-        path: "/etc/profile.d/{{ cli_name }}.sh"
-        state: absent
-      when: all
