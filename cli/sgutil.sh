@@ -68,7 +68,7 @@ command_run() {
 	      fi
       done
 
-      $CLI_PATH/${command_arguments_flags[0]}/${command_arguments_flags[1]} $flags # Example: /opt/cli/validate/iperf -P 6
+      $CLI_PATH/${command_arguments_flags[0]}/${command_arguments_flags[1]} $flags
 
     fi
 }
