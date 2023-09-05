@@ -109,8 +109,9 @@ cd ${DIR}
 git clone https://github.com/fpgasystems/Coyote.git
 mv Coyote/* .
 rm -rf Coyote
-#copy template
-cp -rf $CLI_PATH/templates/$WORKFLOW/hello_world/* $DIR
+#copy template from SGRT_PATH
+SGRT_PATH=$(dirname "$CLI_PATH")
+cp -rf $SGRT_PATH/templates/$WORKFLOW/hello_world/* $DIR
 #replace Makefile (main.cpp specific version)
 rm $DIR/sw/CMakeLists.txt
 mv $DIR/CMakeLists.txt $DIR/sw

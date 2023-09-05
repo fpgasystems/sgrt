@@ -92,8 +92,9 @@ unzip -q $VITIS_DIR/master.zip -d $VITIS_DIR/tmp
 mv -f $VITIS_DIR/tmp/Vitis_Accel_Examples-master/common $VITIS_DIR
 rm -rf $VITIS_DIR/tmp
 rm $VITIS_DIR/master.zip
-#copy
-cp -rf $CLI_PATH/templates/$WORKFLOW/$TEMPLATE_NAME/* $DIR
+#copy template from SGRT_PATH
+SGRT_PATH=$(dirname "$CLI_PATH")
+cp -rf $SGRT_PATH/templates/$WORKFLOW/$TEMPLATE_NAME/* $DIR
 # we only need makefile_us_alveo.mk (for alveos) and makefile_versal_alveo.mk (for versal)
 rm $DIR/makefile_versal_ps.mk
 #rm $DIR/makefile_zynq7000.mk

@@ -77,8 +77,9 @@ fi
 
 # project_name does not exist
 #mkdir $DIR
-#copy template
-cp -rf $CLI_PATH/templates/$WORKFLOW/hello_world/* $DIR
+#copy template from SGRT_PATH
+SGRT_PATH=$(dirname "$CLI_PATH")
+cp -rf $SGRT_PATH/templates/$WORKFLOW/hello_world/* $DIR
 #compile create config
 cd $DIR/src
 g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
