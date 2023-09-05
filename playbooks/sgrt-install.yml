@@ -52,6 +52,7 @@
       when: all
       loop:
         - "{{ sgrt_base_path }}"
+        - "{{ sgrt_base_path }}/templates"
         - "{{ cli_path }}"
         - "{{ cli_path }}/build"
         - "{{ cli_path }}/common"
@@ -62,7 +63,6 @@
         - "{{ cli_path }}/program"
         - "{{ cli_path }}/run"
         - "{{ cli_path }}/set"
-        - "{{ cli_path }}/templates"
         - "{{ cli_path }}/validate"
 
     #copying files (when all/only if they do not exist on the remote)
