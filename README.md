@@ -18,7 +18,7 @@
 * [API](./api/manual.md#api)
 * [CLI](./cli/manual.md#cli)
 * [Examples](./examples.md#examples)
-* [Installation](./installation.md#installation)
+* [Installation](https://github.com/fpgasystems/sgrt_install#--systems-group-runtime-installation)
 * [License](#license)
 
 # Releases
