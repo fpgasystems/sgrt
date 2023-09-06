@@ -22,7 +22,7 @@
     #installation control (all means we attempt to delete all directories, files, and scripts)
     all: false
     common: false
-    constants: false
+    constants: true
   tasks:
 
     #deleting sgrt
@@ -50,6 +50,7 @@
       when: all or constants
       loop:
         - HACC_PATH
+        - LOCAL_PATH #replaced by MY_DRIVERS_PATH
     - name: deleting common scripts
       file:
         path: "{{ sgrt_base_path }}/common/{{ item }}"

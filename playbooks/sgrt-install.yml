@@ -84,9 +84,9 @@
         - CPU_SERVERS_LIST
         - FPGA_SERVERS_LIST
         - GPU_SERVERS_LIST
-        - LOCAL_PATH
-        - MPICH_PATH
+        - MY_DRIVERS_PATH #LOCAL_PATH
         - MY_PROJECTS_PATH
+        - MPICH_PATH
         - ROCM_PATH  
         - VIRTUALIZED_SERVERS_LIST
         - VIVADO_DEVICES_MAX
