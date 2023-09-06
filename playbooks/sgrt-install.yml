@@ -22,14 +22,14 @@
     cli_path: "{{ sgrt_base_path }}/cli"
     cli_name: sgutil
     #installation control (all means we attempt to create and copy all directories, files, and scripts)
-    all: true
+    all: false
     #scripts
     build: false
     common: false
     enable: false
     examine: false
     get: false
-    new: false
+    new: true
     program: false
     reboot: false
     run: false
@@ -370,6 +370,10 @@
             dest: "{{ cli_path }}/{{ cli_name }}"
             mode: 0755
           register: sgutil_copy
+        - name: adding to profile.d (to )system-wide $PATH)
+          copy:
+            dest: "/etc/profile.d/{{ cli_name }}.sh" #cli.sh
+            content: 'PATH=$PATH:{{ cli_path }}'
         - name: copying sgutil_completion
           copy:
             src: "../cli/{{ cli_name }}_completion.sh"
@@ -490,10 +494,3 @@
             dest: "{{ cli_path }}/run/vitis"
             mode: "0755"
       when: all or vitis
-
-    #copying to profile.d
-    - name: add to system-wide $PATH.
-      copy:
-        dest: "/etc/profile.d/{{ cli_name }}.sh" #cli.sh
-        content: 'PATH=$PATH:{{ cli_path }}'
-      when: all
