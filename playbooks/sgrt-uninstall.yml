@@ -18,6 +18,7 @@
     ansible_python_interpreter: /usr/bin/python3
     #paths definition
     sgrt_base_path: /opt/sgrt #/opt/cli
+    cli_path: "{{ sgrt_base_path }}/cli"
     cli_name: sgutil
     #installation control (all means we attempt to delete all directories, files, and scripts)
     all: false
@@ -45,7 +46,7 @@
     #deleting individual items
     - name: deleting constants
       file:
-        path: "{{ sgrt_base_path }}/constants/{{ item }}"
+        path: "{{ cli_path }}/constants/{{ item }}"
         state: absent
       when: all or constants
       loop:
@@ -53,7 +54,7 @@
         - LOCAL_PATH #replaced by MY_DRIVERS_PATH
     - name: deleting common scripts
       file:
-        path: "{{ sgrt_base_path }}/common/{{ item }}"
+        path: "{{ cli_path }}/common/{{ item }}"
         state: absent
       when: all or common
       loop:
