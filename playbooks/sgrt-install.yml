@@ -29,7 +29,7 @@
     enable: false
     examine: false
     get: false
-    new: true
+    new: false
     program: false
     reboot: false
     run: false
@@ -85,7 +85,7 @@
         - FPGA_SERVERS_LIST
         - GPU_SERVERS_LIST
         - MPICH_PATH
-        - MY_DRIVERS_PATH #LOCAL_PATH
+        - MY_DRIVERS_PATH #replaces my LOCAL_PATH
         - MY_PROJECTS_PATH
         - ROCM_PATH  
         - VIRTUALIZED_SERVERS_LIST
