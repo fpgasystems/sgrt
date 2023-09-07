@@ -20,6 +20,7 @@
     sgrt_base_path: /opt/sgrt #/opt/sgrt
     api_path: "{{ sgrt_base_path }}/api"
     cli_path: "{{ sgrt_base_path }}/cli"
+    include_path: "{{ sgrt_base_path }}/include"
     cli_name: sgutil
     #installation control (all means we attempt to create and copy all directories, files, and scripts)
     all: true
@@ -51,9 +52,12 @@
         state: directory
       when: all
       loop:
+        #base
         - "{{ sgrt_base_path }}"
         - "{{ sgrt_base_path }}/templates"
+        #api
         - "{{ api_path }}"
+        #cli  
         - "{{ cli_path }}"
         - "{{ cli_path }}/build"
         - "{{ cli_path }}/common"
@@ -65,6 +69,8 @@
         - "{{ cli_path }}/run"
         - "{{ cli_path }}/set"
         - "{{ cli_path }}/validate"
+        #include
+        - "{{ include_path }}"
 
     #copying files (when all/only if they do not exist on the remote)
     #constants
