@@ -22,7 +22,7 @@
     cli_path: "{{ sgrt_base_path }}/cli"
     cli_name: sgutil
     #installation control (all means we attempt to create and copy all directories, files, and scripts)
-    all: false
+    all: true
     #scripts
     build: false
     common: false
@@ -127,7 +127,7 @@
       when: all
     - name: copying version
       copy:
-        src: "../cli/VERSION"
+        src: "../VERSION"
         dest: "{{ sgrt_base_path }}/VERSION"
         mode: "0644"
       when: all and not version_stat.stat.exists
