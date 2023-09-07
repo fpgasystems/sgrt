@@ -35,13 +35,13 @@
     run: false
     set: false
     sgutil: false
-    templates: false
+    templates: true
     validate: false
     #workflows
     coyote: false
     hip: false
     mpi: false
-    vitis: false
+    vitis: true
   tasks:
 
     #creating directories
@@ -145,7 +145,7 @@
           register: coyote_templates
         - name: copying coyote template
           copy:
-            src: "../cli/templates/coyote"
+            src: "../templates/coyote"
             dest: "{{ sgrt_base_path }}/templates"
             mode: "0755"
       when: all or (templates and coyote)
@@ -162,7 +162,7 @@
           register: hip_templates
         - name: copying hip template
           copy:
-            src: "../cli/templates/hip"
+            src: "../templates/hip"
             dest: "{{ sgrt_base_path }}/templates"
             mode: "0755"
       when: all or (templates and hip)
@@ -179,7 +179,7 @@
           register: mpi_templates
         - name: copying mpi template
           copy:
-            src: "../cli/templates/mpi"
+            src: "../templates/mpi"
             dest: "{{ sgrt_base_path }}/templates"
             mode: "0755"
       when: all or (templates and mpi)
@@ -196,7 +196,7 @@
           register: vitis_templates
         - name: copying vitis template
           copy:
-            src: "../cli/templates/vitis"
+            src: "../templates/vitis"
             dest: "{{ sgrt_base_path }}/templates"
             mode: "0755"
       when: all or (templates and vitis)
