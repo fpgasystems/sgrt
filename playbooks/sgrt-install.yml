@@ -35,13 +35,13 @@
     run: false
     set: false
     sgutil: false
-    templates: true
+    templates: false
     validate: false
     #workflows
     coyote: false
     hip: false
     mpi: false
-    vitis: true
+    vitis: false
   tasks:
 
     #creating directories
@@ -53,6 +53,7 @@
       loop:
         - "{{ sgrt_base_path }}"
         - "{{ sgrt_base_path }}/templates"
+        - "{{ api_path }}"
         - "{{ cli_path }}"
         - "{{ cli_path }}/build"
         - "{{ cli_path }}/common"
