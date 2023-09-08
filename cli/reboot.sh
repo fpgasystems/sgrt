@@ -15,6 +15,16 @@ read -a flags <<< "$@"
 echo ""
 echo "${bold}sgutil program reboot${normal}"
 
+#check on ACAP or FPGA servers (server must have at least one ACAP or one FPGA - reboot excluded on build-servers)
+acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
+    echo ""
+    echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
+    echo ""
+    exit
+fi
+
 #check for vivado_developers
 member=$($CLI_PATH/common/is_member $username vivado_developers)
 if [ "$member" = "false" ]; then
