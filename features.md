@@ -17,6 +17,4 @@ By using **Systems Group RunTime,** you can easily:
 * Explore model-based design principles with readily available *out-of-the-box* examples.
 * Simplify the creation of HIP/ROCm GPU applications using the *sgutil new-build-run hip* commands.
 
-... and much more, ensuring that your workflow remains versatile and adaptable to your specific needs.
-
 <!-- This should be consistent with features on the HACC repository -->
