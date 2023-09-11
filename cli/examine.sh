@@ -34,7 +34,7 @@ split_addresses (){
 }
 
 print_reconfigurable_devices_header (){
-  echo "${bold}Device Index : Upstream port (BFD) : Device Type (Name)   : Serial Number : Networking                          : Workflow${normal}"
+  echo "${bold}Device Index : Upstream port (BDF) : Device Type (Name)   : Serial Number : Networking                          : Workflow${normal}"
   echo "${bold}--------------------------------------------------------------------------------------------------------------------------${normal}"
 }
 
