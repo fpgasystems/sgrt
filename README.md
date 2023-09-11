@@ -20,6 +20,7 @@
 * [Examples](./examples.md#examples)
 * [Features](./features.md#features)
 * [Installation](https://github.com/fpgasystems/sgrt_install#--systems-group-runtime-installation)
+* [Disclaimer](#disclaimer)
 * [License](#license)
 
 # Releases
@@ -50,6 +51,9 @@
 <tfoot><tr><td colspan="5">&#9675; Existing release.</td></tr></tfoot>
 <tfoot><tr><td colspan="5">&#9679; Existing release installed on the cluster.</td></tr></tfoot>
 </table>
+
+# Disclaimer
+SGRT might be used in other HACCs or other heterogeneous clusters compatible with AMD accelerator devices.
 
 # License
 
