@@ -377,7 +377,7 @@
             dest: "{{ cli_path }}/{{ cli_name }}"
             mode: 0755
           register: sgutil_copy
-        - name: adding to profile.d (to )system-wide $PATH)
+        - name: adding to profile.d (system-wide $PATH)
           copy:
             dest: "/etc/profile.d/{{ cli_name }}.sh" #cli.sh
             content: 'PATH=$PATH:{{ cli_path }}'
