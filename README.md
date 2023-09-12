@@ -67,7 +67,7 @@ If you use this repository in your work, we kindly request that you cite it as f
 
 ### BibTeX
 ```
-@misc{repository_key,
+@misc{sgrt-ethz,
     author = {Javier Moya (jmoya82)},
     title = {Systems Group RunTime - ETH Zürich},
     howpublished = {\url{https://github.com/fpgasystems/sgrt}},
