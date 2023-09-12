@@ -89,7 +89,7 @@ echo ""
 wget https://github.com/Xilinx/Vitis_Accel_Examples/archive/master.zip -O $VITIS_DIR/master.zip
 mkdir $VITIS_DIR/tmp
 unzip -q $VITIS_DIR/master.zip -d $VITIS_DIR/tmp
-mv -f $VITIS_DIR/tmp/Vitis_Accel_Examples-master/common $VITIS_DIR
+mv -f $VITIS_DIR/tmp/Vitis_Accel_Examples-main/common $VITIS_DIR
 rm -rf $VITIS_DIR/tmp
 rm $VITIS_DIR/master.zip
 #copy template from SGRT_PATH
