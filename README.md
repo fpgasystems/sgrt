@@ -68,10 +68,10 @@ If you use this repository in your work, we kindly request that you cite it as f
 ### BibTeX
 ```
 @misc{sgrt-ethz,
-    author = {Javier Moya (jmoya82)},
-    title = {Systems Group RunTime - ETH Zürich},
+    author = {Javier Moya},
+    title = {Systems {G}roup {R}un{T}ime - {ETH Zürich}},
     howpublished = {\url{https://github.com/fpgasystems/sgrt}},
-    year = {2022--\DTMyear},
+    year = {2022},
 }
 ```
 
