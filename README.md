@@ -21,6 +21,7 @@
 * [Features](./features.md#features)
 * [Installation](https://github.com/fpgasystems/sgrt_install#--systems-group-runtime-installation)
 * [Disclaimer](#disclaimer)
+* [Citation](#citation)
 * [License](#license)
 
 # Releases
@@ -54,6 +55,21 @@
 
 # Disclaimer
 SGRT might be used in other HACCs or other heterogeneous clusters compatible with AMD accelerator devices.
+
+## Citation
+
+If you use this repository in your work, we kindly request that you cite it as follows:
+
+### BibTeX
+```
+@misc{repository_key,
+    author = {Javier Moya},
+    title = {Systems Group RunTime},
+    howpublished = {\url{https://github.com/fpgasystems/sgrt}},
+    year = {Year},
+    note = {Version X.X.X, Date},
+}
+```
 
 # License
 
