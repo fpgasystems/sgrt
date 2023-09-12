@@ -57,13 +57,12 @@
 SGRT might be used in other HACCs or other heterogeneous clusters compatible with AMD accelerator devices.
 
 ## Citation
-
 If you use this repository in your work, we kindly request that you cite it as follows:
 
 ### BibTeX
 ```
 @misc{repository_key,
-    author = {Javier Moya},
+    author = {Javier Moya (jmoya82)},
     title = {Systems Group RunTime},
     howpublished = {\url{https://github.com/fpgasystems/sgrt}},
     year = {2022--\DTMyear},,
