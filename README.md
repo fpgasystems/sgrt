@@ -56,7 +56,7 @@ While initially developed for ETHZ-[HACC](https://github.com/fpgasystems/hacc), 
 # Disclaimer
 
 * The Systems Group RunTime (SGRT) software is provided "as is" and without warranty of any kind, express or implied. The authors and maintainers of this repository make no claims regarding the fitness of this software for specific purposes or its compatibility with any particular hardware or software environment.
-* Users of SGRT are responsible for assessing its suitability for their intended use, including compatibility with their high-performance computing clusters and heterogeneous computing environments. The authors and maintainers of SGRT assume no liability for any issues, damages, or losses arising from the use of this software.
+* SGRT users are responsible for assessing its suitability for their intended use, including compatibility with their high-performance computing clusters and heterogeneous environments. The authors and maintainers of SGRT assume no liability for any issues, damages, or losses arising from the use of this software.
 * It is recommended to thoroughly test SGRT in a controlled environment before deploying it in a production setting. Any issues or feedback should be reported to the repository's issue tracker.
 * By using SGRT, you acknowledge and accept the terms and conditions outlined in this disclaimer.
 
