@@ -56,10 +56,10 @@
 # Disclaimer
 SGRT might be used in other HACCs or other heterogeneous clusters compatible with AMD accelerator devices.
 
-## Citation
+# Citation
 If you use this repository in your work, we kindly request that you cite it as follows:
 
-### BibTeX
+## BibTeX
 ```
 @misc{repository_key,
     author = {Javier Moya (jmoya82)},
