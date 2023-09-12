@@ -12,7 +12,9 @@
   Systems Group RunTime
 </h1> 
 
-**SGRT (Systems Group RunTime)** is a RunTime software developed specifically for ETHZ-[HACC](https://github.com/fpgasystems/hacc) servers. It consists of a command-line interpreter (CLI) and an API. The [CLI](./cli/manual.md#cli) enables you to easily set up your infrastructure and configure devices using a straightforward device index. Meanwhile, the [API](./api/manual.md) streamlines the development process of your accelerated applications, allowing you to concentrate on what truly matters.
+While initially developed for ETHZ-[HACC](https://github.com/fpgasystems/hacc), **SGRT (Systems Group RunTime)** is a versatile RunTime software ready to be used on any AMD-compatible heterogeneous cluster. SGRT comprises a command-line interpreter (CLI) and an API. While the [CLI](./cli/manual.md#cli) simplifies infrastructure setup and device configuration through an intuitive device index, the [API](./api/manual.md) streamlines the development of accelerated applications, allowing you to concentrate on your primary objectives.
+
+Paper draft
 
 ## Sections
 * [API](./api/manual.md#api)
@@ -54,7 +56,11 @@
 </table>
 
 # Disclaimer
-SGRT might be used in other HACCs or other heterogeneous clusters compatible with AMD accelerator devices.
+
+* The Systems Group RunTime (SGRT) software is provided "as is" and without warranty of any kind, express or implied. The authors and maintainers of this repository make no claims regarding the fitness of this software for specific purposes or its compatibility with any particular hardware or software environment.
+* Users of SGRT are responsible for assessing its suitability for their intended use, including compatibility with their high-performance computing clusters and heterogeneous computing environments. The authors and maintainers of SGRT assume no liability for any issues, damages, or losses arising from the use of this software.
+* It is recommended to thoroughly test SGRT in a controlled environment before deploying it in a production setting. Any issues or feedback should be reported to the repository's issue tracker.
+* By using SGRT, you acknowledge and accept the terms and conditions outlined in this disclaimer.
 
 # Citation
 If you use this repository in your work, we kindly request that you cite it as follows:
