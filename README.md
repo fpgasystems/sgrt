@@ -70,10 +70,7 @@ If you use this repository in your work, we kindly request that you cite it as f
 }
 ```
 
-Please note that to properly format the citation and display the time period, you will need to have the datetime2 LaTeX package installed in your LaTeX distribution.
-
-<span style="font-family: 'Arial Black', sans-serif; font-size: 1.2em; color: #0073e6;">LaTeX</span>
-
+Please note that to properly format the citation and display the time period, you will need to have the *datetime2* LaTeX package installed in your LaTeX distribution.
 
 # License
 
