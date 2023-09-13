@@ -36,10 +36,10 @@ server_family="${hostname%???}"
 
 # Build servers_family_list
 servers_family_list=()
-for i in "${servers[@]}"; do
-    if [[ $i == $server_family* ]] && [[ $i != $hostname ]]; then
+for server in "${servers[@]}"; do
+    if [[ $server == $server_family* ]] && [[ $server != $hostname ]]; then
         # Append the matching element to the array
-        servers_family_list+=("$i") 
+        servers_family_list+=("$server") 
     fi
 done
 
