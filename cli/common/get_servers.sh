@@ -1,28 +1,45 @@
 #!/bin/bash
 
 CLI_PATH=$1
-hostname=$2
+SERVER_LIST=$2
+hostname=$3
+username=$4
+
+test_ssh_access() {
+    username="$1"
+    server="$2"
+    /usr/bin/ssh -q -o BatchMode=yes -o ConnectTimeout=5 "$username@$server" exit
+    if [ $? -eq 0 ]; then
+        return 0  # SSH access is successful
+    else
+        return 1  # SSH access failed
+    fi
+}
 
 # Declare global variables
 declare -g servers_family_list=""
 declare -g servers_family_list_string=""
 
-#get booked machines
-servers=$(sudo $CLI_PATH/common/get_booking_system_servers_list | tail -n +2)
-
 # Convert string to an array
-servers=($servers)
+SERVER_LIST=($SERVER_LIST)
+
+#Loop through the server list and test SSH access
+servers=()
+for server in "${SERVER_LIST[@]}"; do
+    if test_ssh_access "$username" "$server"; then
+        servers+=("$server") 
+    fi
+done
 
 # We only show likely servers (i.e., alveo-u55c)
 server_family="${hostname%???}"
 
 # Build servers_family_list
 servers_family_list=()
-for i in "${servers[@]}"
-do
-    if [[ $i == $server_family* ]] && [[ $i != $hostname ]]; then
+for server in "${servers[@]}"; do
+    if [[ $server == $server_family* ]] && [[ $server != $hostname ]]; then
         # Append the matching element to the array
-        servers_family_list+=("$i") 
+        servers_family_list+=("$server") 
     fi
 done
 
