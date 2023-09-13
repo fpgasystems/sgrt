@@ -65,7 +65,6 @@ SGRT comprises a command-line interpreter (CLI) and an API. While the [CLI](./cl
 # Citation
 If you use this repository in your work, we kindly request that you cite it as follows:
 
-### BibTeX
 ```
 @misc{sgrt-ethz,
     author = {Javier Moya},
@@ -74,8 +73,6 @@ If you use this repository in your work, we kindly request that you cite it as f
     year = {2022},
 }
 ```
-
-Please note that to properly format the citation and display the time period, you will need to have the *datetime2* LaTeX package installed in your LaTeX distribution.
 
 # License
 
