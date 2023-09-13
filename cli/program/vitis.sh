@@ -11,9 +11,15 @@ MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vitis"
 TARGET="hw"
 
+#combine ACAP and FPGA lists removing duplicates
+SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
+
 #get hostname
 url="${HOSTNAME}"
 hostname="${url%%.*}"
+
+#get username
+username=$USER
 
 #check on ACAP or FPGA servers (server must have at least one ACAP or one FPGA)
 acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
@@ -87,7 +93,7 @@ if [ "$flags" = "" ]; then
     fi
     #get_servers
     echo ""
-    result=$($CLI_PATH/common/get_servers $CLI_PATH $hostname)
+    result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
     servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
     servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
     num_remote_servers=$(echo "$servers_family_list" | wc -w)
