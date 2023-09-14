@@ -23,7 +23,7 @@
     include_path: "{{ sgrt_base_path }}/include"
     cli_name: sgutil
     #installation control (all means we attempt to create and copy all directories, files, and scripts)
-    all: true
+    all: false
     #scripts
     build: false
     common: false
@@ -237,10 +237,6 @@
         - device_dialog_gpu
         - device_list_check
         - driver_dialog_check
-        - get_booking_system_db_passwd
-        - get_booking_system_db_user
-        - get_booking_system_host
-        - get_booking_system_servers_list
         - get_constant
         - get_email
         - get_files
