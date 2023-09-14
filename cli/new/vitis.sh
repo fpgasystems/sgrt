@@ -40,6 +40,9 @@ while true; do
 done
 #echo ""
 
+#change directory
+cd $MY_PROJECTS_PATH/$WORKFLOW
+
 #add to GitHub if gh is installed
 commit="0"
 if [[ $(which gh) ]]; then
