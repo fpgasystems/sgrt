@@ -122,17 +122,16 @@ echo "${bold}Creating hosts file:${normal}"
 echo ""
 sleep 1
 
-servers=$(sudo $CLI_PATH/common/get_booking_system_servers_list | tail -n +2) #get booked machines
-echo ""
-servers=($servers) #convert string to an array
+#servers=$(sudo $CLI_PATH/common/get_booking_system_servers_list | tail -n +2) #get booked machines
+#echo ""
+#servers=($servers) #convert string to an array
 
 rm $VALIDATION_DIR/hosts
 
 cd $VALIDATION_DIR
 touch hosts
 j=0
-for i in "${servers[@]}"
-do
+for i in "${servers_family_list[@]}"; do
     if [ "$i" != "$hostname" ]; then
         echo "$i-mellanox-0:$PROCESSES_PER_HOST" >> hosts
         ((j=j+1))
