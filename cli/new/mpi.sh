@@ -84,20 +84,20 @@ cp -rf $SGRT_PATH/templates/$WORKFLOW/hello_world/* $DIR
 cd $DIR/src
 g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
 #create hosts file (it will create it with the current booked servers)
-echo ""
-servers=$(sudo $CLI_PATH/common/get_booking_system_servers_list | tail -n +2) #get booked machines
-servers=($servers) #convert string to an array
+#echo ""
+#servers=$(sudo $CLI_PATH/common/get_booking_system_servers_list | tail -n +2) #get booked machines
+#servers=($servers) #convert string to an array
 cd $DIR
 rm hosts
 touch hosts
-j=0
-for i in "${servers[@]}"
-do
-    if [ "$i" != "$hostname" ]; then
-        echo "$i-mellanox-0:$PROCESSES_PER_HOST" >> hosts
-        ((j=j+1))
-    fi
-done
+#j=0
+#for i in "${servers[@]}"
+#do
+#    if [ "$i" != "$hostname" ]; then
+#        echo "$i-mellanox-0:$PROCESSES_PER_HOST" >> hosts
+#        ((j=j+1))
+#    fi
+#done
 
 #commit files
 if [ "$commit" = "1" ]; then 
