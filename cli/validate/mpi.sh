@@ -9,9 +9,15 @@ MPICH_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MPICH_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="mpi"
 
+#combine ACAP and FPGA lists removing duplicates
+SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
+
 #get hostname
 url="${HOSTNAME}"
 hostname="${url%%.*}"
+
+#get username
+username=$USER
 
 #get MPICH version
 mpich_version=($(find "$MPICH_PATH" -mindepth 1 -maxdepth 1 -type d -name "*-install" -exec basename {} \;))
@@ -36,7 +42,6 @@ flags=${flags/p/n}
 
 echo ""
 echo "${bold}sgutil validate $WORKFLOW${normal}"
-echo ""
 
 #create mpi directory (we do not know if sgutil new mpi has been run)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW"
@@ -74,10 +79,37 @@ if ! [ -d "$VALIDATION_DIR" ]; then
 fi
 
 #setup keys
-eval "$CLI_PATH/common/ssh_key_add"
+#eval "$CLI_PATH/common/ssh_key_add"
 
-#copy and compile
-cp -rf $CLI_PATH/templates/$WORKFLOW/hello_world/* $VALIDATION_DIR
+#get booked servers accessible with ssh
+echo ""
+echo "${bold}Quering remote servers with ssh:${normal}"
+result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
+servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
+servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
+num_remote_servers=$(echo "$servers_family_list" | wc -w)
+
+#check on number of servers
+if [ "$num_remote_servers" -eq 0 ]; then
+    echo ""
+    echo "Please, verify that you can ssh the targeted remote servers."
+    echo ""
+    exit
+fi
+
+echo ""
+echo $servers_family_list_string
+
+#convert string to an array
+servers_family_list=($servers_family_list)
+
+#setup keys
+echo ""
+$CLI_PATH/common/ssh_key_add $CLI_PATH "${servers_family_list[@]}"
+
+#copy template from SGRT_PATH
+SGRT_PATH=$(dirname "$CLI_PATH")
+cp -rf $SGRT_PATH/templates/$WORKFLOW/hello_world/* $VALIDATION_DIR
 
 #create config
 cp $VALIDATION_DIR/configs/config_000.hpp $VALIDATION_DIR/configs/config_001.hpp
