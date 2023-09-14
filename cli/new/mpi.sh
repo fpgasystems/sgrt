@@ -75,29 +75,16 @@ if ! [ -d "$DIR" ]; then
     exit
 fi
 
-# project_name does not exist
-#mkdir $DIR
 #copy template from SGRT_PATH
 SGRT_PATH=$(dirname "$CLI_PATH")
 cp -rf $SGRT_PATH/templates/$WORKFLOW/hello_world/* $DIR
 #compile create config
 cd $DIR/src
 g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
-#create hosts file (it will create it with the current booked servers)
-#echo ""
-#servers=$(sudo $CLI_PATH/common/get_booking_system_servers_list | tail -n +2) #get booked machines
-#servers=($servers) #convert string to an array
+#create empty hosts file
 cd $DIR
 rm hosts
 touch hosts
-#j=0
-#for i in "${servers[@]}"
-#do
-#    if [ "$i" != "$hostname" ]; then
-#        echo "$i-mellanox-0:$PROCESSES_PER_HOST" >> hosts
-#        ((j=j+1))
-#    fi
-#done
 
 #commit files
 if [ "$commit" = "1" ]; then 
