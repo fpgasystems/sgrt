@@ -9,10 +9,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 #combine ACAP and FPGA lists removing duplicates
 SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
 
-echo ""
-
 #setup keys
-eval "$CLI_PATH/common/ssh_key_add"
+#eval "$CLI_PATH/common/ssh_key_add"
 
 #get hostname
 url="${HOSTNAME}"
@@ -36,6 +34,32 @@ elif [ "$flags" = "-u" ]; then
     udp_server=" -u"
 fi
 
+#get booked servers accessible with ssh
+echo ""
+echo "${bold}Quering remote servers with ssh:${normal}"
+result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
+servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
+servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
+num_remote_servers=$(echo "$servers_family_list" | wc -w)
+
+#check on number of servers
+if [ "$num_remote_servers" -eq 0 ]; then
+    echo ""
+    echo "Please, verify that you can ssh the targeted remote servers."
+    echo ""
+    exit
+fi
+
+echo ""
+echo $servers_family_list_string
+
+#convert string to an array
+servers_family_list=($servers_family_list)
+
+#setup keys
+echo ""
+$CLI_PATH/common/ssh_key_add $CLI_PATH "${servers_family_list[@]}"
+
 #start iperf server on local machine
 echo "${bold}Starting iperf server:${normal}"
 echo ""
@@ -43,12 +67,6 @@ echo "iperf -s -B $hostname-mellanox-0 -D $udp_server"
 echo ""
 iperf -s -B $hostname-mellanox-0 -D $udp_server
 echo ""
-
-result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
-servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p') #
-
-#convert string to an array
-servers_family_list=($servers_family_list)
 
 #running iperf on remote machines
 echo "${bold}Running iperf on remote server/s:${normal}"
