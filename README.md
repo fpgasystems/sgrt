@@ -63,6 +63,9 @@ SGRT comprises a command-line interpreter (CLI) and an API. While the [CLI](./cl
 * By using SGRT, you acknowledge and accept the terms and conditions outlined in this disclaimer.
 
 # Citation
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8346566.svg)](https://doi.org/10.5281/zenodo.8346566)
+
 If you use this repository in your work, we kindly request that you cite it as follows:
 
 ```
@@ -70,7 +73,8 @@ If you use this repository in your work, we kindly request that you cite it as f
     author = {Javier Moya and Gustavo Alonso},
     title = {Systems {G}roup {R}un{T}ime - {ETH Zürich}},
     howpublished = {\url{https://github.com/fpgasystems/sgrt}},
-    year = {2022},
+    doi = {10.5281/zenodo.8346566},
+    year = {2023},
 }
 ```
 
