@@ -22,6 +22,9 @@ flags=$@
 #replace p by P
 flags=${flags/p/P}
 
+echo ""
+echo "${bold}sgutil validate iperf${normal}"
+
 #set default
 udp_server=""
 if [ "$flags" = "" ]; then
