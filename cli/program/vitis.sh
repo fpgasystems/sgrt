@@ -167,7 +167,7 @@ else
         echo ""
     fi
     #get_servers
-    result=$($CLI_PATH/common/get_servers $CLI_PATH $hostname)
+    result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
     servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
     servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
     num_remote_servers=$(echo "$servers_family_list" | wc -w)
