@@ -44,36 +44,11 @@ echo ""
 iperf -s -B $hostname-mellanox-0 -D $udp_server
 echo ""
 
-#get booked machines
-#servers=$(sudo $CLI_PATH/common/get_booking_system_servers_list | tail -n +2)
-
 result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
 servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p') #
-#servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
 
 #convert string to an array
 servers_family_list=($servers_family_list)
-
-#echo "Test servers_family_list"
-#echo ""
-#for i in "${servers_family_list[@]}"; do
-#    echo "$i"
-#done
-
-#echo ""
-
-#convert string to an array
-#servers=($servers)
-
-#echo "Test servers"
-#echo ""
-#for i in "${servers[@]}"; do
-#    echo "$i"
-#done
-
-#exit
-
-
 
 #running iperf on remote machines
 echo "${bold}Running iperf on remote server/s:${normal}"
