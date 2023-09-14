@@ -78,9 +78,6 @@ if ! [ -d "$VALIDATION_DIR" ]; then
     mkdir $VALIDATION_DIR/build_dir
 fi
 
-#setup keys
-#eval "$CLI_PATH/common/ssh_key_add"
-
 #get booked servers accessible with ssh
 echo ""
 echo "${bold}Quering remote servers with ssh:${normal}"
@@ -121,10 +118,6 @@ $CLI_PATH/build/$WORKFLOW -p validate_mpi
 echo "${bold}Creating hosts file:${normal}"
 echo ""
 sleep 1
-
-#servers=$(sudo $CLI_PATH/common/get_booking_system_servers_list | tail -n +2) #get booked machines
-#echo ""
-#servers=($servers) #convert string to an array
 
 rm $VALIDATION_DIR/hosts
 
