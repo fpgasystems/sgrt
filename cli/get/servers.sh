@@ -17,9 +17,19 @@ hostname="${url%%.*}"
 username=$USER
 
 #get servers
+echo ""
+echo "${bold}Quering remote servers with ssh:${normal}"
 result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
 servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
-#num_remote_servers=$(echo "$servers_family_list" | wc -w)
+num_remote_servers=$(echo "$servers_family_list" | wc -w)
+
+#check on number of servers
+if [ "$num_remote_servers" -eq 0 ]; then
+    echo ""
+    echo "Please, verify that you can ssh the targeted remote servers."
+    echo ""
+    exit
+fi
 
 #print
 if [ -n "${servers_family_list[@]}" ]; then
