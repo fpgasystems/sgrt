@@ -22,7 +22,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 get)
-                    COMPREPLY=($(compgen -W "bdf bus name ifconfig network platform serial workflow --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "bdf bus name ifconfig network platform serial servers workflow --help" -- ${cur}))
                     ;;
                 new)
                     COMPREPLY=($(compgen -W "coyote hip mpi vitis --help" -- ${cur}))
@@ -87,7 +87,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
                         ifconfig) 
-                            COMPREPLY=($(compgen -W " --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         network) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
@@ -97,6 +97,9 @@ _sgutil_completions()
                             ;;
                         serial) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            ;;
+                        servers) 
+                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         workflow) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))

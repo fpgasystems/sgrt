@@ -293,6 +293,7 @@
         - network
         - platform
         - serial
+        - servers
         - workflow
     #new
     - name: copying new scripts

@@ -316,6 +316,7 @@ get_help() {
     echo ""
     echo "ARGUMENTS:"
     echo "   ifconfig        - Retreives host networking information."
+    echo "   servers         - Retreives the list of servers you can use SSH to connect to."
     echo ""
     echo "   bdf             - Retreives FPGA/ACAP Bus Device Function."
     echo "   name            - Retreives FPGA/ACAP device names."
@@ -437,6 +438,20 @@ get_serial_help() {
     echo ""
     echo "FLAGS:"
     echo "   -d, --device    - FPGA/ACAP Device Index (according to sgutil examine)."
+    echo ""
+    echo "   -h, --help      - Help to use this command."
+    echo ""
+    exit 1
+}
+
+get_servers_help() {
+    echo ""
+    echo "${bold}sgutil get servers [--help]${normal}"
+    echo ""
+    echo "Retreives the list of servers you can use SSH to connect to."
+    echo ""
+    echo "FLAGS:"
+    echo "   This command has no flags."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -1015,6 +1030,10 @@ case "$command" in
       serial)
         #xilinx_build_check
         valid_flags="-h --help -d --device"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      servers)
+        valid_flags="-h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       workflow)
