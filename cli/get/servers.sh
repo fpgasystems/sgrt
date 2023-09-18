@@ -33,9 +33,11 @@ fi
 
 #print
 if [ -n "${servers_family_list[@]}" ]; then
+    #convert string to array
+    IFS=" " read -ra servers_family_list_array <<< "$servers_family_list"
     server_index=1
     echo ""
-    for server in "${servers_family_list[@]}"; do
+    for server in "${servers_family_list_array[@]}"; do
         echo "$server_index: $server"
         ((server_index++))
     done
