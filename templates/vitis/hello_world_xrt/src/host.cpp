@@ -32,12 +32,13 @@ int main(int argc, char** argv) {
     sda::utils::CmdLineParser parser;
 
     // Switches
-    parser.addSwitch("--xclbin_file", "-x", "input binary file string", "");
-    parser.addSwitch("--device_id", "-d", "device index", "0");
+    parser.addSwitch("--xclbin_file", "-x", "Specifies your XCLBIN.", "");
+    parser.addSwitch("--device_bdf", "-b", "device index", "");
     parser.parse(argc, argv);
 
     // Read settings
     std::string binaryFile = parser.value("xclbin_file");
+    std::string device_bdf = parser.value("device_bdf");
 
     if (argc < 3) {
         parser.printHelp();
@@ -59,7 +60,7 @@ int main(int argc, char** argv) {
     //check on number arguments/target
     if (argc >= 4 && argv[3] != nullptr && argv[3][0] != '\0') { 
         //target is hw
-        std::string device_bdf = argv[3]; 
+        //std::string device_bdf = argv[3]; 
         std::cout << "Opening the device: " << device_bdf << std::endl;
         device = xrt::device(device_bdf);
         XCL_EMULATION_MODE="hw";
