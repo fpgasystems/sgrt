@@ -32,14 +32,12 @@ int main(int argc, char** argv) {
     sda::utils::CmdLineParser parser;
 
     // Switches
-    //**************//"<Full Arg>",  "<Short Arg>", "<Description>", "<Default>"
     parser.addSwitch("--xclbin_file", "-x", "input binary file string", "");
     parser.addSwitch("--device_id", "-d", "device index", "0");
     parser.parse(argc, argv);
 
     // Read settings
     std::string binaryFile = parser.value("xclbin_file");
-    //int device_index = stoi(parser.value("device_id"));
 
     if (argc < 3) {
         parser.printHelp();
@@ -49,9 +47,6 @@ int main(int argc, char** argv) {
     // print config values as a test
     std::cout << "\nN: ";
     std::cout << std::to_string(N);
-
-    //assign default (sw_emu)
-    //auto device = xrt::device(device_index);
 
     // Declare the device outside the conditional blocks
     xrt::device device;
