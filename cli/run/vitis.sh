@@ -295,9 +295,9 @@ case "$target_name" in
         echo ""
         ;;
     hw)
-        echo "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -b $bdf" 
+        echo "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -b $bdf" #XCL_EMULATION_MODE=$target_name 
         echo ""
-        eval "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -b $bdf"
+        eval "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -b $bdf" #XCL_EMULATION_MODE=$target_name 
         echo ""
         ;;
 esac

@@ -53,6 +53,18 @@ int main(int argc, char** argv) {
     parser.addSwitch("--device_bdf", "-b", "<device_bdf>", "");
     parser.parse(argc, argv);
 
+    
+    // std::string XCL_EMULATION_MODE = sgrt::getenv("XCL_EMULATION_MODE");
+    const char* xclEmulationModeChar = std::getenv("XCL_EMULATION_MODE");
+    std::string XCL_EMULATION_MODE = "";
+    if (xclEmulationModeChar != nullptr) {
+        XCL_EMULATION_MODE = xclEmulationModeChar;
+
+        // ...
+    }
+
+    std::cout << "XCL_EMULATION_MODE is: " << XCL_EMULATION_MODE << std::endl;
+
     std::string binaryFile = parser.value("xclbin_file");
     std::string device_bdf = parser.value("device_bdf");
 
@@ -92,7 +104,7 @@ int main(int argc, char** argv) {
     std::cout << std::to_string(N);
 
     //define defaults
-    std::string XCL_EMULATION_MODE="sw_emu";
+    //std::string XCL_EMULATION_MODE="sw_emu";
     std::string current_uuid_str="00000000-0000-0000-0000-000000000000";
     std::string new_uuid_str="00000000-0000-0000-0000-000000000000";
     
@@ -102,7 +114,7 @@ int main(int argc, char** argv) {
         //std::string device_bdf = argv[3]; 
         std::cout << "Opening the device: " << device_bdf << std::endl;
         device = xrt::device(device_bdf);
-        XCL_EMULATION_MODE="hw";
+        //XCL_EMULATION_MODE="hw";
     } else {
         //target is sw_emu or hw_emu
         device = xrt::device(0);
@@ -117,7 +129,7 @@ int main(int argc, char** argv) {
     std::cout << "\nFetching xclbin: " << new_uuid_str << std::endl;
 
     //check on existing xclbin
-    if (XCL_EMULATION_MODE == "hw") {
+    if (XCL_EMULATION_MODE.empty()) { //if (XCL_EMULATION_MODE == "hw") {
         //read the xclbin loaded on the device
         auto current_uuid = device.get_xclbin_uuid();
         
