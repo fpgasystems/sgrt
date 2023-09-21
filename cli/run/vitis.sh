@@ -283,18 +283,16 @@ case "$target_name" in
         #echo ""
         #eval "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
         #echo ""
-        echo "make run TARGET=$target_name PLATFORM=$platform_name" 
-        echo ""
+        #echo "make run TARGET=$target_name PLATFORM=$platform_name" 
+        #echo ""
         #eval "make run TARGET=$target_name PLATFORM=$platform_name"
-        echo ""
-
-
+        
         echo "cp -rf ./_x.$target_name.$platform_name/emconfig.json ."
         echo "XCL_EMULATION_MODE=$target_name ./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
-
+        echo ""
         eval "cp -rf ./_x.$target_name.$platform_name/emconfig.json ."
         eval "XCL_EMULATION_MODE=$target_name ./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
-
+        echo ""
         ;;
     hw)
         echo "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -b $bdf" 
