@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
     if (argc < 3) {
         //parser.printHelp();
         //return EXIT_FAILURE;
-        std::cout << "Salimos!" << std::endl;
+        std::cout << "\n" << argv[0] << " requires at least the bitstream!\n" << std::endl;
         return 1;
     }
 
