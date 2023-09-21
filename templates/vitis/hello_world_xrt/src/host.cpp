@@ -32,6 +32,13 @@
 
 int main(int argc, char** argv) {
 
+    if (argc < 3) {
+        //parser.printHelp();
+        //return EXIT_FAILURE;
+        std::cout << "Salimos!" << std::endl;
+        return 1;
+    }
+
     // host objects
     sda::utils::CmdLineParser parser;
 
@@ -53,14 +60,13 @@ int main(int argc, char** argv) {
     std::cout << "binaryFile is: " << binaryFile << std::endl;
     std::cout << "device_bdf is: " << device_bdf << std::endl;
 
-
-    // check on xclbin_file
+    // check on xclbin_file =========> if not(isempty()) we need to verify if it is valid!!!!!!!!!!!!
     if (binaryFile.empty()) {
         std::cerr << "\n<xclbin_file> is empty.\n" << std::endl;
-        //return 1;
+        return 1;
     }
 
-    // check on device_bdf
+    // check on device_bdf ====> only for hardware !!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (device_bdf.empty()) {
         std::cerr << "\n<device_bdf> is empty.\n" << std::endl;
         //return 1;
