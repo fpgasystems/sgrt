@@ -50,6 +50,22 @@ int main(int argc, char** argv) {
     std::string device_bdf = parser.value("device_bdf");
 
 
+    std::cout << "binaryFile is: " << binaryFile << std::endl;
+    std::cout << "device_bdf is: " << device_bdf << std::endl;
+
+
+    // check on xclbin_file
+    if (binaryFile.empty()) {
+        std::cerr << "\n<xclbin_file> is empty.\n" << std::endl;
+        //return 1;
+    }
+
+    // check on device_bdf
+    if (device_bdf.empty()) {
+        std::cerr << "\n<device_bdf> is empty.\n" << std::endl;
+        //return 1;
+    }
+
 
 /*     // Switches
     parser.addSwitch("--xclbin_file", "-x", "Specifies your XCLBIN.", "");
