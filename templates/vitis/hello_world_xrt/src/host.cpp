@@ -14,6 +14,7 @@
 * under the License.
 */
 
+// host includes
 #include "cmdlineparser.h"
 #include <iostream>
 #include <cstring>
@@ -22,23 +23,42 @@
 #include "experimental/xrt_bo.h"
 #include "experimental/xrt_device.h"
 #include "experimental/xrt_kernel.h"
+
+// SGRT includes
 #include "../global_params.hpp"
 #include "../configs/config_000.hpp" // config_000.hpp is overwritten with the configuration you select
 
 //#define DATA_SIZE 4096
 
 int main(int argc, char** argv) {
-    // Command Line Parser
+
+    // host objects
     sda::utils::CmdLineParser parser;
 
-    // Switches
+    // XRT objects
+    xrt::device device;
+
+    // SGRT objects
+    // ...
+
+    // read parameters
+    parser.addSwitch("--xclbin_file", "-x", "<xclbin_file>", "");
+    parser.addSwitch("--device_bdf", "-b", "<device_bdf>", "");
+    parser.parse(argc, argv);
+
+    std::string binaryFile = parser.value("xclbin_file");
+    std::string device_bdf = parser.value("device_bdf");
+
+
+
+/*     // Switches
     parser.addSwitch("--xclbin_file", "-x", "Specifies your XCLBIN.", "");
     parser.addSwitch("--device_bdf", "-b", "device index", "");
     parser.parse(argc, argv);
 
     // Read settings
     std::string binaryFile = parser.value("xclbin_file");
-    std::string device_bdf = parser.value("device_bdf");
+    std::string device_bdf = parser.value("device_bdf"); */
 
     if (argc < 3) {
         parser.printHelp();
@@ -48,9 +68,6 @@ int main(int argc, char** argv) {
     // print config values as a test
     std::cout << "\nN: ";
     std::cout << std::to_string(N);
-
-    // Declare the device outside the conditional blocks
-    xrt::device device;
 
     //define defaults
     std::string XCL_EMULATION_MODE="sw_emu";
