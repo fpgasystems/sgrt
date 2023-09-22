@@ -63,12 +63,10 @@ int main(int argc, char** argv) {
         // ...
     }
 
-    std::cout << "XCL_EMULATION_MODE is: " << XCL_EMULATION_MODE << std::endl;
-
     std::string binaryFile = parser.value("xclbin_file");
     std::string device_bdf = parser.value("device_bdf");
 
-
+    std::cout << "\nXCL_EMULATION_MODE is: " << XCL_EMULATION_MODE << std::endl;
     std::cout << "binaryFile is: " << binaryFile << std::endl;
     std::cout << "device_bdf is: " << device_bdf << std::endl;
 
@@ -78,8 +76,8 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // check on device_bdf ====> only for hardware !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    if (device_bdf.empty()) {
+    // check on device_bdf (XCL_EMULATION_MODE means target = hw)
+    if (XCL_EMULATION_MODE.empty() && device_bdf.empty()) {
         std::cerr << "\n<device_bdf> is empty.\n" << std::endl;
         //return 1;
     }
