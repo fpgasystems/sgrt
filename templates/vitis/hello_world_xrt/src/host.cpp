@@ -33,8 +33,6 @@
 int main(int argc, char** argv) {
 
     if (argc < 3) {
-        //parser.printHelp();
-        //return EXIT_FAILURE;
         std::cout << "\n" << argv[0] << " requires at least the bitstream!\n" << std::endl;
         return 1;
     }
@@ -82,21 +80,6 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-
-/*     // Switches
-    parser.addSwitch("--xclbin_file", "-x", "Specifies your XCLBIN.", "");
-    parser.addSwitch("--device_bdf", "-b", "device index", "");
-    parser.parse(argc, argv);
-
-    // Read settings
-    std::string binaryFile = parser.value("xclbin_file");
-    std::string device_bdf = parser.value("device_bdf"); */
-
-    if (argc < 3) {
-        parser.printHelp();
-        return EXIT_FAILURE;
-    }
-
     // print config values as a test
     std::cout << "\nN: ";
     std::cout << std::to_string(N);
@@ -105,18 +88,6 @@ int main(int argc, char** argv) {
     //std::string XCL_EMULATION_MODE="sw_emu";
     std::string current_uuid_str="00000000-0000-0000-0000-000000000000";
     std::string new_uuid_str="00000000-0000-0000-0000-000000000000";
-    
-    //check on number arguments/target
-    //if (argc >= 4 && argv[3] != nullptr && argv[3][0] != '\0') { // per aci!!!!!!! Evalue si XCL_EMULATION_MODE es sw_emu o hw_emu y si no seria hw :-)
-    //    //target is hw
-    //    //std::string device_bdf = argv[3]; 
-    //    std::cout << "Opening the device: " << device_bdf << std::endl;
-    //    device = xrt::device(device_bdf);
-    //    //XCL_EMULATION_MODE="hw";
-    //} else {
-    //    //target is sw_emu or hw_emu
-    //    device = xrt::device(0);
-    //}
 
     // open device
     if (!XCL_EMULATION_MODE.empty()) {
