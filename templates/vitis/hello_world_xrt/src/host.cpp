@@ -74,9 +74,18 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // check on device_bdf (XCL_EMULATION_MODE means target = hw)
-    if (XCL_EMULATION_MODE.empty() && device_bdf.empty()) {
-        std::cerr << "\n<device_bdf> is empty.\n" << std::endl;
+    // check on device_bdf (an empty XCL_EMULATION_MODE means target = hw)
+    //if (XCL_EMULATION_MODE.empty() && device_bdf.empty()) {
+    //    std::cerr << "\n<device_bdf> is empty.\n" << std::endl;
+    //    return 1;
+    //}
+
+    // forbiden combinations
+    if (!XCL_EMULATION_MODE.empty() && !device_bdf.empty()) {
+        std::cerr << "\n<device_bdf> is not required for emulation modes.\n" << std::endl;
+        return 1;
+    } else if (XCL_EMULATION_MODE.empty() && device_bdf.empty()) {
+        std::cerr << "\n<device_bdf> is required for hw targets.\n" << std::endl;
         return 1;
     }
 
