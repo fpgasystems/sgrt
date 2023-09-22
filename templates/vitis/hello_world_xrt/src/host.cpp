@@ -109,15 +109,24 @@ int main(int argc, char** argv) {
     std::string new_uuid_str="00000000-0000-0000-0000-000000000000";
     
     //check on number arguments/target
-    if (argc >= 4 && argv[3] != nullptr && argv[3][0] != '\0') { 
-        //target is hw
-        //std::string device_bdf = argv[3]; 
-        std::cout << "Opening the device: " << device_bdf << std::endl;
-        device = xrt::device(device_bdf);
-        //XCL_EMULATION_MODE="hw";
-    } else {
+    //if (argc >= 4 && argv[3] != nullptr && argv[3][0] != '\0') { // per aci!!!!!!! Evalue si XCL_EMULATION_MODE es sw_emu o hw_emu y si no seria hw :-)
+    //    //target is hw
+    //    //std::string device_bdf = argv[3]; 
+    //    std::cout << "Opening the device: " << device_bdf << std::endl;
+    //    device = xrt::device(device_bdf);
+    //    //XCL_EMULATION_MODE="hw";
+    //} else {
+    //    //target is sw_emu or hw_emu
+    //    device = xrt::device(0);
+    //}
+
+    // open device
+    if (!XCL_EMULATION_MODE.empty()) {
         //target is sw_emu or hw_emu
         device = xrt::device(0);
+    } else {
+        std::cout << "\nOpening the device: " << device_bdf << "\n" << std::endl;
+        device = xrt::device(device_bdf);
     }
 
     //get new_uuid_str
