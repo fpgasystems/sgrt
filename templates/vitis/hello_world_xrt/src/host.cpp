@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
     // check on device_bdf (XCL_EMULATION_MODE means target = hw)
     if (XCL_EMULATION_MODE.empty() && device_bdf.empty()) {
         std::cerr << "\n<device_bdf> is empty.\n" << std::endl;
-        //return 1;
+        return 1;
     }
 
 
