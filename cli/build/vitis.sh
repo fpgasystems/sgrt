@@ -12,6 +12,9 @@ XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vitis"
 
+#set environmental variables
+#export API_PATH="$(dirname "$CLI_PATH")/api"
+
 #get hostname
 url="${HOSTNAME}"
 hostname="${url%%.*}"
@@ -209,9 +212,9 @@ if ! [ -d "$APP_BUILD_DIR" ]; then
     export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
     echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
     echo ""
-    echo "make all TARGET=$target_name PLATFORM=$platform_name" 
+    echo "make all TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH" 
     echo ""
-    eval "make all TARGET=$target_name PLATFORM=$platform_name"
+    eval "make all TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH"
     echo ""        
 
     #send email at the end

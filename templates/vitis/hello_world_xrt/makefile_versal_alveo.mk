@@ -69,8 +69,8 @@ LDFLAGS += -lrt -lstdc++
 LDFLAGS += -luuid -lxrt_coreutil
 
 # SGRT
-API_PATH = /opt/sgrt
-HOST_SRCS += $(wildcard $(API_PATH)/api/host/*.cpp)
+API_PATH ?= /opt/sgrt/api #this a default value if not provided
+HOST_SRCS += $(wildcard $(API_PATH)/host/*.cpp)
 
 ############################## Setting up Kernel Variables ##############################
 # Kernel compiler global settings
