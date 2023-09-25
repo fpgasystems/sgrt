@@ -26,7 +26,10 @@
 
 // SGRT includes
 //#include "/opt/sgrt/api/host.hpp"
-#include "/opt/sgrt/api/host/get_device.hpp"
+//#include "/opt/sgrt/api/host/get_device.hpp"
+#include "/opt/sgrt/api/host.hpp"
+
+// project includes
 #include "../global_params.hpp"
 #include "../configs/config_000.hpp" // config_000.hpp is overwritten with the configuration you select
 
