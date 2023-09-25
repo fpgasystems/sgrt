@@ -113,6 +113,11 @@ LDFLAGS += -luuid -lxrt_coreutil
 ifneq ($(EMU_PS), X86)
 LDFLAGS += --sysroot=$(SYSROOT)
 endif
+
+# SGRT
+API_PATH = /opt/sgrt
+HOST_SRCS += $(wildcard $(API_PATH)/api/host/*.cpp)
+
 ############################## Setting up Kernel Variables ##############################
 # Kernel compiler global settings
 VPP_FLAGS += --save-temps 
