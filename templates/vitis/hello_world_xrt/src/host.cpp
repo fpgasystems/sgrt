@@ -99,10 +99,11 @@ int main(int argc, char** argv) {
     std::string new_uuid_str="00000000-0000-0000-0000-000000000000";
 
     // open device
-    if (!XCL_EMULATION_MODE.empty()) {
-        //target is sw_emu or hw_emu
+    if (device_bdf.empty()) { //!XCL_EMULATION_MODE.empty()
+        // target is sw_emu or hw_emu
         device = xrt::device(0);
     } else {
+        // target is hw
         std::cout << "\nOpening the device: " << device_bdf << "\n" << std::endl;
         device = xrt::device(device_bdf);
     }
