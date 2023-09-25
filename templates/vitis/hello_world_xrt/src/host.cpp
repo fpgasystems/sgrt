@@ -25,25 +25,27 @@
 #include "experimental/xrt_kernel.h"
 
 // SGRT includes
+//#include "/opt/sgrt/api/host.hpp"
+#include "/opt/sgrt/api/host/get_device.hpp"
 #include "../global_params.hpp"
 #include "../configs/config_000.hpp" // config_000.hpp is overwritten with the configuration you select
 
 //#define DATA_SIZE 4096
 
-xrt::device get_device(const std::string& device_bdf) {
-    
-    xrt::device device;
-
-    if (device_bdf.empty()) {
-        device = xrt::device(0);
-    } else {
-        std::cout << "\nOpening the device: " << device_bdf << "\n" << std::endl;
-        device = xrt::device(device_bdf);
-    }
-    
-    return device;
-
-}
+//xrt::device get_device(const std::string& device_bdf) {
+//    
+//    xrt::device device;
+//
+//    if (device_bdf.empty()) {
+//        device = xrt::device(0);
+//    } else {
+//        std::cout << "\nOpening the device: " << device_bdf << "\n" << std::endl;
+//        device = xrt::device(device_bdf);
+//    }
+//    
+//    return device;
+//
+//}
 
 int main(int argc, char** argv) {
 
