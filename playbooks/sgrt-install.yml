@@ -22,9 +22,11 @@
     cli_path: "{{ sgrt_base_path }}/cli"
     include_path: "{{ sgrt_base_path }}/include"
     cli_name: sgutil
-    #installation control (all means we attempt to create and copy all directories, files, and scripts)
+    #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
-    #scripts
+    #api functions
+    host: true
+    #cli scripts
     build: false
     common: false
     enable: false
@@ -36,13 +38,13 @@
     run: false
     set: false
     sgutil: false
-    templates: false
+    templates: true
     validate: false
-    #workflows
+    #cli workflows
     coyote: false
     hip: false
     mpi: false
-    vitis: false
+    vitis: true
   tasks:
 
     #creating directories
@@ -57,6 +59,7 @@
         - "{{ sgrt_base_path }}/templates"
         #api
         - "{{ api_path }}"
+        - "{{ api_path }}/host"
         #cli  
         - "{{ cli_path }}"
         - "{{ cli_path }}/build"
@@ -72,6 +75,27 @@
         #include
         - "{{ include_path }}"
 
+    #api
+    #host
+    - name: copying libraries
+      copy:
+        src: "../api/{{ item }}"
+        dest: "{{ api_path }}/{{ item }}"
+        mode: "0755"
+      when: all or host
+      loop:
+        - host.hpp
+    - name: copying host functions
+      copy:
+        src: "../api/host/{{ item }}"
+        dest: "{{ api_path }}/host/{{ item }}"
+        mode: "0755"
+      when: all or host
+      loop:
+        - get_device.hpp
+        - get_device.cpp
+        
+    #cli
     #copying files (when all/only if they do not exist on the remote)
     #constants
     - name: checking constants
