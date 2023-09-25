@@ -30,6 +30,21 @@
 
 //#define DATA_SIZE 4096
 
+xrt::device get_device(const std::string& device_bdf) {
+    
+    xrt::device device;
+
+    if (device_bdf.empty()) {
+        device = xrt::device(0);
+    } else {
+        std::cout << "\nOpening the device: " << device_bdf << "\n" << std::endl;
+        device = xrt::device(device_bdf);
+    }
+    
+    return device;
+
+}
+
 int main(int argc, char** argv) {
 
     if (argc < 3) {
@@ -99,14 +114,15 @@ int main(int argc, char** argv) {
     std::string new_uuid_str="00000000-0000-0000-0000-000000000000";
 
     // open device
-    if (device_bdf.empty()) { //!XCL_EMULATION_MODE.empty()
-        // target is sw_emu or hw_emu
-        device = xrt::device(0);
-    } else {
-        // target is hw
-        std::cout << "\nOpening the device: " << device_bdf << "\n" << std::endl;
-        device = xrt::device(device_bdf);
-    }
+    //if (device_bdf.empty()) { //!XCL_EMULATION_MODE.empty()
+    //    // target is sw_emu or hw_emu
+    //    device = xrt::device(0);
+    //} else {
+    //    // target is hw
+    //    std::cout << "\nOpening the device: " << device_bdf << "\n" << std::endl;
+    //    device = xrt::device(device_bdf);
+    //}
+    device = get_device(device_bdf);
 
     //get new_uuid_str
     xrt::xclbin new_xclbin = xrt::xclbin(binaryFile);
