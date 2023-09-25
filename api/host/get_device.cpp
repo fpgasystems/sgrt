@@ -1,6 +1,6 @@
 #include "get_device.hpp" // Include the header file
 
-xrt::device get_device(const std::string& device_bdf) {
+xrt::device host::get_device(const std::string& device_bdf) {
     
     xrt::device device;
 
