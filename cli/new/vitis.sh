@@ -99,9 +99,9 @@ rm $VITIS_DIR/master.zip
 SGRT_PATH=$(dirname "$CLI_PATH")
 cp -rf $SGRT_PATH/templates/$WORKFLOW/$TEMPLATE_NAME/* $DIR
 # we only need makefile_us_alveo.mk (for alveos) and makefile_versal_alveo.mk (for versal)
-rm $DIR/makefile_versal_ps.mk
+#rm $DIR/makefile_versal_ps.mk
 #rm $DIR/makefile_zynq7000.mk
-rm $DIR/makefile_zynqmp.mk
+#rm $DIR/makefile_zynqmp.mk
 # adjust Makefile
 sed -i "s/$TEMPLATE_NAME/$project_name/" $DIR/Makefile
 sed -i "s/$TEMPLATE_NAME/$project_name/" $DIR/makefile_us_alveo.mk
