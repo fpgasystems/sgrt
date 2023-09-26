@@ -11,8 +11,15 @@
 
 ## host
 
+* [open](#open)
+* [program](#program)
+
 ### open
 bla bla bla
-* ```sgrt::device = open()```
+* ```sgrt::device device = open()```
+
+### program
+bla bla bla
+* ```int p = program(sgrt::device)```
 
 ## sgutil
