@@ -6,4 +6,13 @@
 
 ## API
 
-Coming soon!
+* [host](#host)
+* [sgutil](#sgutil)
+
+## host
+
+### open
+bla bla bla
+* ```sgrt::device = open()```
+
+## sgutil
