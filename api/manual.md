@@ -16,10 +16,10 @@
 
 ### open
 bla bla bla
-* ```sgrt::device device = open()```
+* ```sgrt::device device = host::open()```
 
 ### program
 bla bla bla
-* ```int p = program(sgrt::device)```
+* ```int p = host::program(sgrt::device)```
 
 ## sgutil
