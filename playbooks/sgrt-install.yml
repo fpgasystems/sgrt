@@ -92,8 +92,8 @@
         mode: "0755"
       when: all or host
       loop:
-        - get_device.hpp
-        - get_device.cpp
+        - open.hpp
+        - open.cpp
         
     #cli
     #copying files (when all/only if they do not exist on the remote)

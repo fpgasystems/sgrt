@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
     std::string new_uuid_str="00000000-0000-0000-0000-000000000000";
 
     // open device
-    device = host::get_device(device_bdf);
+    device = host::open(device_bdf);
 
     //get new_uuid_str
     xrt::xclbin new_xclbin = xrt::xclbin(binaryFile);
