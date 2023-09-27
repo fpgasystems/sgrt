@@ -19,12 +19,13 @@ SGRT comprises a command-line interpreter (CLI) and an API. While the [CLI](./cl
 ## Sections
 * [API](./api/manual.md#api)
 * [CLI](./cli/manual.md#cli)
+* [Citation](#citation)
+* [Disclaimer](#disclaimer)
 * [Examples](./examples.md#examples)
 * [Features](./features.md#features)
 * [Installation](https://github.com/fpgasystems/sgrt_install#--systems-group-runtime-installation)
-* [Disclaimer](#disclaimer)
-* [Citation](#citation)
 * [License](#license)
+* [Programming model](./programming-model.md)
 
 # Releases
 
