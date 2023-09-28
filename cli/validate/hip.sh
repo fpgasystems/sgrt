@@ -93,7 +93,8 @@ if ! [ -d "$VALIDATION_DIR" ]; then
 fi
 
 #copy and compile
-cp -rf $CLI_PATH/templates/$WORKFLOW/hello_world/* $VALIDATION_DIR
+SGRT_PATH=$(dirname "$CLI_PATH")
+cp -rf $SGRT_PATH/templates/$WORKFLOW/hello_world/* $VALIDATION_DIR
 
 #create config
 cp $VALIDATION_DIR/configs/config_000.hpp $VALIDATION_DIR/configs/config_001.hpp
