@@ -48,10 +48,10 @@ int main(int argc, char** argv) {
     // SGRT objects
     // ...
 
-    device::vitis myDevice;
+    //device::vitis myDevice;
 
     // Print the device_index value
-    std::cout << "Device Index: " << myDevice.device_index << std::endl;
+    //std::cout << "Device Index: " << myDevice.device_index << std::endl;
     
     // Now you can use myDevice and initialize its members as needed
     //myDevice.device_index = 1;
@@ -105,9 +105,9 @@ int main(int argc, char** argv) {
     std::string new_uuid_str="00000000-0000-0000-0000-000000000000";
 
     // open device
-    device = host::open(device_bdf);
-    //device::vitis fpga = host::open(device_bdf);
-    //device = fpga.vitis;
+    //device = host::open(device_bdf);
+    device::vitis fpga = host::open(device_bdf);
+    device = fpga.xrtDevice;
 
     //get new_uuid_str
     xrt::xclbin new_xclbin = xrt::xclbin(binaryFile);

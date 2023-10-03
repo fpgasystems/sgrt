@@ -1,7 +1,7 @@
 #include "open.hpp" // Include the header file
 #include "../device.hpp"
 
-xrt::device host::open(const std::string& device_bdf) {
+device::vitis host::open(const std::string& device_bdf) {
     
     xrt::device xrt_device;
     device::vitis device;
@@ -17,6 +17,6 @@ xrt::device host::open(const std::string& device_bdf) {
     device.serial_number = "12345";
     device.xrtDevice = xrt_device;
     
-    return xrt_device;
+    return device;
 
 }
