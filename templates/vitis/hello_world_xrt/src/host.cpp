@@ -26,6 +26,7 @@
 
 // SGRT includes
 #include "/opt/sgrt/api/host.hpp"
+#include "/opt/sgrt/api/device.hpp"
 
 // project includes
 #include "../global_params.hpp"
@@ -46,6 +47,13 @@ int main(int argc, char** argv) {
 
     // SGRT objects
     // ...
+
+    device::vitis myDevice;
+    
+    // Now you can use myDevice and initialize its members as needed
+    myDevice.device_index = 1;
+    myDevice.serial_number = "12345";
+    myDevice.xrt_device = device;
 
     // read parameters
     parser.addSwitch("--xclbin_file", "-x", "<xclbin_file>", "");
@@ -95,6 +103,8 @@ int main(int argc, char** argv) {
 
     // open device
     device = host::open(device_bdf);
+    //device::vitis fpga = host::open(device_bdf);
+    //device = fpga.vitis;
 
     //get new_uuid_str
     xrt::xclbin new_xclbin = xrt::xclbin(binaryFile);
