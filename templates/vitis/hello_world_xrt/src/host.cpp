@@ -51,9 +51,9 @@ int main(int argc, char** argv) {
     device::vitis myDevice;
     
     // Now you can use myDevice and initialize its members as needed
-    myDevice.device_index = 1;
-    myDevice.serial_number = "12345";
-    myDevice.xrt_device = device;
+    //myDevice.device_index = 1;
+    //myDevice.serial_number = "12345";
+    //myDevice.xrt_device = device;
 
     // read parameters
     parser.addSwitch("--xclbin_file", "-x", "<xclbin_file>", "");

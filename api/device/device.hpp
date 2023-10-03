@@ -10,7 +10,7 @@
 
 namespace device {
     struct vitis {
-        xrt::device xrt_device; // Use xrt::device as a member
+        xrt::device vitis; // Use xrt::device as a member
         int device_index; // Example member
         std::string serial_number;
         // Add more members as needed
