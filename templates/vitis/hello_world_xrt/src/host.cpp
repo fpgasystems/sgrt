@@ -49,6 +49,9 @@ int main(int argc, char** argv) {
     // ...
 
     device::vitis myDevice;
+
+    // Print the device_index value
+    std::cout << "Device Index: " << myDevice.device_index << std::endl;
     
     // Now you can use myDevice and initialize its members as needed
     //myDevice.device_index = 1;

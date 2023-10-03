@@ -13,7 +13,7 @@ xrt::device host::open(const std::string& device_bdf) {
         xrt_device = xrt::device(device_bdf);
     }
 
-    device.device_index = 1;
+    device.device_index = "11";
     device.serial_number = "12345";
     device.vitis = xrt_device;
     
