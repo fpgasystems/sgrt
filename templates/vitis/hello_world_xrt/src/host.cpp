@@ -109,6 +109,8 @@ int main(int argc, char** argv) {
     device::vitis fpga = host::open(device_bdf);
     device = fpga.xrtDevice;
 
+    std::cout << "\nBDF: " << fpga.bdf << std::endl;
+    std::cout << "\nDevice name: " << fpga.device_name << std::endl;
     std::cout << "\nSerial number: " << fpga.serial_number << std::endl;
 
     //get new_uuid_str
