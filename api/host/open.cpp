@@ -2,6 +2,16 @@
 #include "../device.hpp"
 #include "../common/sgutil_get.hpp"
 
+std::string replace_string(const std::string& input, const std::string& target, const std::string& replacement) {
+    std::string result = input;
+    size_t pos = result.find(target);
+    while (pos != std::string::npos) {
+        result.replace(pos, target.length(), replacement);
+        pos = result.find(target, pos + replacement.length());
+    }
+    return result;
+}
+
 std::string get_string(const std::string& input, int position) {
     size_t slashPos = input.find('/');
     if (slashPos != std::string::npos) {
@@ -24,7 +34,7 @@ std::string get_string(const std::string& input, int position) {
 device::vitis host::open(const std::string& device_bdf) {
 
     // sgutil_get constants 
-    int BDF = 1;
+    int UPSTREAM_PORT = 1;
     int DEVICE_NAME = 5;
     int SERIAL_NUMBER = 6;
     int IP = 7;
@@ -37,7 +47,7 @@ device::vitis host::open(const std::string& device_bdf) {
 
     // sgutil_get
     device.device_index = 2;
-    device.bdf = sgutil_get(device.device_index, BDF);
+    device.bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
     device.device_name = sgutil_get(device.device_index, DEVICE_NAME);
     device.serial_number = sgutil_get(device.device_index, SERIAL_NUMBER);
     device.IP0 = get_string(sgutil_get(device.device_index, IP), 0);
