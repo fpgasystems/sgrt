@@ -61,7 +61,7 @@ device::vitis host::open(const std::string& device_index) {
         std::cout << "\nOpening device: " << device_index << "\n" << std::endl;
         device.device_index = std::stoi(device_index);
         bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
-        xrt_device = xrt::device("a1:00.1");
+        xrt_device = xrt::device(bdf);
     }
 
     // get bdf
