@@ -51,17 +51,21 @@ device::vitis host::open(const std::string& device_index) {
     // get device_index
     //device.device_index = 1;
 
+    
+    std::string bdf;
     if (device_index.empty()) {
         device.device_index = 1;
+        bdf = "";
         xrt_device = xrt::device(0);
     } else {
         std::cout << "\nOpening device: " << device_index << "\n" << std::endl;
         device.device_index = std::stoi(device_index);
+        bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
         xrt_device = xrt::device("a1:00.1");
     }
 
     // get bdf
-    std::string bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1"); // per aciß
+    //std::string bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1"); // per aciß
     std::cout << "\nbdf = " << bdf << "\n" << std::endl;
 
     // sgutil_get
