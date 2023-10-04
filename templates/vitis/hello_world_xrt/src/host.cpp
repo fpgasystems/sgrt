@@ -109,7 +109,7 @@ int main(int argc, char** argv) {
     device::vitis fpga = host::open(device_bdf);
     device = fpga.xrtDevice;
 
-    std::cout << "Serial number: " << fpga.serial_number << std::endl;
+    std::cout << "\nSerial number: " << fpga.serial_number << std::endl;
 
     //get new_uuid_str
     xrt::xclbin new_xclbin = xrt::xclbin(binaryFile);
