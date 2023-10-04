@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
 
     // read parameters
     parser.addSwitch("--xclbin_file", "-x", "<xclbin_file>", "");
-    parser.addSwitch("--device_bdf", "-b", "<device_bdf>", "");
+    parser.addSwitch("--device_index", "-d", "<device_index>", "");
     parser.parse(argc, argv);
 
     
@@ -74,11 +74,11 @@ int main(int argc, char** argv) {
     }
 
     std::string binaryFile = parser.value("xclbin_file");
-    std::string device_bdf = parser.value("device_bdf");
+    std::string device_index = parser.value("device_index");
 
     std::cout << "\nXCL_EMULATION_MODE is: " << XCL_EMULATION_MODE << std::endl;
     std::cout << "binaryFile is: " << binaryFile << std::endl;
-    std::cout << "device_bdf is: " << device_bdf << std::endl;
+    std::cout << "device_index is: " << device_index << std::endl;
 
     // check on xclbin_file =========> if not(isempty()) we need to verify if it is valid!!!!!!!!!!!!
     if (binaryFile.empty()) {
@@ -87,11 +87,11 @@ int main(int argc, char** argv) {
     }
 
     // forbiden combinations
-    if (!XCL_EMULATION_MODE.empty() && !device_bdf.empty()) {
-        std::cerr << "\n<device_bdf> is not required for emulation modes.\n" << std::endl;
+    if (!XCL_EMULATION_MODE.empty() && !device_index.empty()) {
+        std::cerr << "\n<device_index> is not required for emulation modes.\n" << std::endl;
         return 1;
-    } else if (XCL_EMULATION_MODE.empty() && device_bdf.empty()) {
-        std::cerr << "\n<device_bdf> is required for hw targets.\n" << std::endl;
+    } else if (XCL_EMULATION_MODE.empty() && device_index.empty()) {
+        std::cerr << "\n<device_index> is required for hw targets.\n" << std::endl;
         return 1;
     }
 
@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
 
     // open device
     //device = host::open(device_bdf);
-    device::vitis fpga = host::open(device_bdf);
+    device::vitis fpga = host::open(device_index);
     device = fpga.xrtDevice;
 
     std::cout << "\nBDF: " << fpga.bdf << std::endl;

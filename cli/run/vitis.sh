@@ -265,8 +265,8 @@ cat $DIR/configs/config_000.hpp
 echo ""
 
 #get bdf
-upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
-bdf="${upstream_port::-1}1"
+#upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
+#bdf="${upstream_port::-1}1"
 
 #execution
 cd $DIR
@@ -295,9 +295,9 @@ case "$target_name" in
         echo ""
         ;;
     hw)
-        echo "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -b $bdf" #XCL_EMULATION_MODE=$target_name 
+        echo "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -d $device_index" #XCL_EMULATION_MODE=$target_name 
         echo ""
-        eval "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -b $bdf" #XCL_EMULATION_MODE=$target_name 
+        eval "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -d $device_index" #XCL_EMULATION_MODE=$target_name 
         echo ""
         ;;
 esac
