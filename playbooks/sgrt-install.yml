@@ -24,9 +24,10 @@
     cli_name: sgutil
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
-    #api functions
-    host: true
-    #cli scripts
+    #api installation
+    api: true #true
+    #cli installation
+    #scripts
     build: false
     common: false
     enable: false
@@ -38,13 +39,13 @@
     run: false
     set: false
     sgutil: false
-    templates: true
+    templates: true #true
     validate: false
-    #cli workflows
+    #workflows
     coyote: false
     hip: false
     mpi: false
-    vitis: true
+    vitis: true #true
   tasks:
 
     #creating directories
@@ -59,6 +60,8 @@
         - "{{ sgrt_base_path }}/templates"
         #api
         - "{{ api_path }}"
+        - "{{ api_path }}/common"
+        - "{{ api_path }}/device"
         - "{{ api_path }}/host"
         #cli  
         - "{{ cli_path }}"
@@ -76,21 +79,41 @@
         - "{{ include_path }}"
 
     #api
-    #host
-    - name: copying libraries
+    - name: copying includes
       copy:
         src: "../api/{{ item }}"
         dest: "{{ api_path }}/{{ item }}"
         mode: "0755"
-      when: all or host
+      when: all or api
       loop:
+        - device.hpp
         - host.hpp
+    #common    
+    - name: copying common functions
+      copy:
+        src: "../api/common/{{ item }}"
+        dest: "{{ api_path }}/common/{{ item }}"
+        mode: "0755"
+      when: all or api
+      loop:
+        - sgutil_get.hpp
+        - sgutil_get.cpp
+    #device    
+    - name: copying device functions
+      copy:
+        src: "../api/device/{{ item }}"
+        dest: "{{ api_path }}/device/{{ item }}"
+        mode: "0755"
+      when: all or api
+      loop:
+        - device.hpp
+    #host
     - name: copying host functions
       copy:
         src: "../api/host/{{ item }}"
         dest: "{{ api_path }}/host/{{ item }}"
         mode: "0755"
-      when: all or host
+      when: all or api
       loop:
         - open.hpp
         - open.cpp
