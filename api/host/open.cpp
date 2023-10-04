@@ -45,9 +45,16 @@ device::vitis host::open(const std::string& device_bdf) {
     xrt::device xrt_device;
     device::vitis device;
 
+    // get device_index
+    device.device_index = 1;
+    
+    // get bdf
+    std::string bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1"); // per aciß
+    std::cout << "\nbdf = " << bdf << "\n" << std::endl;
+
     // sgutil_get
-    device.device_index = 2;
-    device.bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
+    //device.device_index = 1;
+    device.bdf = bdf; //replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
     device.device_name = sgutil_get(device.device_index, DEVICE_NAME);
     device.serial_number = sgutil_get(device.device_index, SERIAL_NUMBER);
     device.IP0 = get_string(sgutil_get(device.device_index, IP), 0);
@@ -55,6 +62,8 @@ device::vitis host::open(const std::string& device_bdf) {
     device.MAC0 = get_string(sgutil_get(device.device_index, MAC), 0);
     device.MAC1 = get_string(sgutil_get(device.device_index, MAC), 1);
     device.platform = sgutil_get(device.device_index, PLATFORM);
+
+    //std::string bdf = device.bdf;
     
     // XRT instance
     if (device_bdf.empty()) {
