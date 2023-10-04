@@ -6,7 +6,7 @@
 #include "../device.hpp" // Include the device.hpp header
 
 namespace host {
-    device::vitis open(const std::string& device_bdf);
+    device::vitis open(const std::string& device_index);
 }
 
 #endif // HOST_HPP

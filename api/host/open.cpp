@@ -31,7 +31,7 @@ std::string get_string(const std::string& input, int position) {
     }
 }
 
-device::vitis host::open(const std::string& device_bdf) {
+device::vitis host::open(const std::string& device_index) {
 
     // sgutil_get constants 
     int UPSTREAM_PORT = 1;
@@ -51,13 +51,13 @@ device::vitis host::open(const std::string& device_bdf) {
     // get device_index
     //device.device_index = 1;
 
-    if (device_bdf.empty()) {
+    if (device_index.empty()) {
         //device.device_index = 1;
         xrt_device = xrt::device(0);
     } else {
-        std::cout << "\nOpening the device: " << device_bdf << "\n" << std::endl;
+        std::cout << "\nOpening device: " << device_index << "\n" << std::endl;
         //device.device_index = 1; // seria str_to_int(device_index)
-        xrt_device = xrt::device(device_bdf);
+        xrt_device = xrt::device("a1:00.1");
     }
 
     // get bdf
