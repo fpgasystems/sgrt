@@ -1,17 +1,16 @@
 #ifndef DEVICE_HPP
 #define DEVICE_HPP
 
-#include <string> // Include <string> for std::string
+#include <string> 
 
 // XRT includes
-//#include "experimental/xrt_bo.h"
-//#include "experimental/xrt_device.h"
-#include <xrt/xrt_device.h> // Include the appropriate header for xrt::device
+#include <xrt/xrt_device.h>
 
 namespace device {
     struct vitis {
+        
         // sgutil
-        int device_index; // Example member
+        int device_index;
         std::string bdf;
         std::string device_name;
         std::string serial_number;
@@ -20,7 +19,6 @@ namespace device {
         std::string MAC0;
         std::string MAC1;
         std::string platform;
-        // Add more members as needed
 
         // xrt
         xrt::device xrtDevice; // Use xrt::device as a member
