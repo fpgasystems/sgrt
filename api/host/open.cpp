@@ -8,6 +8,9 @@ device::vitis host::open(const std::string& device_bdf) {
     int BDF = 1;
     int DEVICE_NAME = 5;
     int SERIAL_NUMBER = 6;
+    int IP = 7;
+    int MAC = 8;
+    int PLATFORM = 9;
     
     // XRT and SGRT objects
     xrt::device xrt_device;
@@ -18,11 +21,11 @@ device::vitis host::open(const std::string& device_bdf) {
     device.bdf = sgutil_get(device.device_index, BDF);
     device.device_name = sgutil_get(device.device_index, DEVICE_NAME);
     device.serial_number = sgutil_get(device.device_index, SERIAL_NUMBER);
-    device.IP0 = "";
+    device.IP0 = sgutil_get(device.device_index, IP);
     device.IP1 = "";
-    device.MAC0 = "";
+    device.MAC0 = sgutil_get(device.device_index, IP);
     device.MAC1 = "";
-    device.platform = "";
+    device.platform = sgutil_get(device.device_index, PLATFORM);
     
     // XRT instance
     if (device_bdf.empty()) {

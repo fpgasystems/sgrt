@@ -110,8 +110,13 @@ int main(int argc, char** argv) {
     device = fpga.xrtDevice;
 
     std::cout << "\nBDF: " << fpga.bdf << std::endl;
-    std::cout << "\nDevice name: " << fpga.device_name << std::endl;
-    std::cout << "\nSerial number: " << fpga.serial_number << std::endl;
+    std::cout << "Device name: " << fpga.device_name << std::endl;
+    std::cout << "Serial number: " << fpga.serial_number << std::endl;
+    std::cout << "IP0: " << fpga.IP0 << std::endl;
+    std::cout << "IP1: " << fpga.IP1 << std::endl;
+    std::cout << "MAC0: " << fpga.MAC0 << std::endl;
+    std::cout << "MAC1: " << fpga.MAC1 << std::endl;
+    std::cout << "Platform: " << fpga.platform << std::endl;
 
     //get new_uuid_str
     xrt::xclbin new_xclbin = xrt::xclbin(binaryFile);
