@@ -2,6 +2,25 @@
 #include "../device.hpp"
 #include "../common/sgutil_get.hpp"
 
+std::string get_string(const std::string& input, int position) {
+    size_t slashPos = input.find('/');
+    if (slashPos != std::string::npos) {
+        if (position == 0) {
+            // Extract the substring before the slash
+            return input.substr(0, slashPos);
+        } else if (position == 1) {
+            // Extract the substring after the slash
+            return input.substr(slashPos + 1);
+        } else {
+            // Invalid position, return an empty string
+            return "";
+        }
+    } else {
+        // Slash not found, return the original input
+        return input;
+    }
+}
+
 device::vitis host::open(const std::string& device_bdf) {
 
     // sgutil_get constants 
@@ -21,10 +40,10 @@ device::vitis host::open(const std::string& device_bdf) {
     device.bdf = sgutil_get(device.device_index, BDF);
     device.device_name = sgutil_get(device.device_index, DEVICE_NAME);
     device.serial_number = sgutil_get(device.device_index, SERIAL_NUMBER);
-    device.IP0 = sgutil_get(device.device_index, IP);
-    device.IP1 = "";
-    device.MAC0 = sgutil_get(device.device_index, IP);
-    device.MAC1 = "";
+    device.IP0 = get_string(sgutil_get(device.device_index, IP), 0);
+    device.IP1 = get_string(sgutil_get(device.device_index, IP), 1);
+    device.MAC0 = get_string(sgutil_get(device.device_index, MAC), 0);
+    device.MAC1 = get_string(sgutil_get(device.device_index, MAC), 1);
     device.platform = sgutil_get(device.device_index, PLATFORM);
     
     // XRT instance
