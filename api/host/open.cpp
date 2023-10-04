@@ -56,7 +56,7 @@ device::vitis host::open(const std::string& device_index) {
         xrt_device = xrt::device(0);
     } else {
         std::cout << "\nOpening device: " << device_index << "\n" << std::endl;
-        device.device_index = std::stoi("1"); // seria str_to_int(device_index)
+        device.device_index = std::stoi(device_index);
         xrt_device = xrt::device("a1:00.1");
     }
 
