@@ -45,15 +45,27 @@ device::vitis host::open(const std::string& device_bdf) {
     xrt::device xrt_device;
     device::vitis device;
 
+    // tmp
+    //std::string device_index = device_bdf;
+
     // get device_index
-    device.device_index = 1;
-    
+    //device.device_index = 1;
+
+    if (device_bdf.empty()) {
+        //device.device_index = 1;
+        xrt_device = xrt::device(0);
+    } else {
+        std::cout << "\nOpening the device: " << device_bdf << "\n" << std::endl;
+        //device.device_index = 1; // seria str_to_int(device_index)
+        xrt_device = xrt::device(device_bdf);
+    }
+
     // get bdf
     std::string bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1"); // per aciß
     std::cout << "\nbdf = " << bdf << "\n" << std::endl;
 
     // sgutil_get
-    //device.device_index = 1;
+    device.device_index = 1;
     device.bdf = bdf; //replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
     device.device_name = sgutil_get(device.device_index, DEVICE_NAME);
     device.serial_number = sgutil_get(device.device_index, SERIAL_NUMBER);
@@ -66,12 +78,12 @@ device::vitis host::open(const std::string& device_bdf) {
     //std::string bdf = device.bdf;
     
     // XRT instance
-    if (device_bdf.empty()) {
-        xrt_device = xrt::device(0);
-    } else {
-        std::cout << "\nOpening the device: " << device_bdf << "\n" << std::endl;
-        xrt_device = xrt::device(device_bdf);
-    }
+    //if (device_bdf.empty()) {
+    //    xrt_device = xrt::device(0);
+    //} else {
+    //    std::cout << "\nOpening the device: " << device_bdf << "\n" << std::endl;
+    //    xrt_device = xrt::device(device_bdf);
+    //}
 
     device.xrtDevice = xrt_device;
     
