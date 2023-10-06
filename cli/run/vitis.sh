@@ -264,18 +264,10 @@ echo ""
 cat $DIR/configs/config_000.hpp
 echo ""
 
-#get bdf
-#upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
-#bdf="${upstream_port::-1}1"
-
 #execution
 cd $DIR
 echo "${bold}Running accelerated application:${normal}"
 echo ""
-#echo "make run TARGET=$target_name PLATFORM=$platform_name" 
-#echo ""
-#eval "make run TARGET=$target_name PLATFORM=$platform_name"
-#echo ""
 
 case "$target_name" in
     sw_emu|hw_emu)
@@ -295,9 +287,9 @@ case "$target_name" in
         echo ""
         ;;
     hw)
-        echo "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -d $device_index" #XCL_EMULATION_MODE=$target_name 
+        echo "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -d $device_index"
         echo ""
-        eval "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -d $device_index" #XCL_EMULATION_MODE=$target_name 
+        eval "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -d $device_index"
         echo ""
         ;;
 esac
