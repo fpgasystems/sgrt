@@ -61,6 +61,17 @@ device::vitis host::open(const std::string& device_index) {
         std::cout << "\nOpening device: " << device_index << "\n" << std::endl;
         device.device_index = std::stoi(device_index);
         bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
+
+        device.bdf = bdf; //replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
+        device.device_name = sgutil_get(device.device_index, DEVICE_NAME);
+        device.serial_number = sgutil_get(device.device_index, SERIAL_NUMBER);
+        device.IP0 = get_string(sgutil_get(device.device_index, IP), 0);
+        device.IP1 = get_string(sgutil_get(device.device_index, IP), 1);
+        device.MAC0 = get_string(sgutil_get(device.device_index, MAC), 0);
+        device.MAC1 = get_string(sgutil_get(device.device_index, MAC), 1);
+        device.platform = sgutil_get(device.device_index, PLATFORM);
+
+
         xrt_device = xrt::device(bdf);
     }
 
@@ -70,14 +81,14 @@ device::vitis host::open(const std::string& device_index) {
 
     // sgutil_get
     //device.device_index = 1;
-    device.bdf = bdf; //replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
-    device.device_name = sgutil_get(device.device_index, DEVICE_NAME);
-    device.serial_number = sgutil_get(device.device_index, SERIAL_NUMBER);
-    device.IP0 = get_string(sgutil_get(device.device_index, IP), 0);
-    device.IP1 = get_string(sgutil_get(device.device_index, IP), 1);
-    device.MAC0 = get_string(sgutil_get(device.device_index, MAC), 0);
-    device.MAC1 = get_string(sgutil_get(device.device_index, MAC), 1);
-    device.platform = sgutil_get(device.device_index, PLATFORM);
+    //device.bdf = bdf; //replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
+    //device.device_name = sgutil_get(device.device_index, DEVICE_NAME);
+    //device.serial_number = sgutil_get(device.device_index, SERIAL_NUMBER);
+    //device.IP0 = get_string(sgutil_get(device.device_index, IP), 0);
+    //device.IP1 = get_string(sgutil_get(device.device_index, IP), 1);
+    //device.MAC0 = get_string(sgutil_get(device.device_index, MAC), 0);
+    //device.MAC1 = get_string(sgutil_get(device.device_index, MAC), 1);
+    //device.platform = sgutil_get(device.device_index, PLATFORM);
 
     //std::string bdf = device.bdf;
     
