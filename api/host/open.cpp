@@ -49,7 +49,6 @@ device::vitis host::open(const std::string& device_index) {
         // create XRT device
         xrt_device = xrt::device(0);
     } else {
-        std::cout << "\nOpening device: " << device_index << "\n" << std::endl;
         
         // get device index
         device.device_index = std::stoi(device_index);

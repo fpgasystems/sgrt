@@ -81,8 +81,8 @@ int main(int argc, char** argv) {
     }
 
     // print config values as a test
-    std::cout << "\nN: ";
-    std::cout << std::to_string(N);
+    //std::cout << "\nN: ";
+    //std::cout << std::to_string(N);
 
     //define defaults
     std::string current_uuid_str="00000000-0000-0000-0000-000000000000";
@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
     device::vitis fpga = host::open(device_index);
     device = fpga.xrtDevice;
 
-    std::cout << "\nBDF: " << fpga.bdf << std::endl;
+    std::cout << "BDF: " << fpga.bdf << std::endl;
     std::cout << "Device name: " << fpga.device_name << std::endl;
     std::cout << "Serial number: " << fpga.serial_number << std::endl;
     std::cout << "IP0: " << fpga.IP0 << std::endl;
