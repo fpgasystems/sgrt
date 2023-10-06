@@ -48,23 +48,12 @@ int main(int argc, char** argv) {
     // SGRT objects
     // ...
 
-    //device::vitis myDevice;
-
-    // Print the device_index value
-    //std::cout << "Device Index: " << myDevice.device_index << std::endl;
-    
-    // Now you can use myDevice and initialize its members as needed
-    //myDevice.device_index = 1;
-    //myDevice.serial_number = "12345";
-    //myDevice.xrt_device = device;
-
     // read parameters
     parser.addSwitch("--xclbin_file", "-x", "<xclbin_file>", "");
     parser.addSwitch("--device_index", "-d", "<device_index>", "");
     parser.parse(argc, argv);
 
     
-    // std::string XCL_EMULATION_MODE = sgrt::getenv("XCL_EMULATION_MODE");
     const char* xclEmulationModeChar = std::getenv("XCL_EMULATION_MODE");
     std::string XCL_EMULATION_MODE = "";
     if (xclEmulationModeChar != nullptr) {
@@ -75,10 +64,6 @@ int main(int argc, char** argv) {
 
     std::string binaryFile = parser.value("xclbin_file");
     std::string device_index = parser.value("device_index");
-
-    std::cout << "\nXCL_EMULATION_MODE is: " << XCL_EMULATION_MODE << std::endl;
-    std::cout << "binaryFile is: " << binaryFile << std::endl;
-    std::cout << "device_index is: " << device_index << std::endl;
 
     // check on xclbin_file =========> if not(isempty()) we need to verify if it is valid!!!!!!!!!!!!
     if (binaryFile.empty()) {
@@ -100,12 +85,10 @@ int main(int argc, char** argv) {
     std::cout << std::to_string(N);
 
     //define defaults
-    //std::string XCL_EMULATION_MODE="sw_emu";
     std::string current_uuid_str="00000000-0000-0000-0000-000000000000";
     std::string new_uuid_str="00000000-0000-0000-0000-000000000000";
 
     // open device
-    //device = host::open(device_bdf);
     device::vitis fpga = host::open(device_index);
     device = fpga.xrtDevice;
 
