@@ -52,16 +52,22 @@ device::vitis host::open(const std::string& device_index) {
     //device.device_index = 1;
 
     
-    std::string bdf;
     if (device_index.empty()) {
-        device.device_index = 1;
-        bdf = "";
+        //device.device_index = 1;
+        //bdf = "";
         xrt_device = xrt::device(0);
     } else {
         std::cout << "\nOpening device: " << device_index << "\n" << std::endl;
+        
+        // get device index
         device.device_index = std::stoi(device_index);
-        bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
+        
+        //std::string bdf;
 
+        // get BDF
+        std::string bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
+
+        // fill device struct members
         device.bdf = bdf; //replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
         device.device_name = sgutil_get(device.device_index, DEVICE_NAME);
         device.serial_number = sgutil_get(device.device_index, SERIAL_NUMBER);
@@ -77,7 +83,7 @@ device::vitis host::open(const std::string& device_index) {
 
     // get bdf
     //std::string bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1"); // per aciß
-    std::cout << "\nbdf = " << bdf << "\n" << std::endl;
+    //std::cout << "\nbdf = " << bdf << "\n" << std::endl;
 
     // sgutil_get
     //device.device_index = 1;
