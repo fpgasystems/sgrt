@@ -44,25 +44,15 @@ device::vitis host::open(const std::string& device_index) {
     // XRT and SGRT objects
     xrt::device xrt_device;
     device::vitis device;
-
-    // tmp
-    //std::string device_index = device_bdf;
-
-    // get device_index
-    //device.device_index = 1;
-
     
     if (device_index.empty()) {
-        //device.device_index = 1;
-        //bdf = "";
+        // create XRT device
         xrt_device = xrt::device(0);
     } else {
         std::cout << "\nOpening device: " << device_index << "\n" << std::endl;
         
         // get device index
         device.device_index = std::stoi(device_index);
-        
-        //std::string bdf;
 
         // get BDF
         std::string bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
@@ -77,35 +67,11 @@ device::vitis host::open(const std::string& device_index) {
         device.MAC1 = get_string(sgutil_get(device.device_index, MAC), 1);
         device.platform = sgutil_get(device.device_index, PLATFORM);
 
-
+        // create XRT device
         xrt_device = xrt::device(bdf);
     }
 
-    // get bdf
-    //std::string bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1"); // per aciß
-    //std::cout << "\nbdf = " << bdf << "\n" << std::endl;
-
-    // sgutil_get
-    //device.device_index = 1;
-    //device.bdf = bdf; //replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
-    //device.device_name = sgutil_get(device.device_index, DEVICE_NAME);
-    //device.serial_number = sgutil_get(device.device_index, SERIAL_NUMBER);
-    //device.IP0 = get_string(sgutil_get(device.device_index, IP), 0);
-    //device.IP1 = get_string(sgutil_get(device.device_index, IP), 1);
-    //device.MAC0 = get_string(sgutil_get(device.device_index, MAC), 0);
-    //device.MAC1 = get_string(sgutil_get(device.device_index, MAC), 1);
-    //device.platform = sgutil_get(device.device_index, PLATFORM);
-
-    //std::string bdf = device.bdf;
-    
-    // XRT instance
-    //if (device_bdf.empty()) {
-    //    xrt_device = xrt::device(0);
-    //} else {
-    //    std::cout << "\nOpening the device: " << device_bdf << "\n" << std::endl;
-    //    xrt_device = xrt::device(device_bdf);
-    //}
-
+    // assign XRT device
     device.xrtDevice = xrt_device;
     
     return device;
