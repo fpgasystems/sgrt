@@ -89,12 +89,13 @@ int main(int argc, char** argv) {
     std::string new_uuid_str="00000000-0000-0000-0000-000000000000";
 
     // open device
-    device::vitis fpga = host::open(device_index);
+    device::vitis fpga = host::open(device_index, binaryFile);
     device = fpga.xrtDevice;
 
     std::cout << "BDF: " << fpga.bdf << std::endl;
     std::cout << "Device name: " << fpga.device_name << std::endl;
     std::cout << "Serial number: " << fpga.serial_number << std::endl;
+    std::cout << "UUID: " << fpga.uuid << std::endl;
     std::cout << "IP0: " << fpga.IP0 << std::endl;
     std::cout << "IP1: " << fpga.IP1 << std::endl;
     std::cout << "MAC0: " << fpga.MAC0 << std::endl;

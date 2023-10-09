@@ -31,7 +31,7 @@ std::string get_string(const std::string& input, int position) {
     }
 }
 
-device::vitis host::open(const std::string& device_index) {
+device::vitis host::open(const std::string& device_index, const std::string& binaryFile) {
 
     // sgutil_get constants 
     int UPSTREAM_PORT = 1;
@@ -68,6 +68,16 @@ device::vitis host::open(const std::string& device_index) {
 
         // create XRT device
         xrt_device = xrt::device(bdf);
+
+        // load xclbin
+        auto uuid = xrt_device.load_xclbin(binaryFile);
+
+        // save uuid
+        auto current_uuid = xrt_device.get_xclbin_uuid();
+
+        std::string current_uuid_str=current_uuid.to_string(); //"00000000-0000-0000-0000-000000000000";
+        device.uuid = current_uuid_str;
+
     }
 
     // assign XRT device
