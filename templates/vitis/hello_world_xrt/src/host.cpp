@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
     std::cout << "Platform: " << fpga.platform << std::endl;
 
     //get new_uuid_str
-    xrt::xclbin new_xclbin = xrt::xclbin(binaryFile);
+    /* xrt::xclbin new_xclbin = xrt::xclbin(binaryFile);
     auto new_uuid = new_xclbin.get_uuid();
     new_uuid_str = new_uuid.to_string();
     
@@ -131,7 +131,7 @@ int main(int argc, char** argv) {
     }
 
     //load xclbin after verification
-    std::cout << "Loading xclbin: " << binaryFile << " (" << new_uuid_str << ")" << std::endl;
+    std::cout << "Loading xclbin: " << binaryFile << " (" << new_uuid_str << ")" << std::endl; */
     auto uuid = device.load_xclbin(binaryFile);
 
     size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
