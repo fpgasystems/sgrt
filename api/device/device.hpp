@@ -14,7 +14,7 @@ namespace device {
         std::string bdf;
         std::string device_name;
         std::string serial_number;
-        std::string uuid;
+        xrt::uuid uuid;
         std::string IP0;
         std::string IP1;
         std::string MAC0;
