@@ -136,7 +136,7 @@ int main(int argc, char** argv) {
 
     size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
 
-    auto krnl = xrt::kernel(device, uuid, "vadd");
+    xrt::kernel krnl = xrt::kernel(device, uuid, "vadd"); // fpga.uuid
 
     std::cout << "Allocate Buffer in Global Memory\n";
     auto bo0 = xrt::bo(device, vector_size_bytes, krnl.group_id(0));
