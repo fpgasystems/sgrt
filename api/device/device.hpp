@@ -24,8 +24,8 @@ namespace device {
         // xrt
         xrt::device xrtDevice; // Use xrt::device as a member
 
-        std::string get_uuid(const xrt::device& device) {
-            auto current_uuid = device.get_xclbin_uuid();
+        std::string get_uuid() {
+            auto current_uuid = xrtDevice.get_xclbin_uuid();
             std::string current_uuid_str = current_uuid.to_string();
             return current_uuid_str;
         }
