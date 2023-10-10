@@ -76,7 +76,7 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
         // load xclbin
         xrt::xclbin new_xclbin = xrt::xclbin(binaryFile);
         xrt::uuid new_uuid = new_xclbin.get_uuid();
-        auto current_uuid = xrt_device.get_xclbin_uuid();
+        xrt::uuid current_uuid = xrt_device.get_xclbin_uuid();
         //auto uuid = xrt_device.load_xclbin(binaryFile);        
         // compare and load
         current_uuid_str = current_uuid.to_string();
@@ -85,7 +85,7 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
         if (current_uuid_str == "00000000-0000-0000-0000-000000000000" || current_uuid_str != new_uuid_str){
             // load new xclbin
             //std::cout << "\nLoading xclbin: "<< new_uuid_str << std::endl;
-            auto uuid = xrt_device.load_xclbin(binaryFile);
+            xrt::uuid uuid = xrt_device.load_xclbin(binaryFile);
             device.uuid = new_uuid;
         } else {
             // requested xclbin was already loaded
