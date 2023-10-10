@@ -75,7 +75,7 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
 
         // load xclbin
         xrt::xclbin new_xclbin = xrt::xclbin(binaryFile);
-        auto new_uuid = new_xclbin.get_uuid();
+        xrt::uuid new_uuid = new_xclbin.get_uuid();
         auto current_uuid = xrt_device.get_xclbin_uuid();
         //auto uuid = xrt_device.load_xclbin(binaryFile);        
         // compare and load
