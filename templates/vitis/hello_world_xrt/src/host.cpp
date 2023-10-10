@@ -80,10 +80,6 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // print config values as a test
-    //std::cout << "\nN: ";
-    //std::cout << std::to_string(N);
-
     //define defaults
     std::string current_uuid_str="00000000-0000-0000-0000-000000000000";
     std::string new_uuid_str="00000000-0000-0000-0000-000000000000";
@@ -91,9 +87,6 @@ int main(int argc, char** argv) {
     // open device
     device::vitis fpga = host::open(device_index, binaryFile);
     device = fpga.xrtDevice;
-
-    // Calling the get_uuid() member function
-
 
     std::cout << "BDF: " << fpga.bdf << std::endl;
     std::cout << "Device name: " << fpga.device_name << std::endl;
@@ -105,33 +98,6 @@ int main(int argc, char** argv) {
     std::cout << "MAC1: " << fpga.MAC1 << std::endl;
     std::cout << "Platform: " << fpga.platform << std::endl;
 
-    //get new_uuid_str
-    /* xrt::xclbin new_xclbin = xrt::xclbin(binaryFile);
-    auto new_uuid = new_xclbin.get_uuid();
-    new_uuid_str = new_uuid.to_string();
-    
-    //print xclbin to be loaded
-    std::cout << "\nFetching xclbin: " << new_uuid_str << std::endl;
-
-    //check on existing xclbin
-    if (XCL_EMULATION_MODE.empty()) { //if (XCL_EMULATION_MODE == "hw") {
-        //read the xclbin loaded on the device
-        auto current_uuid = device.get_xclbin_uuid();
-        
-        //get UUID 
-        //std::string current_uuid_str = current_uuid.to_string();
-        current_uuid_str = current_uuid.to_string();
-
-        //check if UUID is still empty (xclbin was not loaded) or not matching
-        if (current_uuid_str == "00000000-0000-0000-0000-000000000000" || current_uuid_str != new_uuid_str){
-            // UUID is equal to zero, so terminate the program
-            std::cout << "\nPlease, load the xclbin first using sgutil program vitis" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    //load xclbin after verification
-    std::cout << "Loading xclbin: " << binaryFile << " (" << new_uuid_str << ")" << std::endl; */
     auto uuid = device.load_xclbin(binaryFile);
 
     size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
