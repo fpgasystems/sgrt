@@ -93,7 +93,7 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
         if (current_uuid_str == "00000000-0000-0000-0000-000000000000" || current_uuid_str != new_uuid_str){
             // load new xclbin
             xrt_device.load_xclbin(binaryFile);
-            device.uuid = device.get_uuid(); //uuid;
+            device.uuid = new_uuid_str; //device.get_uuid(); //uuid;
         } else {
             // requested xclbin was already loaded
             device.uuid = current_uuid_str; //current_uuid;
