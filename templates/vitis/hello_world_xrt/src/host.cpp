@@ -86,7 +86,7 @@ int main(int argc, char** argv) {
 
     // open device
     device::vitis fpga = host::open(device_index, binaryFile);
-    device = fpga.xrtDevice;
+    //device = fpga.xrtDevice;
 
     std::cout << "BDF: " << fpga.bdf << std::endl;
     std::cout << "Device name: " << fpga.device_name << std::endl;
@@ -99,17 +99,17 @@ int main(int argc, char** argv) {
     std::cout << "MAC1: " << fpga.MAC1 << std::endl;
     std::cout << "Platform: " << fpga.platform << "\n" << std::endl;
 
-    xrt::uuid uuid = device.load_xclbin(binaryFile); 
+    xrt::uuid uuid = fpga.xrtDevice.load_xclbin(binaryFile); 
     //xrt::uuid uuid = device.get_xclbin_uuid();
     //auto uuid = fpga.uuid;
-    xrt::kernel krnl = xrt::kernel(device, uuid, "vadd"); // fpga.uuid
+    xrt::kernel krnl = xrt::kernel(fpga.xrtDevice, uuid, "vadd"); // fpga.uuid
 
     size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
 
     std::cout << "Allocate Buffer in Global Memory\n";
-    auto bo0 = xrt::bo(device, vector_size_bytes, krnl.group_id(0));
-    auto bo1 = xrt::bo(device, vector_size_bytes, krnl.group_id(1));
-    auto bo_out = xrt::bo(device, vector_size_bytes, krnl.group_id(2));
+    auto bo0 = xrt::bo(fpga.xrtDevice, vector_size_bytes, krnl.group_id(0));
+    auto bo1 = xrt::bo(fpga.xrtDevice, vector_size_bytes, krnl.group_id(1));
+    auto bo_out = xrt::bo(fpga.xrtDevice, vector_size_bytes, krnl.group_id(2));
 
     // Map the contents of the buffer object into host memory
     auto bo0_map = bo0.map<int*>();
