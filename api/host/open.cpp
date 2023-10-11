@@ -49,9 +49,12 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
         // create XRT device
         xrt_device = xrt::device(0);
 
+        xrt::uuid current_uuid = xrt_device.get_xclbin_uuid();
+        device.uuid = current_uuid;
+
         // fill minimum device struct members
         device.binaryFile = binaryFile;
-        
+
     } else {
         
         // constants
