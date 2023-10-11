@@ -80,13 +80,8 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    //define defaults
-    std::string current_uuid_str="00000000-0000-0000-0000-000000000000";
-    std::string new_uuid_str="00000000-0000-0000-0000-000000000000";
-
     // open device
     device::vitis fpga = host::open(device_index, binaryFile);
-    //device = fpga.xrtDevice;
 
     std::cout << "BDF: " << fpga.bdf << std::endl;
     std::cout << "Device name: " << fpga.device_name << std::endl;
@@ -99,22 +94,8 @@ int main(int argc, char** argv) {
     std::cout << "MAC1: " << fpga.MAC1 << std::endl;
     std::cout << "Platform: " << fpga.platform << "\n" << std::endl;
 
-    if (fpga.binaryFile == binaryFile) {
-        // Strings are equal
-        std::cout << "fpga.binaryFile and binaryFile are equal." << std::endl;
-    } else {
-        // Strings are not equal
-        std::cout << "fpga.binaryFile and binaryFile are not equal.\n" << std::endl;
-        std::cout << "fpga.binaryFile = " << fpga.binaryFile << "\n" << std::endl;
-        std::cout << "     binaryFile = " << binaryFile << "\n" << std::endl;
-    }
-
     xrt::uuid uuid = fpga.xrtDevice.load_xclbin(fpga.binaryFile); 
-    
-    std::cout << "uuid is ... " << uuid << std::endl;
 
-    //xrt::uuid uuid = device.get_xclbin_uuid();
-    //auto uuid = fpga.uuid;
     xrt::kernel krnl = xrt::kernel(fpga.xrtDevice, uuid, "vadd"); // fpga.uuid
 
     size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
