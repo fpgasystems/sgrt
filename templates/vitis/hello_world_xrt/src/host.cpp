@@ -98,11 +98,12 @@ int main(int argc, char** argv) {
     std::cout << "MAC1: " << fpga.MAC1 << std::endl;
     std::cout << "Platform: " << fpga.platform << std::endl;
 
-    auto uuid = device.load_xclbin(binaryFile);
+    xrt::uuid uuid = device.load_xclbin(binaryFile); 
+    //xrt::uuid uuid = device.get_xclbin_uuid();
+    //auto uuid = fpga.uuid;
+    xrt::kernel krnl = xrt::kernel(device, uuid, "vadd"); // fpga.uuid
 
     size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
-
-    xrt::kernel krnl = xrt::kernel(device, uuid, "vadd"); // fpga.uuid
 
     std::cout << "Allocate Buffer in Global Memory\n";
     auto bo0 = xrt::bo(device, vector_size_bytes, krnl.group_id(0));
