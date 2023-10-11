@@ -64,6 +64,7 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
         device.bdf = bdf; //replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
         device.device_name = sgutil_get(device.device_index, DEVICE_NAME);
         device.serial_number = sgutil_get(device.device_index, SERIAL_NUMBER);
+        device.binaryFile = binaryFile;
         device.IP0 = get_string(sgutil_get(device.device_index, IP), 0);
         device.IP1 = get_string(sgutil_get(device.device_index, IP), 1);
         device.MAC0 = get_string(sgutil_get(device.device_index, MAC), 0);
