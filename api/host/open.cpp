@@ -68,7 +68,7 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
         std::string bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
 
         // fill device struct members
-        device.bdf = bdf; //replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
+        device.bdf = bdf;
         device.device_name = sgutil_get(device.device_index, DEVICE_NAME);
         device.serial_number = sgutil_get(device.device_index, SERIAL_NUMBER);
         device.binaryFile = binaryFile;
@@ -100,12 +100,6 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
             device.uuid = current_uuid_str; //current_uuid;
         }
         std::cout << "Done!\n" << std::endl;
-
-        // save uuid
-        //auto current_uuid = xrt_device.get_xclbin_uuid();
-
-        //std::string current_uuid_str=current_uuid.to_string(); //"00000000-0000-0000-0000-000000000000";
-        //device.uuid = new_uuid_str; //current_uuid.to_string();
 
     }
 
