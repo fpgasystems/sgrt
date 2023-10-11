@@ -99,7 +99,19 @@ int main(int argc, char** argv) {
     std::cout << "MAC1: " << fpga.MAC1 << std::endl;
     std::cout << "Platform: " << fpga.platform << "\n" << std::endl;
 
-    xrt::uuid uuid = fpga.xrtDevice.load_xclbin(binaryFile); 
+    std::string binaryFile_aux = fpga.binaryFile;
+
+    if (fpga.binaryFile == binaryFile) {
+        // Strings are equal
+        std::cout << "fpga.binaryFile and binaryFile are equal." << std::endl;
+    } else {
+        // Strings are not equal
+        std::cout << "fpga.binaryFile and binaryFile are not equal.\n" << std::endl;
+        std::cout << "fpga.binaryFile = " << fpga.binaryFile << "\n" << std::endl;
+        std::cout << "     binaryFile = " << binaryFile << "\n" << std::endl;
+    }
+
+    xrt::uuid uuid = fpga.xrtDevice.load_xclbin(fpga.binaryFile); 
     //xrt::uuid uuid = device.get_xclbin_uuid();
     //auto uuid = fpga.uuid;
     xrt::kernel krnl = xrt::kernel(fpga.xrtDevice, uuid, "vadd"); // fpga.uuid

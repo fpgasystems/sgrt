@@ -48,6 +48,10 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
     if (device_index.empty()) {
         // create XRT device
         xrt_device = xrt::device(0);
+
+        // fill minimum device struct members
+        device.binaryFile = binaryFile;
+        
     } else {
         
         // constants
