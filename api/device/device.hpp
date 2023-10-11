@@ -15,7 +15,7 @@ namespace device {
         std::string device_name;
         std::string serial_number;
         std::string binaryFile;
-        xrt::uuid uuid;
+        std::string uuid;
         std::string IP0;
         std::string IP1;
         std::string MAC0;
