@@ -2,6 +2,7 @@
 #define DEVICE_HPP
 
 #include <string> 
+#include <iostream>
 
 // XRT includes
 #include <xrt/xrt_device.h>
@@ -29,6 +30,20 @@ namespace device {
             auto current_uuid = xrtDevice.get_xclbin_uuid();
             std::string current_uuid_str = current_uuid.to_string();
             return current_uuid_str;
+        }
+
+        void get_info() {
+            //std::cout << "Device Index: " << device_index << std::endl;
+            std::cout << "BDF: " << bdf << std::endl;
+            std::cout << "Device Name: " << device_name << std::endl;
+            std::cout << "Serial Number: " << serial_number << std::endl;
+            std::cout << "Binary File: " << binaryFile << std::endl;
+            std::cout << "UUID: " << get_uuid() << std::endl;
+            std::cout << "IP0: " << IP0 << std::endl;
+            std::cout << "IP1: " << IP1 << std::endl;
+            std::cout << "MAC0: " << MAC0 << std::endl;
+            std::cout << "MAC1: " << MAC1 << std::endl;
+            std::cout << "Platform: " << platform << std::endl;
         }
 
         // Constructor (optional)

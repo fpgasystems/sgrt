@@ -83,16 +83,18 @@ int main(int argc, char** argv) {
     // open device
     device::vitis fpga = host::open(device_index, binaryFile);
 
-    std::cout << "BDF: " << fpga.bdf << std::endl;
-    std::cout << "Device name: " << fpga.device_name << std::endl;
-    std::cout << "Serial number: " << fpga.serial_number << std::endl;
-    std::cout << "BinaryFile: " << fpga.binaryFile << std::endl;
-    std::cout << "UUID: " << fpga.uuid << std::endl; // Calling the get_uuid() member function //fpga.get_uuid()
-    std::cout << "IP0: " << fpga.IP0 << std::endl;
-    std::cout << "IP1: " << fpga.IP1 << std::endl;
-    std::cout << "MAC0: " << fpga.MAC0 << std::endl;
-    std::cout << "MAC1: " << fpga.MAC1 << std::endl;
-    std::cout << "Platform: " << fpga.platform << "\n" << std::endl;
+    //std::cout << "BDF: " << fpga.bdf << std::endl;
+    //std::cout << "Device name: " << fpga.device_name << std::endl;
+    //std::cout << "Serial number: " << fpga.serial_number << std::endl;
+    //std::cout << "BinaryFile: " << fpga.binaryFile << std::endl;
+    //std::cout << "UUID: " << fpga.uuid << std::endl; // Calling the get_uuid() member function //fpga.get_uuid()
+    //std::cout << "IP0: " << fpga.IP0 << std::endl;
+    //std::cout << "IP1: " << fpga.IP1 << std::endl;
+    //std::cout << "MAC0: " << fpga.MAC0 << std::endl;
+    //std::cout << "MAC1: " << fpga.MAC1 << std::endl;
+    //std::cout << "Platform: " << fpga.platform << "\n" << std::endl;
+
+    fpga.get_info();
 
     xrt::uuid uuid = fpga.xrtDevice.load_xclbin(fpga.binaryFile); 
     
