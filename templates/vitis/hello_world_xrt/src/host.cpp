@@ -96,20 +96,7 @@ int main(int argc, char** argv) {
 
     xrt::uuid uuid = fpga.xrtDevice.load_xclbin(fpga.binaryFile); 
     
-    std::string uuid_str = uuid.to_string();
-
-    xrt::uuid uuid_aux = fpga.xrtDevice.get_xclbin_uuid();
-    std::string uuid_aux_str = uuid_aux.to_string();
-
-    if (uuid_str == uuid_aux_str) {
-        // Strings are equal
-        std::cout << "uuid_str and uuid_aux_str are equal." << std::endl;
-    } else {
-        // Strings are not equal
-        std::cout << "uuid_str and uuid_aux_str are not equal." << std::endl;
-    }
-
-    xrt::kernel krnl = xrt::kernel(fpga.xrtDevice, uuid_aux, "vadd"); // fpga.uuid
+    xrt::kernel krnl = xrt::kernel(fpga.xrtDevice, uuid, "vadd"); // fpga.uuid
 
     size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
 
