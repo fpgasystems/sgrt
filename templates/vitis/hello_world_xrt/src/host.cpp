@@ -80,19 +80,13 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // test (funciona)
-    xrt::device device_0 = xrt::device(0);
-    xrt::device device_1 = xrt::device(1);
-    xrt::device device_2 = xrt::device(2);
-    xrt::device device_3 = xrt::device(3);
-
-    // no funciona
-    //auto device_1 = xrt::device("0000:81:00.1");
-
     // open device
     device::vitis fpga = host::open(device_index, binaryFile);
-
     fpga.get_info();
+    
+    // funciona amb hw i falla sw_emu
+    //device::vitis fpga_aux = host::open("2", binaryFile); 
+    //fpga_aux.get_info();
 
     xrt::uuid uuid = fpga.xrtDevice.load_xclbin(fpga.binaryFile); 
     
