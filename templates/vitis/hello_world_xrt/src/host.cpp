@@ -85,8 +85,8 @@ int main(int argc, char** argv) {
     fpga.get_info();
     
     // funciona amb hw i falla sw_emu
-    //device::vitis fpga_aux = host::open("2", binaryFile); 
-    //fpga_aux.get_info();
+    device::vitis fpga_aux = host::open("2", binaryFile, XCL_EMULATION_MODE); 
+    fpga_aux.get_info();
 
     xrt::uuid uuid = fpga.xrtDevice.load_xclbin(fpga.binaryFile); 
     
