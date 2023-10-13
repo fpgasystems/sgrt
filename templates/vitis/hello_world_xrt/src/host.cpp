@@ -81,7 +81,7 @@ int main(int argc, char** argv) {
     }
 
     // open device
-    device::vitis fpga = host::open(device_index, binaryFile);
+    device::vitis fpga = host::open(device_index, binaryFile, XCL_EMULATION_MODE);
     fpga.get_info();
     
     // funciona amb hw i falla sw_emu

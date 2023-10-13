@@ -31,7 +31,7 @@ std::string get_string(const std::string& input, int position) {
     }
 }
 
-device::vitis host::open(const std::string& device_index, const std::string& binaryFile) {
+device::vitis host::open(const std::string& device_index, const std::string& binaryFile, const std::string& emulationMode) {
 
     // sgutil_get constants 
     int UPSTREAM_PORT = 1;
@@ -45,7 +45,7 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
     xrt::device xrt_device;
     device::vitis device;
     
-    if (device_index.empty()) {
+    if (emulationMode == "sw_emu" || emulationMode == "hw_emu") { //if (device_index.empty()) {
         // create XRT device
         xrt_device = xrt::device(0);
 
