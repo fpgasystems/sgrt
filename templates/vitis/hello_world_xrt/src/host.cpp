@@ -88,7 +88,8 @@ int main(int argc, char** argv) {
     device::vitis fpga_aux = host::open("2", binaryFile, XCL_EMULATION_MODE); 
     fpga_aux.get_info();
 
-    xrt::uuid uuid = fpga.xrtDevice.load_xclbin(fpga.binaryFile); 
+    xrt::uuid uuid = fpga.xrtDevice.load_xclbin(fpga.binaryFile);
+    fpga_aux.xrtDevice.load_xclbin(fpga_aux.binaryFile);
     
     xrt::kernel krnl = xrt::kernel(fpga.xrtDevice, uuid, "vadd"); // fpga.uuid
 
