@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
 
     // read parameters
     parser.addSwitch("--xclbin_file", "-x", "<xclbin_file>", "");
-    parser.addSwitch("--device_index", "-d", "<device_index>", "");
+    //parser.addSwitch("--device_index", "-d", "<device_index>", "");
     parser.parse(argc, argv);
 
     
@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
     }
 
     std::string binaryFile = parser.value("xclbin_file");
-    std::string device_index = parser.value("device_index");
+    //std::string device_index = parser.value("device_index");
 
     // check on xclbin_file =========> if not(isempty()) we need to verify if it is valid!!!!!!!!!!!!
     if (binaryFile.empty()) {
@@ -72,16 +72,16 @@ int main(int argc, char** argv) {
     }
 
     // forbiden combinations
-    if (!XCL_EMULATION_MODE.empty() && !device_index.empty()) {
-        std::cerr << "\n<device_index> is not required for emulation modes.\n" << std::endl;
-        return 1;
-    } else if (XCL_EMULATION_MODE.empty() && device_index.empty()) {
-        std::cerr << "\n<device_index> is required for hw targets.\n" << std::endl;
-        return 1;
-    }
+    //if (!XCL_EMULATION_MODE.empty() && !device_index.empty()) {
+    //    std::cerr << "\n<device_index> is not required for emulation modes.\n" << std::endl;
+    //    return 1;
+    //} else if (XCL_EMULATION_MODE.empty() && device_index.empty()) {
+    //    std::cerr << "\n<device_index> is required for hw targets.\n" << std::endl;
+    //    return 1;
+    //}
 
     // open device
-    device::vitis fpga = host::open(device_index, binaryFile, XCL_EMULATION_MODE);
+    device::vitis fpga = host::open("1", binaryFile, XCL_EMULATION_MODE);
     fpga.get_info();
     
     // funciona amb hw i falla sw_emu

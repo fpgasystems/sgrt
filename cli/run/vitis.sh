@@ -287,9 +287,9 @@ case "$target_name" in
         echo ""
         ;;
     hw)
-        echo "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -d $device_index"
+        echo "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
         echo ""
-        eval "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin -d $device_index"
+        eval "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
         echo ""
         ;;
 esac
