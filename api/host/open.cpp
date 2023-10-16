@@ -45,27 +45,33 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
     xrt::device xrt_device;
     device::vitis device;
     
+    // constants
+    std::string current_uuid_str="00000000-0000-0000-0000-000000000000";
+    std::string bdf = "0000:00:00.0";
+
     if (emulationMode == "sw_emu" || emulationMode == "hw_emu") { //if (device_index.empty()) {
+        
         // create XRT device
         xrt_device = xrt::device(0);
 
-        xrt::uuid current_uuid = xrt_device.get_xclbin_uuid();
-        device.uuid = current_uuid;
+        //xrt::uuid current_uuid = xrt_device.get_xclbin_uuid();
+        //device.uuid = current_uuid;
 
         // fill minimum device struct members
+        device.bdf = bdf;
         device.binaryFile = binaryFile;
 
     } else {
         
         // constants
-        std::string current_uuid_str="00000000-0000-0000-0000-000000000000";
+        //std::string current_uuid_str="00000000-0000-0000-0000-000000000000";
         std::string new_uuid_str="00000000-0000-0000-0000-000000000000";
 
         // get device index
         device.device_index = std::stoi(device_index);
 
         // get BDF
-        std::string bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
+        bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
 
         // fill device struct members
         device.bdf = bdf;
