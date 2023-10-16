@@ -6,6 +6,7 @@
 
 // XRT includes
 #include <xrt/xrt_device.h>
+#include "experimental/xrt_kernel.h"
 
 namespace device {
     struct vitis {
@@ -25,6 +26,7 @@ namespace device {
 
         // xrt
         xrt::device fpga; // Use xrt::device as a member
+        xrt::kernel kernel;
 
         std::string get_uuid() {
             auto current_uuid = fpga.get_xclbin_uuid();
