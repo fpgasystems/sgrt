@@ -80,18 +80,19 @@ int main(int argc, char** argv) {
     //    return 1;
     //}
 
-    // open device
+    // device 1
     device::vitis fpga = host::open("1", binaryFile, XCL_EMULATION_MODE);
+    xrt::uuid uuid = fpga.xrtDevice.load_xclbin(fpga.binaryFile);
+    xrt::kernel krnl = xrt::kernel(fpga.xrtDevice, uuid, "vadd"); // fpga.uuid
     fpga.get_info();
     
     // funciona amb hw i falla sw_emu
-    device::vitis fpga_aux = host::open("2", binaryFile, XCL_EMULATION_MODE); 
-    fpga_aux.get_info();
+    //device::vitis fpga_aux = host::open("2", binaryFile, XCL_EMULATION_MODE); 
+    //fpga_aux.get_info();
 
-    xrt::uuid uuid = fpga.xrtDevice.load_xclbin(fpga.binaryFile);
-    fpga_aux.xrtDevice.load_xclbin(fpga_aux.binaryFile);
+    //fpga_aux.xrtDevice.load_xclbin(fpga_aux.binaryFile);
     
-    xrt::kernel krnl = xrt::kernel(fpga.xrtDevice, uuid, "vadd"); // fpga.uuid
+    
 
     size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
 
