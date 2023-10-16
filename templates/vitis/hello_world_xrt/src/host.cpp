@@ -82,24 +82,24 @@ int main(int argc, char** argv) {
 
     // device 1
     device::vitis alveo_1 = host::open("1", binaryFile, XCL_EMULATION_MODE);
-    xrt::uuid uuid = alveo_1.xrtDevice.load_xclbin(alveo_1.binaryFile);
-    xrt::kernel krnl = xrt::kernel(alveo_1.xrtDevice, uuid, "vadd");
+    xrt::uuid uuid = alveo_1.fpga.load_xclbin(alveo_1.binaryFile);
+    xrt::kernel krnl = xrt::kernel(alveo_1.fpga, uuid, "vadd");
     alveo_1.get_info();
     
     // funciona amb hw i falla sw_emu
     //device::vitis fpga_aux = host::open("2", binaryFile, XCL_EMULATION_MODE); 
     //fpga_aux.get_info();
 
-    //fpga_aux.xrtDevice.load_xclbin(fpga_aux.binaryFile);
+    //fpga_aux.fpga.load_xclbin(fpga_aux.binaryFile);
     
     
 
     size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
 
     std::cout << "Allocate Buffer in Global Memory\n";
-    auto bo0 = xrt::bo(alveo_1.xrtDevice, vector_size_bytes, krnl.group_id(0));
-    auto bo1 = xrt::bo(alveo_1.xrtDevice, vector_size_bytes, krnl.group_id(1));
-    auto bo_out = xrt::bo(alveo_1.xrtDevice, vector_size_bytes, krnl.group_id(2));
+    auto bo0 = xrt::bo(alveo_1.fpga, vector_size_bytes, krnl.group_id(0));
+    auto bo1 = xrt::bo(alveo_1.fpga, vector_size_bytes, krnl.group_id(1));
+    auto bo_out = xrt::bo(alveo_1.fpga, vector_size_bytes, krnl.group_id(2));
 
     // Map the contents of the buffer object into host memory
     auto bo0_map = bo0.map<int*>();

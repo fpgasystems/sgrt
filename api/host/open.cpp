@@ -109,7 +109,7 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
     }
 
     // assign XRT device
-    device.xrtDevice = xrt_device;
+    device.fpga = xrt_device;
     
     return device;
 

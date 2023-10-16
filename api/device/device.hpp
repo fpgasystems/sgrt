@@ -24,10 +24,10 @@ namespace device {
         std::string platform;
 
         // xrt
-        xrt::device xrtDevice; // Use xrt::device as a member
+        xrt::device fpga; // Use xrt::device as a member
 
         std::string get_uuid() {
-            auto current_uuid = xrtDevice.get_xclbin_uuid();
+            auto current_uuid = fpga.get_xclbin_uuid();
             std::string current_uuid_str = current_uuid.to_string();
             return current_uuid_str;
         }
