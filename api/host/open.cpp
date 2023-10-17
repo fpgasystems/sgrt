@@ -35,7 +35,6 @@ std::string get_string(const std::string& input, int position) {
     }
 }
 
-// get xclbin name =================================================================================> enable later
 std::string get_xclbin_name(int device_index, const std::string& file_path) {
     // Open the file for reading
     std::ifstream file(file_path);
@@ -94,7 +93,7 @@ device::vitis host::open(const std::string& device_index, const std::string& aca
     // get device index
     device.device_index = std::stoi(device_index);
 
-    // get xclbin name =================================================================================> enable later
+    // get xclbin name
     std::cout << "test from open ==> acap_fpga_xclbin path is: " << acap_fpga_xclbin << std::endl;
     std::string xclbin_name = get_xclbin_name(device.device_index, "acap_fpga_xclbin");
     std::cout << "test from open ==> xclbin_name path is: " << xclbin_name << std::endl;
