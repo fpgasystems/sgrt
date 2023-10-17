@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
     sda::utils::CmdLineParser parser;
 
     // XRT objects
-    xrt::device device;
+    //xrt::device device;
 
     // SGRT objects
     // ...
