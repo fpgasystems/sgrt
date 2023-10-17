@@ -71,7 +71,7 @@ std::string get_xclbin_name(int device_index, const std::string& file_path) {
     return ""; // Change this as needed
 }
 
-device::vitis host::open(const std::string& device_index, const std::string& acap_fpga_xclbin, const std::string& binaryFile, const std::string& emulationMode) {
+device::vitis host::open(const std::string& device_index, const std::string& project_path, const std::string& binaryFile, const std::string& emulationMode) {
 
     // sgutil_get constants 
     int UPSTREAM_PORT = 1;
@@ -93,13 +93,23 @@ device::vitis host::open(const std::string& device_index, const std::string& aca
     // get device index
     device.device_index = std::stoi(device_index);
 
+    // get acap_fpga_xclbin file
+    std::string acap_fpga_xclbin = project_path + "/acap_fpga_xclbin";
+
     // get xclbin name
     std::cout << "test from open ==> acap_fpga_xclbin path is: " << acap_fpga_xclbin << std::endl;
-    std::string xclbin_name = get_xclbin_name(device.device_index, "acap_fpga_xclbin");
-    std::cout << "test from open ==> xclbin_name path is: " << xclbin_name << std::endl;
+    std::string xclbin_name = get_xclbin_name(device.device_index, acap_fpga_xclbin);
+    std::cout << "test from open ==> xclbin_name is: " << xclbin_name << std::endl;
 
     // get BDF
     bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
+
+    // set binaryFile
+    device.binaryFile = binaryFile; //project_path + "/build_dir.hw.xilinx_u55c_gen3x16_xdma_3_202210_1/vadd.xclbin"; //acap_fpga_xclbin + "/" + xclbin_name;
+    std::cout << "test from open ==> device.binaryFile path is: " << device.binaryFile << std::endl;
+
+    std::string binaryFile_aux = project_path + "/build_dir.hw.xilinx_u55c_gen3x16_xdma_3_202210_1/vadd.xclbin";
+    std::cout << "test from open ==>    binaryFile_aux path is: " << device.binaryFile << std::endl;
 
     if (emulationMode == "sw_emu" || emulationMode == "hw_emu") { //if (device_index.empty()) {
 
@@ -118,7 +128,7 @@ device::vitis host::open(const std::string& device_index, const std::string& aca
 
         // fill minimum device struct members
         device.bdf = bdf;
-        device.binaryFile = binaryFile;
+        //device.binaryFile = acap_fpga_xclbin + xclbin_name;
 
     } else {
         
@@ -136,7 +146,7 @@ device::vitis host::open(const std::string& device_index, const std::string& aca
         device.bdf = bdf;
         device.device_name = sgutil_get(device.device_index, DEVICE_NAME);
         device.serial_number = sgutil_get(device.device_index, SERIAL_NUMBER);
-        device.binaryFile = binaryFile;
+        //device.binaryFile = acap_fpga_xclbin + xclbin_name;
         device.IP0 = get_string(sgutil_get(device.device_index, IP), 0);
         device.IP1 = get_string(sgutil_get(device.device_index, IP), 1);
         device.MAC0 = get_string(sgutil_get(device.device_index, MAC), 0);
@@ -147,7 +157,7 @@ device::vitis host::open(const std::string& device_index, const std::string& aca
         xrt_device = xrt::device(bdf);
 
         // load xclbin
-        xrt::xclbin new_xclbin = xrt::xclbin(binaryFile);
+        xrt::xclbin new_xclbin = xrt::xclbin(device.binaryFile);
         xrt::uuid new_uuid = new_xclbin.get_uuid();
         xrt::uuid current_uuid = xrt_device.get_xclbin_uuid();
         
@@ -157,7 +167,7 @@ device::vitis host::open(const std::string& device_index, const std::string& aca
         std::cout << "Device " << device_index << " - Loading xclbin: "<< new_uuid_str << std::endl;
         if (current_uuid_str == "00000000-0000-0000-0000-000000000000" || current_uuid_str != new_uuid_str){
             // load new xclbin
-            xrt_device.load_xclbin(binaryFile);
+            xrt_device.load_xclbin(device.binaryFile);
             device.uuid = new_uuid_str; //device.get_uuid(); //uuid;
         } else {
             // requested xclbin was already loaded
