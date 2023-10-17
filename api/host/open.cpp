@@ -48,8 +48,22 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
     // constants
     std::string current_uuid_str="00000000-0000-0000-0000-000000000000";
     std::string bdf = "0000:00:00.0";
+    //int MAX_DEVICES = 4;
+
+    // get device index
+    device.device_index = std::stoi(device_index);
+
+    // get BDF
+    bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
 
     if (emulationMode == "sw_emu" || emulationMode == "hw_emu") { //if (device_index.empty()) {
+
+        //xrt::device xrt_device_i;
+        //for (int i = 0; i < MAX_DEVICES; ++i) {
+        //    std::cout << "Device Index: " << i << std::endl;
+        //    xrt_device_i = xrt::device(i); //new
+        //    std::cout << "  device bdf      : " << xrt_device_i.get_info<xrt::info::device::bdf>() << "\n";
+        //}
         
         // create XRT device
         xrt_device = xrt::device(0);
@@ -68,10 +82,10 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
         std::string new_uuid_str="00000000-0000-0000-0000-000000000000";
 
         // get device index
-        device.device_index = std::stoi(device_index);
+        //device.device_index = std::stoi(device_index);
 
         // get BDF
-        bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
+        //bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
 
         // fill device struct members
         device.bdf = bdf;
