@@ -73,7 +73,7 @@ std::string get_xclbin_name(int device_index, const std::string& file_path) {
     //return "Default.xclbin"; // Change this as needed
 }
 
-device::vitis host::open(const std::string& device_index, const std::string& binaryFile, const std::string& emulationMode) {
+device::vitis host::open(const std::string& device_index, const std::string& acap_fpga_xclbin, const std::string& binaryFile, const std::string& emulationMode) {
 
     // sgutil_get constants 
     int UPSTREAM_PORT = 1;
@@ -97,6 +97,8 @@ device::vitis host::open(const std::string& device_index, const std::string& bin
 
     // get xclbin name =================================================================================> enable later
     //std::string xclbin_name = get_xclbin_name(device.device_index, "acap_fpga_xclbin");
+
+    std::cout << "test from open ==> acap_fpga_xclbin path is: " << acap_fpga_xclbin << std::endl;
 
     // get BDF
     bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");

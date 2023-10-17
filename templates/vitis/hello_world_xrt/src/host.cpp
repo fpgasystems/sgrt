@@ -68,10 +68,10 @@ int main(int argc, char** argv) {
     //std::string device_index = parser.value("device_index");
 
     // derive acap_fpga_file
-    std::string acap_fpga_xclbin_path = project_path + "/acap_fpga_xclbin";
+    std::string acap_fpga_xclbin = project_path + "/acap_fpga_xclbin";
 
     std::cout << "project_path is is: " << project_path << std::endl;
-    std::cout << "acap_fpga_xclbin_path is: " << acap_fpga_xclbin_path << std::endl;
+    std::cout << "acap_fpga_xclbin path is: " << acap_fpga_xclbin << std::endl;
 
     // check on xclbin_file =========> if not(isempty()) we need to verify if it is valid!!!!!!!!!!!!
     if (binaryFile.empty()) {
@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
     //}
 
     // device 1
-    device::vitis alveo_1 = host::open("1", binaryFile, XCL_EMULATION_MODE);
+    device::vitis alveo_1 = host::open("1", acap_fpga_xclbin, binaryFile, XCL_EMULATION_MODE);
     xrt::uuid uuid = alveo_1.fpga.load_xclbin(alveo_1.binaryFile);
     xrt::kernel krnl = xrt::kernel(alveo_1.fpga, uuid, "vadd");
     alveo_1.get_info();
