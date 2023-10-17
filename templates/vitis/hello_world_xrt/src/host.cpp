@@ -50,6 +50,7 @@ int main(int argc, char** argv) {
 
     // read parameters
     parser.addSwitch("--xclbin_file", "-x", "<xclbin_file>", "");
+    parser.addSwitch("--project_path", "-p", "<project_path>", "");
     //parser.addSwitch("--device_index", "-d", "<device_index>", "");
     parser.parse(argc, argv);
 
@@ -63,7 +64,14 @@ int main(int argc, char** argv) {
     }
 
     std::string binaryFile = parser.value("xclbin_file");
+    std::string project_path = parser.value("project_path");
     //std::string device_index = parser.value("device_index");
+
+    // derive acap_fpga_file
+    std::string acap_fpga_xclbin_path = project_path + "/acap_fpga_xclbin";
+
+    std::cout << "project_path is is: " << project_path << std::endl;
+    std::cout << "acap_fpga_xclbin_path is: " << acap_fpga_xclbin_path << std::endl;
 
     // check on xclbin_file =========> if not(isempty()) we need to verify if it is valid!!!!!!!!!!!!
     if (binaryFile.empty()) {

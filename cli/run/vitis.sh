@@ -233,7 +233,7 @@ if [ "$target_name" = "hw" ]; then
 fi
 
 #define directories (2)
-APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$target_name.$platform_name"
+APP_BUILD_DIR="$DIR/build_dir.$target_name.$platform_name"
 
 #check for build directory
 if ! [ -d "$APP_BUILD_DIR" ]; then
@@ -280,16 +280,16 @@ case "$target_name" in
         #eval "make run TARGET=$target_name PLATFORM=$platform_name"
         
         echo "cp -rf ./_x.$target_name.$platform_name/emconfig.json ."
-        echo "XCL_EMULATION_MODE=$target_name ./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
+        echo "XCL_EMULATION_MODE=$target_name ./$project_name -p $DIR -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
         echo ""
         eval "cp -rf ./_x.$target_name.$platform_name/emconfig.json ."
-        eval "XCL_EMULATION_MODE=$target_name ./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
+        eval "XCL_EMULATION_MODE=$target_name ./$project_name -p $DIR -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
         echo ""
         ;;
     hw)
-        echo "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
+        echo "./$project_name -p $DIR -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
         echo ""
-        eval "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
+        eval "./$project_name -p $DIR -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
         echo ""
         ;;
 esac
