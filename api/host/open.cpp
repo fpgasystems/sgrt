@@ -40,11 +40,11 @@ std::string get_xclbin_name(int device_index, const std::string& file_path) {
     // Open the file for reading
     std::ifstream file(file_path);
 
-    //if (!file.is_open()) {
-    //    // Handle the case where the file couldn't be opened
-    //    // You might want to return a default XCLBIN name or an error message.
-    //    return "Default.xclbin"; // Change this as needed
-    //}
+    if (!file.is_open()) {
+        // Handle the case where the file couldn't be opened
+        // You might want to return a default XCLBIN name or an error message.
+        return ""; // Change this as needed
+    }
 
     std::string line;
     while (std::getline(file, line)) {
@@ -68,9 +68,8 @@ std::string get_xclbin_name(int device_index, const std::string& file_path) {
     // Close the file
     file.close();
 
-    // Handle the case where the matching device_index was not found
-    // You might want to return a default XCLBIN name or an error message.
-    //return "Default.xclbin"; // Change this as needed
+    // return empty to indicate an error
+    return ""; // Change this as needed
 }
 
 device::vitis host::open(const std::string& device_index, const std::string& acap_fpga_xclbin, const std::string& binaryFile, const std::string& emulationMode) {
@@ -96,9 +95,9 @@ device::vitis host::open(const std::string& device_index, const std::string& aca
     device.device_index = std::stoi(device_index);
 
     // get xclbin name =================================================================================> enable later
-    //std::string xclbin_name = get_xclbin_name(device.device_index, "acap_fpga_xclbin");
-
     std::cout << "test from open ==> acap_fpga_xclbin path is: " << acap_fpga_xclbin << std::endl;
+    std::string xclbin_name = get_xclbin_name(device.device_index, "acap_fpga_xclbin");
+    std::cout << "test from open ==> xclbin_name path is: " << xclbin_name << std::endl;
 
     // get BDF
     bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
