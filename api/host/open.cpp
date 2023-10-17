@@ -97,19 +97,20 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
     std::string acap_fpga_xclbin = project_path + "/acap_fpga_xclbin";
 
     // get xclbin name
-    std::cout << "test from open ==> acap_fpga_xclbin path is: " << acap_fpga_xclbin << std::endl;
     std::string xclbin_name = get_xclbin_name(device.device_index, acap_fpga_xclbin);
-    std::cout << "test from open ==> xclbin_name is: " << xclbin_name << std::endl;
 
     // get BDF
     bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
 
     // set binaryFile
     device.binaryFile = binaryFile; //project_path + "/build_dir.hw.xilinx_u55c_gen3x16_xdma_3_202210_1/vadd.xclbin"; //acap_fpga_xclbin + "/" + xclbin_name;
-    std::cout << "test from open ==> device.binaryFile path is: " << device.binaryFile << std::endl;
-
     std::string binaryFile_aux = project_path + "/build_dir.hw.xilinx_u55c_gen3x16_xdma_3_202210_1/vadd.xclbin";
-    std::cout << "test from open ==>    binaryFile_aux path is: " << device.binaryFile << std::endl;
+    
+    // test from open    
+    std::cout << "test from open ==> acap_fpga_xclbin path is: " << acap_fpga_xclbin << std::endl;
+    std::cout << "test from open ==> xclbin_name is: " << xclbin_name << std::endl;
+    std::cout << "test from open ==> device.binaryFile path is: " << device.binaryFile << std::endl;
+    std::cout << "test from open ==>    binaryFile_aux path is: " << binaryFile_aux << std::endl;
 
     if (emulationMode == "sw_emu" || emulationMode == "hw_emu") { //if (device_index.empty()) {
 
