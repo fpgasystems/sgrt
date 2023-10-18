@@ -280,16 +280,16 @@ case "$target_name" in
         #eval "make run TARGET=$target_name PLATFORM=$platform_name"
         
         echo "cp -rf ./_x.$target_name.$platform_name/emconfig.json ."
-        echo "XCL_EMULATION_MODE=$target_name ./$project_name -p $DIR -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
+        echo "XCL_EMULATION_MODE=$target_name ./$project_name -p $DIR"
         echo ""
         eval "cp -rf ./_x.$target_name.$platform_name/emconfig.json ."
-        eval "XCL_EMULATION_MODE=$target_name ./$project_name -p $DIR -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
+        eval "XCL_EMULATION_MODE=$target_name ./$project_name -p $DIR"
         echo ""
         ;;
     hw)
-        echo "./$project_name -p $DIR -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
+        echo "./$project_name -p $DIR"
         echo ""
-        eval "./$project_name -p $DIR -x ./build_dir.$target_name.$platform_name/vadd.xclbin"
+        eval "./$project_name -p $DIR"
         echo ""
         ;;
 esac

@@ -42,18 +42,13 @@ int main(int argc, char** argv) {
     // host objects
     sda::utils::CmdLineParser parser;
 
-    // XRT objects
-    //xrt::device device;
-
     // SGRT objects
     // ...
 
     // read parameters
-    parser.addSwitch("--xclbin_file", "-x", "<xclbin_file>", "");
+    //parser.addSwitch("--xclbin_file", "-x", "<xclbin_file>", "");
     parser.addSwitch("--project_path", "-p", "<project_path>", "");
-    //parser.addSwitch("--device_index", "-d", "<device_index>", "");
     parser.parse(argc, argv);
-
     
     const char* xclEmulationModeChar = std::getenv("XCL_EMULATION_MODE");
     std::string XCL_EMULATION_MODE = "";
@@ -63,44 +58,21 @@ int main(int argc, char** argv) {
         // ...
     }
 
-    std::string binaryFile = parser.value("xclbin_file");
+    //std::string binaryFile = parser.value("xclbin_file");
     std::string project_path = parser.value("project_path");
     //std::string device_index = parser.value("device_index");
 
-    // derive acap_fpga_file
-    //std::string acap_fpga_xclbin = project_path + "/acap_fpga_xclbin";
-
-    std::cout << "project_path is is: " << project_path << std::endl;
-    //std::cout << "acap_fpga_xclbin path is: " << acap_fpga_xclbin << std::endl;
-
-    // check on xclbin_file =========> if not(isempty()) we need to verify if it is valid!!!!!!!!!!!!
-    if (binaryFile.empty()) {
-        std::cerr << "\n<xclbin_file> is empty.\n" << std::endl;
+    // check on project_path
+    if (project_path.empty()) {
+        std::cerr << "\n<project_path> is empty.\n" << std::endl;
         return 1;
     }
-
-    // forbiden combinations
-    //if (!XCL_EMULATION_MODE.empty() && !device_index.empty()) {
-    //    std::cerr << "\n<device_index> is not required for emulation modes.\n" << std::endl;
-    //    return 1;
-    //} else if (XCL_EMULATION_MODE.empty() && device_index.empty()) {
-    //    std::cerr << "\n<device_index> is required for hw targets.\n" << std::endl;
-    //    return 1;
-    //}
 
     // device 1
     device::vitis alveo_1 = host::open("1", project_path, XCL_EMULATION_MODE);
     xrt::uuid uuid = alveo_1.fpga.load_xclbin(alveo_1.binaryFile);
     xrt::kernel krnl = xrt::kernel(alveo_1.fpga, uuid, "vadd");
     alveo_1.get_info();
-    
-    // funciona amb hw i falla sw_emu
-    //device::vitis fpga_aux = host::open("2", binaryFile, XCL_EMULATION_MODE); 
-    //fpga_aux.get_info();
-
-    //fpga_aux.fpga.load_xclbin(fpga_aux.binaryFile);
-    
-    
 
     size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
 
