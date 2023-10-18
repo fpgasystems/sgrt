@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
     //}
 
     // device 1
-    device::vitis alveo_1 = host::open("1", project_path, binaryFile, XCL_EMULATION_MODE);
+    device::vitis alveo_1 = host::open("1", project_path, XCL_EMULATION_MODE);
     xrt::uuid uuid = alveo_1.fpga.load_xclbin(alveo_1.binaryFile);
     xrt::kernel krnl = xrt::kernel(alveo_1.fpga, uuid, "vadd");
     alveo_1.get_info();
