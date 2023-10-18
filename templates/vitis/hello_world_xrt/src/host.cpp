@@ -17,6 +17,7 @@
 // host includes
 #include "cmdlineparser.h"
 #include <iostream>
+#include <unistd.h>
 #include <cstring>
 
 // XRT includes
@@ -31,6 +32,15 @@
 // project includes
 #include "../global_params.hpp"
 #include "../configs/config_000.hpp" // config_000.hpp is overwritten with the configuration you select
+
+std::string get_current_path() {
+    char currentPath[FILENAME_MAX];
+    if (getcwd(currentPath, sizeof(currentPath)) != NULL) {
+        return std::string(currentPath);
+    } else {
+        return std::string(); // Return an empty string to indicate an error
+    }
+}
 
 int main(int argc, char** argv) {
 
@@ -57,7 +67,15 @@ int main(int argc, char** argv) {
         // ...
     }
 
-    std::string project_path = parser.value("project_path");
+    //std::string project_path = parser.value("project_path");
+
+    std::string project_path = get_current_path();
+
+    if (!project_path.empty()) {
+        std::cout << "Current path is: " << project_path << std::endl;
+    } else {
+        std::cerr << "Unable to get the current path." << std::endl;
+    }
 
     // check on project_path
     if (project_path.empty()) {
