@@ -46,7 +46,6 @@ int main(int argc, char** argv) {
     // ...
 
     // read parameters
-    //parser.addSwitch("--xclbin_file", "-x", "<xclbin_file>", "");
     parser.addSwitch("--project_path", "-p", "<project_path>", "");
     parser.parse(argc, argv);
     
@@ -58,9 +57,7 @@ int main(int argc, char** argv) {
         // ...
     }
 
-    //std::string binaryFile = parser.value("xclbin_file");
     std::string project_path = parser.value("project_path");
-    //std::string device_index = parser.value("device_index");
 
     // check on project_path
     if (project_path.empty()) {
