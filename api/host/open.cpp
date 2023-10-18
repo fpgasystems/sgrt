@@ -97,7 +97,7 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
     
     // constants
     std::string current_uuid_str="00000000-0000-0000-0000-000000000000";
-    std::string bdf = "0000:00:00.0";
+    //std::string bdf = "0000:00:00.0";
     //int MAX_DEVICES = 4;
 
     // get device index
@@ -110,7 +110,7 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
     std::string xclbin_name = get_xclbin_name(device.device_index, acap_fpga_xclbin);
 
     // get BDF
-    bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
+    device.bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
 
     // get platform
     device.platform = sgutil_get(device.device_index, PLATFORM);
@@ -132,7 +132,7 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
         xrt_device = xrt::device(0);
 
         // fill minimum device struct members
-        device.bdf = bdf;
+        //device.bdf = bdf;
 
     } else {
         
@@ -140,7 +140,7 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
         std::string new_uuid_str="00000000-0000-0000-0000-000000000000";
 
         // fill device struct members
-        device.bdf = bdf;
+        //device.bdf = bdf;
         device.device_name = sgutil_get(device.device_index, DEVICE_NAME);
         device.serial_number = sgutil_get(device.device_index, SERIAL_NUMBER);
         device.IP0 = get_string(sgutil_get(device.device_index, IP), 0);
@@ -149,7 +149,7 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
         device.MAC1 = get_string(sgutil_get(device.device_index, MAC), 1);
 
         // create XRT device
-        xrt_device = xrt::device(bdf);
+        xrt_device = xrt::device(device.bdf);
 
         // load xclbin
         xrt::xclbin new_xclbin = xrt::xclbin(device.binaryFile);
