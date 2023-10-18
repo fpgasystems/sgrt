@@ -112,9 +112,12 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
     // get BDF
     bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");
 
+    // get platform
+    device.platform = sgutil_get(device.device_index, PLATFORM);
+    
     // set binaryFile
     //device.binaryFile = binaryFile; //project_path + "/build_dir.hw.xilinx_u55c_gen3x16_xdma_3_202210_1/vadd.xclbin"; //acap_fpga_xclbin + "/" + xclbin_name;
-    std::string binaryFile = project_path + "/build_dir." + get_target(emulationMode) + ".xilinx_u55c_gen3x16_xdma_3_202210_1/vadd.xclbin";
+    std::string binaryFile = project_path + "/build_dir." + get_target(emulationMode) + "." + device.platform + "/" + xclbin_name + ".xclbin";
     device.binaryFile = replace_string(binaryFile, project_path, ".");
     
     // test from open    
@@ -163,7 +166,7 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
         device.IP1 = get_string(sgutil_get(device.device_index, IP), 1);
         device.MAC0 = get_string(sgutil_get(device.device_index, MAC), 0);
         device.MAC1 = get_string(sgutil_get(device.device_index, MAC), 1);
-        device.platform = sgutil_get(device.device_index, PLATFORM);
+        //device.platform = sgutil_get(device.device_index, PLATFORM);
 
         // create XRT device
         xrt_device = xrt::device(bdf);
