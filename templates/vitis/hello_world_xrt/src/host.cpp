@@ -48,31 +48,6 @@ int main(int argc, char** argv) {
         std::cout << "\n" << argv[0] << " does not accept any additional parameters.\n" << std::endl;
         return 1;
     }
-
-    // host objects
-    //sda::utils::CmdLineParser parser;
-
-    // SGRT objects
-    // ...
-
-    // read parameters
-    //parser.addSwitch("--project_path", "-p", "<project_path>", "");
-    //parser.addSwitch("--help", "-h", "Help to use this command.");
-    //parser.parse(argc, argv);
-
-    // get help command
-    //std::string help_command = parser.value("help");
-
-    //if (!help_command.empty()) {
-    //    std::cout << "\n" << std::endl;
-    //    exit(0);
-    //}
-
-    //if (parser.exists("--help") || parser.exists("-h")) {
-    //    // Display help information and exit the program
-    //    std::cout << "\n" << std::endl;
-    //    exit(0);
-    //}
     
     const char* xclEmulationModeChar = std::getenv("XCL_EMULATION_MODE");
     std::string XCL_EMULATION_MODE = "";
@@ -82,22 +57,8 @@ int main(int argc, char** argv) {
         // ...
     }
 
-    //std::string project_path = parser.value("project_path");
-
     // get project_path
     std::string project_path = get_current_path();
-
-    //if (!project_path.empty()) {
-    //    std::cout << "Current path is: " << project_path << std::endl;
-    //} else {
-    //    std::cerr << "Unable to get the current path." << std::endl;
-    //}
-
-    // check on project_path
-    //if (project_path.empty()) {
-    //    std::cerr << "\n<project_path> is empty.\n" << std::endl;
-    //    return 1;
-    //}
 
     // device 1
     device::vitis alveo_1 = host::open("1", project_path, XCL_EMULATION_MODE);
