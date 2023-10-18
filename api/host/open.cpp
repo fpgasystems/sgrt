@@ -71,6 +71,16 @@ std::string get_xclbin_name(int device_index, const std::string& file_path) {
     return ""; // Change this as needed
 }
 
+std::string get_target(const std::string& emulationMode) {
+    std::string target = "hw";
+    if (emulationMode == "sw_emu" || emulationMode == "hw_emu") {
+        target = emulationMode;
+    }
+
+    return target;
+
+}
+
 device::vitis host::open(const std::string& device_index, const std::string& project_path, const std::string& binaryFile, const std::string& emulationMode) {
 
     // sgutil_get constants 
@@ -104,7 +114,8 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
 
     // set binaryFile
     device.binaryFile = binaryFile; //project_path + "/build_dir.hw.xilinx_u55c_gen3x16_xdma_3_202210_1/vadd.xclbin"; //acap_fpga_xclbin + "/" + xclbin_name;
-    std::string binaryFile_aux = project_path + "/build_dir.hw.xilinx_u55c_gen3x16_xdma_3_202210_1/vadd.xclbin";
+    std::string binaryFile_aux = project_path + "/build_dir." + get_target(emulationMode) + ".xilinx_u55c_gen3x16_xdma_3_202210_1/vadd.xclbin";
+    binaryFile_aux = replace_string(binaryFile_aux, project_path, ".");
     
     // test from open    
     std::cout << "test from open ==> acap_fpga_xclbin path is: " << acap_fpga_xclbin << std::endl;
