@@ -446,6 +446,7 @@
         - iperf
         - mpi
         - vitis
+        - vitis-ai
 
     #copying workflows
     #coyote

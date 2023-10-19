@@ -40,7 +40,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "gh keys --help" -- ${cur})) #write
                     ;;
                 validate)
-                    COMPREPLY=($(compgen -W "coyote docker hip iperf mpi vitis --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote docker hip iperf mpi vitis vitis-ai --help" -- ${cur}))
                     ;;
             esac
             ;;
@@ -172,6 +172,9 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--processes --help" -- ${cur}))
                             ;;
                         vitis) 
+                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            ;;
+                        vitis-ai) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
                     esac

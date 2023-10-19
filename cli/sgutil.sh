@@ -802,6 +802,7 @@ validate_help() {
     echo ""
     echo "   coyote          - Validates Coyote on the selected FPGA/ACAP."
     echo "   vitis           - Validates Vitis workflow on the selected FPGA/ACAP." 
+    echo "   vitis-ai        - Validates Vitis AI workflow on the selected FPGA????????/ACAP." 
     echo ""
     echo "   hip             - Validates HIP on the selected GPU." 
     echo "" 
@@ -888,6 +889,20 @@ validate_vitis_help() {
       echo "${bold}sgutil validate vitis [flags] [--help]${normal}"
       echo ""
       echo "Validates Vitis workflow on the selected FPGA/ACAP."
+      echo ""
+      echo "FLAGS:"
+      echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
+      echo ""
+      echo "   -h, --help      - Help to use Vitis validation."
+      echo ""
+      exit 1
+}
+
+validate_vitis_ai_help() {
+      echo ""
+      echo "${bold}sgutil validate vitis-ai [flags] [--help]${normal}"
+      echo ""
+      echo "Validates Vitis AI workflow on the selected FPGA????????/ACAP."
       echo ""
       echo "FLAGS:"
       echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
@@ -1238,6 +1253,10 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)
+        valid_flags="-d --device -h --help"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      vitis-ai)
         valid_flags="-d --device -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
