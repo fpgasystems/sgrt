@@ -40,7 +40,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "gh keys --help" -- ${cur})) #write
                     ;;
                 validate)
-                    COMPREPLY=($(compgen -W "coyote hip iperf mpi vitis --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote docker hip iperf mpi vitis --help" -- ${cur}))
                     ;;
             esac
             ;;
@@ -158,6 +158,9 @@ _sgutil_completions()
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote)
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            ;;
+                        docker)
+                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         hip)
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))

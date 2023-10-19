@@ -823,6 +823,20 @@ validate_coyote_help() {
       exit 1
 }
 
+validate_docker_help() {
+      echo ""
+      echo "${bold}sgutil validate docker [--help]${normal}"
+      echo ""
+      echo "Validates Docker installation on the server."
+      echo ""
+      echo "FLAGS:"
+      echo "   This command has no flags."
+      echo ""
+      echo "   -h, --help      - Help to use this command."
+      echo ""
+      exit 1
+}
+
 validate_hip_help() {
       echo ""
       echo "${bold}sgutil validate hip [flags] [--help]${normal}"
@@ -1189,6 +1203,10 @@ case "$command" in
     case "$arguments" in
       coyote)
         valid_flags="-d --device -h --help"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      docker)
+        valid_flags="-h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       hip)
