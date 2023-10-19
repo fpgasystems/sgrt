@@ -38,9 +38,9 @@
     reboot: false
     run: false
     set: false
-    sgutil: false
+    sgutil: true
     templates: true #true
-    validate: false
+    validate: true
     #workflows
     coyote: false
     hip: false
@@ -441,6 +441,7 @@
       when: all or validate
       loop:
         - coyote
+        - docker
         - hip
         - iperf
         - mpi

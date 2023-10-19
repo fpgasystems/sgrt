@@ -796,6 +796,7 @@ validate_help() {
     echo "Validates the basic HACC infrastructure functionality."
     echo ""
     echo "ARGUMENTS:"
+    echo "   docker          - Validates Docker installation on the server."
     echo "   iperf           - Measures HACC network performance."
     echo "   mpi             - Validates MPI."
     echo ""
