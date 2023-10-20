@@ -114,7 +114,7 @@ for ((i=0; i<${#root_ports[@]}; i++)); do
     root_port="${root_ports[i]}"
     link_control_access_i="${link_control_access[i]}"
     echo "sudo setpci -s $root_port $link_control_access_i.b=70"
-    eval "sudo setpci -s $root_port $link_control_access.b=70"
+    eval "sudo setpci -s $root_port $link_control_access_i.b=70"
     sleep 1
 done
 echo ""
@@ -123,8 +123,8 @@ echo "${bold}Enabling link:${normal}"
 for ((i=0; i<${#root_ports[@]}; i++)); do
     root_port="${root_ports[i]}"
     link_control_access_i="${link_control_access[i]}"
-    echo "sudo setpci -s $root_port $link_control_access.b=60"
-    eval "sudo setpci -s $root_port $link_control_access.b=60"
+    echo "sudo setpci -s $root_port $link_control_access_i.b=60"
+    eval "sudo setpci -s $root_port $link_control_access_i.b=60"
     sleep 1
 done
 echo ""
