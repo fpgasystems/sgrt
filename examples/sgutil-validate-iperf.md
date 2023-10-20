@@ -8,15 +8,11 @@
 In this experiment, we are using CLI’s [`sgutil validate iperf`](../cli/manual/sgutil-validate-mpi.md#sgutil-validate-mpi) command to actively measure the maximum achievable bandwidth on the ETHZ-HACC network.
 
 ### Prerrequisites
-* You must have a valid authentication key pairs for SSH in your **~/.ssh** directory, and
-* Your public key must be added to the authorized keys. 
+You should have the capability to SSH into the remote server from your local server. Assuming that alveo-u55c-01 is your local server and alveo-u55c-02 is your single remote server, you should be able to run the following command:
 
 ```
-$ ssh-keygen
-$ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+alveo-u55c-01:~$ ssh alveo-u55c-02
 ```
-
-If the public key **~/.ssh/id_rsa.pub** is not present, *sgutil validate iperf* will run the commands above for you automatically.
 
 ## Experiment
 1. Use the [booking system](https://alveo-booking.ethz.ch/login.php) to reserve the servers you wish to validate,
