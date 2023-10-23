@@ -8,7 +8,6 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 API_PATH="$(dirname "$CLI_PATH")/api"
 XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS_PATH)
 XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
-XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vitis"
 
@@ -238,9 +237,6 @@ else
     #application compilation
     echo "${bold}Application compilation:${normal}"
     echo ""
-    #openCL
-    #echo "g++ -o $project_name $MY_PROJECTS_PATH/$WORKFLOW/common/includes/xcl2/xcl2.cpp src/host.cpp -I$XRT_PATH/include -I$XILINX_TOOLS_PATH//Vivado/$branch/include -Wall -O0 -g -std=c++1y -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/xcl2 -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++"
-    #g++ -o $project_name $MY_PROJECTS_PATH/$WORKFLOW/common/includes/xcl2/xcl2.cpp src/host.cpp -I$XRT_PATH/include -I$XILINX_TOOLS_PATH//Vivado/$branch/include -Wall -O0 -g -std=c++1y -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/xcl2 -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++
     #xrt native
     echo "g++ -o $project_name $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp src/host.cpp $API_PATH/host/open.cpp $API_PATH/common/sgutil_get.cpp -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++  -luuid -lxrt_coreutil"
     g++ -o $project_name $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp src/host.cpp $API_PATH/host/open.cpp $API_PATH/common/sgutil_get.cpp -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++  -luuid -lxrt_coreutil
