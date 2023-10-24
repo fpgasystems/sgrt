@@ -64,15 +64,15 @@ int main(int argc, char** argv) {
     device::vitis alveo_1 = host::open("1", project_path, XCL_EMULATION_MODE);
     //xrt::uuid uuid = alveo_1.fpga.load_xclbin(alveo_1.binaryFile);
     //xrt::kernel krnl = xrt::kernel(alveo_1.fpga, uuid, "vadd");
-    xrt::kernel krnl = alveo_1.kernel; //xrt::kernel(alveo_1.fpga, uuid, "vadd");
+    //xrt::kernel krnl = alveo_1.kernel; //xrt::kernel(alveo_1.fpga, uuid, "vadd");
     alveo_1.get_info();
 
     size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
 
     std::cout << "Allocate Buffer in Global Memory\n";
-    auto bo0 = xrt::bo(alveo_1.fpga, vector_size_bytes, krnl.group_id(0));
-    auto bo1 = xrt::bo(alveo_1.fpga, vector_size_bytes, krnl.group_id(1));
-    auto bo_out = xrt::bo(alveo_1.fpga, vector_size_bytes, krnl.group_id(2));
+    auto bo0 = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(0));
+    auto bo1 = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(1));
+    auto bo_out = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(2));
 
     // Map the contents of the buffer object into host memory
     auto bo0_map = bo0.map<int*>();
@@ -97,7 +97,7 @@ int main(int argc, char** argv) {
     bo1.sync(XCL_BO_SYNC_BO_TO_DEVICE);
 
     std::cout << "Execution of the kernel\n";
-    auto run = krnl(bo0, bo1, bo_out, N); // DATA_SIZE
+    auto run = alveo_1.kernel(bo0, bo1, bo_out, N); // DATA_SIZE
     run.wait();
 
     // Get the output;
