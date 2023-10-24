@@ -35,10 +35,10 @@ if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
     exit
 fi
 
-#check on valid Vivado version
-if [ -z "$(echo $XILINX_VIVADO)" ]; then
+#check on valid Vivado and Vitis version
+if [ -z "$(echo $XILINX_VIVADO)" ] || [ -z "$(echo $XILINX_VITIS)" ]; then
     echo ""
-    echo "Please, source a valid Vivado version for ${bold}$hostname!${normal}"
+    echo "Please, source a valid Vivado and Vitis version for ${bold}$hostname!${normal}"
     echo ""
     exit 1
 fi
