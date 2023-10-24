@@ -93,6 +93,8 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
 
     // XRT and SGRT objects
     xrt::device xrt_device;
+    xrt::uuid uuid;
+    xrt::kernel kernel;
     device::vitis device;
     
     // constants
@@ -174,6 +176,13 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
 
     // assign XRT device
     device.fpga = xrt_device;
+
+    // create kernel
+    uuid = device.fpga.load_xclbin(device.binaryFile);
+    kernel = xrt::kernel(device.fpga, uuid, "vadd"); // xclbin_name
+
+    // assign XRT kernel
+    device.kernel = kernel;
     
     return device;
 
