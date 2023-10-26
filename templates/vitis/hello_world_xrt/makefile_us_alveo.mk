@@ -69,7 +69,12 @@ LDFLAGS += -lrt -lstdc++
 LDFLAGS += -luuid -lxrt_coreutil
 
 # SGRT
-API_PATH ?= /opt/sgrt/api #this a default value if not provided
+#headers (we can use #include "host.hpp" instead of #include "/opt/sgrt/api/host.hpp")
+CXXFLAGS += -I$(API_PATH) 			# these are all the hpp files on top (device.hpp, host.hpp)
+CXXFLAGS += -I$(API_PATH)/common	# these are all the hpp files inside common
+#cpp
+API_PATH ?= /opt/sgrt/api # this a default value if not provided
+HOST_SRCS += $(wildcard $(API_PATH)/device/*.cpp)
 HOST_SRCS += $(wildcard $(API_PATH)/host/*.cpp)
 HOST_SRCS += $(wildcard $(API_PATH)/common/*.cpp)
 

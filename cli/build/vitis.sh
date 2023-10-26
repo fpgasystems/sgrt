@@ -246,6 +246,7 @@ else
     $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp \
     $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp \
     src/host.cpp \
+    $API_PATH/device/*.cpp \
     $API_PATH/host/*.cpp \
     $API_PATH/common/*.cpp \
     -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y \
@@ -258,6 +259,7 @@ else
     $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp \
     $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp \
     src/host.cpp \
+    $API_PATH/device/*.cpp \
     $API_PATH/host/*.cpp \
     $API_PATH/common/*.cpp \
     -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y \

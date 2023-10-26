@@ -26,8 +26,8 @@
 #include "experimental/xrt_kernel.h"
 
 // SGRT includes
-#include "/opt/sgrt/api/host.hpp"
-#include "/opt/sgrt/api/device.hpp"
+#include "host.hpp" // /opt/sgrt/api/host.hpp
+#include "device.hpp" // /opt/sgrt/api/device.hpp
 
 // project includes
 #include "../global_params.hpp"
