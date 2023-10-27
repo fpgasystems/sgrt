@@ -44,10 +44,14 @@ std::string get_current_path() {
 
 int main(int argc, char** argv) {
 
-    if (argc > 1) {
-        std::cout << "\n" << argv[0] << " does not accept any additional parameters.\n" << std::endl;
+    if (argc > 2) {
+        //std::cout << "\n" << argv[0] << " does not accept any additional parameters.\n" << std::endl;
+        std::cout << "\n" << argv[0] << ": too many input parameters.\n" << std::endl;
         return 1;
     }
+
+    std::string config_id = argv[1];
+    std::cout << "\nconfig_id = " << config_id << std::endl;
     
     const char* xclEmulationModeChar = std::getenv("XCL_EMULATION_MODE");
     std::string XCL_EMULATION_MODE = "";
