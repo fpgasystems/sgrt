@@ -34,7 +34,7 @@ namespace device {
             return current_uuid_str;
         }
 
-        void get_info() {
+        void print() {
             //std::cout << "Device Index: " << device_index << std::endl;
             std::cout << "BDF: " << bdf << std::endl;
             std::cout << "Device Name: " << device_name << std::endl;
