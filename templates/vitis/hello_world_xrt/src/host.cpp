@@ -52,6 +52,9 @@ int main(int argc, char** argv) {
 
     std::string config_id = argv[1];
     std::cout << "\nconfig_id = " << config_id << std::endl;
+
+    // get configuration
+    host::config config;
     
     const char* xclEmulationModeChar = std::getenv("XCL_EMULATION_MODE");
     std::string XCL_EMULATION_MODE = "";
