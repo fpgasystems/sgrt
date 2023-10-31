@@ -12,10 +12,12 @@ namespace host {
     struct config {
         
         std::string project_path;
+        std::string XCL_EMULATION_MODE;
 
-        void get_config() {
+        void print() {
             //std::cout << "Device Index: " << device_index << std::endl;
-            std::cout << "BDF: " << project_path << std::endl;
+            std::cout << "project_path: " << project_path << std::endl;
+            std::cout << "XCL_EMULATION_MODE: " << XCL_EMULATION_MODE << std::endl;
             
         }
 

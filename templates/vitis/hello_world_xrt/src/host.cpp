@@ -64,6 +64,11 @@ int main(int argc, char** argv) {
         // ...
     }
 
+    config.project_path = get_current_path();
+    config.XCL_EMULATION_MODE = XCL_EMULATION_MODE;
+
+    config.print();
+
     // get project_path
     std::string project_path = get_current_path();
 
