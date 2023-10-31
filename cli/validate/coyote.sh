@@ -168,12 +168,13 @@ echo ""
 echo "${bold}Please, choose your configuration:${normal}" # this refers to a software (sw/examples) configuration
 echo ""
 PS3=""
-select config in perf_host perf_fpga perf_mem gbm_dtrees hyperloglog #perf_host perf_fpga gbm_dtrees hyperloglog perf_dram perf_hbm perf_mem perf_rdma perf_rdma_host perf_rdma_card perf_tcp rdma_regex service_aes service_reconfiguration
+select config in perf_host perf_fpga perf_rdma_host gbm_dtrees hyperloglog #perf_host perf_fpga gbm_dtrees hyperloglog perf_dram perf_hbm perf_mem perf_rdma perf_rdma_host perf_rdma_card perf_tcp rdma_regex service_aes service_reconfiguration
 do
     case $config in
         perf_host) break;;                  #1
         perf_fpga) break;;                  #2
-        perf_mem) break;;                   #7
+        #perf_mem) break;;                   #7
+        perf_rdma_host) break;;
         gbm_dtrees) break;;                 #3
         hyperloglog) break;;                #4
     esac
@@ -262,18 +263,25 @@ if ! [ -d "$DIR" ]; then
             echo "const int EN_MEM = 0;" >> config_shell.hpp
             echo "const int EN_WB = 1;" >> config_shell.hpp
             ;;
-        perf_hbm)
-            echo "const int N_REGIONS = 4;" > config_shell.hpp
+        #perf_hbm)
+        #    echo "const int N_REGIONS = 4;" > config_shell.hpp
+        #    echo "const int EN_HLS = 0;" >> config_shell.hpp
+        #    echo "const int EN_STRM = 0;" >> config_shell.hpp
+        #    echo "const int EN_MEM = 1;" >> config_shell.hpp
+        #    ;;
+        #perf_dram)
+        #    echo "const int N_REGIONS = 4;" > config_shell.hpp
+        #    echo "const int EN_HLS = 0;" >> config_shell.hpp
+        #    echo "const int EN_STRM = 0;" >> config_shell.hpp
+        #    echo "const int EN_MEM = 1;" >> config_shell.hpp
+        #    echo "const int N_DDR_CHAN = 2;" >> config_shell.hpp
+        #    ;;
+        perf_rdma_host)
             echo "const int EN_HLS = 0;" >> config_shell.hpp
-            echo "const int EN_STRM = 0;" >> config_shell.hpp
-            echo "const int EN_MEM = 1;" >> config_shell.hpp
-            ;;
-        perf_dram)
-            echo "const int N_REGIONS = 4;" > config_shell.hpp
-            echo "const int EN_HLS = 0;" >> config_shell.hpp
-            echo "const int EN_STRM = 0;" >> config_shell.hpp
-            echo "const int EN_MEM = 1;" >> config_shell.hpp
-            echo "const int N_DDR_CHAN = 2;" >> config_shell.hpp
+            echo "const int EN_BPSS = 1;" >> config_shell.hpp
+            echo "const int EN_STRM = 1;" >> config_shell.hpp
+            echo "const int EN_MEM = 0;" >> config_shell.hpp
+            echo "const int EN_RDMA_0 = 1;" >> config_shell.hpp
             ;;
         gbm_dtrees) 
             echo "const int EN_HLS = 0;" > config_shell.hpp
