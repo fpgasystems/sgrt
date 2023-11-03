@@ -52,10 +52,6 @@ int main(int argc, char** argv) {
 
     std::string config_id = argv[1];
     std::cout << "\nconfig_id = " << config_id << std::endl;
-
-    // get configuration
-    host::config config;
-
     
     const char* xclEmulationModeChar = std::getenv("XCL_EMULATION_MODE");
     std::string XCL_EMULATION_MODE = "";
@@ -65,16 +61,11 @@ int main(int argc, char** argv) {
         // ...
     }
 
-    config.project_path = get_current_path();
-    config.XCL_EMULATION_MODE = XCL_EMULATION_MODE;
-
-    config.print();
-
     // get project_path
     std::string project_path = get_current_path();
 
-    host::config config_2 = host::get_config(project_path, XCL_EMULATION_MODE);
-    config_2.print();
+    host::config config = host::get_config(project_path, XCL_EMULATION_MODE);
+    config.print();
 
     // Create a host::config object using the constructor
     //host::config myConfig(project_path, XCL_EMULATION_MODE);
