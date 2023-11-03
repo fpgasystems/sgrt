@@ -55,6 +55,7 @@ int main(int argc, char** argv) {
 
     // get configuration
     host::config config;
+
     
     const char* xclEmulationModeChar = std::getenv("XCL_EMULATION_MODE");
     std::string XCL_EMULATION_MODE = "";
@@ -71,6 +72,10 @@ int main(int argc, char** argv) {
 
     // get project_path
     std::string project_path = get_current_path();
+
+    // Create a host::config object using the constructor
+    //host::config myConfig(project_path, XCL_EMULATION_MODE);
+    //myConfig.print;
 
     // device 1
     device::vitis alveo_1 = host::open("1", project_path, XCL_EMULATION_MODE);
