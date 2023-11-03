@@ -73,6 +73,9 @@ int main(int argc, char** argv) {
     // get project_path
     std::string project_path = get_current_path();
 
+    host::config config_2 = host::get_config(project_path, XCL_EMULATION_MODE);
+    config_2.print();
+
     // Create a host::config object using the constructor
     //host::config myConfig(project_path, XCL_EMULATION_MODE);
     //myConfig.print;
