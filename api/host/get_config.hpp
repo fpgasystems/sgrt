@@ -5,7 +5,7 @@
 //#include "../host.hpp" // Include the device.hpp header
 
 namespace host {
-    host::config get_config(const std::string& project_path);
+    host::config get_config(const std::string& project_path, const std::string& xcl_emulation_mode);
 }
 
 //#endif // HOST_HPP
