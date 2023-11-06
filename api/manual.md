@@ -13,9 +13,9 @@
 
 * device::coyote
 * device::hip
-* [device::vitis]()
+* device::vitis
 
 ## host
 
-* [host::get_config](#program)
+* host::get_config
 * [host::open_vitis](./manual/host_open_vitis.md)
