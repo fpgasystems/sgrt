@@ -4,22 +4,18 @@
 <a href="https://github.com/fpgasystems/sgrt/tree/main#--systems-group-runtime">Back to top</a>
 </p>
 
-## API
+# API
 
+* [device](#device)
 * [host](#host)
-* [sgutil](#sgutil)
+
+## device
+
+* device::coyote
+* device::hip
+* [device::vitis]()
 
 ## host
 
-* [open](#open)
-* [program](#program)
-
-### open
-bla bla bla
-* ```sgrt::device device = host::open()```
-
-### program
-bla bla bla
-* ```int p = host::program(sgrt::device)```
-
-## sgutil
+* [host::get_config](#program)
+* [host::open_vitis](./manual/host_open_vitis.md)
