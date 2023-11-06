@@ -6,19 +6,29 @@
 
 ## host::open_vitis
 
+Creates a `device::vitis` instance to operate with.
+
+## Constructor
+
 <code>device::vitis open(const std::string& device_index, const std::string& project_path, const std::string& emulationMode)</code>
-<p>
-  &nbsp; &nbsp; Opens a ```device::vitis``` instance to operate with.
-</p>
 
-### Arguments
+* `device_index`: ACAP/FPGA device index.
+* `project_path`: Project path.
 
-* [coyote](./sgutil-build-coyote.md#sgutil-build-coyote)
-* [hip](./sgutil-build-hip.md#sgutil-build-hip)
-* [mpi](./sgutil-build-mpi.md#sgutil-build-mpi)
-* [vitis](./sgutil-build-vitis.md#sgutil-build-vitis)
+### Methods
 
-<code>-h, --help</code>
-<p>
-  &nbsp; &nbsp; Help to use this command.
-</p>
+* `getDeviceIndex`: gets the device index of the Vitis object. 
+
+### Usage Example
+
+```cpp
+#include "device.hpp"
+
+int main() {
+    device::vitis alveo_1(1, "bdf_value", "device_name_value", "serial_value", "bin_file_value", "uuid_value", "ip0_value", "ip1_value", "mac0_value", "mac1_value", "platform_value");
+
+    int index = myDevice.getDeviceIndex();
+    myDevice.print();
+
+    return 0;
+}
