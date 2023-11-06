@@ -25,7 +25,7 @@
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
     #api installation
-    api: true #true
+    api: true #true----------------
     #cli installation
     #scripts
     build: false
@@ -38,14 +38,14 @@
     reboot: false
     run: false
     set: false
-    sgutil: true
-    templates: true #true
-    validate: true
+    sgutil: false 
+    templates: true #true-----------------------------------
+    validate: false
     #workflows
     coyote: false
     hip: false
     mpi: false
-    vitis: true #true
+    vitis: true #true---------------------------------
   tasks:
 
     #creating directories
@@ -115,8 +115,11 @@
         mode: "0755"
       when: all or api
       loop:
+        - config.hpp
         - open.hpp
         - open.cpp
+        - get_config.hpp
+        - get_config.cpp
         
     #cli
     #copying files (when all/only if they do not exist on the remote)
