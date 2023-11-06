@@ -38,16 +38,23 @@ SGRT comprises a command-line interpreter (CLI) and an API. Whereas the [CLI](./
   </tr>
   <tr>
     <th class="tg-0pky" style="text-align:center">2022.1</th>
-    <th class="tg-0pky" style="text-align:center">2022.2</th>
+    <th class="tg-0pky" style="text-align:center">2023.1</th>
     <th class="tg-0pky" style="text-align:center">5.4.1</th>
     <th class="tg-0pky" style="text-align:center">5.4.3</th>
   </tr>
 </thead>
 <tbody>
   <tr>
-    <td class="tg-0pky"><div align="center">2022.2_5.4.3</div></td>
+    <td class="tg-0pky"><div align="center">2022.1_5.4.3</div></td>
     <td class="tg-0pky" align="center">&#9679;</td>
     <td class="tg-0pky" align="center"></td>
+    <td class="tg-0pky" align="center"></td>
+    <td class="tg-0pky" align="center">&#9679;</td>
+  </tr>
+  <tr>
+    <td class="tg-0pky"><div align="center">2022.2_5.4.3</div></td>
+    <td class="tg-0pky" align="center"></td>
+    <td class="tg-0pky" align="center">&#9679;</td>
     <td class="tg-0pky" align="center"></td>
     <td class="tg-0pky" align="center">&#9679;</td>
   </tr>
