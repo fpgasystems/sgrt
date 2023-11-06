@@ -13,6 +13,7 @@
 
 ### Arguments
 
+* [docker](./sgutil-validate-docker.md#sgutil-validate-docker)
 * [iperf](./sgutil-validate-iperf.md#sgutil-validate-iperf)
 * [mpi](./sgutil-validate-mpi.md#sgutil-validate-mpi)
 
