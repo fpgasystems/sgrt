@@ -4,11 +4,11 @@
 <a href="https://github.com/fpgasystems/sgrt/blob/main/cli/manual/sgutil-get.md#sgutil-get">Back to sgutil get</a>
 </p>
 
-## sgutil get ifconfig
+## sgutil get servers
 
-<code>sgutil get ifconfig [--help]</code>
+<code>sgutil get servers [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives host networking information. 
+  &nbsp; &nbsp; Retreives the list of servers you can use SSH to connect to.
 </p>
 
 ### Flags
@@ -23,5 +23,5 @@
 
 ### Examples
 ```
-$ sgutil get ifconfig
+$ sgutil get servers
 ```
