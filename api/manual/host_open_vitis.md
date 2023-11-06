@@ -8,7 +8,7 @@
 
 Creates a `device::vitis` instance to operate with.
 
-## Constructor
+### Constructor
 
 <code>device::vitis open(const std::string& device_index, const std::string& project_path, const std::string& emulationMode)</code>
 
@@ -19,7 +19,7 @@ Creates a `device::vitis` instance to operate with.
 
 * `getDeviceIndex`: gets the device index of the Vitis object. 
 
-### Usage Example
+### Example
 
 ```cpp
 #include "device.hpp"
