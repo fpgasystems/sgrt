@@ -262,6 +262,7 @@ if ! [ -d "$DIR" ]; then
             echo "const int EN_STRM = 1;" >> config_shell.hpp
             echo "const int EN_MEM = 0;" >> config_shell.hpp
             echo "const int EN_WB = 1;" >> config_shell.hpp
+            echo "const int N_REGIONS = 1;" >> config_shell.hpp
             ;;
         #perf_hbm)
         #    echo "const int N_REGIONS = 4;" > config_shell.hpp
@@ -282,16 +283,19 @@ if ! [ -d "$DIR" ]; then
             echo "const int EN_STRM = 1;" >> config_shell.hpp
             echo "const int EN_MEM = 0;" >> config_shell.hpp
             echo "const int EN_RDMA_0 = 1;" >> config_shell.hpp
+            echo "const int N_REGIONS = 1;" >> config_shell.hpp
             ;;
         gbm_dtrees) 
             echo "const int EN_HLS = 0;" > config_shell.hpp
             echo "const int EN_STRM = 1;" >> config_shell.hpp
             echo "const int EN_MEM = 0;" >> config_shell.hpp
+            echo "const int N_REGIONS = 1;" >> config_shell.hpp
             ;;
         hyperloglog) 
             echo "const int EN_HLS = 1;" > config_shell.hpp
             echo "const int EN_STRM = 1;" >> config_shell.hpp
             echo "const int EN_MEM = 0;" >> config_shell.hpp
+            echo "const int N_REGIONS = 1;" >> config_shell.hpp
             ;;
         #perf_dram) 
         #    echo "const int N_REGIONS = 4;" > config_shell.hpp
