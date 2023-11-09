@@ -4,7 +4,8 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 #constants
-CLI_PATH="$(dirname "$0")"
+CLI_PATH=$(dirname "$0")
+SGRT_PATH=$(dirname "$CLI_PATH")
 
 #inputs
 command=$1
@@ -34,7 +35,7 @@ COMMANDS:
 }
 
 cli_version() {
-    version=$(cat $CLI_PATH/VERSION)
+    version=$(cat $SGRT_PATH/VERSION)
     echo ""
     echo "Version              : $version"
     echo ""
