@@ -211,29 +211,58 @@ DRIVER_DIR="$DIR/driver"
 APP_BUILD_DIR="$DIR/sw/examples/$config/build"
 
 # adjust perf_mem validation
-if [ "$config" = "perf_mem" ]; then
-    case "$FDEV_NAME" in
-        u250) 
-            config_hw="perf_dram"
-            ;;
-        u280) 
-            config_hw="perf_hbm"
-            ;;
-        u50)
-            config_hw="perf_hbm"
-            ;;
-        u55c)
-            config_hw="perf_hbm"
-            ;; 
-        *)
-            echo ""
-            echo "Unknown device name."
-            echo ""
-        ;;  
-    esac
-else
-    config_hw=$config
-fi
+#if [ "$config" = "perf_mem" ]; then
+#    case "$FDEV_NAME" in
+#        u250) 
+#            config_hw="perf_dram"
+#            ;;
+#        u280) 
+#            config_hw="perf_hbm"
+#            ;;
+#        u50)
+#            config_hw="perf_hbm"
+#            ;;
+#        u55c)
+#            config_hw="perf_hbm"
+#            ;; 
+#        *)
+#            echo ""
+#            echo "Unknown device name."
+#            echo ""
+#        ;;  
+#    esac
+#else
+#    config_hw=$config
+#fi
+
+# map sw/hw configurations
+case "$config" in
+    perf_host) 
+        config_hw=$config
+        config_sw=$config
+        ;;
+    perf_fpga) 
+        config_hw=$config
+        config_sw=$config
+        ;;
+    perf_rdma_host)
+        config_hw=$config
+        config_sw="perf_rdma"
+        ;;
+    gbm_dtrees)
+        config_hw=$config
+        config_sw=$config
+        ;;
+    hyperloglog)
+        config_hw=$config
+        config_sw=$config
+        ;; 
+    *)
+        echo ""
+        echo "Unknown config name."
+        echo ""
+    ;;  
+esac
 
 # create coyote validate config.device_name directory and checkout
 if ! [ -d "$DIR" ]; then
@@ -346,13 +375,13 @@ if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME" ]; th
     echo ""
     echo "${bold}Example application compilation:${normal}"
     echo ""
-    echo "cmake ../ -DTARGET_DIR=../examples/$config && make"
+    echo "cmake ../ -DTARGET_DIR=../examples/$config_sw && make"
     echo ""
     if ! [ -d "$APP_BUILD_DIR" ]; then
         mkdir $APP_BUILD_DIR
     fi
     cd $APP_BUILD_DIR
-    /usr/bin/cmake ../../../ -DTARGET_DIR=examples/$config && make
+    /usr/bin/cmake ../../../ -DTARGET_DIR=examples/$config_sw && make
     #copy bitstream
     cp $SHELL_BUILD_DIR/bitstreams/cyt_top.bit $APP_BUILD_DIR
     #copy driver
