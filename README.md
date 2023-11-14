@@ -77,12 +77,14 @@ SGRT comprises a command-line interpreter (CLI) and an API. Whereas the [CLI](./
 If you use this repository in your work, we kindly request that you cite it as follows:
 
 ```
-@misc{sgrt-ethz,
-    author = {Javier Moya and Gustavo Alonso},
-    title = {Systems {G}roup {R}un{T}ime - {ETH Zürich}},
-    howpublished = {\url{https://github.com/fpgasystems/sgrt}},
-    doi = {10.5281/zenodo.10075311},
-    year = {2023},
+@misc{moya2023sgrt,
+  author       = {Javier Moya and Gustavo Alonso},
+  title        = {fpgasystems/sgrt: ETHZ-SGRT 2022.2.5.4.3},
+  howpublished = {Zenodo},
+  year         = {2023},
+  month        = sep,
+  note         = {\url{https://doi.org/10.5281/zenodo.10075311}},
+  doi          = {10.5281/zenodo.10075311}
 }
 ```
 
