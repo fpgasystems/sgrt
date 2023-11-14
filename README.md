@@ -72,7 +72,7 @@ SGRT comprises a command-line interpreter (CLI) and an API. Whereas the [CLI](./
 
 # Citation
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10075311.svg)](https://doi.org/10.5281/zenodo.10075311)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8346565.svg)](https://doi.org/10.5281/zenodo.8346565)
 
 If you use this repository in your work, we kindly request that you cite it as follows:
 
@@ -84,7 +84,7 @@ If you use this repository in your work, we kindly request that you cite it as f
   year         = {2023},
   month        = sep,
   note         = {\url{https://doi.org/10.5281/zenodo.10075311}},
-  doi          = {10.5281/zenodo.10075311}
+  doi          = {10.5281/zenodo.8346565}
 }
 ```
 
