@@ -7,7 +7,7 @@ normal=$(tput sgr0)
 CLI_PATH="$(dirname "$(dirname "$0")")"
 MTU_MIN=1500
 MTU_MAX=9000
-MTU_DEFAULT=1576
+MTU_DEFAULT=1576 # (1576 - 40) / 64 = 24
 IPV6_HEADER_SIZE=40
 PAYLOAD_MULTIPLES=64
 
@@ -56,12 +56,23 @@ fi
 
 if [ "$mtu_valid" = "1" ]; then
 
-    
-
+    #get closest MTU for a payload multiple
     mtu=$(calculate_closest_mtu $mtu $IPV6_HEADER_SIZE $PAYLOAD_MULTIPLES)
 
-    echo "Hola!!!!! MTU is $mtu"
+    #verify MTU is between valid range
+    if [ "$mtu" -lt "$MTU_MIN" ] || [ "$mtu" -gt "$MTU_MAX" ]; then
+        mtu=$MTU_DEFAULT
+    fi
 
+    #get Mellanox name
+    mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
+
+    #set mtu
+    sudo /usr/sbin/ifconfig $mellanox_name mtu $mtu up
+
+    #print message
+    echo ""
+    echo "$mellanox_name MTU was set to $mtu bytes!"
+    echo ""
 
 fi
-
