@@ -68,7 +68,7 @@ if [ "$mtu_valid" = "1" ]; then
     mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
 
     #set mtu
-    sudo /usr/sbin/ifconfig $mellanox_name mtu $mtu up
+    sudo ifconfig $mellanox_name mtu $mtu up
 
     #print message
     echo ""
