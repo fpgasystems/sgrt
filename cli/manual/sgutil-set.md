@@ -13,8 +13,9 @@
 
 ### Arguments
 
-* [gh](./sgutil-set-gh.md)
-* [keys](./sgutil-set-keys.md)
+* [gh](./sgutil-set-gh.md#sgutil-set-gh)
+* [keys](./sgutil-set-keys.md#sgutil-set-keys)
+* [mtu](./sgutil-set-mtu.md#sgutil-set-mtu)
 
 <code>-h, --help</code>
 <p>
