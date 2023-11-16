@@ -25,7 +25,7 @@
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
     #api installation
-    api: true #true----------------
+    api: false #true----------------
     #cli installation
     #scripts
     build: false
@@ -37,15 +37,15 @@
     program: false
     reboot: false
     run: false
-    set: false
-    sgutil: false 
-    templates: true #true-----------------------------------
+    set: true
+    sgutil: true 
+    templates: false #true-----------------------------------
     validate: false
     #workflows
     coyote: false
     hip: false
     mpi: false
-    vitis: true #true---------------------------------
+    vitis: false #true---------------------------------
   tasks:
 
     #creating directories
@@ -412,6 +412,9 @@
       loop:
         - gh
         - keys
+        - license
+        - license-msg
+        - mtu
     #sgutil
     - name: managing sgutil
       block:

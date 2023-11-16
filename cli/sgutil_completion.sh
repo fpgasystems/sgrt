@@ -37,7 +37,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "coyote hip mpi vitis --help" -- ${cur}))
                     ;;
                 set)
-                    COMPREPLY=($(compgen -W "gh keys mtu --help" -- ${cur})) #write
+                    COMPREPLY=($(compgen -W "gh keys license mtu --help" -- ${cur})) #write
                     ;;
                 validate)
                     COMPREPLY=($(compgen -W "coyote docker hip iperf mpi vitis vitis-ai --help" -- ${cur}))
@@ -147,6 +147,9 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--help" -- ${cur})) 
                             ;;
                         keys)
+                            COMPREPLY=($(compgen -W "--help" -- ${cur})) 
+                            ;;
+                        license)
                             COMPREPLY=($(compgen -W "--help" -- ${cur})) 
                             ;;
                         mtu)

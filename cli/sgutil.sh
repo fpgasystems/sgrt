@@ -740,6 +740,7 @@ set_help() {
     echo "ARGUMENTS:"
     echo "   gh              - Enables GitHub CLI on your host."
     echo "   keys            - Creates your RSA key pairs and adds to authorized_keys and known_hosts."
+    echo "   license         - Configures a verified license server for Xilinx tools."
     echo "   mtu             - Sets a valid MTU value to your host networking interface."
     #echo "   write           - Assigns writing permissions on a given device."
     echo ""
@@ -767,6 +768,20 @@ set_keys_help() {
     echo "${bold}sgutil set keys [--help]${normal}"
     echo ""
     echo "Creates your RSA key pairs and adds to authorized_keys and known_hosts."
+    echo ""
+    echo "FLAGS:"
+    echo "   This command has no flags."
+    echo ""
+    echo "   -h, --help      - Help to use this command."
+    echo ""
+    exit 1
+}
+
+set_license_help() {
+    echo ""
+    echo "${bold}sgutil set license [--help]${normal}"
+    echo ""
+    echo "Configures a verified license server for Xilinx tools."
     echo ""
     echo "FLAGS:"
     echo "   This command has no flags."
@@ -1220,6 +1235,13 @@ case "$command" in
           exit 1
         fi
         eval "$CLI_PATH/set/keys"
+        ;;
+      license) 
+        if [ "$#" -ne 2 ]; then
+          set_license_help
+          exit 1
+        fi
+        eval "$CLI_PATH/set/license-msg"
         ;;
       mtu) 
         valid_flags="-v --value -h --help"
