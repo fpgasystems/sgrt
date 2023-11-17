@@ -65,13 +65,13 @@ _sgutil_completions()
                 enable) 
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         vitis)
-                            COMPREPLY=($(compgen -W "--version --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         vivado) 
-                            COMPREPLY=($(compgen -W "--version --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         xrt) 
-                            COMPREPLY=($(compgen -W "--version --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                     esac
                     ;;
