@@ -278,12 +278,12 @@ enable_vivado_help() {
 
 enable_xrt_help() {
     echo ""
-    echo "${bold}sgutil enable xrt [flags] [--help]${normal}"
+    echo "${bold}sgutil enable xrt [--help]${normal}"
     echo ""
     echo "Enables Xilinx Runtime (XRT)."
     echo ""
     echo "FLAGS:"
-    echo "   -v, --version   - XRT version."
+    echo "   This command has no flags."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -1032,9 +1032,11 @@ case "$command" in
         eval "$CLI_PATH/enable/vivado-msg"
         ;;
       xrt) 
-        valid_flags="-v --version -h --help" 
-        flags_check $command_arguments_flags"@"$valid_flags
-        source $CLI_PATH/$command/$arguments $flags
+        if [ "$#" -ne 2 ]; then
+          enable_xrt_help
+          exit 1
+        fi
+        eval "$CLI_PATH/enable/xrt-msg"
         ;;
       *)
         enable_help

@@ -323,6 +323,7 @@
         - vivado
         - vivado-msg
         - xrt
+        - xrt-msg
     #examine
     - name: copying examine
       copy:
