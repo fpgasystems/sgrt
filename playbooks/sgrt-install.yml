@@ -141,6 +141,7 @@
         - CPU_SERVERS_LIST
         - FPGA_SERVERS_LIST
         - GPU_SERVERS_LIST
+        - LM_LICENSE_FILE
         - MPICH_PATH
         - MY_DRIVERS_PATH #replaces my LOCAL_PATH
         - MY_PROJECTS_PATH
@@ -149,6 +150,7 @@
         - VIVADO_DEVICES_MAX
         - XILINX_PLATFORMS_PATH
         - XILINX_TOOLS_PATH
+        - XILINXD_LICENSE_FILE
         - XRT_PATH
     #devices
     #devices_acap_fpga
