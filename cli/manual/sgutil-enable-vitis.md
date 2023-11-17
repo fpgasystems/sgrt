@@ -6,19 +6,17 @@
 
 ## sgutil enable vitis
 
-<code>sgutil enable vitis [flags] [--help]</code>
+<code>sgutil enable vitis [--help]</code>
 <p>
   &nbsp; &nbsp; Enables Vitis SDK (Software Development Kit) and Vitis_HLS (High-Level Synthesis).
 </p>
 
 ### Flags
-<code>-v, --version <string></code>
 <p>
-  &nbsp; &nbsp; Vitis version.
+  &nbsp; &nbsp; This command has no flags.
 </p>
 
 ### Examples
 ```
 $ sgutil enable vitis
-$ sgutil enable vitis --version 2022.1
 ```

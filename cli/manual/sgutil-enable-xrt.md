@@ -6,19 +6,17 @@
 
 ## sgutil enable xrt
 
-<code>sgutil enable xrt [flags] [--help]</code>
+<code>sgutil enable xrt [--help]</code>
 <p>
   &nbsp; &nbsp; Enables Xilinx Runtime (XRT).
 </p>
 
 ### Flags
-<code>-v, --version <string></code>
 <p>
-  &nbsp; &nbsp; XRT version.
+  &nbsp; &nbsp; This command has no flags.
 </p>
 
 ### Examples
 ```
 $ sgutil enable xrt
-$ sgutil enable xrt --version 2022.1
 ```

@@ -6,19 +6,17 @@
 
 ## sgutil enable vivado
 
-<code>sgutil enable vivado [flags] [--help]</code>
+<code>sgutil enable vivado [--help]</code>
 <p>
   &nbsp; &nbsp; Enables Vivado HDI (Hardware Design and Implementation).
 </p>
 
 ### Flags
-<code>-v, --version <string></code>
 <p>
-  &nbsp; &nbsp; Vitis version.
+  &nbsp; &nbsp; This command has no flags.
 </p>
 
 ### Examples
 ```
 $ sgutil enable vivado
-$ sgutil enable vivado --version 2022.1
 ```
