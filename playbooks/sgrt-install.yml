@@ -138,7 +138,6 @@
       when: all and constants_contents.matched == 0
       loop:
         - ACAP_SERVERS_LIST
-        - CLI_PATH
         - CPU_SERVERS_LIST
         - FPGA_SERVERS_LIST
         - GPU_SERVERS_LIST
