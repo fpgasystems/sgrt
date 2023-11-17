@@ -4,7 +4,8 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 #constants
-#CLI_PATH="$(dirname "$(dirname "$0")")"
+LM_LICENSE_FILE=$($CLI_PATH/common/get_constant $CLI_PATH LM_LICENSE_FILE) # CLI_PATH is declared as an environment variable
+XILINXD_LICENSE_FILE=$($CLI_PATH/common/get_constant $CLI_PATH XILINXD_LICENSE_FILE)
 
-export LM_LICENSE_FILE=2101@sgv-license-01:2100@sgv-license-01:8161@iis-lm.ee.ethz.ch
-export XILINXD_LICENSE_FILE=2101@129.132.186.119:2101@sgv-license-01:2100@129.132.186.119:8161@iis-lm.ee.ethz.ch
+export LM_LICENSE_FILE=$LM_LICENSE_FILE
+export XILINXD_LICENSE_FILE=$XILINXD_LICENSE_FILE
