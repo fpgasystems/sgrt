@@ -264,12 +264,12 @@ enable_vitis_help() {
 
 enable_vivado_help() {
     echo ""
-    echo "${bold}sgutil enable vivado [flags] [--help]${normal}"
+    echo "${bold}sgutil enable vivado [--help]${normal}"
     echo ""
     echo "Enables Vivado HDI (Hardware Design and Implementation)."
     echo ""
     echo "FLAGS:"
-    echo "   -v, --version   - Vivado version."
+    echo "   This command has no flags."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -1025,15 +1025,11 @@ case "$command" in
         eval "$CLI_PATH/enable/vitis-msg"
         ;;
       vivado) 
-        valid_flags="-v --version -h --help" 
-        flags_check $command_arguments_flags"@"$valid_flags
-        #source $CLI_PATH/$command/$arguments $flags
-        XILINX_TOOLS_PATH="/tools/Xilinx"
-        version_name="2022.1"
-        echo ""
-        echo "source $XILINX_TOOLS_PATH//Vivado/$version_name/.settings64-Vivado.sh"
-        echo ""
-        source $XILINX_TOOLS_PATH//Vivado/$version_name/.settings64-Vivado.sh
+        if [ "$#" -ne 2 ]; then
+          enable_vivado_help
+          exit 1
+        fi
+        eval "$CLI_PATH/enable/vivado-msg"
         ;;
       xrt) 
         valid_flags="-v --version -h --help" 
