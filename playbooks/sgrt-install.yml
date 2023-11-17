@@ -321,6 +321,7 @@
         - vitis
         - vitis-msg
         - vivado
+        - vivado-msg
         - xrt
     #examine
     - name: copying examine
