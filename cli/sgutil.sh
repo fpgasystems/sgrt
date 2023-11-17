@@ -250,12 +250,12 @@ enable_help() {
 
 enable_vitis_help() {
     echo ""
-    echo "${bold}sgutil enable vitis [flags] [--help]${normal}"
+    echo "${bold}sgutil enable vitis [--help]${normal}"
     echo ""
     echo "Enables Vitis SDK (Software Development Kit) and Vitis_HLS (High-Level Synthesis)."
     echo ""
     echo "FLAGS:"
-    echo "   -v, --version   - Vitis version."
+    echo "   This command has no flags."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -1018,9 +1018,11 @@ case "$command" in
         enable_help
         ;;
       vitis) 
-        valid_flags="-v --version -h --help" 
-        flags_check $command_arguments_flags"@"$valid_flags
-        source $CLI_PATH/$command/$arguments $flags
+        if [ "$#" -ne 2 ]; then
+          enable_vitis_help
+          exit 1
+        fi
+        eval "$CLI_PATH/enable/vitis-msg"
         ;;
       vivado) 
         valid_flags="-v --version -h --help" 

@@ -4,8 +4,8 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 #constants
-CLI_PATH="/opt/sgrt/cli" #"$(dirname "$(dirname "$0")")"
-XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
+#CLI_PATH="/opt/sgrt/cli" #"$(dirname "$(dirname "$0")")"
+XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH) # CLI_PATH is declared as an environment variable
 VITIS_PATH="$XILINX_TOOLS_PATH/Vitis"
 
 #get hostname

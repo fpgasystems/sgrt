@@ -1,7 +1,7 @@
 ---
 
 - hosts: 
-    #- hacc-build
+    - hacc-build
     #- alveo-u250
     #- alveo-u280
     #- alveo-u50d
@@ -30,7 +30,7 @@
     #scripts
     build: false
     common: false
-    enable: false
+    enable: true
     examine: false
     get: false
     new: false
@@ -319,6 +319,7 @@
       when: all or enable
       loop:
         - vitis
+        - vitis-msg
         - vivado
         - xrt
     #examine
