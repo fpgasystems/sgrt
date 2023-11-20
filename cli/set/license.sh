@@ -3,9 +3,14 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#constants
-LM_LICENSE_FILE=$($CLI_PATH/common/get_constant $CLI_PATH LM_LICENSE_FILE) # CLI_PATH is declared as an environment variable
-XILINXD_LICENSE_FILE=$($CLI_PATH/common/get_constant $CLI_PATH XILINXD_LICENSE_FILE)
+# Specify list of servers
+file_path="$CLI_PATH/constants/XILINXD_LICENSE_FILE"
 
-export LM_LICENSE_FILE=$LM_LICENSE_FILE
-export XILINXD_LICENSE_FILE=$XILINXD_LICENSE_FILE
+# Read the lines from the file into an array
+mapfile -t lines < "$file_path"
+
+# Join the array elements with ':' to create the desired format
+XILINXD_LICENSE_FILE=$(IFS=:; echo "${lines[*]}")
+
+# Print the result or use it as needed
+export XILINXD_LICENSE_FILE
