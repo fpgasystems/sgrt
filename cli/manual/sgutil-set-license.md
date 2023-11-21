@@ -8,7 +8,7 @@
 
 <code>sgutil set license [--help]</code>
 <p>
-  &nbsp; &nbsp; Configures a verified license server for Xilinx tools.
+  &nbsp; &nbsp; Configures a set of verified license servers for Xilinx tools.
 </p>
 
 ### Flags
