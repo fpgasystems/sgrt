@@ -31,11 +31,14 @@ if [ "$num_remote_servers" -eq 0 ]; then
     exit
 fi
 
+#convert servers_family_list to an array
+IFS=' ' read -ra servers_family_list_array <<< "$servers_family_list"
+
 #print
-if [ -n "${servers_family_list[@]}" ]; then
+if [ ${#servers_family_list_array[@]} -gt 0 ]; then
     server_index=1
     echo ""
-    for server in "${servers_family_list[@]}"; do
+    for server in "${servers_family_list_array[@]}"; do
         echo "$server_index: $server"
         ((server_index++))
     done
