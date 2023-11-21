@@ -53,6 +53,7 @@
         - HACC_PATH
         - LOCAL_PATH #replaced by MY_DRIVERS_PATH
         - CLI_PATH
+        - LM_LICENSE_FILE
     - name: deleting common scripts
       file:
         path: "{{ cli_path }}/common/{{ item }}"
