@@ -12,7 +12,6 @@ mapfile -t lines < "$file_path"
 # Join the array elements with ':' to create the desired format
 XILINXD_LICENSE_FILE=$(IFS=:; echo "${lines[*]}")
 
-
 # Set the environment variable
 if printenv | grep -q XILINXD_LICENSE_FILE; then
     echo ""
