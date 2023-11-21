@@ -201,15 +201,6 @@ device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 
-#set project name
-project_name="validate_$config.$FDEV_NAME"
-
-#define directories (1)
-DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"
-SHELL_BUILD_DIR="$DIR/hw/build"
-DRIVER_DIR="$DIR/driver"
-APP_BUILD_DIR="$DIR/sw/examples/$config/build"
-
 # adjust perf_mem validation
 #if [ "$config" = "perf_mem" ]; then
 #    case "$FDEV_NAME" in
@@ -263,6 +254,15 @@ case "$config" in
         echo ""
     ;;  
 esac
+
+#set project name
+project_name="validate_$config_hw.$FDEV_NAME"
+
+#define directories (1)
+DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"
+SHELL_BUILD_DIR="$DIR/hw/build"
+DRIVER_DIR="$DIR/driver"
+APP_BUILD_DIR="$DIR/sw/examples/$config_sw/build"
 
 # create coyote validate config.device_name directory and checkout
 if ! [ -d "$DIR" ]; then
