@@ -15,6 +15,7 @@
 
 * [gh](./sgutil-set-gh.md#sgutil-set-gh)
 * [keys](./sgutil-set-keys.md#sgutil-set-keys)
+* [license](./sgutil-set-license.md#sgutil-set-license)
 * [mtu](./sgutil-set-mtu.md#sgutil-set-mtu)
 
 <code>-h, --help</code>
