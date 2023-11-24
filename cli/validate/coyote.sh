@@ -43,6 +43,9 @@ if [ -z "$(echo $XILINX_VIVADO)" ] || [ -z "$(echo $XILINX_VITIS)" ]; then
     exit 1
 fi
 
+#get vivado version from environment variable XILINX_VIVADO
+vivado_version=$(basename "$XILINX_VIVADO")
+
 #check for vivado_developers
 member=$($CLI_PATH/common/is_member $USER vivado_developers)
 if [ "$member" = "false" ]; then
@@ -256,7 +259,7 @@ case "$config" in
 esac
 
 #set project name
-project_name="validate_$config_hw.$FDEV_NAME"
+project_name="validate_$config_hw.$FDEV_NAME.$vivado_version"
 
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"
