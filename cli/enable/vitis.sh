@@ -44,7 +44,7 @@ else
         version_name=$(echo "$result" | sed -n '2p')
         #forbidden combinations
         if [ "$version_found" = "1" ] && ([ "$version_name" = "" ] || [ ! -d "$VITIS_PATH/$version_name" ]); then 
-            $CLI_PATH/sgutil enable xrt -h
+            $CLI_PATH/sgutil enable vitis -h
             exit
         fi
     fi
