@@ -182,15 +182,15 @@ echo ""
 echo "${bold}Please, choose your configuration:${normal}" # this refers to a software (sw/examples) configuration
 echo ""
 PS3=""
-select config in perf_host perf_fpga perf_rdma_host gbm_dtrees hyperloglog #perf_host perf_fpga gbm_dtrees hyperloglog perf_dram perf_hbm perf_mem perf_rdma perf_rdma_host perf_rdma_card perf_tcp rdma_regex service_aes service_reconfiguration
+select config in perf_host perf_rdma_host gbm_dtrees #perf_host perf_fpga gbm_dtrees hyperloglog perf_dram perf_hbm perf_mem perf_rdma perf_rdma_host perf_rdma_card perf_tcp rdma_regex service_aes service_reconfiguration
 do
     case $config in
         perf_host) break;;                  #1
-        perf_fpga) break;;                  #2
+        #perf_fpga) break;;                  #2
         #perf_mem) break;;                   #7
         perf_rdma_host) break;;
         gbm_dtrees) break;;                 #3
-        hyperloglog) break;;                #4
+        #hyperloglog) break;;                #4
     esac
 done
 # perf_host) break;;                  #1
@@ -246,10 +246,10 @@ case "$config" in
         config_hw=$config
         config_sw=$config
         ;;
-    perf_fpga) 
-        config_hw=$config
-        config_sw=$config
-        ;;
+    #perf_fpga) 
+    #    config_hw=$config
+    #    config_sw=$config
+    #    ;;
     perf_rdma_host)
         config_hw=$config
         config_sw="perf_rdma"
@@ -258,10 +258,10 @@ case "$config" in
         config_hw=$config
         config_sw=$config
         ;;
-    hyperloglog)
-        config_hw=$config
-        config_sw=$config
-        ;; 
+    #hyperloglog)
+    #    config_hw=$config
+    #    config_sw=$config
+    #    ;; 
     *)
         echo ""
         echo "Unknown config name."
