@@ -20,6 +20,7 @@ tool_version=""
 case "$tool" in
     "xrt")
         tool_string="XRT"
+        tool="xbutil"
         ;;
     "vitis")
         tool_string="Vitis"
@@ -42,15 +43,15 @@ tool_path=$(which $tool)
 if ! [ -z "$tool_path" ]; then
     #get version
     case "$tool" in
-        "xrt")
+        "xbutil")
             branch=$(xbutil --version | grep -i -w 'Branch' | tr -d '[:space:]')
             tool_version=${branch:7:6}    
             ;;
         "vitis")
-            tool_version=$(vitis -version 2>&1 | grep "Vitis" | awk '{print $3}')
+            tool_version=$(vitis -version | grep "Vitis v" | awk '{print $3}' | sed 's/v//')
             ;;
         "vivado")
-            tool_version=$(vivado -version 2>&1 | grep "Vivado" | awk '{print $3}')
+            tool_version=$(vivado -version | grep "Vivado v" | awk '{print $2}' | sed 's/v//')
             ;;
         *)
             echo "Invalid tool: $tool"
@@ -59,14 +60,14 @@ if ! [ -z "$tool_path" ]; then
     esac
 fi
 
-echo ""
-echo $tool_version
-echo ""
+#echo ""
+#echo $tool_version
+#echo ""
 
-#print error message (tool_version is empty)
-if [ -z "$tool_version" ]; then
-    echo ""
-    echo "Please, source a valid $tool_string version for ${bold}$hostname!${normal}"
-    echo ""
-    exit 1
-fi
+##print error message (tool_version is empty)
+#if [ -z "$tool_version" ]; then
+#    echo ""
+#    echo "Please, source a valid $tool_string version for ${bold}$hostname!${normal}"
+#    echo ""
+#    exit 1
+#fi
