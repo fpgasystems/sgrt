@@ -39,7 +39,7 @@ fi
 #    exit 1
 #fi
 
-#check on valid XRT and Vivado version (Vivado could be used for reverting)
+#check on valid XRT version
 xrt_version=$($CLI_PATH/common/get_xilinx_version xrt)
 
 if [ -z "$(echo $xrt_version)" ]; then
