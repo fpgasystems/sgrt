@@ -2,14 +2,15 @@
 
 - hosts: 
     - hacc-build
-    - alveo-u250
-    - alveo-u280
-    - alveo-u50d
-    - alveo-u55c
-    - versal-vck5000
-    - hacc-boxes
+    #- alveo-u250
+    #- alveo-u280
+    #- alveo-u50d
+    #- alveo-u55c
+    #- versal-vck5000
+    #- hacc-boxes
     #- alveo-u55c-01.inf.ethz.ch
-    #- hacc-box-01.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
+    - hacc-box-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -28,13 +29,13 @@
     api: false #true----------------
     #cli installation
     #scripts
-    build: false
+    build: true
     common: true
     enable: false
     examine: false
     get: false
     new: false
-    program: false
+    program: true
     reboot: false
     run: false
     set: false
@@ -42,10 +43,10 @@
     templates: false #true-----------------------------------
     validate: false
     #workflows
-    coyote: false
+    coyote: true
     hip: false
     mpi: false
-    vitis: false #true---------------------------------
+    vitis: true #true---------------------------------
   tasks:
 
     #creating directories
@@ -486,6 +487,11 @@
             src: "../cli/run/coyote.sh"
             dest: "{{ cli_path }}/run/coyote"
             mode: "0755"
+        - name: validate
+          copy:
+            src: "../cli/validate/coyote.sh"
+            dest: "{{ cli_path }}/validate/coyote"
+            mode: "0755"
       when: all or coyote
     #hip
     - name: copying hip workflow
@@ -508,6 +514,11 @@
             src: "../cli/run/hip.sh"
             dest: "{{ cli_path }}/run/hip"
             mode: "0755"
+        - name: validate
+          copy:
+            src: "../cli/validate/hip.sh"
+            dest: "{{ cli_path }}/validate/hip"
+            mode: "0755"
       when: all or hip
     #mpi
     - name: copying mpi workflow
@@ -529,6 +540,11 @@
           copy:
             src: "../cli/run/mpi.sh"
             dest: "{{ cli_path }}/run/mpi"
+            mode: "0755"
+        - name: validate
+          copy:
+            src: "../cli/validate/mpi.sh"
+            dest: "{{ cli_path }}/validate/mpi"
             mode: "0755"
       when: all or mpi
     #vitis
@@ -556,5 +572,10 @@
           copy:
             src: "../cli/run/vitis.sh"
             dest: "{{ cli_path }}/run/vitis"
+            mode: "0755"
+        - name: validate
+          copy:
+            src: "../cli/validate/vitis.sh"
+            dest: "{{ cli_path }}/validate/vitis"
             mode: "0755"
       when: all or vitis
