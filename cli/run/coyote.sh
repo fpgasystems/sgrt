@@ -33,9 +33,19 @@ if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
 fi
 
 #check on valid Vivado version
-if [ -z "$(echo $XILINX_VIVADO)" ]; then
+#if [ -z "$(echo $XILINX_VIVADO)" ]; then
+#    echo ""
+#    echo "Please, source a valid Vivado version for ${bold}$hostname!${normal}"
+#    echo ""
+#    exit 1
+#fi
+
+#check on valid Vivado version
+vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+
+if [ -z "$(echo $vivado_version)" ]; then
     echo ""
-    echo "Please, source a valid Vivado version for ${bold}$hostname!${normal}"
+    echo "Please, source valid Vivado version for ${bold}$hostname!${normal}"
     echo ""
     exit 1
 fi
