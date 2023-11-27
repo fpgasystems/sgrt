@@ -32,9 +32,19 @@ if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
 fi
 
 #check on valid XRT version
-if [ ! -d $XRT_PATH ]; then #if [ -z "$(echo $XILINX_XRT)" ]; then
+#if [ ! -d $XRT_PATH ]; then #if [ -z "$(echo $XILINX_XRT)" ]; then
+#    echo ""
+#    echo "Please, source a valid XRT and Vitis version for ${bold}$hostname!${normal}"
+#    echo ""
+#    exit 1
+#fi
+
+#check on valid XRT and Vivado version (Vivado could be used for reverting)
+xrt_version=$($CLI_PATH/common/get_xilinx_version xrt)
+
+if [ -z "$(echo $xrt_version)" ]; then
     echo ""
-    echo "Please, source a valid XRT and Vitis version for ${bold}$hostname!${normal}"
+    echo "Please, source a valid XRT version for ${bold}$hostname!${normal}"
     echo ""
     exit 1
 fi
