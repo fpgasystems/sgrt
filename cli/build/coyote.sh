@@ -23,9 +23,20 @@ if [ "$virtualized" = "1" ]; then
 fi
 
 #check on valid Vivado and Vitis version
-if [ -z "$(echo $XILINX_VIVADO)" ] || [ -z "$(echo $XILINX_VITIS)" ]; then
+#if [ -z "$(echo $XILINX_VIVADO)" ] || [ -z "$(echo $XILINX_VITIS)" ]; then
+#    echo ""
+#    echo "Please, source a valid Vivado and Vitis version for ${bold}$hostname!${normal}"
+#    echo ""
+#    exit 1
+#fi
+
+#check on valid Vivado and Vitis HLS version
+vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+vitis_version=$($CLI_PATH/common/get_xilinx_version vitis)
+
+if [ -z "$(echo $vivado_version)" ] || [ -z "$(echo $vitis_version)" ] || ([ "$vivado_version" != "$vitis_version" ]); then
     echo ""
-    echo "Please, source a valid Vivado and Vitis version for ${bold}$hostname!${normal}"
+    echo "Please, source valid Vivado and Vitis HLS versions for ${bold}$hostname!${normal}"
     echo ""
     exit 1
 fi
