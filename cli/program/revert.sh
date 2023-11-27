@@ -52,7 +52,7 @@ vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
 
 if [ -z "$(echo $vivado_version)" ]; then
     echo ""
-    echo "Please, source valid Vivado version for ${bold}$hostname!${normal}"
+    echo "Please, source a valid Vivado version for ${bold}$hostname!${normal}"
     echo ""
     exit 1
 fi
