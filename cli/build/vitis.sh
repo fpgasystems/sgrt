@@ -19,9 +19,12 @@ url="${HOSTNAME}"
 hostname="${url%%.*}"
 
 #check on valid XRT and Vivado version
-if [ -z "$(echo $XILINX_XRT)" ] || [ -z "$(echo $XILINX_VIVADO)" ]; then
+xrt_version=$($CLI_PATH/common/get_xilinx_version xrt)
+vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+
+if [ -z "$(echo $xrt_version)" ] || [ -z "$(echo $vivado_version)" ] || ([ "$xrt_version" != "$vivado_version" ]); then
     echo ""
-    echo "Please, source a valid XRT and Vitis version for ${bold}$hostname!${normal}"
+    echo "Please, source valid XRT and Vivado versions for ${bold}$hostname!${normal}"
     echo ""
     exit 1
 fi
@@ -231,8 +234,8 @@ else
     echo ""
 
     #get xrt version
-    branch=$($XRT_PATH/bin/xbutil --version | grep -i -w 'Branch' | tr -d '[:space:]')
-    branch=${branch:7:6}
+    #branch=$($XRT_PATH/bin/xbutil --version | grep -i -w 'Branch' | tr -d '[:space:]')
+    #branch=${branch:7:6}
     
     #application compilation
     echo "${bold}Application compilation:${normal}"

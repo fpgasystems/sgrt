@@ -61,7 +61,7 @@ if ! [ -z "$tool_path" ]; then
 fi
 
 #echo ""
-#echo $tool_version
+echo $tool_version
 #echo ""
 
 ##print error message (tool_version is empty)
