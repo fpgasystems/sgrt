@@ -29,16 +29,16 @@
     #cli installation
     #scripts
     build: false
-    common: false
-    enable: true
+    common: true
+    enable: false
     examine: false
     get: false
     new: false
     program: false
     reboot: false
     run: false
-    set: true
-    sgutil: true 
+    set: false
+    sgutil: false 
     templates: false #true-----------------------------------
     validate: false
     #workflows
@@ -294,6 +294,7 @@
         - get_multiple_devices
         - get_servers
         - get_vivado_devices
+        - get_xilinx_version
         - is_acap
         - is_cpu
         - is_fpga
