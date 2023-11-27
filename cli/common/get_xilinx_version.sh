@@ -16,19 +16,16 @@ tool_string=""
 tool_path=""
 tool_version=""
 
-#check on tool (xbutil, vitis, vivado) and get version_flag
+#check on tool (xrt, vitis, vivado) and get version_flag
 case "$tool" in
-    "xbutil")
+    "xrt")
         tool_string="XRT"
-        version_flag="--version"
         ;;
     "vitis")
         tool_string="Vitis"
-        version_flag="-version"
         ;;
     "vivado")
         tool_string="Vivado"
-        version_flag="-version"
         ;;
     *)
         echo ""
@@ -41,22 +38,19 @@ esac
 #get tool path
 tool_path=$(which $tool)
 
-echo "$tool_path $version_flag"
-
-exit
-
 #check on tool path
 if ! [ -z "$tool_path" ]; then
     #get version
     case "$tool" in
-        "xbutil")
-            tool_string="XRT"
+        "xrt")
+            branch=$(xbutil --version | grep -i -w 'Branch' | tr -d '[:space:]')
+            tool_version=${branch:7:6}    
             ;;
         "vitis")
-            tool_string="Vitis"
+            tool_version=$(vitis -version 2>&1 | grep "Vitis" | awk '{print $3}')
             ;;
         "vivado")
-            tool_string="Vivado"
+            tool_version=$(vivado -version 2>&1 | grep "Vivado" | awk '{print $3}')
             ;;
         *)
             echo "Invalid tool: $tool"
@@ -64,6 +58,10 @@ if ! [ -z "$tool_path" ]; then
             ;;
     esac
 fi
+
+echo ""
+echo $tool_version
+echo ""
 
 #print error message (tool_version is empty)
 if [ -z "$tool_version" ]; then
