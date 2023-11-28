@@ -442,12 +442,19 @@ APP_BUILD_DIR=$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME/
 #change directory
 cd $APP_BUILD_DIR
 
-#program coyote bitstream and driver
-$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
+#local or remote programming (for perf_rdma_host)
+if [ "$config_hw" = "perf_rdma_host" ]; then
 
-#get permissions on N_REGIONS
-$CLI_PATH/program/enable_N_REGIONS $DIR
+    echo "Hey! We need to work this out!"
 
-#run 
-cd $APP_BUILD_DIR
-./main
+else
+    #program coyote bitstream and driver
+    $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
+
+    #get permissions on N_REGIONS
+    $CLI_PATH/program/enable_N_REGIONS $DIR
+
+    #run 
+    cd $APP_BUILD_DIR
+    ./main
+fi
