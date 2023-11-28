@@ -318,17 +318,12 @@ cd $APP_BUILD_DIR
 
 #prgramming local server
 echo "Programming local server ${bold}$hostname...${normal}"
+
 #bitstream and driver
 $CLI_PATH/sgutil program vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
 
 #enable vFPGA regions
-#if [ "$regions_found" = "1" ]; then
-#    echo "${bold}Enabling vFPGA regions:${normal}"
-#    echo ""
-#    $CLI_PATH/program/enable_regions $regions_number
-#else
-    $CLI_PATH/program/enable_N_REGIONS $DIR
-#fi
+$CLI_PATH/program/enable_N_REGIONS $DIR
 
 #programming remote servers (if applies)
 if [ "$deploy_option" -eq 1 ]; then 
@@ -340,11 +335,7 @@ if [ "$deploy_option" -eq 1 ]; then
         echo "Programming remote server ${bold}$i...${normal}"
         echo ""
         #remotely program bitstream, driver, and run enable_regions/enable_N_REGIONS
-        #if [ "$regions_found" = "1" ]; then
-        #    ssh -t $USER@$i "cd $APP_BUILD_DIR ; $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME ; $CLI_PATH/program/enable_regions $regions_number"
-        #else
-            ssh -t $USER@$i "cd $APP_BUILD_DIR ; $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME ; $CLI_PATH/program/enable_N_REGIONS $DIR"
-        #fi
+        ssh -t $USER@$i "cd $APP_BUILD_DIR ; $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME ; $CLI_PATH/program/enable_N_REGIONS $DIR"
     done
 fi
 
