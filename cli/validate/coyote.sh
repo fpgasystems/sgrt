@@ -442,19 +442,31 @@ APP_BUILD_DIR=$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME/
 #change directory
 cd $APP_BUILD_DIR
 
-#local or remote programming (for perf_rdma_host)
+#prgramming local server
+echo ""
+echo "Programming local server ${bold}$hostname...${normal}"
+
+#bitstream and driver
+$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
+
+#enable vFPGA regions
+$CLI_PATH/program/enable_N_REGIONS $DIR
+
+#remote programming (for perf_rdma_host) and run application
 if [ "$config_hw" = "perf_rdma_host" ]; then
 
     echo "Hey! We need to work this out!"
 
+    #echo "Programming local server ${bold}$hostname...${normal}"
+
 else
     #program coyote bitstream and driver
-    $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
+    #$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
 
     #get permissions on N_REGIONS
-    $CLI_PATH/program/enable_N_REGIONS $DIR
+    #$CLI_PATH/program/enable_N_REGIONS $DIR
 
-    #run 
+    #run on local server
     cd $APP_BUILD_DIR
     ./main
 fi
