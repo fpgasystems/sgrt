@@ -320,7 +320,6 @@ cd $APP_BUILD_DIR
 echo "Programming local server ${bold}$hostname...${normal}"
 
 #bitstream and driver
-#$CLI_PATH/sgutil program vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
 $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
 
 #enable vFPGA regions
