@@ -12,6 +12,9 @@ WORKFLOW="coyote"
 BIT_NAME="cyt_top.bit"
 DRIVER_NAME="coyote_drv.ko"
 
+#combine ACAP and FPGA lists removing duplicates
+SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST $CLI_PATH/constants/FPGA_SERVERS_LIST)
+
 #get hostname
 url="${HOSTNAME}"
 hostname="${url%%.*}"
@@ -268,6 +271,21 @@ case "$config" in
         echo ""
     ;;  
 esac
+
+# Verify servers for perf_rdma_host
+if [ "$config_hw" = "perf_rdma_host" ]; then
+    result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $USER)
+    servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
+    num_remote_servers=$(echo "$servers_family_list" | wc -w)
+
+    #check on number of remote servers
+    if [ "$num_remote_servers" -ne 1 ]; then
+        echo ""
+        echo "Please, verify that you can ssh exactly one remote server for perf_rdma_host validation."
+        echo ""
+        exit
+    fi
+fi
 
 #set project name
 project_name="validate_$config_hw.$FDEV_NAME.$vivado_version"
