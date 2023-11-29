@@ -1163,7 +1163,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vivado)
-        valid_flags="-b --bitstream --device --driver -h --help"
+        valid_flags="-b --bitstream --device --driver -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)

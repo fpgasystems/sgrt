@@ -43,9 +43,11 @@ fi
 #check on valid Vivado version
 vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
 
-if [ -z "$(echo $vivado_version)" ]; then
+echo "Hey!!!!! Version is $vivado_version"
+
+if [ -z "$vivado_version" ]; then #if [ -z "$(echo $vivado_version)" ]; then
     echo ""
-    echo "Please, source valid Vivado version for ${bold}$hostname!${normal}"
+    echo "Please source a valid Vivado version for $hostname!"
     echo ""
     exit 1
 fi
@@ -70,6 +72,13 @@ fi
 
 #inputs
 read -a flags <<< "$@"
+
+#version_dialog_check
+result="$("$CLI_PATH/common/version_dialog_check" "${flags[@]}")"
+version_found=$(echo "$result" | sed -n '1p')
+version_name=$(echo "$result" | sed -n '2p')
+
+echo "Hey!!!!! Version NAME is $version_name"
 
 #check on flags
 device_found=""
