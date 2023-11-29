@@ -50,7 +50,7 @@ fi
 vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
 vitis_version=$($CLI_PATH/common/get_xilinx_version vitis)
 
-if [ -z "$(echo $vivado_version)" ] || [ -z "$(echo $vitis_version)" ] || ([ "$vivado_version" != "$vitis_version" ]); then
+if [ -z "$vivado_version" ] || [ -z "$vitis_version" ] || ([ "$vivado_version" != "$vitis_version" ]); then #if [ -z "$(echo $vivado_version)" ] || [ -z "$(echo $vitis_version)" ] || ([ "$vivado_version" != "$vitis_version" ]); then
     echo ""
     echo "Please, source valid Vivado and Vitis HLS versions for ${bold}$hostname!${normal}"
     echo ""
@@ -454,10 +454,18 @@ $CLI_PATH/program/enable_N_REGIONS $DIR
 
 #remote programming (for perf_rdma_host) and run application
 if [ "$config_hw" = "perf_rdma_host" ]; then
+    #convert string to array
+    IFS=" " read -ra servers_family_list_array <<< "$servers_family_list"
+    for i in "${servers_family_list_array[@]}"; do
+        #remote servers
+        echo ""
+        echo "Programming remote server ${bold}$i...${normal}"
+        echo ""
+        #remotely program bitstream, driver, and run enable_regions/enable_N_REGIONS
+        ssh -t $USER@$i "cd $APP_BUILD_DIR ; $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME -v $vivado_version; $CLI_PATH/program/enable_N_REGIONS $DIR"
+    done
 
-    echo "Hey! We need to work this out!"
-
-    #echo "Programming local server ${bold}$hostname...${normal}"
+    echo "Done with remote programming!"
 
 else
     #program coyote bitstream and driver
