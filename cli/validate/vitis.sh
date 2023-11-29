@@ -36,7 +36,7 @@ fi
 #check on valid XRT version
 xrt_version=$($CLI_PATH/common/get_xilinx_version xrt)
 
-if [ -z "$(echo $xrt_version)" ]; then
+if [ -z "$xrt_version" ]; then #if [ -z "$(echo $xrt_version)" ]; then
     echo ""
     echo "Please, source a valid XRT version for ${bold}$hostname!${normal}"
     echo ""

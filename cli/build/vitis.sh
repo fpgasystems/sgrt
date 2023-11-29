@@ -22,7 +22,7 @@ hostname="${url%%.*}"
 xrt_version=$($CLI_PATH/common/get_xilinx_version xrt)
 vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
 
-if [ -z "$(echo $xrt_version)" ] || [ -z "$(echo $vivado_version)" ] || ([ "$xrt_version" != "$vivado_version" ]); then
+if [ -z "$xrt_version" ] || [ -z "$vivado_version" ] || ([ "$xrt_version" != "$vivado_version" ]); then #if [ -z "$(echo $xrt_version)" ] || [ -z "$(echo $vivado_version)" ] || ([ "$xrt_version" != "$vivado_version" ]); then
     echo ""
     echo "Please, source valid XRT and Vivado versions for ${bold}$hostname!${normal}"
     echo ""
