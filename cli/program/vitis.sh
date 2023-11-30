@@ -256,7 +256,7 @@ if [ "$deploy_option" -eq 1 ]; then
         echo "Programming remote server ${bold}$i...${normal}"
         echo ""
         #remotely revert to xrt, reset device (delete any xclbin), and program xclbin
-        ssh -t "$USER@$i" "$CLI_PATH/program/revert -d $device_index; $XRT_PATH/bin/xbutil reset --device $bdf --force; $XRT_PATH/bin/xbutil program --device $bdf -u $APP_BUILD_DIR/$xclbin"
+        ssh -t "$USER@$i" "$CLI_PATH/program/revert -d $device_index -v $xrt_version; $XRT_PATH/bin/xbutil reset --device $bdf --force; $XRT_PATH/bin/xbutil program --device $bdf -u $APP_BUILD_DIR/$xclbin"
     done
 fi
 
