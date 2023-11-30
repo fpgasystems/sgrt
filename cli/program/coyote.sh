@@ -5,6 +5,7 @@ normal=$(tput sgr0)
 
 #constants
 CLI_PATH="$(dirname "$(dirname "$0")")"
+MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 VIVADO_DEVICES_MAX=$(cat $CLI_PATH/constants/VIVADO_DEVICES_MAX)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
@@ -319,8 +320,42 @@ cd $APP_BUILD_DIR
 #prgramming local server
 echo "Programming local server ${bold}$hostname...${normal}"
 
-#bitstream and driver
-$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
+#program bitstream
+#$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
+$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME
+
+#program driver
+#we need to copy the driver to /local to avoid permission problems
+echo ""
+echo "${bold}Copying driver to $MY_DRIVERS_PATH:${normal}"
+echo ""
+echo "cp -f $DRIVER_NAME $MY_DRIVERS_PATH"
+cp -f $DRIVER_NAME $MY_DRIVERS_PATH
+
+#insert coyote driver
+echo ""
+echo "${bold}Inserting driver:${normal}"
+echo ""
+
+#get actual filename
+#driver_name=$(basename "$driver_name")
+
+#get IP address
+IP_address_0=$(sgutil get network -d $device_index | awk '$1 == "1:" {print $2}')
+IP_address_0_hex=$($CLI_PATH/common/address_to_hex IP $IP_address_0)
+
+#get MAC address
+MAC_address_0=$(sgutil get network -d $device_index | awk '$1 == "1:" {print $3}' | tr -d '()')
+MAC_address_0_hex=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
+
+#we always remove (coyote_drv) and insert (coyote_drv.ko) the driver
+echo "sudo rmmod ${DRIVER_NAME%.ko}"
+sudo rmmod ${DRIVER_NAME%.ko}
+sleep 1
+echo "sudo insmod $MY_DRIVERS_PATH/$DRIVER_NAME ip_addr_q0=$IP_address_0_hex mac_addr_q0=$MAC_address_0_hex"
+sudo insmod $MY_DRIVERS_PATH/$DRIVER_NAME ip_addr_q0=$IP_address_0_hex mac_addr_q0=$MAC_address_0_hex
+sleep 1
+echo ""
 
 #enable vFPGA regions
 $CLI_PATH/program/enable_N_REGIONS $DIR
