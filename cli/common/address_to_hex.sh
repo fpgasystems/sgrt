@@ -28,8 +28,14 @@ case "$address_type" in
         echo $ip0$ip1$ip2$ip3
         ;;
     "MAC")
-        echo "Processing MAC address: $address"
-        # Add your custom operations for MAC address here
+        #read
+        mac=$address
+        
+        #convert
+        mac_hex=${mac//:/}
+
+        #return
+        echo $mac_hex
         ;;
     *)
         echo "Invalid address type. Please provide 'IP' or 'MAC'."

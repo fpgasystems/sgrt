@@ -126,10 +126,10 @@ else
         exit
     fi
     #forbidden combinations (6)
-    if ([ "$driver_found" = "1" ] && [ "$bitstream_found" = "0" ] && [ "$device_found" = "1" ]); then #the driver alone (without bitstream) does not need --device
-        $CLI_PATH/sgutil program vivado -h
-        exit
-    fi
+    #if ([ "$driver_found" = "1" ] && [ "$bitstream_found" = "0" ] && [ "$device_found" = "1" ]); then #the driver alone (without bitstream) does not need --device
+    #    $CLI_PATH/sgutil program vivado -h
+    #    exit
+    #fi
     #device values when there is only a device
     if [[ $multiple_devices = "0" ]]; then
         device_found="1"
@@ -209,6 +209,21 @@ if [[ $driver_found = "1" ]]; then
 
     #get actual filename
     driver_name=$(basename "$driver_name")
+
+    #get IP address
+    IP_address_0=$(sgutil get network -d $device_index | awk '$1 == "1:" {print $2}')
+
+    #get MAC address
+    MAC_address_0=$(sgutil get network -d $device_index | awk '$1 == "1:" {print $3}' | tr -d '()')
+
+    echo $IP_address_0
+    echo $MAC_address_0
+
+    IP_address_hex_0=$($CLI_PATH/common/address_to_hex IP $IP_address_0)
+    MAC_address_hex_0=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
+
+    echo $IP_address_hex_0
+    echo $MAC_address_hex_0
 
     #we always remove and insert the driver
     echo "sudo rmmod $driver_name"

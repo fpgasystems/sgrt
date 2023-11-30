@@ -49,7 +49,7 @@
 
 ### Examples
 ```
-$ sgutil program vivado --bitstream my_bitstream.bit --driver my_driver.ko --device 1
-$ sgutil program vivado --bitstream my_bitstream.bit --device 1
-$ sgutil program vivado --driver my_driver.ko
+$ sgutil program vivado --device 1 --bitstream my_bitstream.bit --driver my_driver.ko
+$ sgutil program vivado --device 1 --bitstream my_bitstream.bit
+$ sgutil program vivado --device 1 --driver my_driver.ko
 ```
