@@ -211,11 +211,11 @@ if [[ $driver_found = "1" ]]; then
     driver_name=$(basename "$driver_name")
 
     #get IP address
-    IP_address_0=$(sgutil get network -d $device_index | awk '$1 == "1:" {print $2}')
+    IP_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print $2}')
     IP_address_0_hex=$($CLI_PATH/common/address_to_hex IP $IP_address_0)
 
     #get MAC address
-    MAC_address_0=$(sgutil get network -d $device_index | awk '$1 == "1:" {print $3}' | tr -d '()')
+    MAC_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print $3}' | tr -d '()')
     MAC_address_0_hex=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
 
     #we always remove and insert the driver
