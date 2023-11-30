@@ -180,17 +180,17 @@ else
         echo ""
     fi
     #deployment_dialog (forgotten mandatory 3)
+    #get_servers
+    echo ""
+    echo "${bold}Quering remote servers with ssh:${normal}"
+    result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
+    servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
+    servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
+    num_remote_servers=$(echo "$servers_family_list" | wc -w)
+    echo ""
+    echo "Done!"
+    echo ""
     if [ "$deploy_option_found" = "0" ]; then
-        #get_servers
-        echo ""
-        echo "${bold}Quering remote servers with ssh:${normal}"
-        result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
-        servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
-        servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
-        num_remote_servers=$(echo "$servers_family_list" | wc -w)
-        echo ""
-        echo "Done!"
-        echo ""
         #deployment_dialog
         deploy_option="0"
         if [ "$num_remote_servers" -ge 1 ]; then
