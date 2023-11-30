@@ -437,20 +437,22 @@ else
 fi
 
 #define directories (2)
-APP_BUILD_DIR=$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME/
+#APP_BUILD_DIR=$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME/
 
 #change directory
-cd $APP_BUILD_DIR
+#cd $APP_BUILD_DIR
 
 #prgramming local server
-echo ""
-echo "Programming local server ${bold}$hostname...${normal}"
+#echo ""
+#echo "Programming local server ${bold}$hostname...${normal}"
 
 #bitstream and driver
-$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
+#$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
 
 #enable vFPGA regions
-$CLI_PATH/program/enable_N_REGIONS $DIR
+#$CLI_PATH/program/enable_N_REGIONS $DIR
+
+sgutil program coyote --project $project_name --device $device_index
 
 #remote programming (for perf_rdma_host) and run application
 if [ "$config_hw" = "perf_rdma_host" ]; then
