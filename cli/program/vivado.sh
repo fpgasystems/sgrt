@@ -212,25 +212,18 @@ if [[ $driver_found = "1" ]]; then
 
     #get IP address
     IP_address_0=$(sgutil get network -d $device_index | awk '$1 == "1:" {print $2}')
+    IP_address_0_hex=$($CLI_PATH/common/address_to_hex IP $IP_address_0)
 
     #get MAC address
     MAC_address_0=$(sgutil get network -d $device_index | awk '$1 == "1:" {print $3}' | tr -d '()')
-
-    echo $IP_address_0
-    echo $MAC_address_0
-
-    IP_address_hex_0=$($CLI_PATH/common/address_to_hex IP $IP_address_0)
-    MAC_address_hex_0=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
-
-    echo $IP_address_hex_0
-    echo $MAC_address_hex_0
+    MAC_address_0_hex=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
 
     #we always remove and insert the driver
     echo "sudo rmmod $driver_name"
     sudo rmmod $driver_name
     sleep 1
-    echo "sudo insmod $MY_DRIVERS_PATH/$driver_name"
-    sudo insmod $MY_DRIVERS_PATH/$driver_name
+    echo "sudo insmod $MY_DRIVERS_PATH/$driver_name ip_addr_q0=$IP_address_0_hex mac_addr_q0=$MAC_address_0_hex"
+    sudo insmod $MY_DRIVERS_PATH/$driver_name ip_addr_q0=$IP_address_0_hex mac_addr_q0=$MAC_address_0_hex
     sleep 1
     echo ""
 fi
