@@ -1159,7 +1159,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       revert)
-        valid_flags="-d --device -h --help"
+        valid_flags="-d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vivado)
