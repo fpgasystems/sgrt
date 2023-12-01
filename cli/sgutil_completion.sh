@@ -28,7 +28,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "coyote hip mpi vitis --help" -- ${cur}))
                     ;;
                 program)
-                    COMPREPLY=($(compgen -W "coyote reset revert vitis vivado --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote driver reset revert vitis vivado --help" -- ${cur}))
                     ;;
                 reboot)
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
@@ -110,6 +110,9 @@ _sgutil_completions()
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote)
                             COMPREPLY=($(compgen -W "--device --project --regions --remote --help" -- ${cur}))
+                            ;;
+                        driver)
+                            COMPREPLY=($(compgen -W "--module --params --help" -- ${cur}))
                             ;;
                         reset)
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))

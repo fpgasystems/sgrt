@@ -544,6 +544,7 @@ program_help() {
     echo ""
     echo "ARGUMENTS:"
     echo "   coyote          - Programs Coyote to a given FPGA."
+    echo "   driver          - Inserts a driver or module into the Linux kernel."
     echo "   reset           - Resets a given FPGA/ACAP."
     echo "   revert          - Returns the specified FPGA to the Vitis workflow."
     echo "   vitis           - Programs a Vitis binary to a given FPGA/ACAP."
@@ -565,6 +566,21 @@ program_coyote_help() {
     echo "   -p, --project   - Specifies your Coyote project name." 
     echo "       --regions   - Sets the number of independent regions (vFPGA)."
     echo "       --remote    - Local or remote deployment."
+    echo ""
+    echo "   -h, --help      - Help to use this command."
+    echo ""
+    exit 1
+}
+
+program_driver_help() {
+    echo ""
+    echo "${bold}sgutil program driver [flags] [--help]${normal}"
+    echo ""
+    echo "Inserts a driver or module into the Linux kernel."
+    echo ""
+    echo "FLAGS:"
+    echo "   -m, --module    - Full path to the .ko module to be inserted."
+    echo "   -p, --params    - A comma separated list of module parameters." 
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -1152,6 +1168,10 @@ case "$command" in
         ;;
       coyote)
         valid_flags="-d --device -p --project --regions --remote -h --help"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      driver)
+        valid_flags="-m --module -p --params -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       reset) 
