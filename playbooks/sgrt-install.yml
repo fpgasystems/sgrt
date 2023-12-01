@@ -1,7 +1,7 @@
 ---
 
 - hosts: 
-    - hacc-build
+    #- hacc-build
     #- alveo-u250
     #- alveo-u280
     #- alveo-u50d
@@ -29,7 +29,7 @@
     api: false #true----------------
     #cli installation
     #scripts
-    build: true
+    build: false
     common: true
     enable: false
     examine: false
@@ -39,14 +39,14 @@
     reboot: false
     run: false
     set: false
-    sgutil: false 
+    sgutil: true 
     templates: false #true-----------------------------------
-    validate: false
+    validate: true
     #workflows
     coyote: true
     hip: false
     mpi: false
-    vitis: true #true---------------------------------
+    vitis: false #true---------------------------------
   tasks:
 
     #creating directories
@@ -281,6 +281,7 @@
         mode: "0755"
       when: all or common
       loop:
+        - address_to_hex
         - bitstream_dialog_check
         - deployment_dialog
         - deployment_dialog_check
