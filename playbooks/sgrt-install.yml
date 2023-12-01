@@ -30,7 +30,7 @@
     #cli installation
     #scripts
     build: false
-    common: true
+    common: false
     enable: false
     examine: false
     get: false
@@ -41,7 +41,7 @@
     set: false
     sgutil: true 
     templates: false #true-----------------------------------
-    validate: true
+    validate: false
     #workflows
     coyote: true
     hip: false
@@ -373,6 +373,7 @@
       when: all or program
       loop:
         - coyote
+        - driver
         - enable_N_REGIONS
         - enable_regions
         - fpga_chmod
