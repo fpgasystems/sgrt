@@ -436,53 +436,16 @@ else
     #echo ""
 fi
 
-#define directories (2)
-#APP_BUILD_DIR=$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME/
-
-#change directory
-#cd $APP_BUILD_DIR
-
-#prgramming local server
-#echo ""
-#echo "Programming local server ${bold}$hostname...${normal}"
-
-#bitstream and driver
-#$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
-
-#enable vFPGA regions
-#$CLI_PATH/program/enable_N_REGIONS $DIR
-
-#sgutil program coyote --project $project_name --device $device_index
-
 #remote programming (for perf_rdma_host) and run application
 if [ "$config_hw" = "perf_rdma_host" ]; then
-    
-    #convert string to array
-    #IFS=" " read -ra servers_family_list_array <<< "$servers_family_list"
-    #for i in "${servers_family_list_array[@]}"; do
-    #    #remote servers
-    #    echo ""
-    #    echo "Programming remote server ${bold}$i...${normal}"
-    #    echo ""
-    #    #remotely program bitstream, driver, and run enable_regions/enable_N_REGIONS
-    #    ssh -t $USER@$i "cd $APP_BUILD_DIR ; $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME -v $vivado_version ; $CLI_PATH/program/enable_N_REGIONS $DIR"
-    #done
-
-    #echo "Done with remote programming!"
-
+    #program
     sgutil program coyote --project $project_name --device $device_index --remote 1
 
 else
-    
+    #program
     sgutil program coyote --project $project_name --device $device_index --remote 0
     
-    #program coyote bitstream and driver
-    #$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
-
-    #get permissions on N_REGIONS
-    #$CLI_PATH/program/enable_N_REGIONS $DIR
-
-    #run on local server
+    #run
     cd $APP_BUILD_DIR
     ./main
 fi
