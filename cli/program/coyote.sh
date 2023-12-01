@@ -327,16 +327,16 @@ $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME
 
 #program driver
 #we need to copy the driver to /local to avoid permission problems
-echo ""
-echo "${bold}Copying driver to $MY_DRIVERS_PATH:${normal}"
-echo ""
-echo "cp -f $DRIVER_NAME $MY_DRIVERS_PATH"
-cp -f $DRIVER_NAME $MY_DRIVERS_PATH
+#echo ""
+#echo "${bold}Copying driver to $MY_DRIVERS_PATH:${normal}"
+#echo ""
+#echo "cp -f $DRIVER_NAME $MY_DRIVERS_PATH"
+#cp -f $DRIVER_NAME $MY_DRIVERS_PATH
 
 #insert coyote driver
-echo ""
-echo "${bold}Inserting driver:${normal}"
-echo ""
+#echo ""
+#echo "${bold}Inserting driver:${normal}"
+#echo ""
 
 #get actual filename
 #driver_name=$(basename "$driver_name")
@@ -350,13 +350,19 @@ MAC_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print 
 MAC_address_0_hex=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
 
 #we always remove (coyote_drv) and insert (coyote_drv.ko) the driver
-echo "sudo rmmod ${DRIVER_NAME%.ko}"
-sudo rmmod ${DRIVER_NAME%.ko}
-sleep 1
-echo "sudo insmod $MY_DRIVERS_PATH/$DRIVER_NAME ip_addr_q0=$IP_address_0_hex mac_addr_q0=$MAC_address_0_hex"
-sudo insmod $MY_DRIVERS_PATH/$DRIVER_NAME ip_addr_q0=$IP_address_0_hex mac_addr_q0=$MAC_address_0_hex
-sleep 1
-echo ""
+#echo "sudo rmmod ${DRIVER_NAME%.ko}"
+#sudo rmmod ${DRIVER_NAME%.ko}
+#sleep 1
+#echo "sudo insmod $MY_DRIVERS_PATH/$DRIVER_NAME ip_addr_q0=$IP_address_0_hex mac_addr_q0=$MAC_address_0_hex"
+#sudo insmod $MY_DRIVERS_PATH/$DRIVER_NAME ip_addr_q0=$IP_address_0_hex mac_addr_q0=$MAC_address_0_hex
+#sleep 1
+#echo ""
+
+echo "HEY! $MY_DRIVERS_PATH/$DRIVER_NAME"
+echo "HEY! $APP_BUILD_DIR/$DRIVER_NAME"
+
+#insert coyote driver
+eval "$CLI_PATH/program/driver -m $APP_BUILD_DIR$DRIVER_NAME -p ip_addr_q0=$IP_address_0_hex,mac_addr_q0=$MAC_address_0_hex"
 
 #enable vFPGA regions
 $CLI_PATH/program/enable_N_REGIONS $DIR
