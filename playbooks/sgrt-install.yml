@@ -303,6 +303,7 @@
         - is_gpu
         - is_member
         - is_virtualized
+        - params_dialog_check
         - platform_dialog
         - platform_dialog_check
         - project_dialog
