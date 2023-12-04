@@ -31,10 +31,7 @@ else
     #driver_dialog_check
     result="$("$CLI_PATH/common/driver_dialog_check" "${flags[@]}")"
     driver_found=$(echo "$result" | sed -n '1p')
-    driver_name=$(echo "$result" | sed -n '2p')
-
-    echo "driver_found: $driver_found"
-    echo "driver_name: $driver_name"
+    driver_name=$(echo "$result" | sed -n '2p') 
 
     #forbidden combinations (1)
     if [ "$driver_found" = "0" ]; then
@@ -56,9 +53,6 @@ else
     result="$("$CLI_PATH/common/params_dialog_check" "${flags[@]}")"
     params_found=$(echo "$result" | sed -n '1p')
     params_string=$(echo "$result" | sed -n '2p')
-
-    echo "params_found: $params_found"
-    echo "params_string: $params_string"
 
     #define the expected pattern for driver parameters
     pattern='^[^=,]+=[^=,]+(,[^=,]+=[^=,]+)*$' 
