@@ -446,6 +446,6 @@ else
     sgutil program coyote --project $project_name --device $device_index --remote 0
     
     #run
-    cd $APP_BUILD_DIR
+    cd $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME
     ./main
 fi
