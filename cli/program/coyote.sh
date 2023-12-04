@@ -6,6 +6,8 @@ normal=$(tput sgr0)
 #constants
 CLI_PATH="$(dirname "$(dirname "$0")")"
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
+XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
+VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 VIVADO_DEVICES_MAX=$(cat $CLI_PATH/constants/VIVADO_DEVICES_MAX)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
@@ -52,14 +54,14 @@ fi
 #fi
 
 #check on valid Vivado version
-vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+#vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
 
-if [ -z "$vivado_version" ]; then #if [ -z "$(echo $vivado_version)" ]; then
-    echo ""
-    echo "Please, source a valid Vivado version for ${bold}$hostname!${normal}"
-    echo ""
-    exit 1
-fi
+#if [ -z "$vivado_version" ]; then #if [ -z "$(echo $vivado_version)" ]; then
+#    echo ""
+#    echo "Please, source a valid Vivado version for ${bold}$hostname!${normal}"
+#    echo ""
+#    exit 1
+#fi
 
 #check for vivado_developers
 member=$($CLI_PATH/common/is_member $USER vivado_developers)
@@ -95,6 +97,32 @@ if [[ ${#flags[@]} -eq 2 && ${flags[0]} = "--regions" ]]; then
         echo ""
     fi
     exit
+fi
+
+#version_dialog_check
+result="$("$CLI_PATH/common/version_dialog_check" "${flags[@]}")"
+vivado_version=$(echo "$result" | sed -n '2p')
+
+#check on Vivado version
+if [ -n "$vivado_version" ]; then
+    #vivado_version is not empty and we check if the Vivado directory exists
+    if [ ! -d $VIVADO_PATH/$vivado_version ]; then
+        echo ""
+        echo "Please, choose a valid Vivado version for ${bold}$hostname!${normal}"
+        echo ""
+        exit 1
+    fi
+else
+    #vivado_version is empty and we set the more recent Vivado version by default
+    vivado_version=$(find "$VIVADO_PATH" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort -V | tail -n 1)
+
+    #vivado_version and VIVADO_PATH are empty
+    if [ -z "$vivado_version" ]; then
+        echo ""
+        echo "Please, source a valid Vivado version for ${bold}$hostname!${normal}"
+        echo ""
+        exit 1
+    fi
 fi
 
 #check if workflow exists
@@ -319,11 +347,11 @@ fi
 cd $APP_BUILD_DIR
 
 #prgramming local server
-echo "Programming local server ${bold}$hostname...${normal}"
+echo "Programming ${bold}$hostname...${normal}"
 
 #program bitstream
 #$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
-$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME
+$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME -v $vivado_version
 
 #get IP address
 IP_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print $2}')
@@ -341,15 +369,21 @@ $CLI_PATH/program/enable_N_REGIONS $DIR
 
 #programming remote servers (if applies)
 if [ "$deploy_option" -eq 1 ]; then 
+    #remote servers
+    echo ""
+    echo "${bold}Programming remote servers...${normal}"
+    echo ""
     #convert string to array
     IFS=" " read -ra servers_family_list_array <<< "$servers_family_list"
     for i in "${servers_family_list_array[@]}"; do
         #remote servers
-        echo ""
-        echo "Programming remote server ${bold}$i...${normal}"
-        echo ""
+        #echo ""
+        #echo "Programming remote server ${bold}$i...${normal}"
+        #echo ""
         #remotely program bitstream, driver, and run enable_regions/enable_N_REGIONS
-        ssh -t $USER@$i "cd $APP_BUILD_DIR ; $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME -v $vivado_version ; $CLI_PATH/program/enable_N_REGIONS $DIR"
+        #ssh -t $USER@$i "cd $APP_BUILD_DIR ; $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME -v $vivado_version ; $CLI_PATH/program/enable_N_REGIONS $DIR"
+        ssh -t $USER@$i "$CLI_PATH/program/coyote --device $device_index --project $project_name --remote 0"
+
     done
 fi
 
