@@ -14,6 +14,7 @@
 ### Arguments
 
 * [coyote](./sgutil-program-coyote.md#sgutil-program-coyote)
+* [driver](./sgutil-program-driver.md#sgutil-program-driver)
 * [reset](./sgutil-program-reset.md#sgutil-program-reset)
 * [revert](./sgutil-program-revert.md#sgutil-program-revert)
 * [vitis](./sgutil-program-vitis.md#sgutil-program-vitis)
