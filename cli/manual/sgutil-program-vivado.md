@@ -17,15 +17,15 @@
   &nbsp; &nbsp; Bitstream (.bit) file path.
 </p>
 
-<code>    --device <string></code>
+<code>-d, --device <string></code>
 <p>
   &nbsp; &nbsp; FPGA Device Index (see sgutil examine).
 </p>
 
-<code>    --driver <string></code>
+<!-- <code>    --driver <string></code>
 <p>
   &nbsp; &nbsp; Driver (.ko) file path.
-</p>
+</p> -->
 
 <!-- <code>-l, --ltx <string></code>
 <p>
@@ -49,7 +49,6 @@
 
 ### Examples
 ```
-$ sgutil program vivado --device 1 --bitstream my_bitstream.bit --driver my_driver.ko
-$ sgutil program vivado --device 1 --bitstream my_bitstream.bit
-$ sgutil program vivado --device 1 --driver my_driver.ko
+$ sgutil program vivado --bitstream my_bitstream.bit 
+$ sgutil program vivado --bitstream my_bitstream.bit --device 1 
 ```

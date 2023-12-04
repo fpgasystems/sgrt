@@ -623,8 +623,8 @@ program_vivado_help() {
     echo ""
     echo "FLAGS:"
     echo "   -b, --bitstream - Bitstream (.bit) file path." 
-    echo "       --device    - FPGA Device Index (see sgutil examine)."
-    echo "       --driver    - Driver (.ko) file path."
+    echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
+    #echo "       --driver    - Driver (.ko) file path."
     echo ""
     echo "   -h, --help      - Help to program a bitstream."
     echo ""
@@ -1183,7 +1183,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vivado)
-        valid_flags="-b --bitstream --device --driver -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
+        valid_flags="-b --bitstream -d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion (Javier: 04.12.2023 --driver)  
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)

@@ -124,7 +124,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--device --project --remote --help" -- ${cur}))
                             ;;
                         vivado) 
-                            COMPREPLY=($(compgen -W "--bitstream --device --driver --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--bitstream --device --help" -- ${cur})) # --driver 
                             ;;
                     esac
                     ;;

@@ -5,7 +5,7 @@ normal=$(tput sgr0)
 
 #constants
 CLI_PATH="$(dirname "$(dirname "$0")")"
-MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
+#MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 VIVADO_DEVICES_MAX=$(cat $CLI_PATH/constants/VIVADO_DEVICES_MAX)
@@ -102,29 +102,34 @@ else
     bitstream_found=$(echo "$result" | sed -n '1p')
     bitstream_name=$(echo "$result" | sed -n '2p')
     #forbidden combinations (2)
+    if [ "$bitstream_found" = "0" ]; then
+        $CLI_PATH/sgutil program vivado -h
+        exit
+    fi
+    #forbidden combinations (3)
     if [ "$bitstream_found" = "1" ] && ([ "$bitstream_name" = "" ] || [ ! -f "$bitstream_name" ] || [ "${bitstream_name##*.}" != "bit" ]); then
         $CLI_PATH/sgutil program vivado -h
         exit
     fi
     #driver_dialog_check
-    result="$("$CLI_PATH/common/driver_dialog_check" "${flags[@]}")"
-    driver_found=$(echo "$result" | sed -n '1p')
-    driver_name=$(echo "$result" | sed -n '2p')
-    #forbidden combinations (3)
-    if [ "$driver_found" = "1" ] && ([ "$driver_name" = "" ] || [ ! -f "$driver_name" ] || [ "${driver_name##*.}" != "ko" ]); then
-        $CLI_PATH/sgutil program vivado -h
-        exit
-    fi
+    #result="$("$CLI_PATH/common/driver_dialog_check" "${flags[@]}")"
+    #driver_found=$(echo "$result" | sed -n '1p')
+    #driver_name=$(echo "$result" | sed -n '2p')
+    ##forbidden combinations (3)
+    #if [ "$driver_found" = "1" ] && ([ "$driver_name" = "" ] || [ ! -f "$driver_name" ] || [ "${driver_name##*.}" != "ko" ]); then
+    #    $CLI_PATH/sgutil program vivado -h
+    #    exit
+    #fi
     #forbidden combinations (4)
     if [ "$multiple_devices" = "1" ] && [ "$bitstream_found" = "1" ] && [ "$device_found" = "0" ]; then # this means bitstream always needs --device when multiple_devices
         $CLI_PATH/sgutil program vivado -h
         exit
     fi
     #forbidden combinations (5)
-    if ([ "$bitstream_found" = "0" ] && [ "$driver_found" = "0" ]); then
-        $CLI_PATH/sgutil program vivado -h
-        exit
-    fi
+    #if ([ "$bitstream_found" = "0" ] && [ "$driver_found" = "0" ]); then
+    #    $CLI_PATH/sgutil program vivado -h
+    #    exit
+    #fi
     #forbidden combinations (6)
     #if ([ "$driver_found" = "1" ] && [ "$bitstream_found" = "0" ] && [ "$device_found" = "1" ]); then #the driver alone (without bitstream) does not need --device
     #    $CLI_PATH/sgutil program vivado -h
@@ -194,36 +199,36 @@ if [[ $bitstream_found = "1" ]]; then
 fi
 
 #program driver
-if [[ $driver_found = "1" ]]; then
-    #we need to copy the driver to /local to avoid permission problems
-	echo ""
-    echo "${bold}Copying driver to $MY_DRIVERS_PATH:${normal}"
-	echo ""
-    echo "cp -f $driver_name $MY_DRIVERS_PATH"
-    cp -f $driver_name $MY_DRIVERS_PATH
-
-    #insert coyote driver
-	echo ""
-    echo "${bold}Inserting driver:${normal}"
-	echo ""
-
-    #get actual filename
-    driver_name=$(basename "$driver_name")
-
-    #get IP address
-    IP_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print $2}')
-    IP_address_0_hex=$($CLI_PATH/common/address_to_hex IP $IP_address_0)
-
-    #get MAC address
-    MAC_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print $3}' | tr -d '()')
-    MAC_address_0_hex=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
-
-    #we always remove and insert the driver
-    echo "sudo rmmod ${driver_name%.ko}"
-    sudo rmmod ${driver_name%.ko}
-    sleep 1
-    echo "sudo insmod $MY_DRIVERS_PATH/$driver_name ip_addr_q0=$IP_address_0_hex mac_addr_q0=$MAC_address_0_hex"
-    sudo insmod $MY_DRIVERS_PATH/$driver_name ip_addr_q0=$IP_address_0_hex mac_addr_q0=$MAC_address_0_hex
-    sleep 1
-    echo ""
-fi
+#if [[ $driver_found = "1" ]]; then
+#    #we need to copy the driver to /local to avoid permission problems
+#	echo ""
+#    echo "${bold}Copying driver to $MY_DRIVERS_PATH:${normal}"
+#	echo ""
+#    echo "cp -f $driver_name $MY_DRIVERS_PATH"
+#    cp -f $driver_name $MY_DRIVERS_PATH
+#
+#    #insert coyote driver
+#	echo ""
+#    echo "${bold}Inserting driver:${normal}"
+#	echo ""
+#
+#    #get actual filename
+#    driver_name=$(basename "$driver_name")
+#
+#    #get IP address
+#    IP_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print $2}')
+#    IP_address_0_hex=$($CLI_PATH/common/address_to_hex IP $IP_address_0)
+#
+#    #get MAC address
+#    MAC_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print $3}' | tr -d '()')
+#    MAC_address_0_hex=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
+#
+#    #we always remove and insert the driver
+#    echo "sudo rmmod ${driver_name%.ko}"
+#    sudo rmmod ${driver_name%.ko}
+#    sleep 1
+#    echo "sudo insmod $MY_DRIVERS_PATH/$driver_name ip_addr_q0=$IP_address_0_hex mac_addr_q0=$MAC_address_0_hex"
+#    sudo insmod $MY_DRIVERS_PATH/$driver_name ip_addr_q0=$IP_address_0_hex mac_addr_q0=$MAC_address_0_hex
+#    sleep 1
+#    echo ""
+#fi
