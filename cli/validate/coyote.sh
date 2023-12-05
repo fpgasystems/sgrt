@@ -441,11 +441,23 @@ if [ "$config_hw" = "perf_rdma_host" ]; then
     #program
     sgutil program coyote --project $project_name --device $device_index --remote 1
 
+    #get CPU1 (local) IP address
+    IP_address_cpu1=$($CLI_PATH/get/ifconfig | awk '$1 == "0:" {print $2}')
+    IP_address_cpu1_hex=$($CLI_PATH/common/address_to_hex IP $IP_address_cpu1)
+
+    #run (CPU1, local)
+    cd $DIR/build_dir.$FDEV_NAME
+    ./main
+
+    #run (CPU2, remote)
+    ssh -t $USER@$i "cd $DIR/build_dir.$FDEV_NAME ; ./main -t $IP_address_cpu1_hex"
+
 else
     #program
     sgutil program coyote --project $project_name --device $device_index --remote 0
     
     #run
-    cd $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME
+    #cd $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME
+    cd $DIR/build_dir.$FDEV_NAME
     ./main
 fi
