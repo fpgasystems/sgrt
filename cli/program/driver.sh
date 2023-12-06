@@ -89,7 +89,7 @@ params_string=$(echo "$params_string" | tr ';' ' ')
 
 #we always remove and insert the driver
 echo "sudo rmmod ${driver_name%.ko}"
-sudo rmmod ${driver_name%.ko}
+sudo rmmod ${driver_name%.ko} 2>/dev/null # with 2>/dev/null we avoid printing a message if the module does not exist
 sleep 1
 echo "sudo insmod $MY_DRIVERS_PATH/$driver_name $params_string"
 sudo insmod $MY_DRIVERS_PATH/$driver_name $params_string
