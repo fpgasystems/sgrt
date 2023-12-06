@@ -441,16 +441,39 @@ if [ "$config_hw" = "perf_rdma_host" ]; then
     #program
     sgutil program coyote --project $project_name --device $device_index --remote 1
 
-    #get CPU1 (local) IP address
+    #get local CPU IP address
     IP_address_cpu1=$($CLI_PATH/get/ifconfig | awk '$1 == "0:" {print $2}')
     IP_address_cpu1_hex=$($CLI_PATH/common/address_to_hex IP $IP_address_cpu1)
 
-    #run (CPU1, local)
+    echo "For finishing your ${bold}perf_rdma_host${normal} Coyote validation:"
+    echo ""
+    echo "    1. Open a new window terminal for ${bold}$servers_family_list${normal}"
+    echo "    2. From such a terminal, run: ${bold}$DIR/build_dir.$FDEV_NAME/main -t $IP_address_cpu1${normal}"
+    echo "    3. Check your results on this terminal ${bold}($hostname)${normal}"
+    echo ""
+    
+    #run (local CPU)
     cd $DIR/build_dir.$FDEV_NAME
     ./main
+    
+    #run (local CPU)
+    #cd $DIR/build_dir.$FDEV_NAME
+    #./main
+    #nohup ./main &
+    #tmux new-session -d -s main_session './main'
 
-    #run (CPU2, remote)
-    ssh -t $USER@$i "cd $DIR/build_dir.$FDEV_NAME ; ./main -t $IP_address_cpu1_hex"
+    #run (remote CPUs)
+    #IFS=" " read -ra servers_family_list_array <<< "$servers_family_list"
+    #for i in "${servers_family_list_array[@]}"; do
+    #    ssh -t $USER@$i "cd $DIR/build_dir.$FDEV_NAME ; ./main -t $IP_address_cpu1_hex"
+    #    #ssh -t $USER@$i "cd $DIR/build_dir.$FDEV_NAME ; tmux send-keys -t main_session './main -t $IP_address_cpu1_hex' C-m"
+    #    #ssh -t jmoyapaya@alveo-u55c-06 "tmux send-keys -t main_session './main -t 10.253.74.82' C-m"
+    #done
+
+    #echo "For finishing your ${bold}perf_rdma_host validation:${normal} "
+    #echo "    1. On $hostname (this terminal) run:  ${bold}./main${normal}"
+    #echo "    2. On $servers_family_list (remote server) run: ${bold}./main -t $IP_address_cpu1${normal}"
+    #echo ""
 
 else
     #program
