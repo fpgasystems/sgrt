@@ -6,6 +6,10 @@ normal=$(tput sgr0)
 #constants
 CLI_PATH="$(dirname "$0")"
 
+#get hostname
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+
 #get username
 username=$USER
 
