@@ -106,12 +106,16 @@ fi
 
 # clone repository
 #echo ""
-echo "${bold}Checking out Coyote:${normal}"
-echo ""
-cd ${DIR}
-git clone https://github.com/fpgasystems/Coyote.git
-mv Coyote/* .
-rm -rf Coyote
+#echo "${bold}Checking out Coyote:${normal}"
+#echo ""
+#cd ${DIR}
+#git clone https://github.com/fpgasystems/Coyote.git
+#mv Coyote/* .
+#rm -rf Coyote
+
+#clone Coyote (changes to $DIR)
+$CLI_PATH/common/git_clone_coyote $DIR
+
 #copy template from SGRT_PATH
 SGRT_PATH=$(dirname "$CLI_PATH")
 cp -rf $SGRT_PATH/templates/$WORKFLOW/hello_world/* $DIR

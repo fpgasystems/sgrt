@@ -299,13 +299,16 @@ APP_BUILD_DIR="$DIR/sw/examples/$config_sw/build"
 # create coyote validate config.device_name directory and checkout
 if ! [ -d "$DIR" ]; then
     mkdir ${DIR}
-    echo ""
-    echo "${bold}Checking out Coyote:${normal}"
-    echo ""
-    cd ${DIR}
-    git clone https://github.com/fpgasystems/Coyote.git
-    mv Coyote/* .
-    rm -rf Coyote
+    #echo ""
+    #echo "${bold}Checking out Coyote:${normal}"
+    #echo ""
+    #cd ${DIR}
+    #git clone https://github.com/fpgasystems/Coyote.git
+    #mv Coyote/* .
+    #rm -rf Coyote
+
+    #clone Coyote (changes to $DIR)
+    $CLI_PATH/common/git_clone_coyote $DIR
 
     # create configuration file
     touch config_shell.hpp
