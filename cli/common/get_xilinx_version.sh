@@ -48,10 +48,10 @@ if ! [ -z "$tool_path" ]; then
             tool_version=${branch:7:6}    
             ;;
         "vitis")
-            tool_version=$(vitis -version | grep "Vitis v" | awk '{print $3}' | sed 's/v//')
+            tool_version=$(vitis -version | grep -i "Vitis v" | awk '{print $3}' | sed 's/v//')
             ;;
         "vivado")
-            tool_version=$(vivado -version | grep "Vivado v" | awk '{print $2}' | sed 's/v//')
+            tool_version=$(vivado -version | grep -i "Vivado v" | awk '{print $2}' | sed 's/v//')
             ;;
         *)
             echo "Invalid tool: $tool"
