@@ -4,6 +4,8 @@
 <a href="https://github.com/fpgasystems/sgrt/blob/main/examples.md#examples">Back to examples</a>
 </p>
 
+# RDMA stack validation
+
 In this experiment, we are using [`sgutil validate coyote`](../cli/manual/sgutil-validate-coyote.md#sgutil-validate-coyote) command to validate Coyote’s RDMA stack on ETHZ-HACC. To proceed with the test, please do as follows:
 
 1. Use the [booking system](https://alveo-booking.ethz.ch/login.php) to reserve two servers, for example, alveo-u55c-09 and alveo-u55c-10,
