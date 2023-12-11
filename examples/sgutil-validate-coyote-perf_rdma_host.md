@@ -4,9 +4,8 @@
 <a href="https://github.com/fpgasystems/sgrt/blob/main/examples.md#examples">Back to examples</a>
 </p>
 
-In this experiment, we are using [`sgutil validate coyote`](../cli/manual/sgutil-validate-coyote.md#sgutil-validate-coyote) command to validate Coyote on ETHZ-HACC. You can validate three different Coyote shells: perf_host, perf_rdma_host, or gbm_dtrees.
+In this experiment, we are using [`sgutil validate coyote`](../cli/manual/sgutil-validate-coyote.md#sgutil-validate-coyote) command to validate Coyote’s RDMA stack on ETHZ-HACC. To proceed with the test, please do as follows:
 
-## perf_rdma_host
 1. Use the [booking system](https://alveo-booking.ethz.ch/login.php) to reserve two servers, for example, alveo-u55c-09 and alveo-u55c-10,
 2. Login to the server you want to set as the local server; from such a server, make sure you can log into the remote server with ssh,
 3. Run ```sgutil validate coyote,``` select **perf_rdma_host,** and wait for the results.
