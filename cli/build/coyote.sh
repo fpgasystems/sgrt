@@ -282,7 +282,7 @@ if ! [ -d "$APP_BUILD_DIR" ]; then
     echo "Subject: Good news! sgutil build coyote ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
 
 else
-    echo "${bold}Coyote shell bitstream generation:${normal}"
+    echo "${bold}Coyote shell compilation:${normal}"
     echo ""
     echo "$project_name/build_dir.$FDEV_NAME.$vivado_version shell already exists!"
 
