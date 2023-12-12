@@ -382,7 +382,7 @@ if ! [ -d "$DIR" ]; then
 fi
 
 #check on build_dir.FDEV_NAME
-if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME" ]; then
+if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version" ]; then
     #bitstream compilation
     echo ""
     echo "${bold}Coyote shell compilation:${normal}"
@@ -425,7 +425,7 @@ if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME" ]; th
     #copy driver
     cp $DRIVER_DIR/coyote_drv.ko $APP_BUILD_DIR
     #rename folder
-    mv $APP_BUILD_DIR $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME/
+    mv $APP_BUILD_DIR $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/
     #remove all other build temporal folders
     rm -rf $SHELL_BUILD_DIR
     rm $DRIVER_DIR/coyote_drv*
@@ -438,7 +438,7 @@ if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME" ]; th
     rm $DRIVER_DIR/modules.order
 else
     echo ""
-    echo "$project_name/build_dir.$FDEV_NAME shell already exists!"
+    echo "$project_name/build_dir.$FDEV_NAME.$vivado_version shell already exists!"
     #echo ""
 fi
 
@@ -454,12 +454,12 @@ if [ "$config_hw" = "perf_rdma_host" ]; then
     echo "For finishing your ${bold}perf_rdma_host${normal} Coyote validation:"
     echo ""
     echo "    1. Open a new window terminal for ${bold}$servers_family_list${normal}"
-    echo "    2. From such a terminal, run: ${bold}$DIR/build_dir.$FDEV_NAME/main -t $IP_address_cpu1${normal}"
+    echo "    2. From such a terminal, run: ${bold}$DIR/build_dir.$FDEV_NAME.$vivado_version/main -t $IP_address_cpu1${normal}"
     echo "    3. Check your results on this terminal ${bold}($hostname)${normal}"
     echo ""
     
     #run (local CPU)
-    cd $DIR/build_dir.$FDEV_NAME
+    cd $DIR/build_dir.$FDEV_NAME.$vivado_version
     ./main
     
     #run (local CPU)
@@ -487,6 +487,6 @@ else
     
     #run
     #cd $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME
-    cd $DIR/build_dir.$FDEV_NAME
+    cd $DIR/build_dir.$FDEV_NAME.$vivado_version
     ./main
 fi
