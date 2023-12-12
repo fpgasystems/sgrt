@@ -307,8 +307,11 @@ if ! [ -d "$DIR" ]; then
     #mv Coyote/* .
     #rm -rf Coyote
 
-    #clone Coyote (changes to $DIR)
+    #clone Coyote
     $CLI_PATH/common/git_clone_coyote $DIR
+
+    #change to project directory
+    cd $DIR
 
     # create configuration file
     touch config_shell.hpp
