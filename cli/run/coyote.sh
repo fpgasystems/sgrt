@@ -209,7 +209,7 @@ platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 
 #define directories (2)
-APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME/" #$FDEV_NAME
+APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/" #$FDEV_NAME
 
 #check for build directory
 if ! [ -d "$APP_BUILD_DIR" ]; then

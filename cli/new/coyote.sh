@@ -113,8 +113,11 @@ fi
 #mv Coyote/* .
 #rm -rf Coyote
 
-#clone Coyote (changes to $DIR)
+#clone Coyote
 $CLI_PATH/common/git_clone_coyote $DIR
+
+#change to project directory
+cd $DIR
 
 #copy template from SGRT_PATH
 SGRT_PATH=$(dirname "$CLI_PATH")

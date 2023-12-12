@@ -218,7 +218,7 @@ done
 #define directories (2)
 SHELL_BUILD_DIR="$DIR/hw/build"
 DRIVER_DIR="$DIR/driver"
-APP_BUILD_DIR="$DIR/build_dir.$FDEV_NAME" #FDEV_NAME
+APP_BUILD_DIR="$DIR/build_dir.$FDEV_NAME.$vivado_version" #FDEV_NAME
 
 echo "${bold}Changing directory:${normal}"
 echo ""
@@ -284,7 +284,7 @@ if ! [ -d "$APP_BUILD_DIR" ]; then
 else
     echo "${bold}Coyote shell bitstream generation:${normal}"
     echo ""
-    echo "$project_name/build_dir.$FDEV_NAME shell already exists!"
+    echo "$project_name/build_dir.$FDEV_NAME.$vivado_version shell already exists!"
 
     #driver compilation
     echo ""
