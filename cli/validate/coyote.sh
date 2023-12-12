@@ -438,8 +438,56 @@ if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivad
     rm $DRIVER_DIR/modules.order
 else
     echo ""
+    echo "${bold}Coyote shell compilation:${normal}"
+    echo ""
     echo "$project_name/build_dir.$FDEV_NAME.$vivado_version shell already exists!"
-    #echo ""
+
+    #per ací!!!!!!
+    #define directories (validate vs build)
+    #DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"   vs. DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"            =====> igual
+    #SHELL_BUILD_DIR="$DIR/hw/build"                   vs. SHELL_BUILD_DIR="$DIR/hw/build"                            =====> igual 
+    #DRIVER_DIR="$DIR/driver"                          vs. DRIVER_DIR="$DIR/driver"                                   =====> igual 
+    #APP_BUILD_DIR="$DIR/sw/examples/$config_sw/build" vs. APP_BUILD_DIR="$DIR/build_dir.$FDEV_NAME.$vivado_version"  =====> diferent
+
+    #driver compilation
+    echo ""
+    echo "${bold}Driver compilation:${normal}"
+    echo ""
+    echo "cd $DRIVER_DIR && make"
+    echo ""
+    cd $DRIVER_DIR && make
+
+    #application compilation
+    echo ""
+    echo "${bold}Example application compilation:${normal}"
+    echo ""
+    echo "cmake ../ -DTARGET_DIR=../examples/$config_sw && make"
+    echo ""
+    if ! [ -d "$APP_BUILD_DIR" ]; then
+        mkdir $APP_BUILD_DIR
+    fi
+    cd $APP_BUILD_DIR
+    /usr/bin/cmake ../../../ -DTARGET_DIR=examples/$config_sw && make
+    #copy bitstream
+    #cp $SHELL_BUILD_DIR/bitstreams/cyt_top.bit $APP_BUILD_DIR
+    #copy driver
+    cp $DRIVER_DIR/coyote_drv.ko $APP_BUILD_DIR
+    #rename folder
+    mv $APP_BUILD_DIR $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/
+    #cp $DRIVER_DIR/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version 
+    #cp $APP_BUILD_DIR/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version 
+    #rm -rf $APP_BUILD_DIR
+    #remove all other build temporal folders
+    #rm -rf $SHELL_BUILD_DIR
+    #rm $DRIVER_DIR/coyote_drv*
+    #rm $DRIVER_DIR/fpga_dev.o
+    #rm $DRIVER_DIR/fpga_drv.o
+    #rm $DRIVER_DIR/fpga_fops.o
+    #rm $DRIVER_DIR/fpga_isr.o
+    #rm $DRIVER_DIR/fpga_mmu.o
+    #rm $DRIVER_DIR/fpga_sysfs.o
+    #rm $DRIVER_DIR/modules.order
+
 fi
 
 #remote programming (for perf_rdma_host) and run application
