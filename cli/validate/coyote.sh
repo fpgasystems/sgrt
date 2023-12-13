@@ -469,12 +469,22 @@ else
     cd $APP_BUILD_DIR
     /usr/bin/cmake ../../../ -DTARGET_DIR=examples/$config_sw && make
     #copy driver (1)
-    cp $DRIVER_DIR/coyote_drv.ko $APP_BUILD_DIR
+    #cp $DRIVER_DIR/coyote_drv.ko $APP_BUILD_DIR
     #move and copy files
-    mv $APP_BUILD_DIR $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/
-    cp -f $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
-    cp -f $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
+
+    #change to project directory
+    cd $DIR
+    #copy driver
+    cp -f $DRIVER_DIR/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
+    #copy application
+    cp -f $APP_BUILD_DIR/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
+    
     rm -rf $APP_BUILD_DIR
+
+    #mv $APP_BUILD_DIR $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/
+    #cp -f $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
+    #cp -f $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
+    #rm -rf $APP_BUILD_DIR
     #rm -rf $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build
     #remove all other build temporal folders
     rm $DRIVER_DIR/coyote_drv*
