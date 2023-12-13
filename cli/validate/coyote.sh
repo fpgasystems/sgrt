@@ -474,6 +474,9 @@ else
     cp $DRIVER_DIR/coyote_drv.ko $APP_BUILD_DIR
     #rename folder
     mv $APP_BUILD_DIR $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/
+    cp -f $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
+    cp -f $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
+    
     #cp $DRIVER_DIR/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version 
     #cp $APP_BUILD_DIR/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version 
     #rm -rf $APP_BUILD_DIR
