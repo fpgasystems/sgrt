@@ -411,7 +411,7 @@ if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivad
 
     #application compilation
     echo ""
-    echo "${bold}Example application compilation:${normal}"
+    echo "${bold}Application compilation:${normal}"
     echo ""
     echo "cmake ../ -DTARGET_DIR=../examples/$config_sw && make"
     echo ""
@@ -459,7 +459,7 @@ else
 
     #application compilation
     echo ""
-    echo "${bold}Example application compilation:${normal}"
+    echo "${bold}Application compilation:${normal}"
     echo ""
     echo "cmake ../ -DTARGET_DIR=../examples/$config_sw && make"
     echo ""
@@ -476,7 +476,8 @@ else
     mv $APP_BUILD_DIR $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/
     cp -f $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
     cp -f $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
-    
+    rm -rf $APP_BUILD_DIR
+    #rm -rf $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build
     #cp $DRIVER_DIR/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version 
     #cp $APP_BUILD_DIR/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version 
     #rm -rf $APP_BUILD_DIR
