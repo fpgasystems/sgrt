@@ -468,21 +468,15 @@ else
     fi
     cd $APP_BUILD_DIR
     /usr/bin/cmake ../../../ -DTARGET_DIR=examples/$config_sw && make
-    #copy bitstream
-    #cp $SHELL_BUILD_DIR/bitstreams/cyt_top.bit $APP_BUILD_DIR
-    #copy driver
+    #copy driver (1)
     cp $DRIVER_DIR/coyote_drv.ko $APP_BUILD_DIR
-    #rename folder
+    #move and copy files
     mv $APP_BUILD_DIR $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/
     cp -f $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
     cp -f $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
     rm -rf $APP_BUILD_DIR
     #rm -rf $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build
-    #cp $DRIVER_DIR/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version 
-    #cp $APP_BUILD_DIR/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version 
-    #rm -rf $APP_BUILD_DIR
     #remove all other build temporal folders
-    #rm -rf $SHELL_BUILD_DIR
     rm $DRIVER_DIR/coyote_drv*
     rm $DRIVER_DIR/fpga_dev.o
     rm $DRIVER_DIR/fpga_drv.o
