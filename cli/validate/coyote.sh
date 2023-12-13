@@ -442,13 +442,6 @@ else
     echo ""
     echo "$project_name/build_dir.$FDEV_NAME.$vivado_version shell already exists!"
 
-    #per ací!!!!!!
-    #define directories (validate vs build)
-    #DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"   vs. DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"            =====> igual
-    #SHELL_BUILD_DIR="$DIR/hw/build"                   vs. SHELL_BUILD_DIR="$DIR/hw/build"                            =====> igual 
-    #DRIVER_DIR="$DIR/driver"                          vs. DRIVER_DIR="$DIR/driver"                                   =====> igual 
-    #APP_BUILD_DIR="$DIR/sw/examples/$config_sw/build" vs. APP_BUILD_DIR="$DIR/build_dir.$FDEV_NAME.$vivado_version"  =====> diferent
-
     #driver compilation
     echo ""
     echo "${bold}Driver compilation:${normal}"
@@ -468,25 +461,17 @@ else
     fi
     cd $APP_BUILD_DIR
     /usr/bin/cmake ../../../ -DTARGET_DIR=examples/$config_sw && make
-    #copy driver (1)
-    #cp $DRIVER_DIR/coyote_drv.ko $APP_BUILD_DIR
-    #move and copy files
 
     #change to project directory
     cd $DIR
+
     #copy driver
     cp -f $DRIVER_DIR/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
     #copy application
     cp -f $APP_BUILD_DIR/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
-    
+    #remove build directory
     rm -rf $APP_BUILD_DIR
-
-    #mv $APP_BUILD_DIR $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/
-    #cp -f $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
-    #cp -f $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
-    #rm -rf $APP_BUILD_DIR
-    #rm -rf $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/build
-    #remove all other build temporal folders
+    #remove all other build temporal files
     rm $DRIVER_DIR/coyote_drv*
     rm $DRIVER_DIR/fpga_dev.o
     rm $DRIVER_DIR/fpga_drv.o
