@@ -479,14 +479,14 @@ else
     #rm -rf $APP_BUILD_DIR
     #remove all other build temporal folders
     #rm -rf $SHELL_BUILD_DIR
-    #rm $DRIVER_DIR/coyote_drv*
-    #rm $DRIVER_DIR/fpga_dev.o
-    #rm $DRIVER_DIR/fpga_drv.o
-    #rm $DRIVER_DIR/fpga_fops.o
-    #rm $DRIVER_DIR/fpga_isr.o
-    #rm $DRIVER_DIR/fpga_mmu.o
-    #rm $DRIVER_DIR/fpga_sysfs.o
-    #rm $DRIVER_DIR/modules.order
+    rm $DRIVER_DIR/coyote_drv*
+    rm $DRIVER_DIR/fpga_dev.o
+    rm $DRIVER_DIR/fpga_drv.o
+    rm $DRIVER_DIR/fpga_fops.o
+    rm $DRIVER_DIR/fpga_isr.o
+    rm $DRIVER_DIR/fpga_mmu.o
+    rm $DRIVER_DIR/fpga_sysfs.o
+    rm $DRIVER_DIR/modules.order
 
 fi
 
