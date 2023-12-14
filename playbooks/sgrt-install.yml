@@ -1,7 +1,7 @@
 ---
 
 - hosts: 
-    #- hacc-build
+    - hacc-build
     #- alveo-u250
     #- alveo-u280
     #- alveo-u50d
@@ -9,8 +9,14 @@
     #- versal-vck5000
     #- hacc-boxes
     #- alveo-u55c-01.inf.ethz.ch
-    - hacc-box-01.inf.ethz.ch
-    - hacc-box-02.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
+    #- hacc-box-02.inf.ethz.ch
+    #- alveo-u55c-01.inf.ethz.ch
+    #- alveo-u55c-03.inf.ethz.ch
+    #- alveo-u55c-05.inf.ethz.ch
+    #- alveo-u55c-06.inf.ethz.ch
+    #- alveo-u55c-09.inf.ethz.ch
+    #- alveo-u55c-10.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -29,19 +35,19 @@
     api: false #true----------------
     #cli installation
     #scripts
-    build: false
-    common: false
+    build: true
+    common: true
     enable: false
     examine: false
-    get: false
-    new: false
+    get: true
+    new: true
     program: true
-    reboot: false
+    reboot: true
     run: false
     set: false
     sgutil: true 
     templates: false #true-----------------------------------
-    validate: false
+    validate: true
     #workflows
     coyote: true
     hip: false
@@ -297,6 +303,7 @@
         - get_servers
         - get_vivado_devices
         - get_xilinx_version
+        - git_clone_coyote
         - is_acap
         - is_cpu
         - is_fpga
@@ -396,9 +403,15 @@
     - name: copying reboot
       copy:
         src: "../cli/reboot.sh"
-        dest: "{{ cli_path }}/reboot"
+        dest: "{{ cli_path }}/{{ item }}"
         mode: "0755"
       when: all or reboot
+      loop:
+        - reboot
+        - reboot_ansible_root.cfg
+        - reboot_defined-idrac-cold-boot.yml
+        - reboot_hosts
+        - reboot_run_root
     #run
     - name: copying run scripts
       copy:
