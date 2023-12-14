@@ -403,15 +403,21 @@
     - name: copying reboot
       copy:
         src: "../cli/reboot.sh"
-        dest: "{{ cli_path }}/{{ item }}"
+        dest: "{{ cli_path }}/reboot"
         mode: "0755"
       when: all or reboot
-      loop:
-        - reboot
-        - reboot_ansible_root.cfg
-        - reboot_defined-idrac-cold-boot.yml
-        - reboot_hosts
-        - reboot_run_root
+    #- name: copying reboot (cold boot playbooks)
+    #  copy:
+    #    src: "../cli/{{ item }}"
+    #    dest: "{{ cli_path }}/{{ item }}"
+    #    mode: "0755"
+    #  when: all or reboot
+    #  loop:
+    #    - reboot_ansible_root.cfg
+    #    - reboot_defined-idrac-cold-boot.yml
+    #    - reboot_defined-idrac-cold-boot-task.yml
+    #    - reboot_hosts
+    #    - reboot_run_root.sh
     #run
     - name: copying run scripts
       copy:
