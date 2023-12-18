@@ -6,18 +6,23 @@
 
 # RDMA stack validation
 
-In this experiment, we utilize the [`sgutil validate coyote`](../cli/manual/sgutil-validate-coyote.md#sgutil-validate-coyote) command to validate Coyote’s RDMA stack on ETHZ-HACC. The validation test involves exchanging multiple messages (of various sizes), and for each message size, the following steps are performed:
+In this experiment, the validation of Coyote’s RDMA stack on ETHZ-HACC is conducted using the [`sgutil validate coyote`](../cli/manual/sgutil-validate-coyote.md#sgutil-validate-coyote) command. The validation process comprises a series of back-and-forth memory exchanges involving messages of various sizes. For each message size, the following sequential steps are executed:
+
 
 ![Validating perf_rdma_host with sgutil validate coyote.](./sgutil-validate-coyote-perf_rdma_host.png "Validating perf_rdma_host with sgutil validate coyote.")
 *Validating perf_rdma_host with sgutil validate coyote.*
 
-* **t0:** Bla bla bla
-* **t1:** Bla bla bla
-* **t2:** Bla bla bla
-* **t3:** Bla bla bla
-* **t4:** Bla bla bla
-* **t5:** Bla bla bla
-* **t6:** Bla bla bla
+ <!-- t1 ==== WHICH RAM, HBM ???????? -->
+
+* **t0:** CPU #1 transmits metadata to CPU #2 via their respective Ethernet interfaces.
+* **t1:** CPU #2 initiates an RDMA-write transaction, facilitating the transfer of data from CPU #2's global space to the memory of FPGA #2 through the PCIe interface.
+* **t2:** FPGA #2 dispatches the RDMA-write message to FPGA #1 utilizing the Ethernet interfaces dedicated to the FPGAs.
+* **t3:** FPGA #1 receives the data transfer and deposits it into CPU #1's host memory through the PCIe interface. Simultaneously, an RDMA-ACKnowledge (ACK) is transmitted back to FPGA #2 via the 100 GbE interface.
+* **t4:** CPU #1 detects the altered memory content and initiates an RDMA-write, sending the same buffer content in the reverse direction toward CPU/FPGA #2. In this process, the buffer content is transferred to the RDMA stack on FPGA #1 via the PCIe link.
+* **t5:** FPGA #1 transmits the RDMA-write message to FPGA #2 using the dedicated Ethernet interfaces similarly to t2.
+* **t6:** FPGA #2 receives the RDMA-write, acknowledges it through the 100 GbE network to FPGA #1, and directly writes the received content into the host memory of CPU #2 via the PCIe link.
+
+Though Coyote, these steps evaluate the reliability of Balboa RDMA-stack by handling various message sizes and intricate memory exchanges within the specified hardware environment.
 
 ## Experiment
 To validate the RDMA stack, please do as follows:
