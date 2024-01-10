@@ -20,6 +20,7 @@ SGRT comprises a command-line interpreter (CLI) and an API. Whereas the [CLI](./
 * [API](./api/manual.md#api)
 * [CLI](./cli/manual.md#cli)
 * [Citation](#citation)
+* [Developers guide](./developers-guide.md#developers-guide)
 * [Disclaimer](#disclaimer)
 * [Examples](./examples.md#examples)
 * [Features](./features.md#features)
