@@ -1,4 +1,3 @@
-Back to HACC validation
 
 
 # Message passing interface validation with mpich

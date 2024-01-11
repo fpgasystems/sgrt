@@ -1,4 +1,3 @@
-Back to HACC validation
 
 
 # Networking validation with iperf

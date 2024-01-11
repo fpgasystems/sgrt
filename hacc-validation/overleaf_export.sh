@@ -48,6 +48,10 @@ for file in *.md; do
     sed -i '' 's/\*\*    / **/g' "$new_file"
     # Replace ./imgs/ with ./
     sed -i '' 's@./imgs/@./@g' "$new_file"
+    
+    #Specific commands
+    grep -v '^Back to HACC validation$' "$new_file" > temp.md && mv temp.md "$new_file"
+    
     # Move to the tex folder
     mv "$new_file" "overleaf/${new_file//-tex/}"
   fi
