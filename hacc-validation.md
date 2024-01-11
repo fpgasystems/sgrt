@@ -4,9 +4,9 @@
 <a href="https://github.com/fpgasystems/sgrt/tree/main#--systems-group-runtime">Back to top</a>
 </p>
 
-# Examples
+# HACC validation
 
-The following are guided experiments that help you to validate ETHZ-HACC’s infrastructure—setting along a baseline of the performance that should always be met. These experiments are based on *sgutil validate* commands.
+The following are guided experiments that help you to **validate ETHZ-HACC’s infrastructure—**setting along a baseline of the performance that should always be met. These experiments are based on *sgutil validate* commands.
 
 ## Coyote validation
 
