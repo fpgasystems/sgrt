@@ -8,5 +8,5 @@
 
 ## Vitis workflow
 
-![HACC boxes programming model.](./programming-model-hacc-boxes.png "HACC boxes programming model.")
-*HACC boxes programming model.*
+![Programming model.](./programming-model.png "Programming model.")
+*Programming model.*
