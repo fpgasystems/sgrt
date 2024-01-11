@@ -25,7 +25,7 @@ SGRT comprises a command-line interpreter (CLI) and an API. Whereas the **CLI** 
 * **HACC validation**
 * **Installation**
 * **License**
-* **Limitations**
+* **Known limitations**
 * **Programming model**
 
 # Releases
@@ -64,10 +64,10 @@ SGRT comprises a command-line interpreter (CLI) and an API. Whereas the **CLI** 
 &#9679; Existing release installed on the cluster.
 
 
-# Limitations
+<!-- # Limitations
 * SGRT has only been tested on **Ubuntu 20.04.6 LTS.**
 * For deployment servers with reconfigurable devices, it's imperative to maintain a single version of the Xilinx toolset (comprising XRT, Vivado, and Vitis_HLS) on the system. Multiple versions of these tools should not coexist to ensure proper operation.
-* For deployment servers with GPUs, only one version of HIP/ROCm should be installed.
+* For deployment servers with GPUs, only one version of HIP/ROCm should be installed. -->
 
 # Disclaimer
 
