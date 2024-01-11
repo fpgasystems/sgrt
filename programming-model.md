@@ -6,7 +6,12 @@
 
 # Programming model
 
-## Vitis workflow
+SGRT allows you to effectively manage and program ACAPs, FPGAs, multi-core CPUs, and GPUs, all through a unified device index. To get to know which devices are available on your server, please use ```sgutil examine```:
+
+![sgutil examine for alveo-u55c-01 (left) and hacc-box-01 (right).](./programming-model-sgutil-examine.png "sgutil examine for alveo-u55c-01 (left) and hacc-box-01 (right).")
+*sgutil examine for alveo-u55c-01 (left) and hacc-box-01 (right).*
+
+Assuming a heterogeneous server with multiple reconfigurable devices, .... (similar to the XXXXX on the HACC), **the following programming model applies:**
 
 ![Programming model.](./programming-model.png "Programming model.")
 *Programming model.*
