@@ -4,7 +4,7 @@
 <a href="https://github.com/fpgasystems/sgrt/blob/main/hacc-validation.md#hacc-validation">Back to HACC validation</a>
 </p>
 
-# RDMA stack validation
+## RDMA stack validation
 
 In this experiment, the validation of Coyote’s RDMA stack on ETHZ-HACC is conducted using the [`sgutil validate coyote`](../cli/manual/sgutil-validate-coyote.md#sgutil-validate-coyote) command. The validation process comprises a series of back-and-forth memory exchanges involving messages of various sizes. For each message size, the following sequential steps are executed:
 
@@ -24,14 +24,14 @@ In this experiment, the validation of Coyote’s RDMA stack on ETHZ-HACC is cond
 
 Though Coyote, these steps evaluate the reliability of Balboa RDMA-stack by handling various message sizes and intricate memory exchanges within the specified hardware environment.
 
-## Experiment
+### Experiment
 To validate the RDMA stack, please do as follows:
 
 1. Use the [booking system](https://alveo-booking.ethz.ch/login.php) to reserve two servers, for example, alveo-u55c-05 and alveo-u55c-06,
 2. Login to the server you want to set as the local server; from such a server, make sure you can log into the remote server with ssh,
 3. Run ```sgutil validate coyote,``` select **perf_rdma_host,** and wait for the results.
 
-## Results
+### Results
 In this experiment, we have allocated two servers (alveo-u55c-05 to alveo-u55c-06) to execute the steps described above. The subsequent results should serve as a baseline:
 
 ![Results for sgutil validate coyote / perf_rdma_host.](./sgutil-validate-coyote-perf_rdma_host_results.png "Results for sgutil validate coyote / perf_rdma_host.")
