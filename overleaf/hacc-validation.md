@@ -4,11 +4,11 @@ The following are guided experiments (utilizing *sgutil validate commands*) desi
 
 ![ETHZ-HACC infrastructure and platform.](./hacc-validation.png "ETHZ-HACC infrastructure and platform.")
 
-## HACC Platform validation
-
-* [RDMA stack validation](./hacc-validation/sgutil-validate-coyote-perf_rdma_host.md)
-
 ## Infrastructure validation
 
 * **Networking validation with iperf**
 * **Message passing interface validation with mpich**
+
+## HACC Platform validation
+
+* [RDMA stack validation](./hacc-validation/sgutil-validate-coyote-perf_rdma_host.md)
