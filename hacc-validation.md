@@ -10,9 +10,9 @@ The following are guided experiments that help you to **validate ETHZ-HACC’s i
 
 ## Coyote validation
 
-* [RDMA stack validation](./examples/sgutil-validate-coyote-perf_rdma_host.md)
+* [RDMA stack validation](./hacc-validation/sgutil-validate-coyote-perf_rdma_host.md)
 
 ## Infrastructure validation
 
-* [Networking validation with iperf](./examples/sgutil-validate-iperf.md#networking-validation-with-iperf)
-* [Message passing interface validation with mpich](./examples/sgutil-validate-mpi.md#message-passing-interface-validation-with-mpich)
+* [Networking validation with iperf](./hacc-validation/sgutil-validate-iperf.md#networking-validation-with-iperf)
+* [Message passing interface validation with mpich](./hacc-validation/sgutil-validate-mpi.md#message-passing-interface-validation-with-mpich)
