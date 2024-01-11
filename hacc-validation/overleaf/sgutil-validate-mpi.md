@@ -1,7 +1,7 @@
 
 
 ## Message passing interface validation with mpich
-In this experiment, we are using CLI’s **`sgutil validate mpi`** command to verify MPI message-passing standard on the ETHZ-HACC network. In order to run this experiment, **you should be sure to have the capability to SSH into the remote server from your local server.** Assuming that alveo-u55c-01 is your local server and alveo-u55c-02 is your single remote server, you should be able to run the following command:
+In this experiment, we are using CLI’s **`sgutil validate mpi`** command to verify MPI message-passing standard on the ETHZ-HACC network. In order to run this experiment, **you should be sure to have the capability to SSH into the remote server from your local server.** Assuming that alveo-u55c-01 is your local server and alveo-u55c-02 is one of your remote servers, you should be able to run the following command:
 
 * **alveo-u55c-01:~$ ssh alveo-u55c-02**
 
