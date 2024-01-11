@@ -2,7 +2,7 @@
 
 By using **Systems Group RunTime,** you can easily:
 
-* **Validate the fundamental functionality** of both ETHZ-**HACC infrastructure** and [platform,]((https://github.com/fpgasystems/hacc-platform)) ensuring its reliability and performance.
+* **Validate the fundamental functionality** of both ETHZ-**HACC infrastructure** and **platform,** ensuring its reliability and performance.
 * Expedite project creation through intuitive multiple-choice dialogs and templates, **streamlining the development of your accelerated applications.**
 * Seamlessly integrate with **GitHub CLI** for efficient **version control and collaboration.**
 * Effectively manage ACAPs, FPGAs, multi-core CPUs, and GPUs, **all through a unified device index.**
