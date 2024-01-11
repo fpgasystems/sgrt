@@ -5,7 +5,9 @@
 </p>
 
 ## Networking validation with iperf
-In this experiment, we are using CLI’s [`sgutil validate iperf`](../cli/manual/sgutil-validate-mpi.md#sgutil-validate-mpi) command to actively measure the maximum achievable bandwidth on the ETHZ-HACC network. In order to run this experiment, you should be sure to have the capability to SSH into the remote server from your local server. Assuming that alveo-u55c-01 is your local server and alveo-u55c-02 is your single remote server, you should be able to run the following command:
+In this experiment, we are using CLI’s [`sgutil validate iperf`](../cli/manual/sgutil-validate-mpi.md#sgutil-validate-mpi) command to actively measure the maximum achievable bandwidth on the ETHZ-HACC network. 
+
+In order to run this experiment, **you should be sure to have the capability to SSH into the remote server from your local server.** Assuming that alveo-u55c-01 is your local server and alveo-u55c-02 is your single remote server, you should be able to run the following command:
 
 ```
 alveo-u55c-01:~$ ssh alveo-u55c-02
