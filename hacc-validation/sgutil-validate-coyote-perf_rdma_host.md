@@ -8,7 +8,6 @@
 
 In this experiment, the validation of Coyote’s RDMA stack on ETHZ-HACC is conducted using the [`sgutil validate coyote`](../cli/manual/sgutil-validate-coyote.md#sgutil-validate-coyote) command. The validation process comprises a series of back-and-forth memory exchanges involving messages of various sizes. For each message size, the following sequential steps are executed:
 
-
 ![Validating perf_rdma_host with sgutil validate coyote.](./sgutil-validate-coyote-perf_rdma_host.png "Validating perf_rdma_host with sgutil validate coyote.")
 *Validating perf_rdma_host with sgutil validate coyote.*
 
