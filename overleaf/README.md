@@ -16,7 +16,7 @@ While initially developed for ETHZ-**HACC,** the **Systems Group RunTime (SGRT)*
 <!-- SGRT comprises a command-line interpreter (CLI) and an API. Whereas the **CLI** streamlines the development of accelerated applications, allowing you to concentrate on your primary objectives.
 SGRT comprises a command-line interpreter (CLI) and an API, both leveraging an intuitive device index to enhance user workflow. The CLI simplifies infrastructure setup and validation and device configuration, while the API streamlines the development of accelerated applications, enabling users to focus on their primary objectives. -->
 
-SGRT includes a command-line interpreter (CLI) and an API, both utilizing an intuitive device index to improve user workflow. The **CLI**PI streamlines accelerated application development, allowing users to focus on their primary objectives.
+SGRT includes a command-line interpreter (CLI) and an API, **both utilizing an intuitive device index to improve user workflow.** The **CLI** streamlines accelerated application development, allowing users to focus on their primary objectives.
 
 ## Sections
 * **API**
