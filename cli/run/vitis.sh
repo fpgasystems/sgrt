@@ -186,16 +186,19 @@ else
         #echo ""
     fi
     #target_dialog (forgotten mandatory 2)
-    if [[ $target_found = "0" ]]; then
+    if [[ $target_found = "0" ]] && [[ $device_found = "0" ]]; then
         echo "${bold}Please, choose binary's execution target:${normal}"
         echo ""
         target_name=$($CLI_PATH/common/target_dialog)
+    elif [[ $target_found = "0" ]] && [[ $device_found = "1" ]]; then
+        #echo ""
+        target_name="hw"
     fi
     #platform or device dialog
     if [ "$target_name" = "sw_emu" ] || [ "$target_name" = "hw_emu" ]; then
         #platform_dialog (forgotten mandatory emu)
         if [[ $platform_found = "0" ]]; then
-            echo ""
+            #echo ""
             echo "${bold}Please, choose your platform:${normal}"
             echo ""
             result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
@@ -257,7 +260,7 @@ fi
 #$CLI_PATH/program/revert -d $device_index
 
 #change directory
-echo ""
+#echo ""
 echo "${bold}Changing directory:${normal}"
 echo ""
 echo "cd $DIR"
