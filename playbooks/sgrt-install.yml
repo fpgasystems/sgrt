@@ -115,7 +115,7 @@
         mode: "0755"
       when: all or api
       loop:
-        - config.hpp
+        #- config.hpp
         - open.hpp
         - open.cpp
         - get_config.hpp

@@ -18,12 +18,16 @@
     ansible_python_interpreter: /usr/bin/python3
     #paths definition
     sgrt_base_path: /opt/sgrt #/opt/cli
+    api_path: "{{ sgrt_base_path }}/api"
     cli_path: "{{ sgrt_base_path }}/cli"
     cli_name: sgutil
     #installation control (all means we attempt to delete all directories, files, and scripts)
     all: false
-    common: false
-    constants: false
+    #api
+    api_host: true
+    #cli
+    cli_constants: false
+    cli_common: false
   tasks:
 
     #deleting sgrt
@@ -44,20 +48,29 @@
       when: all
 
     #deleting individual items
-    - name: deleting constants
+    #CLI
+    - name: deleting CLI constants
       file:
         path: "{{ cli_path }}/constants/{{ item }}"
         state: absent
-      when: all or constants
+      when: all or cli_constants
       loop:
         - HACC_PATH
         - LOCAL_PATH #replaced by MY_DRIVERS_PATH
         - CLI_PATH
         - LM_LICENSE_FILE
-    - name: deleting common scripts
+    - name: deleting CLI common scripts
       file:
         path: "{{ cli_path }}/common/{{ item }}"
         state: absent
-      when: all or common
+      when: all or cli_common
       loop:
         - get_server_type
+    #API    
+    - name: deleting API host scripts
+      file:
+        path: "{{ api_path }}/host/{{ item }}"
+        state: absent
+      when: all or api_host
+      loop:
+        - config.hpp
