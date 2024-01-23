@@ -70,6 +70,10 @@ int main(int argc, char** argv) {
 
     // get project_path
     std::string project_path = get_current_path();
+    std::cout << "\nOLD project_path is = " << project_path << std::endl;
+
+    std::string new_project_path = host::get_project_path();
+    std::cout << "\nNEW project_path is = " << new_project_path << std::endl;
 
     //                            host::config config = host::get_config(project_path, XCL_EMULATION_MODE);
     //                            config.print();

@@ -115,13 +115,14 @@
         mode: "0755"
       when: all or api
       loop:
-        #- config.hpp
-        - open.hpp
-        - open.cpp
+        - get_project_path.hpp
+        - get_project_path.cpp
         - get_config.hpp
         - get_config.cpp
         - get_target.hpp
         - get_target.cpp
+        - open.hpp
+        - open.cpp
         
     #cli
     #copying files (when all/only if they do not exist on the remote)
