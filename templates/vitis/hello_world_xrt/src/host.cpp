@@ -53,17 +53,17 @@ int main(int argc, char** argv) {
     std::string config_id = argv[1];
     std::cout << "\nconfig_id = " << config_id << std::endl;
     
-    const char* xclEmulationModeChar = std::getenv("XCL_EMULATION_MODE");
-    std::string XCL_EMULATION_MODE = "";
-    if (xclEmulationModeChar != nullptr) {
-        XCL_EMULATION_MODE = xclEmulationModeChar;
+    //const char* xclEmulationModeChar = std::getenv("XCL_EMULATION_MODE");
+    //std::string XCL_EMULATION_MODE = "";
+    //if (xclEmulationModeChar != nullptr) {
+    //    XCL_EMULATION_MODE = xclEmulationModeChar;
 
         // ...
-    }
+    //}
 
-    std::string target = host::get_target();
+    std::string XCL_EMULATION_MODE = host::get_target();
 
-    std::cout << "\nTARGET is = " << target << std::endl;
+    std::cout << "\nTARGET is = " << XCL_EMULATION_MODE << std::endl;
 
     // get project_path
     std::string project_path = get_current_path();
