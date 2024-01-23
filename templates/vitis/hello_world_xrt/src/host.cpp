@@ -33,14 +33,14 @@
 #include "../global_params.hpp"
 #include "../configs/config_000.hpp" // config_000.hpp is overwritten with the configuration you select
 
-std::string get_current_path() {
-    char currentPath[FILENAME_MAX];
-    if (getcwd(currentPath, sizeof(currentPath)) != NULL) {
-        return std::string(currentPath);
-    } else {
-        return std::string(); // Return an empty string to indicate an error
-    }
-}
+//std::string get_current_path() {
+//    char currentPath[FILENAME_MAX];
+//    if (getcwd(currentPath, sizeof(currentPath)) != NULL) {
+//        return std::string(currentPath);
+//    } else {
+//        return std::string(); // Return an empty string to indicate an error
+//    }
+//}
 
 int main(int argc, char** argv) {
 
@@ -69,11 +69,11 @@ int main(int argc, char** argv) {
     std::cout << "\nTARGET is = " << XCL_EMULATION_MODE << std::endl;
 
     // get project_path
-    std::string project_path = get_current_path();
-    std::cout << "\nOLD project_path is = " << project_path << std::endl;
+    //std::string project_path = get_current_path();
+    //std::cout << "\nOLD project_path is = " << project_path << std::endl;
 
-    std::string new_project_path = host::get_project_path();
-    std::cout << "\nNEW project_path is = " << new_project_path << std::endl;
+    std::string project_path = host::get_project_path();
+    std::cout << "\nNEW project_path is = " << project_path << std::endl;
 
     //                            host::config config = host::get_config(project_path, XCL_EMULATION_MODE);
     //                            config.print();
