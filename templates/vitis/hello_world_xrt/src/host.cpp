@@ -63,6 +63,8 @@ int main(int argc, char** argv) {
 
     std::string target = host::get_target();
 
+    std::cout << "\nTARGET is = " << target << std::endl;
+
     // get project_path
     std::string project_path = get_current_path();
 
