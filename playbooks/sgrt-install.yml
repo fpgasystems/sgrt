@@ -1,15 +1,15 @@
 ---
 
 - hosts: 
-    - hacc-build
-    - alveo-u250
-    - alveo-u280
-    - alveo-u50d
-    - alveo-u55c
-    - versal-vck5000
-    - hacc-boxes
+    #- hacc-build
+    #- alveo-u250
+    #- alveo-u280
+    #- alveo-u50d
+    #- alveo-u55c
+    #- versal-vck5000
+    #- hacc-boxes
     #- alveo-u55c-01.inf.ethz.ch
-    #- hacc-box-01.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -23,9 +23,9 @@
     include_path: "{{ sgrt_base_path }}/include"
     cli_name: sgutil
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: true
+    all: false
     #api installation
-    api: false #true----------------
+    api: true #true----------------
     #cli installation
     #scripts
     build: false
@@ -39,13 +39,13 @@
     run: false
     set: false
     sgutil: false 
-    templates: false #true-----------------------------------
+    templates: true #true-----------------------------------
     validate: false
     #workflows
     coyote: false
     hip: false
     mpi: false
-    vitis: false #true---------------------------------
+    vitis: true #true---------------------------------
   tasks:
 
     #creating directories
@@ -120,6 +120,8 @@
         - open.cpp
         - get_config.hpp
         - get_config.cpp
+        - get_target.hpp
+        - get_target.cpp
         
     #cli
     #copying files (when all/only if they do not exist on the remote)
