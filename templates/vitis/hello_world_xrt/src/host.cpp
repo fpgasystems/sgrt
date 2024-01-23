@@ -61,6 +61,8 @@ int main(int argc, char** argv) {
         // ...
     }
 
+    std::string target = host::get_target();
+
     // get project_path
     std::string project_path = get_current_path();
 
