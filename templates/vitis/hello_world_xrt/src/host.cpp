@@ -31,7 +31,7 @@
 
 // project includes
 #include "../global_params.hpp"
-#include "../configs/config_000.hpp" // config_000.hpp is overwritten with the configuration you select
+//#include "../configs/config_000.hpp" // config_000.hpp is overwritten with the configuration you select
 
 //std::string get_current_path() {
 //    char currentPath[FILENAME_MAX];
@@ -59,15 +59,15 @@ int main(int argc, char** argv) {
     std::cout << "\nconfig_id = " << config_id << std::endl;
 
     // get config_parameters
-    int nValue = host::get_config_parameter<int>(project_path, config_id, "N");
-    std::cout << "Value of parameter 'N': " << nValue << std::endl;
+    int N = host::get_config_parameter<int>(project_path, config_id, "N");
+    std::cout << "Value of parameter 'N': " << N << std::endl;
 
     // get target
-    std::string XCL_EMULATION_MODE = host::get_target();
-    std::cout << "\nTARGET is = " << XCL_EMULATION_MODE << std::endl;
+    std::string target = host::get_target();
+    std::cout << "\nTARGET is = " << target << std::endl;
 
     // device 1
-    device::vitis alveo_1 = host::open("1", project_path, XCL_EMULATION_MODE);
+    device::vitis alveo_1 = host::open("1", project_path, target);
     //xrt::uuid uuid = alveo_1.fpga.load_xclbin(alveo_1.binaryFile);
     //xrt::kernel krnl = xrt::kernel(alveo_1.fpga, uuid, "vadd");
     //xrt::kernel krnl = alveo_1.kernel; //xrt::kernel(alveo_1.fpga, uuid, "vadd");
