@@ -115,10 +115,12 @@
         mode: "0755"
       when: all or api
       loop:
-        - get_project_path.hpp
-        - get_project_path.cpp
+        - get_config_parameter.hpp
+        - get_config_parameter.cpp
         - get_config.hpp
         - get_config.cpp
+        - get_project_path.hpp
+        - get_project_path.cpp
         - get_target.hpp
         - get_target.cpp
         - open.hpp

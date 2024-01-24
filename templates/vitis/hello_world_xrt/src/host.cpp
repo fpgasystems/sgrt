@@ -50,37 +50,21 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    //std::string config_id = argv[1];
-    //std::cout << "\nconfig_id = " << config_id << std::endl;
-
-    std::string config_id = host::get_config(argv);
-    std::cout << "\nconfig_id = " << config_id << std::endl;
-    
-    //const char* xclEmulationModeChar = std::getenv("XCL_EMULATION_MODE");
-    //std::string XCL_EMULATION_MODE = "";
-    //if (xclEmulationModeChar != nullptr) {
-    //    XCL_EMULATION_MODE = xclEmulationModeChar;
-
-        // ...
-    //}
-
-    std::string XCL_EMULATION_MODE = host::get_target();
-
-    std::cout << "\nTARGET is = " << XCL_EMULATION_MODE << std::endl;
-
     // get project_path
-    //std::string project_path = get_current_path();
-    //std::cout << "\nOLD project_path is = " << project_path << std::endl;
-
     std::string project_path = host::get_project_path();
     std::cout << "\nNEW project_path is = " << project_path << std::endl;
 
-    //                            host::config config = host::get_config(project_path, XCL_EMULATION_MODE);
-    //                            config.print();
+    // get config_id
+    std::string config_id = host::get_config(argv);
+    std::cout << "\nconfig_id = " << config_id << std::endl;
 
-    // Create a host::config object using the constructor
-    //host::config myConfig(project_path, XCL_EMULATION_MODE);
-    //myConfig.print;
+    // get config_parameters
+    int nValue = host::get_config_parameter<int>(project_path, config_id, "N");
+    std::cout << "Value of parameter 'N': " << nValue << std::endl;
+
+    // get target
+    std::string XCL_EMULATION_MODE = host::get_target();
+    std::cout << "\nTARGET is = " << XCL_EMULATION_MODE << std::endl;
 
     // device 1
     device::vitis alveo_1 = host::open("1", project_path, XCL_EMULATION_MODE);
