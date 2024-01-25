@@ -275,7 +275,7 @@ elif [[ $(ls -l | wc -l) > 4 ]]; then
     PS3=""
 
     select config_id in "${configs_aux[@]}"; do
-        if [[ -z $config ]]; then
+        if [[ -z $config_id ]]; then
             echo "" >&/dev/null
         else
             break
