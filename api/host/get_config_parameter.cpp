@@ -10,7 +10,7 @@ template <typename T>
 T host::get_config_parameter(const std::string& project_path, const std::string& config_id, const std::string& param) {
 
     // Construct the file path
-    std::string file_path = project_path + "/configs/" + config_id + ".hpp";
+    std::string file_path = project_path + "/configs/" + config_id; // + ".hpp"
 
     // Open the configuration file
     std::ifstream config_file(file_path);

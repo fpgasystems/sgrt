@@ -55,45 +55,54 @@ vector<int> new_vector(int min_, int max_)
     return myVec;
 }
 
-string get_config_string()
+string get_config_string() /////////////////////////////////////////////////////////////////////////////////////
 {
     fs::path p = fs::current_path();
     string project_path = p.relative_path();
     project_path = "/" + project_path + "/configs/";
     int n = 0;
     for (const auto & file : directory_iterator(project_path)){
-        if (file.path().extension() == ".hpp") {
+        //if (file.path().extension() == ".hpp") {
+        const auto extension = file.path().extension();
+        if (extension.empty()) {
             n = n + 1;
         }
     }
-    string s = std::to_string(n - 1); // we assume config_kernel is always present too
+    //string s = std::to_string(n - 1); // we assume config_kernel is always present too
+    string s = std::to_string(n);
     unsigned int number_of_zeros = STRING_LENGTH - s.length();
     s.insert(0, number_of_zeros, '0');
     s = "config_" + s;    
     return s;
 }
 
-ofstream create_config_file(int hw)
+ofstream create_config_file(int hw) /////////////////////////////////////////////////////////////////////////////////////
 {
     fs::path p = fs::current_path();
     string project_path = p.relative_path();
     project_path = "/" + project_path + "/configs/";
     int n = 0;
     for (const auto & file : directory_iterator(project_path)){
-        if (file.path().extension() == ".hpp") {
+        //if (file.path().extension() == ".hpp") {
+        const auto extension = file.path().extension();
+        if (extension.empty()) {
             n = n + 1;
         }
     }
-    string s = std::to_string(n - 1); // we assume config_kernel is always present too
+    //string s = std::to_string(n - 1); // we assume config_kernel is always present too
+    string s = std::to_string(n);
     unsigned int number_of_zeros = STRING_LENGTH - s.length();
     s.insert(0, number_of_zeros, '0');
+    string aux;
     if (hw == 1) {
         s = "config_kernel";
+        aux = project_path + s + ".hpp";
     }
     else {
         s = "config_" + s;    
+        aux = project_path + s;
     }
-    string aux = project_path + s + ".hpp";
+    //string aux = project_path + s + ".hpp";
     std::ofstream o(aux.c_str());
     return o;
 }
@@ -212,14 +221,14 @@ int main()
 
     // create config file
     ofstream c = create_config_file(0);
-    c << "const int N = " <<  N << ";" << std::endl;
-    c << "const int W = " <<  W << ";" << std::endl;
-    c << "const int F = " <<  F << ";" << std::endl;
-    c << "const int T_CLK = " <<  T_CLK << ";" << std::endl;
-    c << "const int CLK_F = " <<  CLK_F << ";" << std::endl;
-    c << "const double RMSE = " <<  RMSE << ";" << std::endl;
+    c << "N = " <<  N << ";" << std::endl;
+    c << "W = " <<  W << ";" << std::endl;
+    c << "F = " <<  F << ";" << std::endl;
+    c << "T_CLK = " <<  T_CLK << ";" << std::endl;
+    c << "CLK_F = " <<  CLK_F << ";" << std::endl;
+    c << "RMSE = " <<  RMSE << ";" << std::endl;
 
-    cout << "The configuration " << s << ".hpp has been created!\n";
+    cout << "The configuration " << s << " has been created!\n";
     cout << "\n";
 
     return 0;

@@ -155,7 +155,7 @@ if ! [ -d "$DIR" ]; then
     exit
 fi
 
-#create or select a configuration
+#create [or select] a configuration (select moved to run)
 cd $DIR/configs/
 if [[ $(ls -l | wc -l) = 2 ]]; then
     #only config_000 exists and we create config_kernel and config_001
@@ -164,39 +164,49 @@ if [[ $(ls -l | wc -l) = 2 ]]; then
     g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
     cd $DIR
     ./create_config
-    cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
-    config="config_001.hpp"
-elif [[ $(ls -l | wc -l) = 5 ]]; then
-    #config_000, config_kernel and config_001 exist
-    cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
-    config="config_001.hpp"
-    echo ""
-elif [[ $(ls -l | wc -l) > 5 ]]; then
-    cd $DIR/configs/
-    configs=( "config_"*.hpp )
-    echo ""
-    echo "${bold}Please, choose your configuration:${normal}"
-    echo ""
-    PS3=""
-    select config in "${configs[@]:1:${#configs[@]}-2}"; do # with :1 we avoid config_000.hpp and then config_kernel.hpp
-        if [[ -z $config ]]; then
-            echo "" >&/dev/null
-        else
-            break
-        fi
-    done
-    # copy selected config as config_000.hpp
-    cp -fr $DIR/configs/$config $DIR/configs/config_000.hpp
-    echo ""
+    #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
+    config="config_001"
+#elif [[ $(ls -l | wc -l) = 5 ]]; then
+#    #config_000, config_kernel and config_001 exist
+#    #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
+#    config="config_001"
+#    echo ""
+#elif [[ $(ls -l | wc -l) > 5 ]]; then
+#    cd $DIR/configs/
+#    configs=( "config_"* )
+#    
+#    #remove selected files
+#    configs_aux=()
+#    for element in "${configs[@]}"; do
+#        if [[ $element != *"config_000"* && $element != *.hpp && $element != *.active ]]; then
+#            configs_aux+=("$element")
+#        fi
+#    done
+#
+#    echo ""
+#    echo "${bold}Please, choose your configuration:${normal}"
+#    echo ""
+#    PS3=""
+#
+#    select config in "${configs_aux[@]}"; do
+#        if [[ -z $config ]]; then
+#            echo "" >&/dev/null
+#        else
+#            break
+#        fi
+#    done
+#    # copy selected config as config_000.hpp
+#    #cp -fr $DIR/configs/$config $DIR/configs/config_000.hpp
+#    echo ""
 fi
 
-#save config id
-cd $DIR/configs/
-if [ -e config_*.active ]; then
-    rm *.active
-fi
-config_id="${config%%.*}"
-touch $config_id.active
+##save config id
+#cd $DIR/configs/
+#if [ -e config_*.active ]; then
+#    rm *.active
+#fi
+#config_id="${config%%.*}"
+#touch $config_id.active
 
 #define directories (2)
 APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$target_name.$platform_name"

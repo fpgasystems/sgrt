@@ -240,6 +240,65 @@ if ! [ -d "$DIR" ]; then
     exit
 fi
 
+#select a configuration
+cd $DIR/configs/
+#if [[ $(ls -l | wc -l) = 2 ]]; then
+#    #only config_000 exists and we create config_kernel and config_001
+#    #we compile create_config (in case there were changes)
+#    cd $DIR/src
+#    g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
+#    cd $DIR
+#    ./create_config
+#    #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
+#    config="config_001"
+#elif [[ $(ls -l | wc -l) = 5 ]]; then
+if [[ $(ls -l | wc -l) = 4 ]]; then
+    #config_000, config_kernel and config_001 exist
+    #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
+    config_id="config_001"
+    echo ""
+elif [[ $(ls -l | wc -l) > 4 ]]; then
+    cd $DIR/configs/
+    configs=( "config_"* )
+    
+    #remove selected files
+    configs_aux=()
+    for element in "${configs[@]}"; do
+        if [[ $element != *"config_000"* && $element != *.hpp && $element != *.active ]]; then
+            configs_aux+=("$element")
+        fi
+    done
+
+    echo ""
+    echo "${bold}Please, choose your configuration:${normal}"
+    echo ""
+    PS3=""
+
+    select config_id in "${configs_aux[@]}"; do
+        if [[ -z $config ]]; then
+            echo "" >&/dev/null
+        else
+            break
+        fi
+    done
+    # copy selected config as config_000.hpp
+    #cp -fr $DIR/configs/$config $DIR/configs/config_000.hpp
+    echo ""
+fi
+
+#save config id
+#cd $DIR/configs/
+#if [ -e config_*.active ]; then
+#    rm *.active
+#fi
+#config_id="${config%%.*}"
+#touch $config_id.active
+
+
+#echo "HEY!"
+#echo "$config_id"
+#exit
+
 #get platform
 if [ "$target_name" = "hw" ]; then 
     platform_name=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
@@ -269,12 +328,13 @@ echo ""
 
 #display configuration
 cd $DIR/configs/
-config_id=$(ls *.active)
-config_id="${config_id%%.*}"
+#config_id=$(ls *.active)
+#config_id="${config_id%%.*}"
 
 echo "${bold}You are running $config_id:${normal}"
 echo ""
-cat $DIR/configs/config_000.hpp
+#cat $DIR/configs/config_000.hpp
+cat $DIR/configs/$config_id
 echo ""
 
 #execution
