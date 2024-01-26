@@ -123,6 +123,7 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
 
     if (emulationMode == "sw_emu" || emulationMode == "hw_emu") { //if (device_index.empty()) {
 
+        //int MAX_DEVICES = 4;
         //xrt::device xrt_device_i;
         //for (int i = 0; i < MAX_DEVICES; ++i) {
         //    std::cout << "Device Index: " << i << std::endl;
