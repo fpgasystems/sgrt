@@ -157,7 +157,7 @@ fi
 
 #create [or select] a configuration (select moved to run)
 cd $DIR/configs/
-if [[ $(ls -l | wc -l) = 2 ]]; then
+if [[ $(ls -l | wc -l) = 3 ]]; then
     #only config_000 exists and we create config_kernel and config_001
     #we compile create_config (in case there were changes)
     cd $DIR/src

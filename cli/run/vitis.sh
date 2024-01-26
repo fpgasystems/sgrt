@@ -252,12 +252,12 @@ cd $DIR/configs/
 #    #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
 #    config="config_001"
 #elif [[ $(ls -l | wc -l) = 5 ]]; then
-if [[ $(ls -l | wc -l) = 4 ]]; then
+if [[ $(ls -l | wc -l) = 5 ]]; then
     #config_000, config_kernel and config_001 exist
     #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
     config_id="config_001"
     echo ""
-elif [[ $(ls -l | wc -l) > 4 ]]; then
+elif [[ $(ls -l | wc -l) > 5 ]]; then
     cd $DIR/configs/
     configs=( "config_"* )
     

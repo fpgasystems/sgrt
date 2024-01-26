@@ -69,7 +69,7 @@ string get_config_string() /////////////////////////////////////////////////////
         }
     }
     //string s = std::to_string(n - 1); // we assume config_kernel is always present too
-    string s = std::to_string(n);
+    string s = std::to_string(n - 1); // as we added kernel_parameters
     unsigned int number_of_zeros = STRING_LENGTH - s.length();
     s.insert(0, number_of_zeros, '0');
     s = "config_" + s;    
@@ -90,7 +90,7 @@ ofstream create_config_file(int hw) ////////////////////////////////////////////
         }
     }
     //string s = std::to_string(n - 1); // we assume config_kernel is always present too
-    string s = std::to_string(n);
+    string s = std::to_string(n - 1); // as we added kernel_parameters
     unsigned int number_of_zeros = STRING_LENGTH - s.length();
     s.insert(0, number_of_zeros, '0');
     string aux;
