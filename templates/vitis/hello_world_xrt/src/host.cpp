@@ -30,7 +30,7 @@
 #include "device.hpp" // /opt/sgrt/api/device.hpp
 
 // project includes
-#include "../global_params.hpp"
+#include "../sgrt_parameters.hpp"
 //#include "../configs/config_000.hpp" // config_000.hpp is overwritten with the configuration you select
 
 //std::string get_current_path() {

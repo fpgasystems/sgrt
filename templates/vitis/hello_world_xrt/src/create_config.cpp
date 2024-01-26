@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <fstream> 
 #include <regex>
-#include "../global_params.hpp"
+#include "../sgrt_parameters.hpp"
 
 namespace fs = std::filesystem;
 using namespace std;
