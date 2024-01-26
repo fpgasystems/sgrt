@@ -264,7 +264,7 @@ elif [[ $(ls -l | wc -l) > 4 ]]; then
     #remove selected files
     configs_aux=()
     for element in "${configs[@]}"; do
-        if [[ $element != *"config_000"* && $element != *.hpp && $element != *.active ]]; then
+        if [[ $element != *"config_parameters"* && $element != *.hpp ]]; then #config_000 && $element != *.active
             configs_aux+=("$element")
         fi
     done
