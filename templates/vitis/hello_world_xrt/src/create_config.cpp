@@ -95,7 +95,7 @@ ofstream create_config_file(int hw) ////////////////////////////////////////////
     s.insert(0, number_of_zeros, '0');
     string aux;
     if (hw == 1) {
-        s = "config_kernel";
+        s = "kernel_parameters";
         aux = project_path + s + ".hpp";
     }
     else {
@@ -146,8 +146,8 @@ int main()
 
     cout << "\n\e[1mcreate_config\e[0m\n";
 
-    const fs::path config_kernel{"./configs/config_kernel.hpp"};
-    bool exist = file_exists(config_kernel);
+    const fs::path kernel_parameters{"./configs/kernel_parameters.hpp"};
+    bool exist = file_exists(kernel_parameters);
     if (exist == 0) {
         
         cout << "\n\e[1mHardware (xclbin) parameters:\e[0m\n";
@@ -180,14 +180,14 @@ int main()
     cout << "\n";
     
     // N (VECTOR_LENGTH)
-    int N_MAX = read_parameter("./configs/config_kernel.hpp", "N_MAX");
+    int N_MAX = read_parameter("./configs/kernel_parameters.hpp", "N_MAX");
     vector<int> N_i;
     for (int i = 16; i <= N_MAX; i = i + 16) {
         N_i.push_back(i);
     }
     int N = read_value("N", N_i);
     // W
-    int W_MAX = read_parameter("./configs/config_kernel.hpp", "W_MAX");
+    int W_MAX = read_parameter("./configs/kernel_parameters.hpp", "W_MAX");
     vector<int> W_i = new_vector(1, W_MAX);
     int W = read_value("W", W_i);
     // F
@@ -202,7 +202,7 @@ int main()
     cout << "\n";
 
     // CLK_F
-    int CLK_F_MAX = read_parameter("./configs/config_kernel.hpp", "CLK_F_MAX");
+    int CLK_F_MAX = read_parameter("./configs/kernel_parameters.hpp", "CLK_F_MAX");
     vector<int> CLK_F_i;
     for (int i = 250; i <= CLK_F_MAX; i = i + 50) {
         CLK_F_i.push_back(i);
