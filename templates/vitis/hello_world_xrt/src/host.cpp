@@ -73,6 +73,10 @@ int main(int argc, char** argv) {
     //xrt::kernel krnl = alveo_1.kernel; //xrt::kernel(alveo_1.fpga, uuid, "vadd");
     alveo_1.print();
 
+    // device 2
+    device::vitis alveo_2 = host::open("2", project_path, target);
+    alveo_2.print();
+
     size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
 
     std::cout << "Allocate Buffer in Global Memory\n";
