@@ -218,15 +218,17 @@ echo "cd $DIR"
 echo ""
 cd $DIR
 
+xclbin_name="vadd"
+
 #compilation
 if ! [ -d "$APP_BUILD_DIR" ]; then
     # APP_BUILD_DIR does not exist
     export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
     echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
     echo ""
-    echo "make all TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH" 
+    echo "make all TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
     echo ""
-    eval "make all TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH"
+    eval "make all TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
     echo ""        
 
     #send email at the end

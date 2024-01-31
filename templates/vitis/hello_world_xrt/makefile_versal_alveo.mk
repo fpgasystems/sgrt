@@ -44,14 +44,16 @@ TARGET := hw
 VPP_LDFLAGS :=
 include ./utils.mk
 
+XCLBIN_NAME ?= vadd # Javier: this a default value if not provided
+
 TEMP_DIR := ./_x.$(TARGET).$(XSA)
 BUILD_DIR := ./build_dir.$(TARGET).$(XSA)
 
-LINK_OUTPUT := $(BUILD_DIR)/vadd.link.xsa
+LINK_OUTPUT := $(BUILD_DIR)/$(XCLBIN_NAME).link.xsa
 PACKAGE_OUT = ./package.$(TARGET)
 
 VPP_PFLAGS := 
-CMD_ARGS = -x $(BUILD_DIR)/vadd.xclbin
+CMD_ARGS = -x $(BUILD_DIR)/$(XCLBIN_NAME).xclbin
 CXXFLAGS += -I$(XILINX_XRT)/include -I$(XILINX_VIVADO)/include -Wall -O0 -g -std=c++1y
 LDFLAGS += -L$(XILINX_XRT)/lib -pthread -lOpenCL
 
@@ -69,11 +71,12 @@ LDFLAGS += -lrt -lstdc++
 LDFLAGS += -luuid -lxrt_coreutil
 
 # SGRT
+API_PATH ?= /opt/sgrt/api # Javier: this a default value if not provided
 #headers (we can use #include "host.hpp" instead of #include "/opt/sgrt/api/host.hpp")
 CXXFLAGS += -I$(API_PATH) 			# these are all the hpp files on top (device.hpp, host.hpp)
 CXXFLAGS += -I$(API_PATH)/common	# these are all the hpp files inside common
 #cpp
-API_PATH ?= /opt/sgrt/api # this a default value if not provided
+#API_PATH ?= /opt/sgrt/api # this a default value if not provided
 HOST_SRCS += $(wildcard $(API_PATH)/device/*.cpp)
 HOST_SRCS += $(wildcard $(API_PATH)/host/*.cpp)
 HOST_SRCS += $(wildcard $(API_PATH)/common/*.cpp)
@@ -88,26 +91,26 @@ EMCONFIG_DIR = $(TEMP_DIR)
 
 ############################## Setting Targets ##############################
 .PHONY: all clean cleanall docs emconfig
-all: check-platform check-device check-vitis $(EXECUTABLE) $(BUILD_DIR)/vadd.xclbin emconfig
+all: check-platform check-device check-vitis $(EXECUTABLE) $(BUILD_DIR)/$(XCLBIN_NAME).xclbin emconfig
 
 .PHONY: host
 host: $(EXECUTABLE)
 
 .PHONY: build
-build: check-vitis check-device $(BUILD_DIR)/vadd.xclbin
+build: check-vitis check-device $(BUILD_DIR)/$(XCLBIN_NAME).xclbin
 
 .PHONY: xclbin
 xclbin: build
 
 ############################## Setting Rules for Binary Containers (Building Kernels) ##############################
-$(TEMP_DIR)/vadd.xo: src/vadd.cpp
+$(TEMP_DIR)/$(XCLBIN_NAME).xo: src/$(XCLBIN_NAME).cpp
 	mkdir -p $(TEMP_DIR)
-	v++ -c $(VPP_FLAGS) -t $(TARGET) --platform $(PLATFORM) -k vadd --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
+	v++ -c $(VPP_FLAGS) -t $(TARGET) --platform $(PLATFORM) -k $(XCLBIN_NAME) --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
 
-$(BUILD_DIR)/vadd.xclbin: $(TEMP_DIR)/vadd.xo
+$(BUILD_DIR)/$(XCLBIN_NAME).xclbin: $(TEMP_DIR)/$(XCLBIN_NAME).xo
 	mkdir -p $(BUILD_DIR)
 	v++ -l $(VPP_FLAGS) $(VPP_LDFLAGS) -t $(TARGET) --platform $(PLATFORM) --temp_dir $(TEMP_DIR) -o'$(LINK_OUTPUT)' $(+)
-	v++ -p $(LINK_OUTPUT) $(VPP_FLAGS) -t $(TARGET) --platform $(PLATFORM) --package.out_dir $(PACKAGE_OUT) -o $(BUILD_DIR)/vadd.xclbin
+	v++ -p $(LINK_OUTPUT) $(VPP_FLAGS) -t $(TARGET) --platform $(PLATFORM) --package.out_dir $(PACKAGE_OUT) -o $(BUILD_DIR)/$(XCLBIN_NAME).xclbin
 
 ############################## Setting Rules for Host (Building Host Executable) ##############################
 $(EXECUTABLE): $(HOST_SRCS) | check-xrt
