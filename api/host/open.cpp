@@ -82,7 +82,7 @@ std::string get_xclbin_name(int device_index, const std::string& file_path) {
 //
 //}
 
-device::vitis host::open(const std::string& device_index, const std::string& project_path, const std::string& target) {
+device::vitis host::open(const std::string& device_index, const std::string& xclbin_name, const std::string& target) {
 
     // sgutil_get constants 
     int UPSTREAM_PORT = 1;
@@ -104,7 +104,8 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
     //int MAX_DEVICES = 4;
 
     // get project_path
-    std::string project_path_2 = host::get_project_path();
+    std::string project_path = host::get_project_path();
+    std::cout << "\nHEEEEEEEEY project_path is = " << project_path << std::endl;
 
     // get device index
     device.device_index = std::stoi(device_index);
@@ -113,7 +114,7 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
     std::string acap_fpga_xclbin = project_path + "/acap_fpga_xclbin";
 
     // get xclbin name
-    std::string xclbin_name = get_xclbin_name(device.device_index, acap_fpga_xclbin);
+    //std::string xclbin_name = get_xclbin_name(device.device_index, acap_fpga_xclbin);
 
     // get BDF
     device.bdf = replace_string(sgutil_get(device.device_index, UPSTREAM_PORT), ".0", ".1");

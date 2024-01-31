@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
     std::cout << "\nDEVICE 1\n" << std::endl;
 
     // device 1
-    device::vitis alveo_1 = host::open("1", project_path, target);
+    device::vitis alveo_1 = host::open("1", "vadd", target);
     //xrt::uuid uuid = alveo_1.fpga.load_xclbin(alveo_1.binaryFile);
     //xrt::kernel krnl = xrt::kernel(alveo_1.fpga, uuid, "vadd");
     //xrt::kernel krnl = alveo_1.kernel; //xrt::kernel(alveo_1.fpga, uuid, "vadd");
@@ -122,7 +122,7 @@ int main(int argc, char** argv) {
     // device 2 ------------------------------------------------------------------------------------------------
     std::cout << "\nDEVICE 2\n" << std::endl;
     
-    device::vitis alveo_2 = host::open("2", project_path, target);
+    device::vitis alveo_2 = host::open("2", "vadd", target);
     alveo_2.print();
 
     std::cout << "Allocate Buffer in Global Memory\n";
