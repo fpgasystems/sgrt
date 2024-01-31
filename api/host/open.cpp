@@ -2,7 +2,8 @@
 #include <string>
 #include <sstream>
 
-#include "open.hpp" // Include the header file
+//#include "open.hpp" // Include the header file
+#include "../host.hpp"
 #include "../device.hpp"
 #include "../common/sgutil_get.hpp"
 
@@ -71,15 +72,15 @@ std::string get_xclbin_name(int device_index, const std::string& file_path) {
     return ""; // Change this as needed
 }
 
-std::string get_target(const std::string& emulationMode) {
-    std::string target = "hw";
-    if (emulationMode == "sw_emu" || emulationMode == "hw_emu") {
-        target = emulationMode;
-    }
-
-    return target;
-
-}
+//std::string get_target(const std::string& emulationMode) {
+//    std::string target = "hw";
+//    if (emulationMode == "sw_emu" || emulationMode == "hw_emu") {
+//        target = emulationMode;
+//    }
+//
+//   return target;
+//
+//}
 
 device::vitis host::open(const std::string& device_index, const std::string& project_path, const std::string& emulationMode) {
 
@@ -102,6 +103,9 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
     //std::string bdf = "0000:00:00.0";
     //int MAX_DEVICES = 4;
 
+    // get project_path
+    std::string project_path_2 = host::get_project_path();
+
     // get device index
     device.device_index = std::stoi(device_index);
 
@@ -118,7 +122,7 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
     device.platform = sgutil_get(device.device_index, PLATFORM);
     
     // set binaryFile
-    std::string binaryFile = project_path + "/build_dir." + get_target(emulationMode) + "." + device.platform + "/" + xclbin_name + ".xclbin";
+    std::string binaryFile = project_path + "/build_dir." + emulationMode + "." + device.platform + "/" + xclbin_name + ".xclbin"; // get_target(emulationMode)
     device.binaryFile = replace_string(binaryFile, project_path, ".");
 
     if (emulationMode == "sw_emu" || emulationMode == "hw_emu") { //if (device_index.empty()) {
