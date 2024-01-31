@@ -304,8 +304,10 @@ if [ "$target_name" = "hw" ]; then
     platform_name=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 fi
 
+xclbin_name="vadd"
+
 #define directories (2)
-APP_BUILD_DIR="$DIR/build_dir.$target_name.$platform_name"
+APP_BUILD_DIR="$DIR/build_dir.$xclbin_name.$target_name.$platform_name"
 
 #check for build directory
 if ! [ -d "$APP_BUILD_DIR" ]; then

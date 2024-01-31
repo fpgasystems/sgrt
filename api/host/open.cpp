@@ -36,41 +36,41 @@ std::string get_string(const std::string& input, int position) {
     }
 }
 
-std::string get_xclbin_name(int device_index, const std::string& file_path) {
-    // Open the file for reading
-    std::ifstream file(file_path);
-
-    if (!file.is_open()) {
-        // Handle the case where the file couldn't be opened
-        // You might want to return a default XCLBIN name or an error message.
-        return ""; // Change this as needed
-    }
-
-    std::string line;
-    while (std::getline(file, line)) {
-        std::istringstream iss(line);
-        int index;
-        std::string xclbinName;
-
-        // Read the first column (device_index)
-        if (iss >> index) {
-            // Read the second column (XCLBIN name)
-            if (iss >> xclbinName) {
-                if (index == device_index) {
-                    // Close the file and return the XCLBIN name
-                    file.close();
-                    return xclbinName;
-                }
-            }
-        }
-    }
-
-    // Close the file
-    file.close();
-
-    // return empty to indicate an error
-    return ""; // Change this as needed
-}
+//std::string get_xclbin_name(int device_index, const std::string& file_path) {
+//    // Open the file for reading
+//    std::ifstream file(file_path);
+//
+//    if (!file.is_open()) {
+//        // Handle the case where the file couldn't be opened
+//        // You might want to return a default XCLBIN name or an error message.
+//       return ""; // Change this as needed
+//    }
+//
+//    std::string line;
+//    while (std::getline(file, line)) {
+//        std::istringstream iss(line);
+//        int index;
+//        std::string xclbinName;
+//
+//        // Read the first column (device_index)
+//        if (iss >> index) {
+//            // Read the second column (XCLBIN name)
+//            if (iss >> xclbinName) {
+//                if (index == device_index) {
+//                    // Close the file and return the XCLBIN name
+//                    file.close();
+//                    return xclbinName;
+//                }
+//            }
+//        }
+//    }
+//
+//    // Close the file
+//    file.close();
+//
+//    // return empty to indicate an error
+//    return ""; // Change this as needed
+//}
 
 //std::string get_target(const std::string& emulationMode) {
 //    std::string target = "hw";
@@ -123,7 +123,7 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
     device.platform = sgutil_get(device.device_index, PLATFORM);
     
     // set binaryFile
-    std::string binaryFile = project_path + "/build_dir." + target + "." + device.platform + "/" + xclbin_name + ".xclbin"; // get_target(emulationMode)
+    std::string binaryFile = project_path + "/build_dir." + xclbin_name + "." + target + "." + device.platform + "/" + xclbin_name + ".xclbin"; // get_target(emulationMode)
     device.binaryFile = replace_string(binaryFile, project_path, ".");
 
     if (target == "sw_emu" || target == "hw_emu") { //if (device_index.empty()) {

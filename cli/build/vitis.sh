@@ -208,8 +208,10 @@ fi
 #config_id="${config%%.*}"
 #touch $config_id.active
 
+xclbin_name="vadd"
+
 #define directories (2)
-APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$target_name.$platform_name"
+APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_name.$target_name.$platform_name"
 
 echo ""
 echo "${bold}Changing directory:${normal}"
@@ -217,8 +219,6 @@ echo ""
 echo "cd $DIR"
 echo ""
 cd $DIR
-
-xclbin_name="vadd"
 
 #compilation
 if ! [ -d "$APP_BUILD_DIR" ]; then

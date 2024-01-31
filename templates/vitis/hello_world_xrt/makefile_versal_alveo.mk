@@ -46,11 +46,11 @@ include ./utils.mk
 
 XCLBIN_NAME ?= vadd # Javier: this a default value if not provided
 
-TEMP_DIR := ./_x.$(TARGET).$(XSA)
-BUILD_DIR := ./build_dir.$(TARGET).$(XSA)
+TEMP_DIR := ./_x.$(XCLBIN_NAME).$(TARGET).$(XSA)
+BUILD_DIR := ./build_dir.$(XCLBIN_NAME).$(TARGET).$(XSA)
 
 LINK_OUTPUT := $(BUILD_DIR)/$(XCLBIN_NAME).link.xsa
-PACKAGE_OUT = ./package.$(TARGET)
+PACKAGE_OUT = ./package.$(XCLBIN_NAME).$(TARGET)
 
 VPP_PFLAGS := 
 CMD_ARGS = -x $(BUILD_DIR)/$(XCLBIN_NAME).xclbin
