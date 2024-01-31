@@ -353,16 +353,16 @@ case "$target_name" in
         #eval "make run TARGET=$target_name PLATFORM=$platform_name"
         
         echo "cp -rf ./_x.$target_name.$platform_name/emconfig.json ."
-        echo "XCL_EMULATION_MODE=$target_name ./$project_name $config_id" # -p $DIR
+        echo "XCL_EMULATION_MODE=$target_name ./host $config_id" # -p $DIR # $project_name 
         echo ""
         eval "cp -rf ./_x.$target_name.$platform_name/emconfig.json ."
-        eval "XCL_EMULATION_MODE=$target_name ./$project_name $config_id" # -p $DIR
+        eval "XCL_EMULATION_MODE=$target_name ./host $config_id" # -p $DIR # $project_name
         echo ""
         ;;
     hw)
-        echo "./$project_name $config_id" # -p $DIR
+        echo "./host $config_id" # -p $DIR # $project_name
         echo ""
-        eval "./$project_name $config_id" # -p $DIR
+        eval "./host $config_id" # -p $DIR # $project_name
         echo ""
         ;;
 esac

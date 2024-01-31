@@ -257,7 +257,7 @@ else
     #g++ -o $project_name $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp src/host.cpp $API_PATH/host/open.cpp $API_PATH/common/sgutil_get.cpp -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++  -luuid -lxrt_coreutil
     
     #print application compilation command
-    echo "g++ -o $project_name \
+    echo "g++ -o host \
     $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp \
     $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp \
     src/host.cpp \
@@ -271,7 +271,7 @@ else
     -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++ -luuid -lxrt_coreutil"
 
     #run application compilation command
-    g++ -o $project_name \
+    g++ -o host \
     $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp \
     $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp \
     src/host.cpp \

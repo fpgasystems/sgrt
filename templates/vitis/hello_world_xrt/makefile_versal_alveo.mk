@@ -86,7 +86,7 @@ HOST_SRCS += $(wildcard $(API_PATH)/common/*.cpp)
 VPP_FLAGS += --save-temps 
 
 
-EXECUTABLE = ./hello_world_xrt
+EXECUTABLE = ./host #./hello_world_xrt
 EMCONFIG_DIR = $(TEMP_DIR)
 
 ############################## Setting Targets ##############################
