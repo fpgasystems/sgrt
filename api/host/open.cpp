@@ -82,7 +82,7 @@ std::string get_xclbin_name(int device_index, const std::string& file_path) {
 //
 //}
 
-device::vitis host::open(const std::string& device_index, const std::string& project_path, const std::string& emulationMode) {
+device::vitis host::open(const std::string& device_index, const std::string& project_path, const std::string& target) {
 
     // sgutil_get constants 
     int UPSTREAM_PORT = 1;
@@ -122,10 +122,10 @@ device::vitis host::open(const std::string& device_index, const std::string& pro
     device.platform = sgutil_get(device.device_index, PLATFORM);
     
     // set binaryFile
-    std::string binaryFile = project_path + "/build_dir." + emulationMode + "." + device.platform + "/" + xclbin_name + ".xclbin"; // get_target(emulationMode)
+    std::string binaryFile = project_path + "/build_dir." + target + "." + device.platform + "/" + xclbin_name + ".xclbin"; // get_target(emulationMode)
     device.binaryFile = replace_string(binaryFile, project_path, ".");
 
-    if (emulationMode == "sw_emu" || emulationMode == "hw_emu") { //if (device_index.empty()) {
+    if (target == "sw_emu" || target == "hw_emu") { //if (device_index.empty()) {
 
         //int MAX_DEVICES = 4;
         //xrt::device xrt_device_i;
