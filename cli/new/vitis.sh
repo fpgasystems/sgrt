@@ -113,6 +113,9 @@ rm $DIR/README.rst
 cd $DIR/src
 g++ -std=c++17 config_add.cpp -o ../config_add >&/dev/null
 
+mv $DIR/xclbin_add.sh $DIR/xclbin_add
+chmod +x $DIR/xclbin_add
+
 #commit files
 if [ "$commit" = "1" ]; then 
     cd $DIR
