@@ -103,7 +103,7 @@ build: check-vitis check-device $(BUILD_DIR)/$(XCLBIN_NAME).xclbin
 xclbin: build
 
 ############################## Setting Rules for Binary Containers (Building Kernels) ##############################
-$(TEMP_DIR)/$(XCLBIN_NAME).xo: src/$(XCLBIN_NAME).cpp
+$(TEMP_DIR)/$(XCLBIN_NAME).xo: src/xclbin/$(XCLBIN_NAME).cpp
 	mkdir -p $(TEMP_DIR)
 	v++ -c $(VPP_FLAGS) -t $(TARGET) --platform $(PLATFORM) -k $(XCLBIN_NAME) --temp_dir $(TEMP_DIR)  -I'$(<D)' -o'$@' '$<'
 
