@@ -111,7 +111,7 @@ rm $DIR/README.rst
 #echo "# $project_name" >> README.md
 #compile src
 cd $DIR/src
-g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
+g++ -std=c++17 config_add.cpp -o ../config_add >&/dev/null
 
 #commit files
 if [ "$commit" = "1" ]; then 

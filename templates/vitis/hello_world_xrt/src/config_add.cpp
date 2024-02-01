@@ -144,7 +144,7 @@ int read_parameter(string conf_name, string parameter)
 int main()
 {
 
-    cout << "\n\e[1mcreate_config\e[0m\n";
+    cout << "\n\e[1mconfig_add\e[0m\n";
 
     const fs::path kernel_parameters{"./configs/kernel_parameters.hpp"};
     bool exist = file_exists(kernel_parameters);

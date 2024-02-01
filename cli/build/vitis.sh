@@ -159,11 +159,11 @@ fi
 cd $DIR/configs/
 if [[ $(ls -l | wc -l) = 3 ]]; then
     #only config_000 exists and we create config_kernel and config_001
-    #we compile create_config (in case there were changes)
+    #we compile config_add (in case there were changes)
     cd $DIR/src
-    g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
+    g++ -std=c++17 config_add.cpp -o ../config_add >&/dev/null
     cd $DIR
-    ./create_config
+    ./config_add
     #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
     config="config_001"
 #elif [[ $(ls -l | wc -l) = 5 ]]; then
