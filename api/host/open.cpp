@@ -111,7 +111,7 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
     device.device_index = std::stoi(device_index);
 
     // get acap_fpga_xclbin file
-    std::string acap_fpga_xclbin = project_path + "/acap_fpga_xclbin";
+    //std::string acap_fpga_xclbin = project_path + "/acap_fpga_xclbin";
 
     // get xclbin name
     //std::string xclbin_name = get_xclbin_name(device.device_index, acap_fpga_xclbin);
