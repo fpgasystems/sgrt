@@ -273,11 +273,11 @@ fi
 if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name" == "hw" ]]; then
     if ! [ -d "$APP_BUILD_DIR" ]; then
         # APP_BUILD_DIR does not exist
-        export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
         echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
         echo ""
         echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
         echo ""
+        export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
         eval "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
         echo ""        
 
@@ -297,13 +297,20 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
                     rm -rf $APP_BUILD_DIR
                     
                     #rebuild
-                    export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
+                    echo ""
                     echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
                     echo ""
                     echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
                     echo ""
+                    export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
                     eval "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
                     echo ""
+
+                    #send email at the end
+                    if [ "$target_name" = "hw" ]; then
+                        user_email=$USER@ethz.ch
+                        echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name) is done!" | sendmail $user_email
+                    fi
 
                     break
                     ;;
