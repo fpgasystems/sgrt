@@ -67,9 +67,6 @@ if [ "$flags" = "" ]; then
     if [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/host" ]; then
         target_host="1"
     fi
-
-    echo "Hoooooi $target_host"
-
     #target_dialog
     echo ""
     echo "${bold}Please, choose binary's build target:${normal}"
@@ -233,41 +230,13 @@ echo "cd $DIR"
 echo ""
 cd $DIR
 
-#compilation
-if ! [ -d "$APP_BUILD_DIR" ]; then
-    # APP_BUILD_DIR does not exist
-    export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
-    echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
-    echo ""
-    echo "make all TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
-    echo ""
-    eval "make all TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
-    echo ""        
 
-    #send email at the end
-    if [ "$target_name" = "hw" ]; then
-        user_email=$USER@ethz.ch
-        echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name) is done!" | sendmail $user_email
-    fi
+#host compilation
+if [ "$target_host" = "0" ] || [ "$target_name" = "host" ]; then
     
-else
-    echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
+    #host compilation (should be equivalent to "make host")
+    echo "${bold}host.cpp compilation:${normal}"
     echo ""
-    echo "make all TARGET=$target_name PLATFORM=$platform_name" 
-    echo ""
-    echo "$APP_BUILD_DIR already exists!"
-    echo ""
-
-    #get xrt version
-    #branch=$($XRT_PATH/bin/xbutil --version | grep -i -w 'Branch' | tr -d '[:space:]')
-    #branch=${branch:7:6}
-    
-    #application compilation
-    echo "${bold}Application compilation:${normal}"
-    echo ""
-    #xrt native
-    #echo "g++ -o $project_name $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp src/host.cpp $API_PATH/host/open.cpp $API_PATH/common/sgutil_get.cpp -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++  -luuid -lxrt_coreutil"
-    #g++ -o $project_name $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp src/host.cpp $API_PATH/host/open.cpp $API_PATH/common/sgutil_get.cpp -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++  -luuid -lxrt_coreutil
     
     #print application compilation command
     echo "g++ -o host \
@@ -298,5 +267,85 @@ else
     -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++ -luuid -lxrt_coreutil
     
     echo ""
-    
+fi
+
+#xclbin compilation
+if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name" == "hw" ]]; then
+    if ! [ -d "$APP_BUILD_DIR" ]; then
+        # APP_BUILD_DIR does not exist
+        export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
+        echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
+        echo ""
+        #echo "make all TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
+        echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
+        echo ""
+        #eval "make all TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
+        eval "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
+        echo ""        
+
+        #create emconfig.json (this was automatically done when using make all and not make build)
+        #emconfigutil --platform $platform_name --od ./_x.$target_name.$platform_name --nd 1
+
+        #send email at the end
+        if [ "$target_name" = "hw" ]; then
+            user_email=$USER@ethz.ch
+            echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name) is done!" | sendmail $user_email
+        fi
+    else
+
+        echo "Do you want to recompile?"
+
+    #elif [ "$target_name" = "host" ]; then
+    #    
+    #    #echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
+    #    #echo ""
+    #    #echo "make all TARGET=$target_name PLATFORM=$platform_name" 
+    #    #echo ""
+    #    #echo "$APP_BUILD_DIR already exists!"
+    #    #echo ""
+    #
+    #    #get xrt version
+    #    #branch=$($XRT_PATH/bin/xbutil --version | grep -i -w 'Branch' | tr -d '[:space:]')
+    #    #branch=${branch:7:6}
+    #    
+    #    #application compilation
+    #    echo "${bold}host.cpp compilation:${normal}"
+    #    echo ""
+    #    #xrt native
+    #    #echo "g++ -o $project_name $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp src/host.cpp $API_PATH/host/open.cpp $API_PATH/common/sgutil_get.cpp -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++  -luuid -lxrt_coreutil"
+    #    #g++ -o $project_name $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp src/host.cpp $API_PATH/host/open.cpp $API_PATH/common/sgutil_get.cpp -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++  -luuid -lxrt_coreutil
+    #    
+    #    #print application compilation command
+    #    echo "g++ -o host \
+    #    $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp \
+    #    $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp \
+    #    src/host.cpp \
+    #    $API_PATH/host/*.cpp \
+    #    $API_PATH/common/*.cpp \
+    #    -I$API_PATH \
+    #    -I$API_PATH/common \
+    #    -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y \
+    #    -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser \
+    #    -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger \
+    #    -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++ -luuid -lxrt_coreutil"
+    #
+    #    #run application compilation command
+    #    g++ -o host \
+    #    $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp \
+    #    $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp \
+    #    src/host.cpp \
+    #    $API_PATH/host/*.cpp \
+    #    $API_PATH/common/*.cpp \
+    #    -I$API_PATH \
+    #    -I$API_PATH/common \
+    #    -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y \
+    #    -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser \
+    #    -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger \
+    #    -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++ -luuid -lxrt_coreutil
+    #    
+    #    echo ""
+        
+    fi
+
+
 fi

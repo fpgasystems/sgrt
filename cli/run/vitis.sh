@@ -353,7 +353,11 @@ case "$target_name" in
         #echo "make run TARGET=$target_name PLATFORM=$platform_name" 
         #echo ""
         #eval "make run TARGET=$target_name PLATFORM=$platform_name"
-        
+
+        #create emconfig.json (this was automatically done in sgutil build vitis when using make all and not make build)
+        emconfigutil --platform $platform_name --od ./_x.$xclbin_name.$target_name.$platform_name --nd 2
+        echo ""
+
         echo "cp -rf ./_x.$xclbin_name.$target_name.$platform_name/emconfig.json ."
         echo "XCL_EMULATION_MODE=$target_name ./host $config_id" # -p $DIR # $project_name 
         echo ""
@@ -363,7 +367,7 @@ case "$target_name" in
         ;;
     hw)
         echo "./host $config_id" # -p $DIR # $project_name
-        echo ""
+        #echo ""
         eval "./host $config_id" # -p $DIR # $project_name
         echo ""
         ;;
