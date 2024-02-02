@@ -109,16 +109,16 @@ sed -i "s/$TEMPLATE_NAME/$project_name/" $DIR/makefile_versal_alveo.mk
 #delete README
 rm $DIR/README.rst
 #echo "# $project_name" >> README.md
-#compile src
+#compile config_add and delete
 cd $DIR/src
 g++ -std=c++17 config_add.cpp -o ../config_add >&/dev/null
-
+mv $DIR/config_delete.sh $DIR/config_delete
+chmod +x $DIR/config_delete
+#compile xclbin_add and delete
 mv $DIR/xclbin_add.sh $DIR/xclbin_add
 chmod +x $DIR/xclbin_add
-
 mv $DIR/xclbin_delete.sh $DIR/xclbin_delete
 chmod +x $DIR/xclbin_delete
-
 #commit files
 if [ "$commit" = "1" ]; then 
     cd $DIR
