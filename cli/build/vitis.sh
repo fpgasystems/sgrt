@@ -165,7 +165,7 @@ if [[ $(ls -l | wc -l) = 3 ]]; then
     cd $DIR
     ./config_add
     #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
-    config="config_001"
+    #config="config_001"
 #elif [[ $(ls -l | wc -l) = 5 ]]; then
 #    #config_000, config_kernel and config_001 exist
 #    #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
