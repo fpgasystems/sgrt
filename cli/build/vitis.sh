@@ -62,21 +62,34 @@ if [ "$flags" = "" ]; then
     if [[ $multiple_projects = "0" ]]; then
         echo $project_name
     fi
+    #check if host has been compiled already
+    target_host="0"
+    if [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/host" ]; then
+        target_host="1"
+    fi
+
+    echo "Hoooooi $target_host"
+
     #target_dialog
     echo ""
-    echo "${bold}Please, choose binary's execution target:${normal}"
+    echo "${bold}Please, choose binary's build target:${normal}"
     echo ""
-    target_name=$($CLI_PATH/common/target_dialog)
-    #platform_dialog
-    echo ""
-    echo "${bold}Please, choose your platform:${normal}"
-    echo ""
-    result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
-    platform_found=$(echo "$result" | sed -n '1p')
-    platform_name=$(echo "$result" | sed -n '2p')
-    multiple_platforms=$(echo "$result" | sed -n '3p')
-    if [[ $multiple_platforms = "0" ]]; then
-        echo $platform_name
+    target_name=$($CLI_PATH/common/target_dialog $target_host)
+    #platform/xclbin dialogs
+    if [ "$target_name" != "host" ]; then
+        #platform_dialog
+        echo ""
+        echo "${bold}Please, choose your platform:${normal}"
+        echo ""
+        result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
+        platform_found=$(echo "$result" | sed -n '1p')
+        platform_name=$(echo "$result" | sed -n '2p')
+        multiple_platforms=$(echo "$result" | sed -n '3p')
+        if [[ $multiple_platforms = "0" ]]; then
+            echo $platform_name
+        fi
+        #xclbin_dialog
+        #...
     fi
 else
     #project_dialog_check
