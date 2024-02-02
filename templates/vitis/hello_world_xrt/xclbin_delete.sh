@@ -4,10 +4,10 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 #constants
-MY_PROJECTS_PATH="$(dirname "$(dirname "$0")")"
+MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
 TEMPLATE="vadd"
 
-cd $MY_PROJECTS_PATH/src/xclbin
+cd $MY_PROJECT_PATH/src/xclbin
 xclbins=( *".cpp" )
 
 # Remove file extension from each element in the array
