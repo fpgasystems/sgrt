@@ -276,15 +276,10 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
         echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
         echo ""
-        #echo "make all TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
         echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
         echo ""
-        #eval "make all TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
         eval "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
         echo ""        
-
-        #create emconfig.json (this was automatically done when using make all and not make build)
-        #emconfigutil --platform $platform_name --od ./_x.$target_name.$platform_name --nd 1
 
         #send email at the end
         if [ "$target_name" = "hw" ]; then
@@ -292,8 +287,32 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
             echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name) is done!" | sendmail $user_email
         fi
     else
+        echo ""
+        echo "${bold}The XCLBIN $xclbin_name.$target_name.$platform_name already exists. Do you want to build it again (y/n)?${normal}"
+        while true; do
+            read -p "" yn
+            case $yn in
+                "y") 
+                    #delete
+                    rm -rf $APP_BUILD_DIR
+                    
+                    #rebuild
+                    export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
+                    echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
+                    echo ""
+                    echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
+                    echo ""
+                    eval "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
+                    echo ""
 
-        echo "Do you want to recompile?"
+                    break
+                    ;;
+                "n") 
+                    echo ""
+                    break
+                    ;;
+            esac
+        done
 
     #elif [ "$target_name" = "host" ]; then
     #    
