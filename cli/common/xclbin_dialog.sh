@@ -20,19 +20,21 @@ xclbins=( *".cpp" )
 j=0
 for i in "${xclbins[@]}"
 do
-    #if [[ $i =~ "common/" ]]; then
-    #    echo "" >&/dev/null
-    #else
-        aux[j]=${i::-4}
-        j=$(($j + 1))
-    #fi
+    aux[j]=${i::-4} # remove the last four characters, i.e. ".cpp"
+    j=$(($j + 1))
 done
+
+#Dynamically build the third option (all xclbins)
+IFS=,  # Set the Internal Field Separator to comma
+third_option=$(printf "%s, " "${aux[@]}")  # Join elements with a comma and a space
+IFS=  # Reset the Internal Field Separator
+third_option=${third_option%, }  # Remove trailing comma and space
+aux+=( "$third_option" )
 
 # Check if there is only one directory
 if [ ${#aux[@]} -eq 1 ]; then
     xclbin_found="1"
     xclbin_name=${aux[0]}
-    #xclbin_name=${xclbin_name::-4} # remove the last characters, i.e. ".cpp"
 else
     multiple_xclbins="1"
     PS3=""
@@ -41,7 +43,6 @@ else
             echo "" >&/dev/null
         else
             xclbin_found="1"
-            #xclbin_name=${xclbin_name::-4} # remove the last characters, i.e. ".cpp"
             break
         fi
     done

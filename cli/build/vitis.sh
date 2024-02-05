@@ -86,7 +86,22 @@ if [ "$flags" = "" ]; then
             echo $platform_name
         fi
         #xclbin_dialog
-        #...
+        echo ""
+        echo "${bold}Please, choose your XCLBIN:${normal}"
+        echo ""
+        result=$($CLI_PATH/common/xclbin_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name) #$USER $WORKFLOW
+        xclbin_found=$(echo "$result" | sed -n '1p')
+        xclbin_name=$(echo "$result" | sed -n '2p')
+        multiple_xclbins=$(echo "$result" | sed -n '3p')
+
+        echo $xclbin_found
+        echo $xclbin_name
+        echo $multiple_xclbins
+
+        exit
+
+
+
     fi
 else
     #project_dialog_check
