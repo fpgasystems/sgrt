@@ -263,13 +263,47 @@ if [ "$target_host" = "0" ] || [ "$target_name" = "host" ]; then
     echo ""
 fi
 
-xclbin_name="vadd"
-
-#define directories (2)
-XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_name.$target_name.$platform_name"
-
 #xclbin compilation
 if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name" == "hw" ]]; then
+    #loop over xclnbins (xclbin_name can be a list of all comma separated xclbins)
+    IFS=', ' read -ra xclbin_names <<< "$xclbin_name"
+    for xclbin_i in "${xclbin_names[@]}"; do
+        #echo "Processing element: $xclbin_i"
+        # Your code here for each element
+
+        #define directories (2)
+        XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name"
+
+        if ! [ -d "$XCLBIN_BUILD_DIR" ]; then
+            # XCLBIN_BUILD_DIR does not exist
+            echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
+            echo ""
+            echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_i" 
+            echo ""
+            export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
+            eval "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_i"
+            echo ""        
+
+            #send email at the end
+            if [ "$target_name" = "hw" ]; then
+                user_email=$USER@ethz.ch
+                echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name / XCLBIN=$xclbin_i) is done!" | sendmail $user_email
+            fi
+        else
+
+            echo "${bold}The XCLBIN $xclbin_name.$target_name.$platform_name already exists!${normal}"
+
+        fi
+    done
+
+    echo "All compiled!"
+    exit    
+    
+    xclbin_name="vadd"
+
+    #define directories (2)
+    XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_name.$target_name.$platform_name"
+
     if ! [ -d "$XCLBIN_BUILD_DIR" ]; then
         # XCLBIN_BUILD_DIR does not exist
         echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
