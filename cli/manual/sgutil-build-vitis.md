@@ -27,6 +27,11 @@
   &nbsp; &nbsp; Binary compilation target (host, sw_emu, hw_emu, hw).
 </p>
 
+<code>-x, --xclbin</code>
+<p>
+  &nbsp; &nbsp; The name of the XCLBIN to be compiled.
+</p>
+
 <code>-h, --help <string></code>
 <p>
   &nbsp; &nbsp; Help to build a binary.
