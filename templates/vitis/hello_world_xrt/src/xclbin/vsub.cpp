@@ -104,7 +104,7 @@ extern "C" {
         out  (output) --> Output Vector
         size (input)  --> Size of Vector in Integer
    */
-void vadd(unsigned int* in1, unsigned int* in2, unsigned int* out, int size) {
+void vsub(unsigned int* in1, unsigned int* in2, unsigned int* out, int size) {
     static hls::stream<unsigned int> inStream1("input_stream_1");
     static hls::stream<unsigned int> inStream2("input_stream_2");
     static hls::stream<unsigned int> outStream("output_stream");
