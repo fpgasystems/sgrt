@@ -29,7 +29,7 @@
     #cli installation
     #scripts
     build: false
-    common: false
+    common: true
     enable: false
     examine: false
     get: false
@@ -38,7 +38,7 @@
     reboot: false
     run: false
     set: false
-    sgutil: false 
+    sgutil: true 
     templates: true #true-----------------------------------
     validate: false
     #workflows
@@ -318,6 +318,7 @@
         - target_dialog_check
         - version_dialog
         - version_dialog_check
+        - xclbin_dialog
     #enable
     - name: copying enable scripts
       copy:
