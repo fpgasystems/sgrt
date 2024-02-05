@@ -319,6 +319,7 @@
         - version_dialog
         - version_dialog_check
         - xclbin_dialog
+        - xclbin_dialog_check
     #enable
     - name: copying enable scripts
       copy:

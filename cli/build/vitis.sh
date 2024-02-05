@@ -97,13 +97,10 @@ if [ "$flags" = "" ]; then
             echo $xclbin_name
         fi
 
-        echo $xclbin_found
-        echo $xclbin_name
-        echo $multiple_xclbins
-
-        exit
-
-
+        #echo $xclbin_found
+        #echo $xclbin_name
+        #echo $multiple_xclbins
+        #exit
 
     fi
 else
@@ -139,6 +136,15 @@ else
         $CLI_PATH/sgutil build vitis -h
         exit
     fi
+    #xclbin_dialog_check
+    result="$("$CLI_PATH/common/xclbin_dialog_check" "${flags[@]}")"
+    xclbin_found=$(echo "$result" | sed -n '1p')
+    xclbin_name=$(echo "$result" | sed -n '2p')
+    #forbidden combinations
+    if ([ "$xclbin_found" = "1" ] && ([ "$xclbin_name" = "" ] || [ ! -f "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/src/xclbin/$xclbin_name.cpp" ])) || ([ "$xclbin_found" = "1" ] && [ "$target_name" = "host" ]); then 
+        $CLI_PATH/sgutil build vitis -h
+        exit
+    fi
     #header (2/2)
     echo ""
     echo "${bold}sgutil build vitis${normal}"
@@ -162,8 +168,9 @@ else
         echo ""
         target_name=$($CLI_PATH/common/target_dialog)
     fi
-    #platform_dialog (forgotten mandatory 2)
+    #platform and xclbin_dialog (forgotten mandatory 2)
     if [ "$target_name" != "host" ]; then
+        #platform_dialog
         if [[ $platform_found = "0" ]]; then
             echo ""
             echo "${bold}Please, choose your platform:${normal}"
@@ -175,6 +182,11 @@ else
             if [[ $multiple_platforms = "0" ]]; then
                 echo $platform_name
             fi
+        fi
+        #xclbin_dialog
+        if [[ $xclbin_found = "0" ]]; then
+
+
         fi
     fi
 fi
