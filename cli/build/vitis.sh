@@ -96,12 +96,6 @@ if [ "$flags" = "" ]; then
         if [[ $multiple_xclbins = "0" ]]; then
             echo $xclbin_name
         fi
-
-        #echo $xclbin_found
-        #echo $xclbin_name
-        #echo $multiple_xclbins
-        #exit
-
     fi
 else
     #project_dialog_check
@@ -185,8 +179,16 @@ else
         fi
         #xclbin_dialog
         if [[ $xclbin_found = "0" ]]; then
-
-
+            echo ""
+            echo "${bold}Please, choose your XCLBIN:${normal}"
+            echo ""
+            result=$($CLI_PATH/common/xclbin_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
+            xclbin_found=$(echo "$result" | sed -n '1p')
+            xclbin_name=$(echo "$result" | sed -n '2p')
+            multiple_xclbins=$(echo "$result" | sed -n '3p')
+            if [[ $multiple_xclbins = "0" ]]; then
+                echo $xclbin_name
+            fi
         fi
     fi
 fi
@@ -215,18 +217,13 @@ if [[ $(ls -l | wc -l) = 3 ]]; then
     #config="config_001"
 fi
 
-xclbin_name="vadd"
-
-#define directories (2)
-APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_name.$target_name.$platform_name"
-
+#change directory
 echo ""
 echo "${bold}Changing directory:${normal}"
 echo ""
 echo "cd $DIR"
 echo ""
 cd $DIR
-
 
 #host compilation
 if [ "$target_host" = "0" ] || [ "$target_name" = "host" ]; then
@@ -266,10 +263,15 @@ if [ "$target_host" = "0" ] || [ "$target_name" = "host" ]; then
     echo ""
 fi
 
+xclbin_name="vadd"
+
+#define directories (2)
+XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_name.$target_name.$platform_name"
+
 #xclbin compilation
 if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name" == "hw" ]]; then
-    if ! [ -d "$APP_BUILD_DIR" ]; then
-        # APP_BUILD_DIR does not exist
+    if ! [ -d "$XCLBIN_BUILD_DIR" ]; then
+        # XCLBIN_BUILD_DIR does not exist
         echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
         echo ""
         echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
@@ -291,7 +293,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
             case $yn in
                 "y") 
                     #delete
-                    rm -rf $APP_BUILD_DIR
+                    rm -rf $XCLBIN_BUILD_DIR
                     
                     #rebuild
                     echo ""
