@@ -211,6 +211,7 @@ build_vitis_help() {
     echo "       --platform  - Xilinx platform (according to sgutil get platform)."
     echo "       --project   - Specifies your Vitis project name."
     echo "   -t, --target    - Binary compilation target (host, sw_emu, hw_emu, hw)."
+    echo "   -x, --xclbin    - The name of the XCLBIN to be compiled."
     echo ""
     echo "   -h, --help      - Help to build a binary."
     echo ""
@@ -1020,7 +1021,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis) 
-        valid_flags="--platform --project -t --target -h --help"
+        valid_flags="--platform --project -t --target -x --xclbin -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       *)
