@@ -201,47 +201,7 @@ if [[ $(ls -l | wc -l) = 3 ]]; then
     ./config_add
     #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
     #config="config_001"
-#elif [[ $(ls -l | wc -l) = 5 ]]; then
-#    #config_000, config_kernel and config_001 exist
-#    #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
-#    config="config_001"
-#    echo ""
-#elif [[ $(ls -l | wc -l) > 5 ]]; then
-#    cd $DIR/configs/
-#    configs=( "config_"* )
-#    
-#    #remove selected files
-#    configs_aux=()
-#    for element in "${configs[@]}"; do
-#        if [[ $element != *"config_000"* && $element != *.hpp && $element != *.active ]]; then
-#            configs_aux+=("$element")
-#        fi
-#    done
-#
-#    echo ""
-#    echo "${bold}Please, choose your configuration:${normal}"
-#    echo ""
-#    PS3=""
-#
-#    select config in "${configs_aux[@]}"; do
-#        if [[ -z $config ]]; then
-#            echo "" >&/dev/null
-#        else
-#            break
-#        fi
-#    done
-#    # copy selected config as config_000.hpp
-#    #cp -fr $DIR/configs/$config $DIR/configs/config_000.hpp
-#    echo ""
 fi
-
-##save config id
-#cd $DIR/configs/
-#if [ -e config_*.active ]; then
-#    rm *.active
-#fi
-#config_id="${config%%.*}"
-#touch $config_id.active
 
 xclbin_name="vadd"
 
@@ -345,58 +305,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
                     ;;
             esac
         done
-
-    #elif [ "$target_name" = "host" ]; then
-    #    
-    #    #echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
-    #    #echo ""
-    #    #echo "make all TARGET=$target_name PLATFORM=$platform_name" 
-    #    #echo ""
-    #    #echo "$APP_BUILD_DIR already exists!"
-    #    #echo ""
-    #
-    #    #get xrt version
-    #    #branch=$($XRT_PATH/bin/xbutil --version | grep -i -w 'Branch' | tr -d '[:space:]')
-    #    #branch=${branch:7:6}
-    #    
-    #    #application compilation
-    #    echo "${bold}host.cpp compilation:${normal}"
-    #    echo ""
-    #    #xrt native
-    #    #echo "g++ -o $project_name $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp src/host.cpp $API_PATH/host/open.cpp $API_PATH/common/sgutil_get.cpp -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++  -luuid -lxrt_coreutil"
-    #    #g++ -o $project_name $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp src/host.cpp $API_PATH/host/open.cpp $API_PATH/common/sgutil_get.cpp -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++  -luuid -lxrt_coreutil
-    #    
-    #    #print application compilation command
-    #    echo "g++ -o host \
-    #    $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp \
-    #    $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp \
-    #    src/host.cpp \
-    #    $API_PATH/host/*.cpp \
-    #    $API_PATH/common/*.cpp \
-    #    -I$API_PATH \
-    #    -I$API_PATH/common \
-    #    -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y \
-    #    -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser \
-    #    -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger \
-    #    -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++ -luuid -lxrt_coreutil"
-    #
-    #    #run application compilation command
-    #    g++ -o host \
-    #    $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp \
-    #    $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp \
-    #    src/host.cpp \
-    #    $API_PATH/host/*.cpp \
-    #    $API_PATH/common/*.cpp \
-    #    -I$API_PATH \
-    #    -I$API_PATH/common \
-    #    -I$XRT_PATH/include -I$XILINX_VIVADO/include -Wall -O0 -g -std=c++1y \
-    #    -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser \
-    #    -I$MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger \
-    #    -fmessage-length=0 -L$XRT_PATH/lib -pthread -lOpenCL -lrt -lstdc++ -luuid -lxrt_coreutil
-    #    
-    #    echo ""
         
     fi
-
 
 fi
