@@ -24,7 +24,7 @@
 
 <code>-t, --target</code>
 <p>
-  &nbsp; &nbsp; Binary compilation target (sw_emu, hw_emu, hw).
+  &nbsp; &nbsp; Binary compilation target (host, sw_emu, hw_emu, hw).
 </p>
 
 <code>-h, --help <string></code>
