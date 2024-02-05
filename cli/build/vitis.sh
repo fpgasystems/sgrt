@@ -93,6 +93,9 @@ if [ "$flags" = "" ]; then
         xclbin_found=$(echo "$result" | sed -n '1p')
         xclbin_name=$(echo "$result" | sed -n '2p')
         multiple_xclbins=$(echo "$result" | sed -n '3p')
+        if [[ $multiple_xclbins = "0" ]]; then
+            echo $xclbin_name
+        fi
 
         echo $xclbin_found
         echo $xclbin_name
