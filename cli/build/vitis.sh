@@ -103,7 +103,7 @@ else
     target_found=$(echo "$result" | sed -n '1p')
     target_name=$(echo "$result" | sed -n '2p')
     #forbidden combinations
-    if [[ "$target_found" = "1" && ! ( "$target_name" = "sw_emu" || "$target_name" = "hw_emu" || "$target_name" = "hw" ) ]]; then
+    if [[ "$target_found" = "1" && ! ( "$target_name" = "host" || "$target_name" = "sw_emu" || "$target_name" = "hw_emu" || "$target_name" = "hw" ) ]]; then
         $CLI_PATH/sgutil build vitis -h
         exit
     fi
@@ -111,8 +111,13 @@ else
     result="$("$CLI_PATH/common/platform_dialog_check" "${flags[@]}")"
     platform_found=$(echo "$result" | sed -n '1p')
     platform_name=$(echo "$result" | sed -n '2p')    
-    #forbidden combinations
+    #forbidden combinations (1/2)
     if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
+        $CLI_PATH/sgutil build vitis -h
+        exit
+    fi
+    #forbidden combinations (2/2)
+    if ([ "$target_found" = "1" ] && [ "$target_name" = "host" ]) && [ "$platform_found" = "1" ]; then 
         $CLI_PATH/sgutil build vitis -h
         exit
     fi
@@ -140,16 +145,18 @@ else
         target_name=$($CLI_PATH/common/target_dialog)
     fi
     #platform_dialog (forgotten mandatory 2)
-    if [[ $platform_found = "0" ]]; then
-        echo ""
-        echo "${bold}Please, choose your platform:${normal}"
-        echo ""
-        result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
-        platform_found=$(echo "$result" | sed -n '1p')
-        platform_name=$(echo "$result" | sed -n '2p')
-        multiple_platforms=$(echo "$result" | sed -n '3p')
-        if [[ $multiple_platforms = "0" ]]; then
-            echo $platform_name
+    if [ "$target_name" != "host" ]; then
+        if [[ $platform_found = "0" ]]; then
+            echo ""
+            echo "${bold}Please, choose your platform:${normal}"
+            echo ""
+            result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
+            platform_found=$(echo "$result" | sed -n '1p')
+            platform_name=$(echo "$result" | sed -n '2p')
+            multiple_platforms=$(echo "$result" | sed -n '3p')
+            if [[ $multiple_platforms = "0" ]]; then
+                echo $platform_name
+            fi
         fi
     fi
 fi

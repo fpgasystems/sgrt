@@ -210,7 +210,7 @@ build_vitis_help() {
     echo "FLAGS:"
     echo "       --platform  - Xilinx platform (according to sgutil get platform)."
     echo "       --project   - Specifies your Vitis project name."
-    echo "   -t, --target    - Binary compilation target (sw_emu, hw_emu, hw)."
+    echo "   -t, --target    - Binary compilation target (host, sw_emu, hw_emu, hw)."
     echo ""
     echo "   -h, --help      - Help to build a binary."
     echo ""
