@@ -122,7 +122,7 @@ int main(int argc, char** argv) {
     // device 2 ------------------------------------------------------------------------------------------------
     std::cout << "\nDEVICE 2\n" << std::endl;
     
-    device::vitis alveo_2 = host::open("2", "vadd", target);
+    device::vitis alveo_2 = host::open("2", "vsub", target);
     alveo_2.print();
 
     std::cout << "Allocate Buffer in Global Memory\n";
