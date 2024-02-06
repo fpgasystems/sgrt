@@ -342,7 +342,7 @@ echo ""
 #execution
 cd $DIR
 echo "${bold}Running accelerated application:${normal}"
-echo ""
+#echo ""
 
 case "$target_name" in
     sw_emu|hw_emu)

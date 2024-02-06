@@ -105,7 +105,6 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
 
     // get project_path
     std::string project_path = host::get_project_path();
-    std::cout << "\nHEEEEEEEEY project_path is = " << project_path << std::endl;
 
     // get device index
     device.device_index = std::stoi(device_index);

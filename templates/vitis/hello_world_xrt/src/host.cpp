@@ -52,19 +52,17 @@ int main(int argc, char** argv) {
 
     // get project_path
     std::string project_path = host::get_project_path();
-    std::cout << "\nNEW project_path is = " << project_path << std::endl;
 
     // get config_id
     std::string config_id = host::get_config(argv);
-    std::cout << "\nconfig_id = " << config_id << std::endl;
+    //std::cout << "\nconfig_id = " << config_id << std::endl;
 
     // get config_parameters
     int N = host::get_config_parameter<int>(project_path, config_id, "N");
-    std::cout << "Value of parameter 'N': " << N << std::endl;
+    //std::cout << "Value of parameter 'N': " << N << std::endl;
 
     // get target
     std::string target = host::get_target();
-    std::cout << "\nTARGET is = " << target << std::endl;
 
     std::cout << "\nDEVICE 1\n" << std::endl;
 
