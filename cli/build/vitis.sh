@@ -296,64 +296,64 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         fi
     done
 
-    echo "All compiled!"
-    exit    
-    
-    xclbin_name="vadd"
-
-    #define directories (2)
-    XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_name.$target_name.$platform_name"
-
-    if ! [ -d "$XCLBIN_BUILD_DIR" ]; then
-        # XCLBIN_BUILD_DIR does not exist
-        echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
-        echo ""
-        echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
-        echo ""
-        export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
-        eval "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
-        echo ""        
-
-        #send email at the end
-        if [ "$target_name" = "hw" ]; then
-            user_email=$USER@ethz.ch
-            echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name) is done!" | sendmail $user_email
-        fi
-    else
-        echo ""
-        echo "${bold}The XCLBIN $xclbin_name.$target_name.$platform_name already exists. Do you want to build it again (y/n)?${normal}"
-        while true; do
-            read -p "" yn
-            case $yn in
-                "y") 
-                    #delete
-                    rm -rf $XCLBIN_BUILD_DIR
-                    
-                    #rebuild
-                    echo ""
-                    echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
-                    echo ""
-                    echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
-                    echo ""
-                    export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
-                    eval "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
-                    echo ""
-
-                    #send email at the end
-                    if [ "$target_name" = "hw" ]; then
-                        user_email=$USER@ethz.ch
-                        echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name) is done!" | sendmail $user_email
-                    fi
-
-                    break
-                    ;;
-                "n") 
-                    echo ""
-                    break
-                    ;;
-            esac
-        done
-        
-    fi
+    #echo "All compiled!"
+    #exit    
+    #
+    #xclbin_name="vadd"
+    #
+    ##define directories (2)
+    #XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_name.$target_name.$platform_name"
+    #
+    #if ! [ -d "$XCLBIN_BUILD_DIR" ]; then
+    #    # XCLBIN_BUILD_DIR does not exist
+    #    echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
+    #    echo ""
+    #    echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
+    #    echo ""
+    #    export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
+    #    eval "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
+    #    echo ""        
+    #
+    #    #send email at the end
+    #    if [ "$target_name" = "hw" ]; then
+    #        user_email=$USER@ethz.ch
+    #        echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name) is done!" | sendmail $user_email
+    #    fi
+    #else
+    #    echo ""
+    #    echo "${bold}The XCLBIN $xclbin_name.$target_name.$platform_name already exists. Do you want to build it again (y/n)?${normal}"
+    #    while true; do
+    #        read -p "" yn
+    #        case $yn in
+    #            "y") 
+    #                #delete
+    #                rm -rf $XCLBIN_BUILD_DIR
+    #                
+    #                #rebuild
+    #                echo ""
+    #                echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
+    #                echo ""
+    #                echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
+    #                echo ""
+    #                export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
+    #                eval "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
+    #                echo ""
+    #
+    #                #send email at the end
+    #                if [ "$target_name" = "hw" ]; then
+    #                    user_email=$USER@ethz.ch
+    #                    echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name) is done!" | sendmail $user_email
+    #                fi
+    #
+    #                break
+    #                ;;
+    #            "n") 
+    #                echo ""
+    #                break
+    #                ;;
+    #        esac
+    #    done
+    #    
+    #fi
 
 fi
