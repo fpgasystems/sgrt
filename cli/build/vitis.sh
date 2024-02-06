@@ -47,6 +47,8 @@ target_found=""
 target_name=""
 platform_found=""
 platform_name=""
+xclbin_found=""
+xclbin_name=""
 if [ "$flags" = "" ]; then
     #header (1/2)
     echo ""
@@ -86,16 +88,16 @@ if [ "$flags" = "" ]; then
             echo $platform_name
         fi
         #xclbin_dialog
-        echo ""
-        echo "${bold}Please, choose your XCLBIN:${normal}"
-        echo ""
-        result=$($CLI_PATH/common/xclbin_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name) #$USER $WORKFLOW
-        xclbin_found=$(echo "$result" | sed -n '1p')
-        xclbin_name=$(echo "$result" | sed -n '2p')
-        multiple_xclbins=$(echo "$result" | sed -n '3p')
-        if [[ $multiple_xclbins = "0" ]]; then
-            echo $xclbin_name
-        fi
+        #echo ""
+        #echo "${bold}Please, choose your XCLBIN:${normal}"
+        #echo ""
+        #result=$($CLI_PATH/common/xclbin_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name) #$USER $WORKFLOW
+        #xclbin_found=$(echo "$result" | sed -n '1p')
+        #xclbin_name=$(echo "$result" | sed -n '2p')
+        #multiple_xclbins=$(echo "$result" | sed -n '3p')
+        #if [[ $multiple_xclbins = "0" ]]; then
+        #    echo $xclbin_name
+        #fi
     fi
 else
     #project_dialog_check
@@ -178,18 +180,18 @@ else
             fi
         fi
         #xclbin_dialog
-        if [[ $xclbin_found = "0" ]]; then
-            echo ""
-            echo "${bold}Please, choose your XCLBIN:${normal}"
-            echo ""
-            result=$($CLI_PATH/common/xclbin_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
-            xclbin_found=$(echo "$result" | sed -n '1p')
-            xclbin_name=$(echo "$result" | sed -n '2p')
-            multiple_xclbins=$(echo "$result" | sed -n '3p')
-            if [[ $multiple_xclbins = "0" ]]; then
-                echo $xclbin_name
-            fi
-        fi
+        #if [[ $xclbin_found = "0" ]]; then
+        #    echo ""
+        #    echo "${bold}Please, choose your XCLBIN:${normal}"
+        #    echo ""
+        #    result=$($CLI_PATH/common/xclbin_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
+        #    xclbin_found=$(echo "$result" | sed -n '1p')
+        #    xclbin_name=$(echo "$result" | sed -n '2p')
+        #    multiple_xclbins=$(echo "$result" | sed -n '3p')
+        #    if [[ $multiple_xclbins = "0" ]]; then
+        #        echo $xclbin_name
+        #    fi
+        #fi
     fi
 fi
 
@@ -266,18 +268,49 @@ fi
 #xclbin compilation
 if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name" == "hw" ]]; then
     #loop over xclnbins (xclbin_name can be a list of all comma separated xclbins)
-    IFS=', ' read -ra xclbin_names <<< "$xclbin_name"
-    for xclbin_i in "${xclbin_names[@]}"; do
-        #echo "Processing element: $xclbin_i"
-        # Your code here for each element
+    #IFS=', ' read -ra xclbin_names <<< "$xclbin_name"
 
+    echo "HEY: xclbin_found = $xclbin_found"
+
+   #get xclbins to compile
+    if [ "$xclbin_found" = "" ] || [ "$xclbin_found" = "0" ]; then
+        
+        
+        echo "I AM IN!"
+        
+        #check to xclbins folder
+        cd $DIR/src/xclbin
+        xclbins=( *".cpp" )
+        #xclbins=( "$DIR/src/xclbins"/*.cpp )
+        
+        #remove the last four characters, i.e. ".cpp"
+        j=0
+        for i in "${xclbins[@]}"
+        do
+            xclbin_names[j]=${i::-4}
+            j=$((j + 1))
+        done
+    else
+        #the flag -x was used (and xclbin_name is valid as we arrived here)
+        xclbin_names=("$xclbin_name")
+    fi
+
+    #change back (read Makefile)
+    cd $DIR
+    
+    #compile xclbin_i
+    for xclbin_i in "${xclbin_names[@]}"; do
+        
         #define directories (2)
         XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name"
 
+        echo "${bold}XCLBIN $xclbin_i compilation and linking:${normal}"
+        echo ""
+
         if ! [ -d "$XCLBIN_BUILD_DIR" ]; then
             # XCLBIN_BUILD_DIR does not exist
-            echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
-            echo ""
+            #echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
+            #echo ""
             echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_i" 
             echo ""
             export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
@@ -291,7 +324,9 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
             fi
         else
 
-            echo "${bold}The XCLBIN $xclbin_name.$target_name.$platform_name already exists!${normal}"
+            echo ""
+            echo "The XCLBIN $xclbin_name.$target_name.$platform_name already exists!"
+            echo ""
 
         fi
     done
