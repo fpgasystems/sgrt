@@ -185,7 +185,7 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
 
     // create kernel
     uuid = device.fpga.load_xclbin(device.binaryFile);
-    kernel = xrt::kernel(device.fpga, uuid, "vadd"); // xclbin_name
+    kernel = xrt::kernel(device.fpga, uuid, xclbin_name); // xclbin_name "vadd"
 
     // assign XRT kernel
     device.kernel = kernel;
