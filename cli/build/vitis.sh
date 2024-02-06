@@ -270,13 +270,8 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     #loop over xclnbins (xclbin_name can be a list of all comma separated xclbins)
     #IFS=', ' read -ra xclbin_names <<< "$xclbin_name"
 
-    echo "HEY: xclbin_found = $xclbin_found"
-
    #get xclbins to compile
     if [ "$xclbin_found" = "" ] || [ "$xclbin_found" = "0" ]; then
-        
-        
-        echo "I AM IN!"
         
         #check to xclbins folder
         cd $DIR/src/xclbin
@@ -305,7 +300,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name"
 
         echo "${bold}XCLBIN $xclbin_i compilation and linking:${normal}"
-        echo ""
+        #echo ""
 
         if ! [ -d "$XCLBIN_BUILD_DIR" ]; then
             # XCLBIN_BUILD_DIR does not exist
