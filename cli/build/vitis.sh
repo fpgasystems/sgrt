@@ -274,20 +274,52 @@ fi
 #xclbin compilation
 if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name" == "hw" ]]; then
 
-    #read xclbins from acap_fpga_xclbin
+    #read from acap_fpga_xclbin
     declare -a xclbin_names
+    declare -a compute_units_num
+    declare -a compute_units_names
 
-    #read the file and populate the array
     while read -r line; do
-        entry=$(echo "$line" | awk '{print $2}')
-        xclbin_names+=("$entry")
+        column_2=$(echo "$line" | awk '{print $2}')
+        column_3=$(echo "$line" | awk '{print $3}')
+        column_4=$(echo "$line" | awk '{print $4}')
+        xclbin_names+=("$column_2")
+        compute_units_num+=("$column_3")
+        compute_units_names+=("$column_4")
     done < "acap_fpga_xclbin"
 
-    #compile xclbin_i
-    for xclbin_i in "${xclbin_names[@]}"; do
+    for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
+
+        #map to acap_fpga_xclbin
+        xclbin_i="${xclbin_names[i]}"
+        compute_units_num_i="${compute_units_num[i]}"
+        compute_units_names_i="${compute_units_names[i]}"
+
+        echo $xclbin_i
+        echo $compute_units_num_i
+        echo $compute_units_names_i
+
+    done
+
+    #compile for each xclbin_i
+    #for i in "${xclbin_names[@]}"; do #xclbin_i
+    for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
+    
+        #map to acap_fpga_xclbin
+        xclbin_i="${xclbin_names[i]}"
+        compute_units_num_i="${compute_units_num[i]}"
+        compute_units_names_i="${compute_units_names[i]}"
         
         #define directories (2)
         XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name"
+
+        #create <xclbin_config.cfg> out of acap_fpga_xclbin
+        touch compute_units_$xclbin_i.cfg
+        echo "[connectivity]" >> compute_units_$xclbin_i.cfg
+        echo "nk=$xclbin_i:$compute_units_num_i:$compute_units_names_i" >> compute_units_$xclbin_i.cfg
+
+        #move to build_dir
+        #mv $xclbin_i"_config.cfg" $XCLBIN_BUILD_DIR
 
         echo "${bold}XCLBIN $xclbin_i compilation and linking:${normal}"
         echo ""
@@ -314,6 +346,10 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
             echo ""
 
         fi
+
+        #increase index
+        #i=$(($i+1))
+
     done
 
     #echo "All compiled!"
