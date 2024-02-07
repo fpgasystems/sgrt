@@ -270,28 +270,46 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     #loop over xclnbins (xclbin_name can be a list of all comma separated xclbins)
     #IFS=', ' read -ra xclbin_names <<< "$xclbin_name"
 
-   #get xclbins to compile
-    if [ "$xclbin_found" = "" ] || [ "$xclbin_found" = "0" ]; then
-        
-        #check to xclbins folder
-        cd $DIR/src/xclbin
-        xclbins=( *".cpp" )
-        #xclbins=( "$DIR/src/xclbins"/*.cpp )
-        
-        #remove the last four characters, i.e. ".cpp"
-        j=0
-        for i in "${xclbins[@]}"
-        do
-            xclbin_names[j]=${i::-4}
-            j=$((j + 1))
-        done
-    else
-        #the flag -x was used (and xclbin_name is valid as we arrived here)
-        xclbin_names=("$xclbin_name")
-    fi
+    #read xclbins from acap_fpga_xclbin
+    declare -a xclbin_names
+
+    # Read the file and populate the array
+    while read -r line; do
+        # Extract the second column using awk
+        entry=$(echo "$line" | awk '{print $2}')
+        # Append the entry to the array
+        xclbin_names+=("$entry")
+    done < "acap_fpga_xclbin"
+
+    # Print the array elements
+    #for ((i=0; i<${#xclbin_names[@]}; i++)); do
+    #    echo "xclbin_names[$i]=\"${xclbin_names[$i]}\""
+    #done
+
+    #echo "HEEYYYYYY! "
+
+    #get xclbins to compile
+    #if [ "$xclbin_found" = "" ] || [ "$xclbin_found" = "0" ]; then
+    #    
+    #    #check to xclbins folder
+    #    cd $DIR/src/xclbin
+    #    xclbins=( *".cpp" )
+    #    #xclbins=( "$DIR/src/xclbins"/*.cpp )
+    #    
+    #    #remove the last four characters, i.e. ".cpp"
+    #    j=0
+    #    for i in "${xclbins[@]}"
+    #    do
+    #        xclbin_names[j]=${i::-4}
+    #        j=$((j + 1))
+    #    done
+    #else
+    #    #the flag -x was used (and xclbin_name is valid as we arrived here)
+    #    xclbin_names=("$xclbin_name")
+    #fi
 
     #change back (read Makefile)
-    cd $DIR
+    #cd $DIR
     
     #compile xclbin_i
     for xclbin_i in "${xclbin_names[@]}"; do
