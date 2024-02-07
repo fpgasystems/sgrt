@@ -157,12 +157,18 @@ else
             echo $project_name
         fi
     fi
+    #check if host has been compiled already
+    target_host="0"
+    if [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/host" ]; then
+        target_host="1"
+    fi
     #target_dialog (forgotten mandatory 3)
     if [[ $target_found = "0" ]]; then
         echo ""
         echo "${bold}Please, choose binary's execution target:${normal}"
         echo ""
-        target_name=$($CLI_PATH/common/target_dialog)
+        #target_name=$($CLI_PATH/common/target_dialog)
+        target_name=$($CLI_PATH/common/target_dialog $target_host)
     fi
     #platform and xclbin_dialog (forgotten mandatory 2)
     if [ "$target_name" != "host" ]; then
