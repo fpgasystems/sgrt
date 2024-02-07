@@ -143,7 +143,7 @@ build_help() {
     echo "   coyote          - Generates Coyote's bitstreams and drivers." #Vitis .xo kernels and .xclbin binaries generation.
     echo "   hip             - Generates HIP binaries for your projects."
     echo "   mpi             - Generates MPI binaries for your projects."
-    echo "   vitis           - Generates .xo kernels and .xclbin binaries for Vitis workflow." #Vitis .xo kernels and .xclbin binaries generation.
+    echo "   vitis           - Uses acap_fpga_xclbin to generate XCLBIN binaries for Vitis workflow." #Vitis .xo kernels and .xclbin binaries generation.
     #echo "   vivado (soon)   - Generates .bit bitstreams and .ko drivers for Vivado workflow." #Compiles a bitstream and a driver.
     echo ""
     echo "   -h, --help      - Help to use this command."
@@ -205,13 +205,13 @@ build_vitis_help() {
     echo ""
     echo "${bold}sgutil build vitis [flags] [--help]${normal}"
     echo ""
-    echo "Generates .xo kernels and .xclbin binaries for Vitis workflow."
+    echo "Uses acap_fpga_xclbin to generate XCLBIN binaries for Vitis workflow."
     echo ""
     echo "FLAGS:"
     echo "       --platform  - Xilinx platform (according to sgutil get platform)."
     echo "       --project   - Specifies your Vitis project name."
     echo "   -t, --target    - Binary compilation target (host, sw_emu, hw_emu, hw)."
-    echo "   -x, --xclbin    - The name of the XCLBIN to be compiled."
+    #echo "   -x, --xclbin    - The name of the XCLBIN to be compiled."
     echo ""
     echo "   -h, --help      - Help to build a binary."
     echo ""
@@ -1021,7 +1021,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis) 
-        valid_flags="--platform --project -t --target -x --xclbin -h --help"
+        valid_flags="--platform --project -t --target -h --help" #-x --xclbin 
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       *)

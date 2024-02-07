@@ -133,14 +133,14 @@ else
         exit
     fi
     #xclbin_dialog_check
-    result="$("$CLI_PATH/common/xclbin_dialog_check" "${flags[@]}")"
-    xclbin_found=$(echo "$result" | sed -n '1p')
-    xclbin_name=$(echo "$result" | sed -n '2p')
-    #forbidden combinations
-    if ([ "$xclbin_found" = "1" ] && ([ "$xclbin_name" = "" ] || [ ! -f "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/src/xclbin/$xclbin_name.cpp" ])) || ([ "$xclbin_found" = "1" ] && [ "$target_name" = "host" ]); then 
-        $CLI_PATH/sgutil build vitis -h
-        exit
-    fi
+    #result="$("$CLI_PATH/common/xclbin_dialog_check" "${flags[@]}")"
+    #xclbin_found=$(echo "$result" | sed -n '1p')
+    #xclbin_name=$(echo "$result" | sed -n '2p')
+    ##forbidden combinations
+    #if ([ "$xclbin_found" = "1" ] && ([ "$xclbin_name" = "" ] || [ ! -f "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/src/xclbin/$xclbin_name.cpp" ])) || ([ "$xclbin_found" = "1" ] && [ "$target_name" = "host" ]); then 
+    #    $CLI_PATH/sgutil build vitis -h
+    #    exit
+    #fi
     #header (2/2)
     echo ""
     echo "${bold}sgutil build vitis${normal}"

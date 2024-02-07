@@ -58,7 +58,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         vitis) 
-                            COMPREPLY=($(compgen -W "--platform --project --target --xclbin --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--platform --project --target --help" -- ${cur})) #--xclbin 
                             ;;
                     esac
                     ;;

@@ -8,7 +8,7 @@
 
 <code>sgutil build vitis [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Generates .xo kernels and .xclbin binaries for Vitis workflow.
+  &nbsp; &nbsp; Uses acap_fpga_xclbin to generate XCLBIN binaries for Vitis workflow.
 </p>
 
 ### Flags
@@ -27,10 +27,10 @@
   &nbsp; &nbsp; Binary compilation target (host, sw_emu, hw_emu, hw).
 </p>
 
-<code>-x, --xclbin</code>
+<!-- <code>-x, --xclbin</code>
 <p>
   &nbsp; &nbsp; The name of the XCLBIN to be compiled.
-</p>
+</p> -->
 
 <code>-h, --help <string></code>
 <p>
@@ -40,5 +40,5 @@
 ### Examples
 ```
 $ sgutil build vitis
-$ sgutil build vitis --platform xilinx_u55c_gen3x16_xdma_3_202210_1 -p hello_world -t sw_emu
+$ sgutil build vitis --platform xilinx_u55c_gen3x16_xdma_3_202210_1 --project hello_world -t sw_emu
 ```
