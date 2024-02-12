@@ -1,2 +1,2 @@
-1 vadd 3 vadd_a,vadd_b,vadd_c
-2 vsub 2 vsub_a,vsub_b
+1 vadd 1 vadd_a
+2 vsub 1 vsub_a
