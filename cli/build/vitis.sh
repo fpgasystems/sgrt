@@ -314,9 +314,9 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name"
 
         #create <xclbin_config.cfg> out of acap_fpga_xclbin
-        touch "${xclbin_i}_config.cfg"
-        echo "[connectivity]" >> "${xclbin_i}_config.cfg"
-        echo "nk=$xclbin_i:$compute_units_num_i:$compute_units_names_i" >> "${xclbin_i}_config.cfg"
+        touch $xclbin_i.cfg
+        echo "[connectivity]" >> $xclbin_i.cfg
+        echo "nk=$xclbin_i:$compute_units_num_i:$compute_units_names_i" >> $xclbin_i.cfg 
 
         #move to build_dir
         #mv $xclbin_i"_config.cfg" $XCLBIN_BUILD_DIR
