@@ -289,17 +289,19 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     done < "acap_fpga_xclbin"
 
     for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
-
         #map to acap_fpga_xclbin
         xclbin_i="${xclbin_names[i]}"
         compute_units_num_i="${compute_units_num[i]}"
         compute_units_names_i="${compute_units_names[i]}"
-
-        echo $xclbin_i
-        echo $compute_units_num_i
-        echo $compute_units_names_i
-
     done
+
+    #check on acap_fpga
+    if [ "${#xclbin_names[@]}" -eq 0 ] || [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]; then
+        echo ""
+        echo "Please, review acap_fpga_xclbin!"
+        echo ""
+        exit
+    fi
 
     #compile for each xclbin_i
     #for i in "${xclbin_names[@]}"; do #xclbin_i
@@ -316,8 +318,12 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         #create <xclbin_config.cfg> out of acap_fpga_xclbin
         touch $xclbin_i.cfg
         echo "[connectivity]" >> $xclbin_i.cfg
-        echo "nk=$xclbin_i:$compute_units_num_i:$compute_units_names_i" >> $xclbin_i.cfg 
-
+        if [ "$compute_units_names_i" = "" ]; then
+            echo "nk=$xclbin_i:$compute_units_num_i" >> $xclbin_i.cfg 
+        else
+            echo "nk=$xclbin_i:$compute_units_num_i:$compute_units_names_i" >> $xclbin_i.cfg 
+        fi
+        
         #move to build_dir
         #mv $xclbin_i"_config.cfg" $XCLBIN_BUILD_DIR
 
