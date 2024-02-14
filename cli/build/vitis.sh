@@ -280,13 +280,13 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     declare -a compute_units_names
 
     while read -r line; do
+        column_1=$(echo "$line" | awk '{print $1}')
         column_2=$(echo "$line" | awk '{print $2}')
         column_3=$(echo "$line" | awk '{print $3}')
-        column_4=$(echo "$line" | awk '{print $4}')
-        xclbin_names+=("$column_2")
-        compute_units_num+=("$column_3")
-        compute_units_names+=("$column_4")
-    done < "acap_fpga_xclbin"
+        xclbin_names+=("$column_1")
+        compute_units_num+=("$column_2")
+        compute_units_names+=("$column_3")
+    done < "nk"
 
     for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
         #map to acap_fpga_xclbin
@@ -316,12 +316,12 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name"
 
         #create <xclbin_config.cfg> out of acap_fpga_xclbin
-        touch $xclbin_i.cfg
-        echo "[connectivity]" >> $xclbin_i.cfg
+        touch nk_$xclbin_i.cfg
+        echo "[connectivity]" >> nk_$xclbin_i.cfg
         if [ "$compute_units_names_i" = "" ]; then
-            echo "nk=$xclbin_i:$compute_units_num_i" >> $xclbin_i.cfg 
+            echo "nk=$xclbin_i:$compute_units_num_i" >> nk_$xclbin_i.cfg 
         else
-            echo "nk=$xclbin_i:$compute_units_num_i:$compute_units_names_i" >> $xclbin_i.cfg 
+            echo "nk=$xclbin_i:$compute_units_num_i:$compute_units_names_i" >> nk_$xclbin_i.cfg 
         fi
         
         #move to build_dir

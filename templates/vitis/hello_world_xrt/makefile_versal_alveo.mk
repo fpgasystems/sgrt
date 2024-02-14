@@ -110,7 +110,7 @@ $(TEMP_DIR)/$(XCLBIN_NAME).xo: src/xclbin/$(XCLBIN_NAME).cpp
 
 $(BUILD_DIR)/$(XCLBIN_NAME).xclbin: $(TEMP_DIR)/$(XCLBIN_NAME).xo
 	mkdir -p $(BUILD_DIR)
-	v++ -l $(VPP_FLAGS) $(VPP_LDFLAGS) -t $(TARGET) --platform $(PLATFORM) --temp_dir $(TEMP_DIR) --config ./$(XCLBIN_NAME).cfg -o'$(LINK_OUTPUT)' $(+)
+	v++ -l $(VPP_FLAGS) $(VPP_LDFLAGS) -t $(TARGET) --platform $(PLATFORM) --temp_dir $(TEMP_DIR) --config ./nk_$(XCLBIN_NAME).cfg -o'$(LINK_OUTPUT)' $(+)
 	v++ -p $(LINK_OUTPUT) $(VPP_FLAGS) -t $(TARGET) --platform $(PLATFORM) --package.out_dir $(PACKAGE_OUT) -o $(BUILD_DIR)/$(XCLBIN_NAME).xclbin
 
 ############################## Setting Rules for Host (Building Host Executable) ##############################
