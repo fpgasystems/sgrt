@@ -274,7 +274,7 @@ fi
 #xclbin compilation
 if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name" == "hw" ]]; then
 
-    #read from acap_fpga_xclbin
+    #read from nk
     declare -a xclbin_names
     declare -a compute_units_num
     declare -a compute_units_names
@@ -289,7 +289,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     done < "nk"
 
     for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
-        #map to acap_fpga_xclbin
+        #map to nk
         xclbin_i="${xclbin_names[i]}"
         compute_units_num_i="${compute_units_num[i]}"
         compute_units_names_i="${compute_units_names[i]}"
@@ -298,7 +298,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     #check on acap_fpga
     if [ "${#xclbin_names[@]}" -eq 0 ] || [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]; then
         echo ""
-        echo "Please, review acap_fpga_xclbin!"
+        echo "Please, review nk configuration file!"
         echo ""
         exit
     fi
@@ -307,7 +307,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     #for i in "${xclbin_names[@]}"; do #xclbin_i
     for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
     
-        #map to acap_fpga_xclbin
+        #map to nk
         xclbin_i="${xclbin_names[i]}"
         compute_units_num_i="${compute_units_num[i]}"
         compute_units_names_i="${compute_units_names[i]}"
@@ -315,7 +315,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         #define directories (2)
         XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name"
 
-        #create <xclbin_config.cfg> out of acap_fpga_xclbin
+        #create <nk_xclbin.cfg> out of nk
         touch nk_$xclbin_i.cfg
         echo "[connectivity]" >> nk_$xclbin_i.cfg
         if [ "$compute_units_names_i" = "" ]; then
