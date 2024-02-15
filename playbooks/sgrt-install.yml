@@ -287,6 +287,7 @@
       loop:
         - address_to_hex
         - bitstream_dialog_check
+        - config_dialog
         - deployment_dialog
         - deployment_dialog_check
         - device_dialog
