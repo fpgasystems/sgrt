@@ -12,9 +12,9 @@
 </p>
 
 ### Flags
-<code>-d, --device <string></code>
+<code>-c, --config <string></code>
 <p>
-  &nbsp; &nbsp; FPGA Device Index (see sgutil examine).
+  &nbsp; &nbsp; Specifies a configuration of your choice.
 </p>
 
 <code>    --platform</code>
