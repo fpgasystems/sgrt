@@ -47,8 +47,8 @@ target_found=""
 target_name=""
 platform_found=""
 platform_name=""
-xclbin_found=""
-xclbin_name=""
+#xclbin_found=""
+#xclbin_name=""
 if [ "$flags" = "" ]; then
     #header (1/2)
     echo ""
