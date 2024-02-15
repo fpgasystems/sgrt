@@ -141,6 +141,15 @@ else
         $CLI_PATH/sgutil run vitis -h
         exit
     fi
+    #config_dialog_check
+    result="$("$CLI_PATH/common/config_dialog_check" "${flags[@]}")"
+    config_found=$(echo "$result" | sed -n '1p')
+    config_name=$(echo "$result" | sed -n '2p')
+    #forbidden combinations
+    if [ "$config_found" = "1" ] && ([ "$config_name" = "" ] || [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/configs/$config_name" ]); then #implies that --project must be specified
+        $CLI_PATH/sgutil run vitis -h
+        exit
+    fi
     #target_dialog_check
     result="$("$CLI_PATH/common/target_dialog_check" "${flags[@]}")"
     target_found=$(echo "$result" | sed -n '1p')
@@ -196,15 +205,21 @@ else
         fi
         #echo ""
     fi
-    #target_dialog (forgotten mandatory 2)
-    #if [[ $target_found = "0" ]] && [[ $device_found = "0" ]]; then
-    #    echo "${bold}Please, choose binary's execution target:${normal}"
-    #    echo ""
-    #    target_name=$($CLI_PATH/common/target_dialog)
-    #elif [[ $target_found = "0" ]] && [[ $device_found = "1" ]]; then
-    #    #echo ""
-    #    target_name="hw"
-    #fi
+    #config_dialog (forgotten mandatory 2)
+    if [[ $config_found = "0" ]]; then
+        #echo ""
+        echo "${bold}Please, choose your configuration:${normal}"
+        echo ""
+        result=$($CLI_PATH/common/config_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
+        config_found=$(echo "$result" | sed -n '1p')
+        config_name=$(echo "$result" | sed -n '2p')
+        multiple_configs=$(echo "$result" | sed -n '3p')
+        if [[ $multiple_configs = "0" ]]; then
+            echo $config_name
+        fi
+        #echo ""
+    fi
+    #target_dialog (forgotten mandatory 3)
     if [[ $target_found = "0" ]]; then
         echo "${bold}Please, choose binary's execution target:${normal}"
         echo ""
