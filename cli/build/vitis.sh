@@ -288,12 +288,12 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         compute_units_names+=("$column_3")
     done < "nk"
 
-    for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
-        #map to nk
-        xclbin_i="${xclbin_names[i]}"
-        compute_units_num_i="${compute_units_num[i]}"
-        compute_units_names_i="${compute_units_names[i]}"
-    done
+    #for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
+    #    #map to nk
+    #    xclbin_i="${xclbin_names[i]}"
+    #    compute_units_num_i="${compute_units_num[i]}"
+    #    compute_units_names_i="${compute_units_names[i]}"
+    #done
 
     #check on acap_fpga
     if [ "${#xclbin_names[@]}" -eq 0 ] || [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]; then
