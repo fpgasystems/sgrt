@@ -90,10 +90,12 @@ if [ "$flags" = "" ]; then
     echo "${bold}Please, choose your configuration:${normal}"
     echo ""
     result=$($CLI_PATH/common/config_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
-
     config_found=$(echo "$result" | sed -n '1p')
     config_name=$(echo "$result" | sed -n '2p')
-
+    multiple_configs=$(echo "$result" | sed -n '3p')
+    if [[ $multiple_configs = "0" ]]; then
+        echo $config_name
+    fi
     #target_dialog
     echo ""
     echo "${bold}Please, choose binary's execution target:${normal}"

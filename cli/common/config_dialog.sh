@@ -8,6 +8,7 @@ MY_PROJECT_PATH=$1
 # Declare global variables
 declare -g config_found="0"
 declare -g config_name=""
+declare -g multiple_configs="0"
 
 #get configs
 cd $MY_PROJECT_PATH/configs/
@@ -26,6 +27,7 @@ if [ ${#configs_aux[@]} -eq 1 ]; then
     config_found="1"
     config_name=${configs_aux[0]}
 else
+    multiple_configs="1"
     PS3=""
     select config_name in "${configs_aux[@]}"; do
         if [[ -z $config_name ]]; then
@@ -40,3 +42,4 @@ fi
 # Return the values of config_found and config_name
 echo "$config_found"
 echo "$config_name"
+echo "$multiple_configs"
