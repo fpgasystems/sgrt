@@ -288,6 +288,7 @@
         - address_to_hex
         - bitstream_dialog_check
         - config_dialog
+        - config_dialog_check
         - deployment_dialog
         - deployment_dialog_check
         - device_dialog
