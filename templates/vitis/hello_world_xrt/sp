@@ -1,2 +1,2 @@
-1 vadd in1:DDR[0] in2:DDR[0] out:DDR[0] size:DDR[0]
-2 vsub in1:DDR[0] in2:DDR[0] out:DDR[0] size:DDR[0]
+1 vadd in1:DDR[0] in2:DDR[1] out:DDR[0]
+2 vsub in1:DDR[0] in2:DDR[1] out:DDR[0]
