@@ -85,6 +85,15 @@ if [ "$flags" = "" ]; then
     if [[ $multiple_projects = "0" ]]; then
         echo $project_name
     fi
+    #config_dialog
+    echo ""
+    echo "${bold}Please, choose your configuration:${normal}"
+    echo ""
+    result=$($CLI_PATH/common/config_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
+
+    config_found=$(echo "$result" | sed -n '1p')
+    config_id=$(echo "$result" | sed -n '2p')
+
     #target_dialog
     echo ""
     echo "${bold}Please, choose binary's execution target:${normal}"
@@ -246,7 +255,7 @@ if ! [ -d "$DIR" ]; then
 fi
 
 #select a configuration
-cd $DIR/configs/
+#cd $DIR/configs/
 #if [[ $(ls -l | wc -l) = 2 ]]; then
 #    #only config_000 exists and we create config_kernel and config_001
 #    #we compile create_config (in case there were changes)
@@ -257,39 +266,39 @@ cd $DIR/configs/
 #    #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
 #    config="config_001"
 #elif [[ $(ls -l | wc -l) = 5 ]]; then
-if [[ $(ls -l | wc -l) = 5 ]]; then
-    #config_000, config_kernel and config_001 exist
-    #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
-    config_id="config_001"
-    echo ""
-elif [[ $(ls -l | wc -l) > 5 ]]; then
-    cd $DIR/configs/
-    configs=( "config_"* )
-    
-    #remove selected files
-    configs_aux=()
-    for element in "${configs[@]}"; do
-        if [[ $element != *"config_parameters"* && $element != *.hpp ]]; then #config_000 && $element != *.active
-            configs_aux+=("$element")
-        fi
-    done
-
-    echo ""
-    echo "${bold}Please, choose your configuration:${normal}"
-    echo ""
-    PS3=""
-
-    select config_id in "${configs_aux[@]}"; do
-        if [[ -z $config_id ]]; then
-            echo "" >&/dev/null
-        else
-            break
-        fi
-    done
-    # copy selected config as config_000.hpp
-    #cp -fr $DIR/configs/$config $DIR/configs/config_000.hpp
-    echo ""
-fi
+#if [[ $(ls -l | wc -l) = 5 ]]; then
+#    #config_000, config_kernel and config_001 exist
+#    #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
+#    config_id="config_001"
+#    echo ""
+#elif [[ $(ls -l | wc -l) > 5 ]]; then
+#    cd $DIR/configs/
+#    configs=( "config_"* )
+#    
+#    #remove selected files
+#    configs_aux=()
+#    for element in "${configs[@]}"; do
+#        if [[ $element != *"config_parameters"* && $element != *.hpp ]]; then #config_000 && $element != *.active
+#            configs_aux+=("$element")
+#        fi
+#    done
+#
+#    echo ""
+#    echo "${bold}Please, choose your configuration:${normal}"
+#    echo ""
+#    PS3=""
+#
+#    select config_id in "${configs_aux[@]}"; do
+#        if [[ -z $config_id ]]; then
+#            echo "" >&/dev/null
+#        else
+#            break
+#        fi
+#    done
+#    # copy selected config as config_000.hpp
+#    #cp -fr $DIR/configs/$config $DIR/configs/config_000.hpp
+#    echo ""
+#fi
 
 #save config id
 #cd $DIR/configs/

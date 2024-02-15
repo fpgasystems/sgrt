@@ -27,10 +27,11 @@ if [ ${#configs_aux[@]} -eq 1 ]; then
     config_name=${configs_aux[0]}
 else
     PS3=""
-    select config_id in "${configs_aux[@]}"; do
-        if [[ -z $config_id ]]; then
+    select config_name in "${configs_aux[@]}"; do
+        if [[ -z $config_name ]]; then
             echo "" >&/dev/null
         else
+            config_found="1"
             break
         fi
     done
