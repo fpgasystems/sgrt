@@ -92,7 +92,7 @@ if [ "$flags" = "" ]; then
     result=$($CLI_PATH/common/config_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
 
     config_found=$(echo "$result" | sed -n '1p')
-    config_id=$(echo "$result" | sed -n '2p')
+    config_name=$(echo "$result" | sed -n '2p')
 
     #target_dialog
     echo ""
@@ -376,10 +376,10 @@ cd $DIR/configs/
 #config_id=$(ls *.active)
 #config_id="${config_id%%.*}"
 
-echo "${bold}You are running $config_id:${normal}"
+echo "${bold}You are running $config_name:${normal}"
 echo ""
 #cat $DIR/configs/config_000.hpp
-cat $DIR/configs/$config_id
+cat $DIR/configs/$config_name
 echo ""
 
 #execution
@@ -402,16 +402,16 @@ case "$target_name" in
         echo ""
 
         echo "cp -rf ./_x.$xclbin_name.$target_name.$platform_name/emconfig.json ."
-        echo "XCL_EMULATION_MODE=$target_name ./host $config_id" # -p $DIR # $project_name 
+        echo "XCL_EMULATION_MODE=$target_name ./host $config_name" # -p $DIR # $project_name 
         echo ""
         eval "cp -rf ./_x.$xclbin_name.$target_name.$platform_name/emconfig.json ."
-        eval "XCL_EMULATION_MODE=$target_name ./host $config_id" # -p $DIR # $project_name
+        eval "XCL_EMULATION_MODE=$target_name ./host $config_name" # -p $DIR # $project_name
         echo ""
         ;;
     hw)
-        echo "./host $config_id" # -p $DIR # $project_name
+        echo "./host $config_name" # -p $DIR # $project_name
         #echo ""
-        eval "./host $config_id" # -p $DIR # $project_name
+        eval "./host $config_name" # -p $DIR # $project_name
         echo ""
         ;;
 esac
