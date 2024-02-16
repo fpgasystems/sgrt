@@ -321,6 +321,7 @@ get_help() {
     echo "   servers         - Retreives the list of servers you can use SSH to connect to."
     echo ""
     echo "   bdf             - Retreives FPGA/ACAP Bus Device Function."
+    echo "   clock           - Retreives FPGA/ACAP Clock Information."
     echo "   name            - Retreives FPGA/ACAP device names."
     echo "   network         - Retreives FPGA/ACAP networking information."
     echo "   platform        - Retreives FPGA/ACAP platform name."
@@ -339,6 +340,20 @@ get_bdf_help() {
     echo "${bold}sgutil get bdf [flags] [--help]${normal}"
     echo ""
     echo "Retreives FPGA/ACAP Bus Device Function."
+    echo ""
+    echo "FLAGS:"
+    echo "   -d, --device    - FPGA/ACAP Device Index (according to sgutil examine)."
+    echo ""
+    echo "   -h, --help      - Help to use this command."
+    echo ""
+    exit 1
+}
+
+get_clock_help() {
+    echo ""
+    echo "${bold}sgutil get clock [flags] [--help]${normal}"
+    echo ""
+    echo "Retreives FPGA/ACAP Clock Information."
     echo ""
     echo "FLAGS:"
     echo "   -d, --device    - FPGA/ACAP Device Index (according to sgutil examine)."
@@ -1083,6 +1098,10 @@ case "$command" in
         get_help
         ;;
       bdf)
+        valid_flags="-h --help -d --device"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      clock)
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;

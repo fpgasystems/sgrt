@@ -19,6 +19,7 @@
 <!-- Extra line -->
 
 * [bdf](./sgutil-get-bdf.md#sgutil-get-bdf)
+* [clock](./sgutil-get-clock.md#sgutil-get-clock)
 * [name](./sgutil-get-name.md#sgutil-get-name)
 * [network](./sgutil-get-network.md#sgutil-get-network)
 * [platform](./sgutil-get-platform.md#sgutil-get-platform)
