@@ -87,9 +87,15 @@ else
         $CLI_PATH/sgutil get clock -h
         exit
     fi
-    #print
+    
+    #get platform
     platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
+
+    #get parameter
+    clock=$(get_platforminfo_parameter "$PLATFORMINFO_PARAMETER" "$platform" "$PLATFORMINFO_LIST")
+
+    #print
     echo ""
-    echo "$device_index: $platform"
+    echo "$device_index: $clock"
     echo ""
 fi
