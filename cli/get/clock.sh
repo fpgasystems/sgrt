@@ -8,7 +8,26 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS_PATH)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 PLATFORMINFO_LIST="$CLI_PATH/platforminfo"
-PARAMETER="Clock Information:"
+PLATFORMINFO_PARAMETER="Clock Information:"
+
+get_platforminfo_parameter() {
+    #read input parameters
+    PLATFORMINFO_PARAMETER=$1
+    platform=$2
+    PLATFORMINFO_LIST=$3
+
+    #echo "HEYYYYY PLATFORMINFO_PARAMETER $PLATFORMINFO_PARAMETER"
+    #echo "HEYYYYY Platform $platform"
+    #echo "HEYYYYY PLATFORMINFO_LIST $PLATFORMINFO_LIST"
+
+    #find the line number where the target string is found
+    line_number=$(grep -n "$platform" $PLATFORMINFO_LIST | cut -d: -f1)
+    #extract the content starting from the line where the target string is found and pipe it to another grep to find the line with the $PLATFORMINFO_PARAMETER
+    result=$(sed -n "${line_number},\$p" $PLATFORMINFO_LIST | grep -m 1 "$PLATFORMINFO_PARAMETER" | grep -oP '(?<=: ).*') # cut -d: -f2-
+    
+    #return value
+    echo $result
+}
 
 #get hostname
 url="${HOSTNAME}"
@@ -44,13 +63,19 @@ if [ "$flags" = "" ]; then
     for device_index in $(seq 1 $MAX_DEVICES); do 
         #get platform
         platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
-        #find the line number where the target string is found
-        line_number=$(grep -n "$platform" $PLATFORMINFO_LIST | cut -d: -f1)
-        #extract the content starting from the line where the target string is found and pipe it to another grep to find the line with the $PARAMETER
-        result=$(sed -n "${line_number},\$p" $PLATFORMINFO_LIST | grep -m 1 "$PARAMETER" | grep -oP '(?<=: ).*') # cut -d: -f2-
+        ##find the line number where the target string is found
+        #line_number=$(grep -n "$platform" $PLATFORMINFO_LIST | cut -d: -f1)
+        ##extract the content starting from the line where the target string is found and pipe it to another grep to find the line with the $PLATFORMINFO_PARAMETER
+        #result=$(sed -n "${line_number},\$p" $PLATFORMINFO_LIST | grep -m 1 "$PLATFORMINFO_PARAMETER" | grep -oP '(?<=: ).*') # cut -d: -f2-
+        
+        
+
+        clock=$(get_platforminfo_parameter "$PLATFORMINFO_PARAMETER" "$platform" "$PLATFORMINFO_LIST")
+
+        
         #print        
         if [ -n "$platform" ]; then
-            echo "$device_index: $result"
+            echo "$device_index: $clock"
         fi
     done
     echo ""
@@ -61,7 +86,7 @@ else
     device_index=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-        $CLI_PATH/sgutil get platform -h
+        $CLI_PATH/sgutil get clock -h
         exit
     fi
     #device_dialog (forgotten mandatory)
@@ -69,7 +94,7 @@ else
         device_found="1"
         device_index="1"
     elif [[ $device_found = "0" ]]; then
-        $CLI_PATH/sgutil get platform -h
+        $CLI_PATH/sgutil get clock -h
         exit
     fi
     #print
