@@ -25,11 +25,11 @@
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
     #api installation
-    api: true #true----------------
+    api: false #true----------------
     #cli installation
     #scripts
     build: false
-    common: true
+    common: false
     enable: false
     examine: false
     get: true
@@ -39,13 +39,13 @@
     run: false
     set: false
     sgutil: true 
-    templates: true #true-----------------------------------
+    templates: false #true-----------------------------------
     validate: false
     #workflows
     coyote: false
     hip: false
     mpi: false
-    vitis: true #true---------------------------------
+    vitis: false #true---------------------------------
   tasks:
 
     #creating directories
@@ -372,6 +372,7 @@
         - name
         - network
         - platform
+        - resource
         - serial
         - servers
         - workflow

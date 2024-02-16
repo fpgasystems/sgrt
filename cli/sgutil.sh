@@ -325,6 +325,7 @@ get_help() {
     echo "   name            - Retreives FPGA/ACAP device names."
     echo "   network         - Retreives FPGA/ACAP networking information."
     echo "   platform        - Retreives FPGA/ACAP platform name."
+    echo "   resource        - Retreives FPGA/ACAP Resource Availability."
     echo "   serial          - Retreives FPGA/ACAP serial numbers."
     echo "   workflow        - Retreives FPGA/ACAP current workflow."
     echo ""
@@ -433,11 +434,11 @@ get_platform_help() {
     exit 1
 }
 
-get_workflow_help() {
+get_resource_help() {
     echo ""
-    echo "${bold}sgutil get workflow [flags] [--help]${normal}"
+    echo "${bold}sgutil get resource [flags] [--help]${normal}"
     echo ""
-    echo "Retreives FPGA/ACAP current workflow."
+    echo "Retreives FPGA/ACAP Resource Availability."
     echo ""
     echo "FLAGS:"
     echo "   -d, --device    - FPGA/ACAP Device Index (according to sgutil examine)."
@@ -452,6 +453,20 @@ get_serial_help() {
     echo "${bold}sgutil get serial [flags] [--help]${normal}"
     echo ""
     echo "Retreives FPGA/ACAP serial numbers."
+    echo ""
+    echo "FLAGS:"
+    echo "   -d, --device    - FPGA/ACAP Device Index (according to sgutil examine)."
+    echo ""
+    echo "   -h, --help      - Help to use this command."
+    echo ""
+    exit 1
+}
+
+get_workflow_help() {
+    echo ""
+    echo "${bold}sgutil get workflow [flags] [--help]${normal}"
+    echo ""
+    echo "Retreives FPGA/ACAP current workflow."
     echo ""
     echo "FLAGS:"
     echo "   -d, --device    - FPGA/ACAP Device Index (according to sgutil examine)."
@@ -1123,6 +1138,10 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       platform)
+        valid_flags="-h --help -d --device"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      resource)
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
