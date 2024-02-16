@@ -32,7 +32,7 @@
     common: true
     enable: false
     examine: false
-    get: false
+    get: true
     new: false
     program: false
     reboot: false
@@ -181,6 +181,18 @@
         dest: "{{ cli_path }}/devices_gpu"
         mode: "0644"
       when: all and not devices_gpu_stat.stat.exists
+    #platforminfo
+    - name: checking platforminfo
+      stat:
+        path: "{{ cli_path }}/platforminfo"
+      register: platforminfo_stat
+      when: all
+    - name: copying platforminfo 
+      copy:
+        src: "../cli/platforminfo"
+        dest: "{{ cli_path }}/platforminfo"
+        mode: "0644"
+      when: all and not platforminfo_stat.stat.exists
     #version
     - name: checking version
       stat:
@@ -353,6 +365,7 @@
       loop:
         - bdf
         - bus 
+        - clock
         - get_fpga_device_param
         - get_gpu_device_param
         - ifconfig
