@@ -42,19 +42,13 @@ if [ "$flags" = "" ]; then
     echo ""
     #print devices information
     for device_index in $(seq 1 $MAX_DEVICES); do 
+        #get platform
         platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
-
-
-        # Find the line number where the target string is found
+        #find the line number where the target string is found
         line_number=$(grep -n "$platform" $PLATFORMINFO_LIST | cut -d: -f1)
-        # Extract the content starting from the line where the target string is found
-        # and pipe it to another grep to find the line with "Resource Availability:"
-        result=$(sed -n "${line_number},\$p" $PLATFORMINFO_LIST | grep -m 1 "$PARAMETER")
-
-
-
-
-        
+        #extract the content starting from the line where the target string is found and pipe it to another grep to find the line with the $PARAMETER
+        result=$(sed -n "${line_number},\$p" $PLATFORMINFO_LIST | grep -m 1 "$PARAMETER" | grep -oP '(?<=: ).*') # cut -d: -f2-
+        #print        
         if [ -n "$platform" ]; then
             echo "$device_index: $result"
         fi
