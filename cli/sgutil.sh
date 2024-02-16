@@ -328,6 +328,7 @@ get_help() {
     echo "   platform        - Retreives FPGA/ACAP platform name."
     echo "   resource        - Retreives FPGA/ACAP Resource Availability."
     echo "   serial          - Retreives FPGA/ACAP serial numbers."
+    echo "   slr             - Retreives FPGA/ACAP Resource Availability and Memory Information per SLR."
     echo "   workflow        - Retreives FPGA/ACAP current workflow."
     echo ""
     echo "   bus             - Retreives GPU PCI Bus ID."
@@ -468,6 +469,20 @@ get_serial_help() {
     echo "${bold}sgutil get serial [flags] [--help]${normal}"
     echo ""
     echo "Retreives FPGA/ACAP serial numbers."
+    echo ""
+    echo "FLAGS:"
+    echo "   -d, --device    - FPGA/ACAP Device Index (according to sgutil examine)."
+    echo ""
+    echo "   -h, --help      - Help to use this command."
+    echo ""
+    exit 1
+}
+
+get_slr_help() {
+    echo ""
+    echo "${bold}sgutil get slr [flags] [--help]${normal}"
+    echo ""
+    echo "Retreives FPGA/ACAP Retreives FPGA/ACAP Resource Availability and Memory Information per SLR."
     echo ""
     echo "FLAGS:"
     echo "   -d, --device    - FPGA/ACAP Device Index (according to sgutil examine)."
@@ -1166,6 +1181,10 @@ case "$command" in
         ;;
       serial)
         #xilinx_build_check
+        valid_flags="-h --help -d --device"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      slr)
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;

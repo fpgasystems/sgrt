@@ -375,6 +375,7 @@
         - platform
         - resource
         - serial
+        - slr
         - servers
         - workflow
     #new
