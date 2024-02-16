@@ -75,6 +75,10 @@ device_found=""
 device_index=""
 if [ "$flags" = "" ]; then
     echo ""
+    
+    #use an array to properly printing first line
+    declare -a slr_info
+    
     #print devices information
     for device_index in $(seq 1 $MAX_DEVICES); do 
         #get platform
@@ -84,13 +88,20 @@ if [ "$flags" = "" ]; then
         SLR_num=$(get_slr_num "$platform" "$PLATFORMINFO_LIST")
         
         #print 
-        echo "$device_index:"
-        if [ -n "$platform" ]; then
-            for ((i=0; i<SLR_num; i++)); do
-                slr=$(get_platforminfo_parameter "SLR$i" "$platform" "$PLATFORMINFO_LIST")
-                echo "SLR$i: $slr"
-            done
-        fi
+        for ((i=0; i<SLR_num; i++)); do
+            slr=$(get_platforminfo_parameter "SLR$i" "$platform" "$PLATFORMINFO_LIST")
+            if [ $i -eq 0 ]; then
+                slr_info[$i]="$device_index: SLR$i: $slr"
+            else 
+                slr_info[$i]="   SLR$i: $slr"
+            fi
+        done
+        
+        #loop over slr_info
+        for ((i=0; i<SLR_num; i++)); do
+            echo "${slr_info[$i]}"
+        done
+
     done
     echo ""
 else
@@ -120,11 +131,23 @@ else
     
     #print 
     echo ""
-    echo "$device_index:"
     if [ -n "$platform" ]; then
+    
+        #use an array to properly printing first line
+        declare -a slr_info
+        
         for ((i=0; i<SLR_num; i++)); do
             slr=$(get_platforminfo_parameter "SLR$i" "$platform" "$PLATFORMINFO_LIST")
-            echo "SLR$i: $slr"
+            if [ $i -eq 0 ]; then
+                slr_info[$i]="$device_index: SLR$i: $slr"
+            else 
+                slr_info[$i]="   SLR$i: $slr"
+            fi
+        done
+        
+        #loop over slr_info
+        for ((i=0; i<SLR_num; i++)); do
+            echo "${slr_info[$i]}"
         done
     fi
     echo ""
