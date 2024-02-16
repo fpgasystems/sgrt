@@ -25,13 +25,13 @@ do
 done
 
 #Dynamically add the third option (all xclbins) when there is more than one
-if [ ${#aux[@]} -ge 2 ]; then
-    IFS=,  # Set the Internal Field Separator to comma
-    third_option=$(printf "%s, " "${aux[@]}")  # Join elements with a comma and a space
-    IFS=  # Reset the Internal Field Separator
-    third_option=${third_option%, }  # Remove trailing comma and space
-    aux+=( "$third_option" )
-fi
+#if [ ${#aux[@]} -ge 2 ]; then
+#    IFS=,  # Set the Internal Field Separator to comma
+#    third_option=$(printf "%s, " "${aux[@]}")  # Join elements with a comma and a space
+#    IFS=  # Reset the Internal Field Separator
+#    third_option=${third_option%, }  # Remove trailing comma and space
+#    aux+=( "$third_option" )
+#fi
 
 # Check if there is only one xclbin
 if [ ${#aux[@]} -eq 1 ]; then
