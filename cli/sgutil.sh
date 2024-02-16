@@ -322,6 +322,7 @@ get_help() {
     echo ""
     echo "   bdf             - Retreives FPGA/ACAP Bus Device Function."
     echo "   clock           - Retreives FPGA/ACAP Clock Information."
+    echo "   memory          - Retreives FPGA/ACAP Memory Information."
     echo "   name            - Retreives FPGA/ACAP device names."
     echo "   network         - Retreives FPGA/ACAP networking information."
     echo "   platform        - Retreives FPGA/ACAP platform name."
