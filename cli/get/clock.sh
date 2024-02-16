@@ -16,10 +16,6 @@ get_platforminfo_parameter() {
     platform=$2
     PLATFORMINFO_LIST=$3
 
-    #echo "HEYYYYY PLATFORMINFO_PARAMETER $PLATFORMINFO_PARAMETER"
-    #echo "HEYYYYY Platform $platform"
-    #echo "HEYYYYY PLATFORMINFO_LIST $PLATFORMINFO_LIST"
-
     #find the line number where the target string is found
     line_number=$(grep -n "$platform" $PLATFORMINFO_LIST | cut -d: -f1)
     #extract the content starting from the line where the target string is found and pipe it to another grep to find the line with the $PLATFORMINFO_PARAMETER
@@ -63,16 +59,10 @@ if [ "$flags" = "" ]; then
     for device_index in $(seq 1 $MAX_DEVICES); do 
         #get platform
         platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
-        ##find the line number where the target string is found
-        #line_number=$(grep -n "$platform" $PLATFORMINFO_LIST | cut -d: -f1)
-        ##extract the content starting from the line where the target string is found and pipe it to another grep to find the line with the $PLATFORMINFO_PARAMETER
-        #result=$(sed -n "${line_number},\$p" $PLATFORMINFO_LIST | grep -m 1 "$PLATFORMINFO_PARAMETER" | grep -oP '(?<=: ).*') # cut -d: -f2-
         
-        
-
+        #get parameter
         clock=$(get_platforminfo_parameter "$PLATFORMINFO_PARAMETER" "$platform" "$PLATFORMINFO_LIST")
 
-        
         #print        
         if [ -n "$platform" ]; then
             echo "$device_index: $clock"
