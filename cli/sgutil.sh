@@ -642,6 +642,7 @@ program_vitis_help() {
     echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
     echo "   -p, --project   - Specifies your Vitis project name."
     echo "   -r, --remote    - Local or remote deployment."
+    echo "   -x, --xclbin    - Vitis binary name to be programmed on the device."
     echo ""
     echo "   -h, --help      - Help to program a binary."
     echo ""
@@ -1189,7 +1190,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)
-        valid_flags="-d --device -p --project -r --remote -h --help"
+        valid_flags="-d --device -p --project -r --remote -x --xclbin -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       *)

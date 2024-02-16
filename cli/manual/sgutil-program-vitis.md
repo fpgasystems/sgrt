@@ -27,6 +27,11 @@
   &nbsp; &nbsp; Local or remote deployment.
 </p>
 
+<code>-x, --xclbin <string></code>
+<p>
+  &nbsp; &nbsp; Vitis binary name to be programmed on the device.
+</p>
+
 <code>-h, --help <string></code>
 <p>
   &nbsp; &nbsp; Help to program a binary.

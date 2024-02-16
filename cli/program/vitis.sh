@@ -89,6 +89,17 @@ if [ "$flags" = "" ]; then
     if [[ $multiple_projects = "0" ]]; then
         echo $project_name
     fi
+    #xclbin_dialog
+    echo ""
+    echo "${bold}Please, choose your XCLBIN:${normal}"
+    echo ""
+    result=$($CLI_PATH/common/xclbin_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
+    xclbin_found=$(echo "$result" | sed -n '1p')
+    xclbin_name=$(echo "$result" | sed -n '2p')
+    multiple_xclbins=$(echo "$result" | sed -n '3p')
+    if [[ $multiple_xclbins = "0" ]]; then
+        echo $xclbin_name
+    fi
     #device_dialog
     if [[ $multiple_devices = "0" ]]; then
         device_found="1"
@@ -131,6 +142,15 @@ else
         $CLI_PATH/sgutil program vitis -h
         exit
     fi
+    #xclbin_dialog_check
+    result="$("$CLI_PATH/common/xclbin_dialog_check" "${flags[@]}")"
+    xclbin_found=$(echo "$result" | sed -n '1p')
+    xclbin_name=$(echo "$result" | sed -n '2p')
+    #forbidden combinations
+    if ([ "$xclbin_found" = "1" ] && ([ "$xclbin_name" = "" ] || [ ! -f "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/src/xclbin/$xclbin_name.cpp" ])); then 
+        $CLI_PATH/sgutil program vitis -h
+        exit
+    fi
     #device_dialog_check
     result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
     device_found=$(echo "$result" | sed -n '1p')
@@ -167,7 +187,20 @@ else
         fi
         #echo ""
     fi
-    #device_dialog (forgotten mandatory 2)
+    #xclbin_dialog (forgotten mandatory 2)
+    if [[ $xclbin_found = "0" ]]; then
+        echo ""
+        echo "${bold}Please, choose your XCLBIN:${normal}"
+        echo ""
+        result=$($CLI_PATH/common/xclbin_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
+        xclbin_found=$(echo "$result" | sed -n '1p')
+        xclbin_name=$(echo "$result" | sed -n '2p')
+        multiple_xclbins=$(echo "$result" | sed -n '3p')
+        if [[ $multiple_xclbins = "0" ]]; then
+            echo $xclbin_name
+        fi
+    fi
+    #device_dialog (forgotten mandatory 3)
     if [[ $multiple_devices = "0" ]]; then
         device_found="1"
         device_index="1"
@@ -219,7 +252,7 @@ fi
 platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 
 #define directories (2)
-APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$TARGET.$platform"
+APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_name.$TARGET.$platform"
 
 #check for build directory
 if ! [ -d "$APP_BUILD_DIR" ]; then
@@ -231,7 +264,7 @@ fi
 
 #get xclbin
 cd $APP_BUILD_DIR
-xclbin=$(echo *.xclbin | awk '{print $NF}')
+#xclbin=$(echo *.xclbin | awk '{print $NF}')
 
 #get BDF (i.e., Bus:Device.Function) 
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
@@ -244,7 +277,8 @@ $CLI_PATH/program/revert -d $device_index
 #reset device (we delete any xclbin)
 $XRT_PATH/bin/xbutil reset --device $bdf --force
 #program xclbin
-$XRT_PATH/bin/xbutil program --device $bdf -u $xclbin
+echo "$XRT_PATH/bin/xbutil program --device $bdf -u $xclbin_name".xclbin""
+$XRT_PATH/bin/xbutil program --device $bdf -u $xclbin_name".xclbin"
 
 #programming remote servers
 if [ "$deploy_option" -eq 1 ]; then 
@@ -256,7 +290,7 @@ if [ "$deploy_option" -eq 1 ]; then
         echo "Programming remote server ${bold}$i...${normal}"
         echo ""
         #remotely revert to xrt, reset device (delete any xclbin), and program xclbin
-        ssh -t "$USER@$i" "$CLI_PATH/program/revert -d $device_index -v $xrt_version; $XRT_PATH/bin/xbutil reset --device $bdf --force; $XRT_PATH/bin/xbutil program --device $bdf -u $APP_BUILD_DIR/$xclbin"
+        ssh -t "$USER@$i" "$CLI_PATH/program/revert -d $device_index -v $xrt_version; $XRT_PATH/bin/xbutil reset --device $bdf --force; $XRT_PATH/bin/xbutil program --device $bdf -u $APP_BUILD_DIR/$xclbin_name"
     done
 fi
 
