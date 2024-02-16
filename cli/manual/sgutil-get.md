@@ -20,9 +20,11 @@
 
 * [bdf](./sgutil-get-bdf.md#sgutil-get-bdf)
 * [clock](./sgutil-get-clock.md#sgutil-get-clock)
+* [memory](./sgutil-get-memory.md#sgutil-get-memory)
 * [name](./sgutil-get-name.md#sgutil-get-name)
 * [network](./sgutil-get-network.md#sgutil-get-network)
 * [platform](./sgutil-get-platform.md#sgutil-get-platform)
+* [resource](./sgutil-get-resource.md#sgutil-get-resource)
 * [serial](./sgutil-get-serial.md#sgutil-get-serial)
 * [workflow](./sgutil-get-workflow.md#sgutil-get-workflow)
 

@@ -378,6 +378,20 @@ get_bus_help() {
     exit 1
 }
 
+get_memory_help() {
+    echo ""
+    echo "${bold}sgutil get clock [flags] [--help]${normal}"
+    echo ""
+    echo "Retreives FPGA/ACAP Memory Information."
+    echo ""
+    echo "FLAGS:"
+    echo "   -d, --device    - FPGA/ACAP Device Index (according to sgutil examine)."
+    echo ""
+    echo "   -h, --help      - Help to use this command."
+    echo ""
+    exit 1
+}
+
 get_name_help() {
     echo ""
     echo "${bold}sgutil get name [flags] [--help]${normal}"
@@ -1121,6 +1135,10 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       bus)
+        valid_flags="-h --help -d --device"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      memory)
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;

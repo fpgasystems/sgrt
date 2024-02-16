@@ -369,6 +369,7 @@
         - get_fpga_device_param
         - get_gpu_device_param
         - ifconfig
+        - memory
         - name
         - network
         - platform
