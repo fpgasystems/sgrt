@@ -1,0 +1,12 @@
+#platforminfo --platform /opt/xilinx/platforms/xilinx_u55c_gen3x16_xdma_3_202210_1/xilinx_u55c_gen3x16_xdma_3_202210_1.xpfm 
+
+xilinx_u55c_gen3x16_xdma_3_202210_1
+Clock Information: 1 = 300, 2 = 500, 3 = 100
+Resource Availability: LUTs = 1146240, FFs = 2292480, BRAMs: 1776, DSPs = 8376
+Memory Information: HBM[0:31], PLRAM[0:5], HOST[0]
+SLR0: LUTs = 386880, FFs = 773760, BRAMs: 600, DSPs = 2664, HBM[0:31], PLRAM[0:1]
+SLR1: LUTs = 364320, FFs = 728640, BRAMs: 576, DSPs = 2784, PLRAM[2:3]
+SLR2: LUTs = 395040, FFs = 790080, BRAMs: 600, DSPs = 2928, PLRAM[4:5], HOST[0]
+
+
+
