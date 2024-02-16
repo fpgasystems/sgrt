@@ -83,19 +83,26 @@ if [ "$flags" = "" ]; then
         #get number of SLRs
         SLR_num=$(get_slr_num "$platform" "$PLATFORMINFO_LIST")
         
-        echo $SLR_num
+        #print 
+        echo "$device_index:"
 
-        exit
-
-        #get parameters
-        
-        slr0=$(get_platforminfo_parameter "SLR0" "$platform" "$PLATFORMINFO_LIST")
-        slr0=$(get_platforminfo_parameter "SLR0" "$platform" "$PLATFORMINFO_LIST")
-
-        #print        
         if [ -n "$platform" ]; then
-            echo "$device_index: $clock"
+            #slrs=()
+            for ((i=0; i<SLR_num; i++)); do
+                slr=$(get_platforminfo_parameter "SLR$i" "$platform" "$PLATFORMINFO_LIST")
+                #slrs+=("$slr")
+                #print
+                echo "SLR$i: $slr"
+            done
         fi
+        
+        #print        
+        #if [ -n "$platform" ]; then
+        #    echo "$device_index:"
+        #    for slr in "${slrs[@]}"; do
+        #        echo "$slr"  # Echo each element of the array
+        #    done
+        #fi
     done
     echo ""
 else
