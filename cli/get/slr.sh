@@ -85,24 +85,12 @@ if [ "$flags" = "" ]; then
         
         #print 
         echo "$device_index:"
-
         if [ -n "$platform" ]; then
-            #slrs=()
             for ((i=0; i<SLR_num; i++)); do
                 slr=$(get_platforminfo_parameter "SLR$i" "$platform" "$PLATFORMINFO_LIST")
-                #slrs+=("$slr")
-                #print
                 echo "SLR$i: $slr"
             done
         fi
-        
-        #print        
-        #if [ -n "$platform" ]; then
-        #    echo "$device_index:"
-        #    for slr in "${slrs[@]}"; do
-        #        echo "$slr"  # Echo each element of the array
-        #    done
-        #fi
     done
     echo ""
 else
@@ -127,11 +115,17 @@ else
     #get platform
     platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 
-    #get parameter
-    clock=$(get_platforminfo_parameter "$PLATFORMINFO_PARAMETER" "$platform" "$PLATFORMINFO_LIST")
-
-    #print
+    #get number of SLRs
+    SLR_num=$(get_slr_num "$platform" "$PLATFORMINFO_LIST")
+    
+    #print 
     echo ""
-    echo "$device_index: $clock"
+    echo "$device_index:"
+    if [ -n "$platform" ]; then
+        for ((i=0; i<SLR_num; i++)); do
+            slr=$(get_platforminfo_parameter "SLR$i" "$platform" "$PLATFORMINFO_LIST")
+            echo "SLR$i: $slr"
+        done
+    fi
     echo ""
 fi
