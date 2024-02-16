@@ -147,7 +147,7 @@ else
     xclbin_found=$(echo "$result" | sed -n '1p')
     xclbin_name=$(echo "$result" | sed -n '2p')
     #forbidden combinations
-    if ([ "$xclbin_found" = "1" ] && ([ "$xclbin_name" = "" ] || [ ! -f "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/src/xclbin/$xclbin_name.cpp" ])); then 
+    if ([ "$xclbin_found" = "1" ] && ([ "$xclbin_name" = "" ] || [ ! -f "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/src/xclbin/$xclbin_name.cpp" ])); then #implies that --project must be specified
         $CLI_PATH/sgutil program vitis -h
         exit
     fi
@@ -277,7 +277,7 @@ $CLI_PATH/program/revert -d $device_index
 #reset device (we delete any xclbin)
 $XRT_PATH/bin/xbutil reset --device $bdf --force
 #program xclbin
-echo "$XRT_PATH/bin/xbutil program --device $bdf -u $xclbin_name".xclbin""
+#echo "$XRT_PATH/bin/xbutil program --device $bdf -u $xclbin_name".xclbin""
 $XRT_PATH/bin/xbutil program --device $bdf -u $xclbin_name".xclbin"
 
 #programming remote servers
@@ -290,7 +290,7 @@ if [ "$deploy_option" -eq 1 ]; then
         echo "Programming remote server ${bold}$i...${normal}"
         echo ""
         #remotely revert to xrt, reset device (delete any xclbin), and program xclbin
-        ssh -t "$USER@$i" "$CLI_PATH/program/revert -d $device_index -v $xrt_version; $XRT_PATH/bin/xbutil reset --device $bdf --force; $XRT_PATH/bin/xbutil program --device $bdf -u $APP_BUILD_DIR/$xclbin_name"
+        ssh -t "$USER@$i" "$CLI_PATH/program/revert -d $device_index -v $xrt_version; $XRT_PATH/bin/xbutil reset --device $bdf --force; $XRT_PATH/bin/xbutil program --device $bdf -u $APP_BUILD_DIR/$xclbin_name.xclbin"
     done
 fi
 
