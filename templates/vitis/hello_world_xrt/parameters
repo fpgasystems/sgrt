@@ -1,0 +1,4 @@
+N    16:16:128                "Number of elements" 
+W    1,2,4,8,16,32,64,128,256 "Number of bits" 
+F    0:1:W                    "Fractional part"
+RMSE 0.01                     "Root Mean Squared Error"
