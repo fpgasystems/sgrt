@@ -4,10 +4,10 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 #constants
-MY_PROJECTS_PATH="$(dirname "$(dirname "$0")")"
+MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
 TEMPLATE="vadd"
 
-cd $MY_PROJECTS_PATH/configs
+cd $MY_PROJECT_PATH/configs
 #exclude config_parameters (we can add other pipes for additional exclusions)
 configs=( $(ls -d config_* | grep -v "config_parameters") )
 
