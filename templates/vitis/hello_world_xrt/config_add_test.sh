@@ -3,6 +3,10 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+#constants
+MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
+MAX_PROMPT_ELEMENTS=10
+
 get_config_id() {
     #change directory
     CONFIGS_PATH=$1/configs
@@ -68,8 +72,27 @@ add_to_config_file() {
     fi
 }
 
-#constants
-MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
+find_existing_parameter() {
+    local parameter_i="$1"
+
+    # Loop through the parameters_aux array
+    for parameter_value in "${parameters_aux[@]}"; do
+        # Extract the parameter name and value from each element
+        parameter_name="${parameter_value%% = *}"
+        value="${parameter_value#* = }"
+
+        # Check if the parameter name matches the specified parameter_i
+        if [[ "$parameter_name" == "$parameter_i" ]]; then
+            # If a match is found, return the corresponding value
+            echo "$value"
+            return 0
+        fi
+    done
+
+    # If the parameter is not found or doesn't contain letters, return an empty string ==> return $max $min $inc
+    echo "$1"
+    return 1
+}
 
 #to be deleted
 rm $MY_PROJECT_PATH/configs/config_parameters
@@ -98,8 +121,13 @@ while read -r line; do
     descriptions+=("$column_3")
 done < "$MY_PROJECT_PATH/parameters"
 
+#store already declared parameters
+declare -a parameters_aux
+
+#create configuration
 for ((i = 0; i < ${#parameters[@]}; i++)); do
-    # Map to parameters
+    
+    #map to parameters
     parameter_i="${parameters[i]}"
     ranges_i="${ranges[i]}"
 
@@ -114,25 +142,44 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
         *:*)
             colon_count=$(grep -o ":" <<< "$ranges_i" | wc -l)
             if [[ $colon_count -eq 1 ]]; then
-                echo "The $parameter_i contains a single colon (:)"
+                #echo "The $parameter_i contains a single colon (:)"
                 min="${ranges_i%%:*}"   # Get the part before the first colon
                 inc="1"
                 max="${ranges_i#*:}"    # Get the part after the first colon
-                echo "min = $min"
-                echo "max = $max"
+                #echo "min = $min"
+                #echo "max = $max"
             elif [[ $colon_count -eq 2 ]]; then
-                echo "The $parameter_i contains two colons (:)"
+                #echo "The $parameter_i contains two colons (:)"
                 min="${ranges_i%%:*}"          # Get the part before the first colon
                 remaining="${ranges_i#*:}"     # Remove the part before the first colon
                 inc="${remaining%%:*}"       # Get the part between the first and second colons
                 max="${remaining#*:}"        # Get the part after the second colon
-                echo "min = $min"
-                echo "inc = $inc"
-                echo "max = $max"
+                #echo "min = $min"
+                #echo "inc = $inc"
+                #echo "max = $max"
             fi
 
-            # Generate selectable values
+            #replace already declared
+            echo "Before: $max"
+            max=$(find_existing_parameter $max)
+            echo "After: $max"
+
+            #generate selectable values
             selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
+
+            #get prompt
+            num_elements=$(echo "$selectable_values" | wc -w)
+
+            #check if the number of elements is more than 10
+            if (( num_elements > $MAX_PROMPT_ELEMENTS )); then
+                if [[ "$inc" == "1" ]]; then
+                    selectable_values_prompt="$min .. $max"
+                else
+                    selectable_values_prompt="$min:$inc:$max"
+                fi
+            else
+                selectable_values_prompt=$selectable_values
+            fi    
 
             #prompt the user to choose one of the selectable values
             #read -rp "$parameter_i [$selectable_values]: " selected_value
@@ -144,7 +191,7 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
             
             ;;
         *","*)
-            echo "The $parameter_i contains one or more single quotes (,)"
+            #echo "The $parameter_i contains one or more single quotes (,)"
 
             # Generate selectable values
             #selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
@@ -152,7 +199,7 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
 
             ;;
         *)
-            echo "The $parameter_i is a string without any colon (:), comma (,), or any other specified character"
+            #echo "The $parameter_i is a string without any colon (:), comma (,), or any other specified character"
             constant=$ranges_i
             echo "constant = $constant"
             ;;
@@ -174,5 +221,18 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
         #assumed as a host parameter
         add_to_config_file "$config_id" "$parameter_i" "$selected_value"
     fi
+
+
+    echo "Adding $parameter_i = $selected_value"
+
+    #save already declared
+    parameters_aux+=("$parameter_i = $selected_value")
+
+    #printing all values
+    echo "print"
+    for value in "${parameters_aux[@]}"; do
+        echo "$value"
+    done
+    echo "print done"
 
 done
