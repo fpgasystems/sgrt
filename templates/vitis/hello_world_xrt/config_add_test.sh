@@ -24,44 +24,15 @@ get_config_id(){
 
 #constants
 MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
-#TEMPLATE="vadd"
 
-#change to project directory
-#cd $MY_PROJECT_PATH
-
-#get config_id
-#cd $MY_PROJECT_PATH/configs/
 #to be deleted
 rm $MY_PROJECT_PATH/configs/config_parameters
 rm $MY_PROJECT_PATH/configs/kernel*
-#...
-#configs=( "config_"* )
-
-# Get the last configuration name
-#last_config="${configs[-1]}"
-
-# Extract the number part of the configuration name
-#number_part="${last_config#*_}"
-#number=$(printf "%03d" $((10#$number_part + 1)))  # Increment the number and format it as 3 digits with leading zeros
-
-# Construct the new configuration name
-#config_id="config_$number"
-
-#echo $config_id
-
-
-#change to project directory
-#cd $MY_PROJECT_PATH
 
 #get config_id
 config_id=$(get_config_id $MY_PROJECT_PATH)
 
 echo $config_id
-
-#change to project directory
-#cd $MY_PROJECT_PATH
-
-#echo $MY_PROJECT_PATH
 
 #read from parameters
 declare -a parameters
