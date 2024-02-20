@@ -160,9 +160,11 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
             fi
 
             #replace already declared
-            echo "Before: $max"
+            echo "Before: $max / $inc / $min"
+            min=$(find_existing_parameter $min)
+            inc=$(find_existing_parameter $inc)
             max=$(find_existing_parameter $max)
-            echo "After: $max"
+            echo "After: $max / $inc / $min"
 
             #generate selectable values
             selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
@@ -170,14 +172,19 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
             #get prompt
             num_elements=$(echo "$selectable_values" | wc -w)
 
+            echo "Num elements: $num_elements"
+
             #check if the number of elements is more than 10
             if (( num_elements > $MAX_PROMPT_ELEMENTS )); then
+                echo "More than 10"
+                echo "INC is $inc"
                 if [[ "$inc" == "1" ]]; then
                     selectable_values_prompt="$min .. $max"
                 else
                     selectable_values_prompt="$min:$inc:$max"
                 fi
             else
+                echo "Less than 10"
                 selectable_values_prompt=$selectable_values
             fi    
 
@@ -206,11 +213,11 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
     esac
 
     #prompt the user to choose one of the selectable values
-    read -rp "$parameter_i [$selectable_values]: " selected_value
+    read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
     
     #validate user input
     while ! validate_input "$selected_value" "$selectable_values"; do
-        read -rp "$parameter_i [$selectable_values]: " selected_value
+        read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
     done
 
     #add to kernel_parameters.hpp or config_id
@@ -223,16 +230,16 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
     fi
 
 
-    echo "Adding $parameter_i = $selected_value"
+    #echo "Adding $parameter_i = $selected_value"
 
     #save already declared
     parameters_aux+=("$parameter_i = $selected_value")
 
     #printing all values
-    echo "print"
-    for value in "${parameters_aux[@]}"; do
-        echo "$value"
-    done
-    echo "print done"
+    #echo "print"
+    #for value in "${parameters_aux[@]}"; do
+    #    echo "$value"
+    #done
+    #echo "print done"
 
 done
