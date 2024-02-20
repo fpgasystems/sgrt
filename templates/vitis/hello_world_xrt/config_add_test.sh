@@ -63,7 +63,9 @@ add_to_config_file() {
     local selected_value="$3"
 
     # Append the parameter and its selected value to the configuration file
-    echo "$parameter_i = $selected_value;" >> "$MY_PROJECT_PATH/configs/$config_id"
+    if [[ -n "$selected_value" ]]; then
+        echo "$parameter_i = $selected_value;" >> "$MY_PROJECT_PATH/configs/$config_id"
+    fi
 }
 
 #constants
@@ -106,6 +108,8 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
     inc=""
     list=""
     constant=""
+    selectable_values=""
+    selected_value=""
     case "$ranges_i" in
         *:*)
             colon_count=$(grep -o ":" <<< "$ranges_i" | wc -l)
@@ -131,16 +135,21 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
             selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
 
             #prompt the user to choose one of the selectable values
-            read -rp "$parameter_i [$selectable_values]: " selected_value
+            #read -rp "$parameter_i [$selectable_values]: " selected_value
             
             #validate user input
-            while ! validate_input "$selected_value" "$selectable_values"; do
-                read -rp "$parameter_i [$selectable_values]: " selected_value
-            done
+            #while ! validate_input "$selected_value" "$selectable_values"; do
+            #    read -rp "$parameter_i [$selectable_values]: " selected_value
+            #done
             
             ;;
         *","*)
             echo "The $parameter_i contains one or more single quotes (,)"
+
+            # Generate selectable values
+            #selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
+            selectable_values=$(echo "$ranges_i" | tr "," " ")
+
             ;;
         *)
             echo "The $parameter_i is a string without any colon (:), comma (,), or any other specified character"
@@ -149,12 +158,21 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
             ;;
     esac
 
-    #add to config_id
-    add_to_config_file "$config_id" "$parameter_i" "$selected_value"
+    #prompt the user to choose one of the selectable values
+    read -rp "$parameter_i [$selectable_values]: " selected_value
+    
+    #validate user input
+    while ! validate_input "$selected_value" "$selectable_values"; do
+        read -rp "$parameter_i [$selectable_values]: " selected_value
+    done
 
-    #add to kernel_parameters.hpp (when it contains the suffix _MAX)
+    #add to kernel_parameters.hpp or config_id
     if [[ "$parameter_i" == *_MAX* ]]; then
+        #it contains the suffix _MAX (assumed as a xclbin parameter)
         add_to_config_file "kernel_parameters.hpp" "const int $parameter_i" "$selected_value"
+    else
+        #assumed as a host parameter
+        add_to_config_file "$config_id" "$parameter_i" "$selected_value"
     fi
 
 done
