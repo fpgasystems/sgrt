@@ -57,6 +57,15 @@ validate_input() {
     return 1
 }
 
+add_to_config_file() {
+    local config_id="$1"
+    local parameter_i="$2"
+    local selected_value="$3"
+
+    # Append the parameter and its selected value to the configuration file
+    echo "$parameter_i = $selected_value;" >> "$MY_PROJECT_PATH/configs/$config_id"
+}
+
 #constants
 MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
 
@@ -67,7 +76,11 @@ rm $MY_PROJECT_PATH/configs/kernel*
 #get config_id
 config_id=$(get_config_id $MY_PROJECT_PATH)
 
-echo $config_id
+#create kernel_parameters.hpp
+touch $MY_PROJECT_PATH/configs/kernel_parameters.hpp
+
+#create configuration file
+touch $MY_PROJECT_PATH/configs/$config_id
 
 #read from parameters
 declare -a parameters
@@ -135,4 +148,13 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
             echo "constant = $constant"
             ;;
     esac
+
+    #add to config_id
+    add_to_config_file "$config_id" "$parameter_i" "$selected_value"
+
+    #add to kernel_parameters.hpp (when it contains the suffix _MAX)
+    if [[ "$parameter_i" == *_MAX* ]]; then
+        add_to_config_file "kernel_parameters.hpp" "const int $parameter_i" "$selected_value"
+    fi
+
 done
