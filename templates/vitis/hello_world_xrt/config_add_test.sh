@@ -40,10 +40,12 @@ generate_selectable_values() {
 }
 
 validate_input() {
+    
+    #get inputs
     local input="$1"
     local selectable_values="$2"
 
-    # Check if the input is one of the selectable values
+    #check if the input is one of the selectable values
     for value in $selectable_values; do
         if [[ "$input" == "$value" ]]; then
             echo "$input"
@@ -51,8 +53,7 @@ validate_input() {
         fi
     done
 
-    # If the input is not valid, print an error message
-    #echo "Invalid input. Please enter a valid value: $selectable_values"
+    #print an error message (if wanted)
     return 1
 }
 
@@ -116,26 +117,14 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
             # Generate selectable values
             selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
 
-            # Prompt the user to choose one of the selectable values
-            #PS3="Select a value for $parameter_i [${selectable_values}]: "
-            #select selected_value in $selectable_values; do
-            #    if [[ -n "$selected_value" ]]; then
-            #        echo "You selected: $selected_value"
-            #        break
-            #    else
-            #        echo "Invalid selection. Please choose a valid value."
-            #    fi
-            #done
-
-            # Prompt the user to choose one of the selectable values
+            #prompt the user to choose one of the selectable values
             read -rp "$parameter_i [$selectable_values]: " selected_value
-            # Validate user input
+            
+            #validate user input
             while ! validate_input "$selected_value" "$selectable_values"; do
                 read -rp "$parameter_i [$selectable_values]: " selected_value
             done
-            #echo "You selected: $selected_value"
-
-
+            
             ;;
         *","*)
             echo "The $parameter_i contains one or more single quotes (,)"
