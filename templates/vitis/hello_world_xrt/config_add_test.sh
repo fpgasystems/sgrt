@@ -3,7 +3,7 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-get_config_id(){
+get_config_id() {
     #change directory
     CONFIGS_PATH=$1/configs
     cd $CONFIGS_PATH
@@ -20,6 +20,40 @@ get_config_id(){
     cd ..
     #return
     echo $config_id
+}
+
+generate_selectable_values() {
+    local min="$1"
+    local max="$2"
+    local inc="$3"
+
+    # Initialize an empty array for selectable values
+    local selectable_values=()
+
+    # Loop from min to max with increments of inc and add each value to the array
+    for ((value = min; value <= max; value += inc)); do
+        selectable_values+=("$value")
+    done
+
+    # Print the selectable values separated by spaces
+    echo "${selectable_values[*]}"
+}
+
+validate_input() {
+    local input="$1"
+    local selectable_values="$2"
+
+    # Check if the input is one of the selectable values
+    for value in $selectable_values; do
+        if [[ "$input" == "$value" ]]; then
+            echo "$input"
+            return 0
+        fi
+    done
+
+    # If the input is not valid, print an error message
+    #echo "Invalid input. Please enter a valid value: $selectable_values"
+    return 1
 }
 
 #constants
@@ -64,6 +98,7 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
             if [[ $colon_count -eq 1 ]]; then
                 echo "The $parameter_i contains a single colon (:)"
                 min="${ranges_i%%:*}"   # Get the part before the first colon
+                inc="1"
                 max="${ranges_i#*:}"    # Get the part after the first colon
                 echo "min = $min"
                 echo "max = $max"
@@ -77,6 +112,30 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
                 echo "inc = $inc"
                 echo "max = $max"
             fi
+
+            # Generate selectable values
+            selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
+
+            # Prompt the user to choose one of the selectable values
+            #PS3="Select a value for $parameter_i [${selectable_values}]: "
+            #select selected_value in $selectable_values; do
+            #    if [[ -n "$selected_value" ]]; then
+            #        echo "You selected: $selected_value"
+            #        break
+            #    else
+            #        echo "Invalid selection. Please choose a valid value."
+            #    fi
+            #done
+
+            # Prompt the user to choose one of the selectable values
+            read -rp "$parameter_i [$selectable_values]: " selected_value
+            # Validate user input
+            while ! validate_input "$selected_value" "$selectable_values"; do
+                read -rp "$parameter_i [$selectable_values]: " selected_value
+            done
+            #echo "You selected: $selected_value"
+
+
             ;;
         *","*)
             echo "The $parameter_i contains one or more single quotes (,)"
