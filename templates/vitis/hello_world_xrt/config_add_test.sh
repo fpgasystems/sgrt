@@ -187,21 +187,12 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
                 echo "Less than 10"
                 selectable_values_prompt=$selectable_values
             fi    
-
-            #prompt the user to choose one of the selectable values
-            #read -rp "$parameter_i [$selectable_values]: " selected_value
-            
-            #validate user input
-            #while ! validate_input "$selected_value" "$selectable_values"; do
-            #    read -rp "$parameter_i [$selectable_values]: " selected_value
-            #done
             
             ;;
         *","*)
             #echo "The $parameter_i contains one or more single quotes (,)"
 
             # Generate selectable values
-            #selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
             selectable_values=$(echo "$ranges_i" | tr "," " ")
 
             ;;
