@@ -52,7 +52,7 @@ validate_input() {
     #check if the input is one of the selectable values
     for value in $selectable_values; do
         if [[ "$input" == "$value" ]]; then
-            echo "$input"
+            #echo "$input"
             return 0
         fi
     done
