@@ -3,12 +3,65 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+get_config_id(){
+    #change directory
+    CONFIGS_PATH=$1/configs
+    cd $CONFIGS_PATH
+    #get configs
+    configs=( "config_"* )
+    #get the last configuration name
+    last_config="${configs[-1]}"
+    #extract the number part of the configuration name
+    number_part="${last_config#*_}"
+    number=$(printf "%03d" $((10#$number_part + 1)))  # Increment the number and format it as 3 digits with leading zeros
+    #construct the new configuration name
+    config_id="config_$number"
+    #change back directory
+    cd ..
+    #return
+    echo $config_id
+}
+
 #constants
 MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
 #TEMPLATE="vadd"
 
 #change to project directory
-cd $MY_PROJECT_PATH
+#cd $MY_PROJECT_PATH
+
+#get config_id
+#cd $MY_PROJECT_PATH/configs/
+#to be deleted
+rm $MY_PROJECT_PATH/configs/config_parameters
+rm $MY_PROJECT_PATH/configs/kernel*
+#...
+#configs=( "config_"* )
+
+# Get the last configuration name
+#last_config="${configs[-1]}"
+
+# Extract the number part of the configuration name
+#number_part="${last_config#*_}"
+#number=$(printf "%03d" $((10#$number_part + 1)))  # Increment the number and format it as 3 digits with leading zeros
+
+# Construct the new configuration name
+#config_id="config_$number"
+
+#echo $config_id
+
+
+#change to project directory
+#cd $MY_PROJECT_PATH
+
+#get config_id
+config_id=$(get_config_id $MY_PROJECT_PATH)
+
+echo $config_id
+
+#change to project directory
+#cd $MY_PROJECT_PATH
+
+#echo $MY_PROJECT_PATH
 
 #read from parameters
 declare -a parameters
@@ -22,7 +75,7 @@ while read -r line; do
     parameters+=("$column_1")
     ranges+=("$column_2")
     descriptions+=("$column_3")
-done < "parameters"
+done < "$MY_PROJECT_PATH/parameters"
 
 for ((i = 0; i < ${#parameters[@]}; i++)); do
     # Map to parameters
@@ -30,8 +83,10 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
     ranges_i="${ranges[i]}"
 
     min=""
-    inc=""
     max=""
+    inc=""
+    list=""
+    constant=""
     case "$ranges_i" in
         *:*)
             colon_count=$(grep -o ":" <<< "$ranges_i" | wc -l)
@@ -57,6 +112,8 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
             ;;
         *)
             echo "The $parameter_i is a string without any colon (:), comma (,), or any other specified character"
+            constant=$ranges_i
+            echo "constant = $constant"
             ;;
     esac
 done
