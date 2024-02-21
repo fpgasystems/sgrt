@@ -93,7 +93,13 @@ if [ "$flags" = "" ]; then
     config_found=$(echo "$result" | sed -n '1p')
     config_name=$(echo "$result" | sed -n '2p')
     multiple_configs=$(echo "$result" | sed -n '3p')
-    if [[ $multiple_configs = "0" ]]; then
+    #check on config_name
+    if [[ $config_name = "" ]]; then
+        echo ""
+        echo "You must create a configuration first! ${bold}Please, use ./config_add${normal}"
+        echo ""
+        exit
+    elif [[ $multiple_configs = "0" ]]; then
         echo $config_name
     fi
     #target_dialog
@@ -146,7 +152,7 @@ else
     config_found=$(echo "$result" | sed -n '1p')
     config_name=$(echo "$result" | sed -n '2p')
     #forbidden combinations
-    if [ "$config_found" = "1" ] && ([ "$config_name" = "" ] || [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/configs/$config_name" ]); then #implies that --project must be specified
+    if [ "$config_found" = "1" ] && ([ "$config_name" = "" ] || [ "$config_name" = "config_000" ] || [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/configs/$config_name" ]); then #implies that --project must be specified
         $CLI_PATH/sgutil run vitis -h
         exit
     fi
@@ -214,7 +220,13 @@ else
         config_found=$(echo "$result" | sed -n '1p')
         config_name=$(echo "$result" | sed -n '2p')
         multiple_configs=$(echo "$result" | sed -n '3p')
-        if [[ $multiple_configs = "0" ]]; then
+        #check on config_name
+        if [[ $config_name = "" ]]; then
+            echo ""
+            echo "You must create a configuration first! ${bold}Please, use ./config_add${normal}"
+            echo ""
+            exit
+        elif [[ $multiple_configs = "0" ]]; then
             echo $config_name
         fi
         #echo ""
@@ -353,7 +365,7 @@ for ((i = 0; i < ${#device_indexes[@]}; i++)); do
     #check for build directory
     if ! [ -d "$DIR/build_dir.$xclbin_name.$target_name.$platform_name" ]; then
         echo ""
-        echo "You must build your project first! Please, use sgutil build vitis"
+        echo "You must build your project first! ${bold}Please, use sgutil build vitis${normal}"
         echo ""
         exit
     fi

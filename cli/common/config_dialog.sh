@@ -10,20 +10,25 @@ declare -g config_found="0"
 declare -g config_name=""
 declare -g multiple_configs="0"
 
+# Enable nullglob to make unmatched globs expand to nothing
+shopt -s nullglob
+
 #get configs
-cd $MY_PROJECT_PATH/configs/
-configs=( "config_"* )
+cd "$MY_PROJECT_PATH/configs/"
+configs=(config_*)
 
 #remove selected files
 configs_aux=()
 for element in "${configs[@]}"; do
-    if [[ $element != *"config_parameters"* && $element != *.hpp ]]; then #config_000 && $element != *.active
+    if [[ $element != "config_000" && $element != *.hpp ]]; then #config_* happens when there are no configs
         configs_aux+=("$element")
     fi
 done
 
 # Check if there is only one directory
-if [ ${#configs_aux[@]} -eq 1 ]; then
+if [ ${#configs_aux[@]} -eq 0 ]; then
+    config_name=""
+elif [ ${#configs_aux[@]} -eq 1 ]; then
     config_found="1"
     config_name=${configs_aux[0]}
 else
