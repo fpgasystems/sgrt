@@ -214,11 +214,11 @@ fi
 
 #create [or select] a configuration (select moved to run)
 cd $DIR/configs/
-if [[ $(ls -l | wc -l) = 3 ]]; then
+if [[ $(ls -l | wc -l) = 2 ]]; then
     #only config_000 exists and we create config_kernel and config_001
     #we compile config_add (in case there were changes)
-    cd $DIR/src
-    g++ -std=c++17 config_add.cpp -o ../config_add >&/dev/null
+    #cd $DIR/src
+    #g++ -std=c++17 config_add.cpp -o ../config_add >&/dev/null
     cd $DIR
     ./config_add
     #cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp

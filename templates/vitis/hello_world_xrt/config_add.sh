@@ -151,8 +151,8 @@ is_integer() {
 }
 
 #to be deleted
-rm $MY_PROJECT_PATH/configs/config_parameters
-rm $MY_PROJECT_PATH/configs/kernel*
+#rm $MY_PROJECT_PATH/configs/config_parameters
+#rm $MY_PROJECT_PATH/configs/kernel*
 
 #get config_id
 config_id=$(get_config_id $MY_PROJECT_PATH)
@@ -290,3 +290,8 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
     parameters_aux+=("$parameter_i = $selected_value")
 
 done
+
+#remove foo if exists
+if [ -f "foo" ]; then
+    rm "foo"
+fi

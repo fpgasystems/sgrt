@@ -111,7 +111,9 @@ rm $DIR/README.rst
 #echo "# $project_name" >> README.md
 #compile config_add and delete
 cd $DIR/src
-g++ -std=c++17 config_add.cpp -o ../config_add >&/dev/null
+#g++ -std=c++17 config_add.cpp -o ../config_add >&/dev/null ### to be removed!!!!!!!!!!!!
+mv $DIR/config_add.sh $DIR/config_add
+chmod +x $DIR/config_add
 mv $DIR/config_delete.sh $DIR/config_delete
 chmod +x $DIR/config_delete
 #compile xclbin_add and delete
