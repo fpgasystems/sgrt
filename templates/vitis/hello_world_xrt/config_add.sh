@@ -154,6 +154,10 @@ is_integer() {
 #rm $MY_PROJECT_PATH/configs/config_parameters
 #rm $MY_PROJECT_PATH/configs/kernel*
 
+echo ""
+echo "${bold}config_add${normal}"
+echo ""
+
 #get config_id
 config_id=$(get_config_id $MY_PROJECT_PATH)
 
@@ -290,6 +294,10 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
     parameters_aux+=("$parameter_i = $selected_value")
 
 done
+
+echo ""
+echo "The configuration ${bold}$config_id has been created!${normal}"
+echo ""
 
 #remove config_000 if exists
 if [ -f "$MY_PROJECT_PATH/configs/config_000" ]; then
