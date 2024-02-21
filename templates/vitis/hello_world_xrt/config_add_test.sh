@@ -28,23 +28,6 @@ get_config_id() {
     echo $config_id
 }
 
-#generate_selectable_values() {
-#    local min="$1"
-#    local max="$2"
-#    local inc="$3"
-#
-#    # Initialize an empty array for selectable values
-#    local selectable_values=()
-#
-#    # Loop from min to max with increments of inc and add each value to the array
-#    for ((value = min; value <= max; value += inc)); do
-#        selectable_values+=("$value")
-#    done
-#
-#    # Print the selectable values separated by spaces
-#    echo "${selectable_values[*]}"
-#}
-
 generate_selectable_values_1() {
     local min="$1"
     local max="$2"
