@@ -28,17 +28,79 @@ get_config_id() {
     echo $config_id
 }
 
-generate_selectable_values() {
+#generate_selectable_values() {
+#    local min="$1"
+#    local max="$2"
+#    local inc="$3"
+#
+#    # Initialize an empty array for selectable values
+#    local selectable_values=()
+#
+#    # Loop from min to max with increments of inc and add each value to the array
+#    for ((value = min; value <= max; value += inc)); do
+#        selectable_values+=("$value")
+#    done
+#
+#    # Print the selectable values separated by spaces
+#    echo "${selectable_values[*]}"
+#}
+
+generate_selectable_values_1() {
     local min="$1"
     local max="$2"
     local inc="$3"
+    local precision="$INC_DECIMALS"
 
     # Initialize an empty array for selectable values
     local selectable_values=()
 
-    # Loop from min to max with increments of inc and add each value to the array
-    for ((value = min; value <= max; value += inc)); do
+    # Initialize loop variable as floating-point number
+    local value="$min"
+
+    # Loop until the value exceeds the max
+    while (( $(echo "$value <= $max" | bc -l) )); do
+        # Append the value to the array
         selectable_values+=("$value")
+        
+        # Increment the value using bc for floating-point arithmetic
+        value=$(echo "$value + $inc" | bc -l)
+        value=$(printf "%.${precision}f" "$value") # Round to the desired precision
+    done
+
+    # Print the selectable values separated by spaces
+    echo "${selectable_values[*]}"
+}
+
+generate_selectable_values() {
+    local min="$1"
+    local max="$2"
+    local inc="$3"
+    local precision="$INC_DECIMALS"
+
+    # Initialize an empty array for selectable values
+    local selectable_values=()
+
+    # Initialize loop variable as floating-point number
+    local value="$min"
+
+    # Loop until the value exceeds the max
+    while (( $(echo "$value <= $max" | bc -l) )); do
+        # Check if the value starts with "."
+        if [[ "${value:0:1}" == "." ]]; then
+            # If it starts with ".", prepend "0" before the value
+            value="0$value"
+        fi
+        
+        # Append the value to the array
+        selectable_values+=("$value")
+
+        # Apply precision formatting for decimal increments
+        if [[ "$inc" =~ \. ]]; then
+            value=$(printf "%.${precision}f" "$value")
+        fi
+        
+        # Increment the value using bc for floating-point arithmetic
+        value=$(echo "$value + $inc" | bc -l)
     done
 
     # Print the selectable values separated by spaces
@@ -177,16 +239,16 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
                     #min and max are decimals
                     
                     #remove leading zeros from min and max (if any)
-                    min=$(echo "$min" | sed 's/^0*//')
-                    max=$(echo "$max" | sed 's/^0*//')
+                    #min=$(echo "$min" | sed 's/^0*//')
+                    #max=$(echo "$max" | sed 's/^0*//')
 
                     #use bc for decimal arithmetic
                     inc=$(echo "scale=$INC_DECIMALS; ($max - $min) / $INC_STEPS" | bc)
 
+                    echo $min
+                    echo $max
                     echo $inc
-                    echo "hola"
-                    exit
-
+                
                 fi
 
             elif [[ $colon_count -eq 2 ]]; then
