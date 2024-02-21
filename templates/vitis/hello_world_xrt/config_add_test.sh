@@ -194,16 +194,13 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
     constant=""
     selectable_values=""
     selected_value=""
+    selectable_values_prompt=""
     case "$ranges_i" in
         *:*)
             colon_count=$(grep -o ":" <<< "$ranges_i" | wc -l)
             if [[ $colon_count -eq 1 ]]; then
-                ##echo "The $parameter_i contains a single colon (:)"
-                #min="${ranges_i%%:*}"   # Get the part before the first colon
-                ##inc="1"
-                #max="${ranges_i#*:}"    # Get the part after the first colon
-
-                # Extract min and max from ranges_i
+                
+                #extract min and max from ranges_i
                 IFS=':' read -r min max <<< "$ranges_i"
 
                 #replace already declared
@@ -220,26 +217,16 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
                     inc="1"
                 elif [[ "$is_integer_min" == "0" && "$is_integer_max" == "0" ]]; then
                     #min and max are decimals
-                    
-                    #remove leading zeros from min and max (if any)
-                    #min=$(echo "$min" | sed 's/^0*//')
-                    #max=$(echo "$max" | sed 's/^0*//')
-
-                    #use bc for decimal arithmetic
-                    inc=$(echo "scale=$INC_DECIMALS; ($max - $min) / $INC_STEPS" | bc)
-
-                    echo $min
-                    echo $max
-                    echo $inc
-                
+                    inc=$(echo "scale=$INC_DECIMALS; ($max - $min) / $INC_STEPS" | bc)                
                 fi
 
             elif [[ $colon_count -eq 2 ]]; then
-                #echo "The $parameter_i contains two colons (:)"
-                min="${ranges_i%%:*}"          # Get the part before the first colon
-                remaining="${ranges_i#*:}"     # Remove the part before the first colon
-                inc="${remaining%%:*}"       # Get the part between the first and second colons
-                max="${remaining#*:}"        # Get the part after the second colon
+                
+                #extract min, inc and max from ranges_i
+                min="${ranges_i%%:*}"
+                remaining="${ranges_i#*:}"
+                inc="${remaining%%:*}"
+                max="${remaining#*:}"
 
                 #replace already declared
                 min=$(find_existing_parameter $min)
@@ -269,12 +256,9 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
             
             ;;
         *","*)
-            #echo "The $parameter_i contains one or more single quotes (,)"
-
-            # Generate selectable values
+            #ranges_i is a comma separated list
             selectable_values=$(echo "$ranges_i" | tr "," " ")
             selectable_values_prompt=$selectable_values
-
             ;;
         *)
             #echo "The $parameter_i is a string without any colon (:), comma (,), or any other specified character"
