@@ -135,5 +135,5 @@ if [ "$commit" = "1" ]; then
     echo ""
 fi
 
-echo "The project ${bold}$VITIS_DIR/$project_name${normal} has been created!"
+echo "The project $VITIS_DIR/${bold}$project_name has been created!${normal}"
 echo ""
