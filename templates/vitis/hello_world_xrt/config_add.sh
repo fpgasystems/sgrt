@@ -166,7 +166,10 @@ if [[ "$config_id" == "config_000" ]]; then
     config_id="config_001"
 fi
 
-#create kernel_parameters.hpp
+#create kernel_parameters.hpp (it is created each time so we can capture new MAX parameters)
+if [ -f "$MY_PROJECT_PATH/configs/kernel_parameters.hpp" ]; then
+    rm "$MY_PROJECT_PATH/configs/kernel_parameters.hpp"
+fi
 touch $MY_PROJECT_PATH/configs/kernel_parameters.hpp
 
 #create configuration file
