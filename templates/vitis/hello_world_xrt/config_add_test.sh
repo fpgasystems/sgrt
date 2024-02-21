@@ -261,21 +261,23 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
             selectable_values_prompt=$selectable_values
             ;;
         *)
-            #echo "The $parameter_i is a string without any colon (:), comma (,), or any other specified character"
-            constant=$ranges_i
-            echo "constant = $constant"
+            #ranges_i is a constant (a string without any colon (:), comma (,), or any other specified character)
+            selected_value=$ranges_i
             ;;
     esac
 
-    #prompt the user to choose one of the selectable values
-    read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
-    
-    #validate user input
-    while ! validate_input "$selected_value" "$selectable_values"; do
+    #get value from the user
+    if ! [[ "$selectable_values_prompt" == "" ]]; then
+        #prompt the user to choose one of the selectable values
         read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
-    done
+        
+        #validate user input
+        while ! validate_input "$selected_value" "$selectable_values"; do
+            read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
+        done
+    fi
 
-    #add to kernel_parameters.hpp or config_id
+    #add parameter_i/selected_value to kernel_parameters.hpp or config_id
     if [[ "$parameter_i" == *_MAX* ]]; then
         #it contains the suffix _MAX (assumed as a xclbin parameter)
         add_to_config_file "kernel_parameters.hpp" "const int $parameter_i" "$selected_value"
@@ -284,17 +286,7 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
         add_to_config_file "$config_id" "$parameter_i" "$selected_value"
     fi
 
-
-    #echo "Adding $parameter_i = $selected_value"
-
     #save already declared
     parameters_aux+=("$parameter_i = $selected_value")
-
-    #printing all values
-    #echo "print"
-    #for value in "${parameters_aux[@]}"; do
-    #    echo "$value"
-    #done
-    #echo "print done"
 
 done
