@@ -6,6 +6,8 @@ normal=$(tput sgr0)
 #constants
 MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
 MAX_PROMPT_ELEMENTS=10
+INC_STEPS=2
+INC_DECIMALS=2
 
 get_config_id() {
     #change directory
@@ -94,6 +96,15 @@ find_existing_parameter() {
     return 1
 }
 
+is_integer() {
+    local value="$1"
+    if [[ "$value" =~ ^[0-9]+$ ]]; then
+        echo "1"  # Return "1" for integer
+    else
+        echo "0"  # Return "0" for non-integer
+    fi
+}
+
 #to be deleted
 rm $MY_PROJECT_PATH/configs/config_parameters
 rm $MY_PROJECT_PATH/configs/kernel*
@@ -142,29 +153,55 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
         *:*)
             colon_count=$(grep -o ":" <<< "$ranges_i" | wc -l)
             if [[ $colon_count -eq 1 ]]; then
-                #echo "The $parameter_i contains a single colon (:)"
-                min="${ranges_i%%:*}"   # Get the part before the first colon
-                inc="1"
-                max="${ranges_i#*:}"    # Get the part after the first colon
-                #echo "min = $min"
-                #echo "max = $max"
+                ##echo "The $parameter_i contains a single colon (:)"
+                #min="${ranges_i%%:*}"   # Get the part before the first colon
+                ##inc="1"
+                #max="${ranges_i#*:}"    # Get the part after the first colon
+
+                # Extract min and max from ranges_i
+                IFS=':' read -r min max <<< "$ranges_i"
+
+                #replace already declared
+                min=$(find_existing_parameter $min)
+                max=$(find_existing_parameter $max)
+
+                #check on integer
+                is_integer_min=$(is_integer "$min")
+                is_integer_max=$(is_integer "$max")
+
+                # Derive increment
+                if [[ "$is_integer_min" == "1" && "$is_integer_max" == "1" ]]; then
+                    #min and max are integers
+                    inc="1"
+                elif [[ "$is_integer_min" == "0" && "$is_integer_max" == "0" ]]; then
+                    #min and max are decimals
+                    
+                    #remove leading zeros from min and max (if any)
+                    min=$(echo "$min" | sed 's/^0*//')
+                    max=$(echo "$max" | sed 's/^0*//')
+
+                    #use bc for decimal arithmetic
+                    inc=$(echo "scale=$INC_DECIMALS; ($max - $min) / $INC_STEPS" | bc)
+
+                    echo $inc
+                    echo "hola"
+                    exit
+
+                fi
+
             elif [[ $colon_count -eq 2 ]]; then
                 #echo "The $parameter_i contains two colons (:)"
                 min="${ranges_i%%:*}"          # Get the part before the first colon
                 remaining="${ranges_i#*:}"     # Remove the part before the first colon
                 inc="${remaining%%:*}"       # Get the part between the first and second colons
                 max="${remaining#*:}"        # Get the part after the second colon
-                #echo "min = $min"
-                #echo "inc = $inc"
-                #echo "max = $max"
-            fi
 
-            #replace already declared
-            echo "Before: $max / $inc / $min"
-            min=$(find_existing_parameter $min)
-            inc=$(find_existing_parameter $inc)
-            max=$(find_existing_parameter $max)
-            echo "After: $max / $inc / $min"
+                #replace already declared
+                min=$(find_existing_parameter $min)
+                inc=$(find_existing_parameter $inc)
+                max=$(find_existing_parameter $max)
+
+            fi
 
             #generate selectable values
             selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
@@ -172,19 +209,16 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
             #get prompt
             num_elements=$(echo "$selectable_values" | wc -w)
 
-            echo "Num elements: $num_elements"
-
             #check if the number of elements is more than 10
             if (( num_elements > $MAX_PROMPT_ELEMENTS )); then
-                echo "More than 10"
-                echo "INC is $inc"
+                #more elements than expected
                 if [[ "$inc" == "1" ]]; then
                     selectable_values_prompt="$min .. $max"
                 else
                     selectable_values_prompt="$min:$inc:$max"
                 fi
             else
-                echo "Less than 10"
+                #less elements than expected
                 selectable_values_prompt=$selectable_values
             fi    
             
@@ -194,6 +228,7 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
 
             # Generate selectable values
             selectable_values=$(echo "$ranges_i" | tr "," " ")
+            selectable_values_prompt=$selectable_values
 
             ;;
         *)
