@@ -161,6 +161,11 @@ echo ""
 #get config_id
 config_id=$(get_config_id $MY_PROJECT_PATH)
 
+#we avoid config_000 is created when configs is empty
+if [[ "$config_id" == "config_000" ]]; then
+    config_id="config_001"
+fi
+
 #create kernel_parameters.hpp
 touch $MY_PROJECT_PATH/configs/kernel_parameters.hpp
 
