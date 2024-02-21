@@ -291,7 +291,7 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
 
 done
 
-#remove foo if exists
-if [ -f "foo" ]; then
-    rm "foo"
+#remove config_000 if exists
+if [ -f "$MY_PROJECT_PATH/configs/config_000" ]; then
+    rm "$MY_PROJECT_PATH/configs/config_000"
 fi
