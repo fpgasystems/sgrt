@@ -7,6 +7,7 @@ normal=$(tput sgr0)
 CLI_PATH="$(dirname "$(dirname "$0")")"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="coyote"
+COYOTE_COMMIT="4629886"
 
 #get hostname
 url="${HOSTNAME}"
@@ -114,7 +115,7 @@ fi
 #rm -rf Coyote
 
 #clone Coyote
-$CLI_PATH/common/git_clone_coyote $DIR
+$CLI_PATH/common/git_clone_coyote $DIR $COYOTE_COMMIT
 
 #change to project directory
 cd $DIR

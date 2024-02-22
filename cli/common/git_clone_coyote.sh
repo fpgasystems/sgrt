@@ -5,9 +5,10 @@ normal=$(tput sgr0)
 
 #inputs
 DIR=$1
+COYOTE_COMMIT=$2
 
 #constants
-COYOTE_COMMIT="4629886"
+#COYOTE_COMMIT="4629886"
 
 #print
 echo ""
