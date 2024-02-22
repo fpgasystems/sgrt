@@ -1,15 +1,15 @@
 ---
 
 - hosts: 
-    #- hacc-build
-    #- alveo-u250
-    #- alveo-u280
-    #- alveo-u50d
-    #- alveo-u55c
-    #- versal-vck5000
-    #- hacc-boxes
+    - hacc-build
+    - alveo-u250
+    - alveo-u280
+    - alveo-u50d
+    - alveo-u55c
+    - versal-vck5000
+    - hacc-boxes
     #- alveo-u55c-01.inf.ethz.ch
-    - hacc-box-01.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -32,7 +32,7 @@
     common: false
     enable: false
     examine: false
-    get: true
+    get: false
     new: false
     program: false
     reboot: false
