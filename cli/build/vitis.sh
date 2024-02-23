@@ -288,14 +288,21 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         compute_units_names+=("$column_3")
     done < "nk"
 
-    #for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
-    #    #map to nk
-    #    xclbin_i="${xclbin_names[i]}"
-    #    compute_units_num_i="${compute_units_num[i]}"
-    #    compute_units_names_i="${compute_units_names[i]}"
-    #done
+    #read from sp to create sp_aux (to append later)
+    touch sp_aux
+    while read -r line; do
+        # Extract second column (e.g., "vadd")
+        operation=$(echo "$line" | awk '{print $2}')
+        # Extract other columns except the first two
+        columns=$(echo "$line" | awk '{$1=""; $2=""; print $0}')
+        # Split the columns based on whitespace and iterate over them
+        for col in $columns; do
+            # Construct and print the desired output
+            echo "sp=$operation.$col" >> sp_aux
+        done
+    done < "sp"
 
-    #check on acap_fpga
+    #check on nk
     if [ "${#xclbin_names[@]}" -eq 0 ] || [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]; then
         echo ""
         echo "Please, review nk configuration file!"
@@ -315,14 +322,27 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         #define directories (2)
         XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name"
 
-        #create <nk_xclbin.cfg> out of nk
+        #create <xclbin.cfg>
         touch $xclbin_i.cfg
         echo "[connectivity]" >> $xclbin_i.cfg
+
+        #nk
         if [ "$compute_units_names_i" = "" ]; then
             echo "nk=$xclbin_i:$compute_units_num_i" >> $xclbin_i.cfg 
         else
             echo "nk=$xclbin_i:$compute_units_num_i:$compute_units_names_i" >> $xclbin_i.cfg 
         fi
+
+        echo >> $xclbin_i.cfg
+
+        #sp
+        grep "sp=$xclbin_i" sp_aux >> $xclbin_i.cfg
+
+        #print .cfg contents
+        echo "${bold}Using $xclbin_i.cfg configuration file:${normal}"
+        echo ""
+        cat $xclbin_i.cfg
+        echo ""
         
         #move to build_dir
         #mv $xclbin_i"_config.cfg" $XCLBIN_BUILD_DIR
@@ -417,5 +437,10 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     #    done
     #    
     #fi
+
+    #remove sp_aux
+    if [ -f "sp_aux" ]; then
+        rm "sp_aux"
+    fi
 
 fi
