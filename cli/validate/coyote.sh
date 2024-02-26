@@ -9,6 +9,7 @@ VIVADO_DEVICES_MAX=$(cat $CLI_PATH/constants/VIVADO_DEVICES_MAX)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="coyote"
+COYOTE_COMMIT="07bf9a8" #"7f8ba4e" #"4629886"
 BIT_NAME="cyt_top.bit"
 DRIVER_NAME="coyote_drv.ko"
 
@@ -86,6 +87,10 @@ DIR="$MY_PROJECTS_PATH/$WORKFLOW"
 if ! [ -d "$DIR" ]; then
     mkdir ${DIR}
 fi
+
+#header (1/1)
+echo ""
+echo "${bold}sgutil validate $WORKFLOW${normal}"
 
 #check on flags
 device_found=""
@@ -177,22 +182,18 @@ else
     fi
 fi
 
-#header (1/1)
-echo ""
-echo "${bold}sgutil validate $WORKFLOW${normal}"
-
-echo ""
-echo "${bold}Please, choose your configuration:${normal}" # this refers to a software (sw/examples) configuration
-echo ""
-PS3=""
-select config in perf_host perf_rdma_host gbm_dtrees
-do
-    case $config in
-        perf_host) break;;
-        perf_rdma_host) break;;
-        gbm_dtrees) break;;
-    esac
-done
+#echo ""
+#echo "${bold}Please, choose your configuration:${normal}" # this refers to a software (sw/examples) configuration
+#echo ""
+#PS3=""
+#select config in perf_host perf_rdma_host gbm_dtrees
+#do
+#    case $config in
+#        perf_host) break;;
+#        perf_rdma_host) break;;
+#        gbm_dtrees) break;;
+#    esac
+#done
 
 #get device_name
 device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
@@ -201,50 +202,54 @@ device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 
-# map sw/hw configurations
-case "$config" in
-    perf_host) 
-        config_hw=$config
-        config_sw=$config
-        ;;
-    perf_rdma_host)
-        config_hw=$config
-        config_sw="perf_rdma"
-        ;;
-    gbm_dtrees)
-        config_hw=$config
-        config_sw=$config
-        ;;
-    *)
-        echo ""
-        echo "Unknown config name."
-        echo ""
-    ;;  
-esac
+#map sw/hw configurations
+#case "$config" in
+#    perf_host) 
+#        config_hw=$config
+#        config_sw=$config
+#        ;;
+#    perf_rdma_host)
+#        config_hw=$config
+#        config_sw="perf_rdma"
+#        ;;
+#    gbm_dtrees)
+#        config_hw=$config
+#        config_sw=$config
+#        ;;
+#    *)
+#        echo ""
+#        echo "Unknown config name."
+#        echo ""
+#    ;;  
+#esac
+
+config_hw="static"
+config_sw="perf_local"
 
 # Verify servers for perf_rdma_host
-if [ "$config_hw" = "perf_rdma_host" ]; then
-    result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $USER)
-    servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
-    num_remote_servers=$(echo "$servers_family_list" | wc -w)
-
-    #check on number of remote servers
-    if [ "$num_remote_servers" -ne 1 ]; then
-        echo ""
-        echo "Please, verify that you can ssh exactly one remote server for perf_rdma_host validation."
-        echo ""
-        exit
-    fi
-fi
+#if [ "$config_hw" = "perf_rdma_host" ]; then
+#    result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $USER)
+#    servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
+#    num_remote_servers=$(echo "$servers_family_list" | wc -w)
+#
+#    #check on number of remote servers
+#    if [ "$num_remote_servers" -ne 1 ]; then
+#        echo ""
+#        echo "Please, verify that you can ssh exactly one remote server for perf_rdma_host validation."
+#        echo ""
+#        exit
+#    fi
+#fi
 
 #set project name
 project_name="validate_$config_hw.$FDEV_NAME.$vivado_version"
 
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"
-SHELL_BUILD_DIR="$DIR/hw/build"
+SHELL_BUILD_DIR="$DIR/examples_hw/build"
 DRIVER_DIR="$DIR/driver"
-APP_BUILD_DIR="$DIR/sw/examples/$config_sw/build"
+#APP_BUILD_DIR="$DIR/sw/examples/$config_sw/build"
+APP_BUILD_DIR="$DIR/examples_sw/$config_sw/build"
 
 # create coyote validate config.device_name directory and checkout
 if ! [ -d "$DIR" ]; then
@@ -258,49 +263,57 @@ if ! [ -d "$DIR" ]; then
     #rm -rf Coyote
 
     #clone Coyote
-    $CLI_PATH/common/git_clone_coyote $DIR
+    $CLI_PATH/common/git_clone_coyote $DIR $COYOTE_COMMIT
 
     #change to project directory
     cd $DIR
 
-    # create configuration file
-    touch config_shell.hpp
-    case "$config_hw" in #config
-        perf_host) 
-            echo "const int EN_HLS = 0;" > config_shell.hpp
-            echo "const int EN_MEM = 0;" >> config_shell.hpp
-            echo "const int EN_STRM = 1;" >> config_shell.hpp
-            echo "const int EN_MEM = 0;" >> config_shell.hpp
-            echo "const int N_REGIONS = 3;" >> config_shell.hpp
+    #create configuration file (https://github.com/fpgasystems/Coyote/blob/dfx_v2/examples_hw/CMakeLists.txt)
+    touch config_shell_$config_hw
+    case "$config_hw" in
+        static) 
+            echo "BUILD_STATIC 1" >> config_shell_$config_hw
+            echo "BUILD_SHELL 0"  >> config_shell_$config_hw
+            echo "COMP_CORES 40"  >> config_shell_$config_hw
+            echo "N_REGIONS 3"    >> config_shell_$config_hw
+            echo "EN_STRM 1"      >> config_shell_$config_hw
+            echo "EN_MEM 1"       >> config_shell_$config_hw
             ;;
-        perf_fpga)
-            echo "const int EN_HLS = 0;" > config_shell.hpp
-            echo "const int EN_BPSS = 1;" >> config_shell.hpp
-            echo "const int EN_STRM = 1;" >> config_shell.hpp
-            echo "const int EN_MEM = 0;" >> config_shell.hpp
-            echo "const int EN_WB = 1;" >> config_shell.hpp
-            echo "const int N_REGIONS = 1;" >> config_shell.hpp
-            ;;
-        perf_rdma_host)
-            echo "const int EN_HLS = 0;" >> config_shell.hpp
-            echo "const int EN_BPSS = 1;" >> config_shell.hpp
-            echo "const int EN_STRM = 1;" >> config_shell.hpp
-            echo "const int EN_MEM = 0;" >> config_shell.hpp
-            echo "const int EN_RDMA_0 = 1;" >> config_shell.hpp
-            echo "const int N_REGIONS = 1;" >> config_shell.hpp
-            ;;
-        gbm_dtrees) 
-            echo "const int EN_HLS = 0;" > config_shell.hpp
-            echo "const int EN_STRM = 1;" >> config_shell.hpp
-            echo "const int EN_MEM = 0;" >> config_shell.hpp
-            echo "const int N_REGIONS = 1;" >> config_shell.hpp
-            ;;
-        hyperloglog) 
-            echo "const int EN_HLS = 1;" > config_shell.hpp
-            echo "const int EN_STRM = 1;" >> config_shell.hpp
-            echo "const int EN_MEM = 0;" >> config_shell.hpp
-            echo "const int N_REGIONS = 1;" >> config_shell.hpp
-            ;;
+        #perf_host) 
+        #    echo "const int EN_HLS = 0;" > config_shell.hpp
+        #    echo "const int EN_MEM = 0;" >> config_shell.hpp
+        #    echo "const int EN_STRM = 1;" >> config_shell.hpp
+        #    echo "const int EN_MEM = 0;" >> config_shell.hpp
+        #    echo "const int N_REGIONS = 3;" >> config_shell.hpp
+        #    ;;
+        #perf_fpga)
+        #    echo "const int EN_HLS = 0;" > config_shell.hpp
+        #    echo "const int EN_BPSS = 1;" >> config_shell.hpp
+        #    echo "const int EN_STRM = 1;" >> config_shell.hpp
+        #    echo "const int EN_MEM = 0;" >> config_shell.hpp
+        #    echo "const int EN_WB = 1;" >> config_shell.hpp
+        #    echo "const int N_REGIONS = 1;" >> config_shell.hpp
+        #    ;;
+        #perf_rdma_host)
+        #    echo "const int EN_HLS = 0;" >> config_shell.hpp
+        #    echo "const int EN_BPSS = 1;" >> config_shell.hpp
+        #    echo "const int EN_STRM = 1;" >> config_shell.hpp
+        #    echo "const int EN_MEM = 0;" >> config_shell.hpp
+        #    echo "const int EN_RDMA_0 = 1;" >> config_shell.hpp
+        #    echo "const int N_REGIONS = 1;" >> config_shell.hpp
+        #    ;;
+        #gbm_dtrees) 
+        #    echo "const int EN_HLS = 0;" > config_shell.hpp
+        #    echo "const int EN_STRM = 1;" >> config_shell.hpp
+        #    echo "const int EN_MEM = 0;" >> config_shell.hpp
+        #    echo "const int N_REGIONS = 1;" >> config_shell.hpp
+        #    ;;
+        #hyperloglog) 
+        #    echo "const int EN_HLS = 1;" > config_shell.hpp
+        #    echo "const int EN_STRM = 1;" >> config_shell.hpp
+        #    echo "const int EN_MEM = 0;" >> config_shell.hpp
+        #    echo "const int N_REGIONS = 1;" >> config_shell.hpp
+        #    ;;
         *)
             echo ""
             echo "Unknown configuration."
@@ -308,136 +321,220 @@ if ! [ -d "$DIR" ]; then
         ;;  
     esac
     mkdir $DIR/configs
-    mv $DIR/config_shell.hpp $DIR/configs/config_shell.hpp
+    mv $DIR/config_shell_$config_hw $DIR/configs/config_shell_$config_hw
 fi
 
 #check on build_dir.FDEV_NAME
-if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version" ]; then
+if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then #if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version" ]; then 
     #bitstream compilation
     echo ""
-    echo "${bold}Coyote shell compilation:${normal}"
+    echo "${bold}Coyote $config_hw shell compilation:${normal}"
     echo ""
-    echo "cmake .. -DFDEV_NAME=$FDEV_NAME -DEXAMPLE=$config_hw"
+    echo "/usr/bin/cmake ../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME"
     echo ""
     mkdir $SHELL_BUILD_DIR
+    
+    echo "SHELL_BUILD_DIR = $SHELL_BUILD_DIR"
+    echo "FDEV_NAME = $FDEV_NAME"
+    echo "DEXAMPLE = $config_hw"
+    
     cd $SHELL_BUILD_DIR
-    /usr/bin/cmake .. -DFDEV_NAME=$FDEV_NAME -DEXAMPLE=$config_hw #$config
+    /usr/bin/cmake ../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME 
 
     #generate bitstream
     echo ""
     echo "${bold}Coyote shell bitstream generation:${normal}"
     echo ""
-    echo "make shell && make compile"
+    #echo "make shell && make compile"
+    #echo ""
+    #make shell && make compile
+    echo "make project && make bitgen"
     echo ""
-    make shell && make compile
+    make project && make bitgen
 
-    #driver compilation
-    echo ""
-    echo "${bold}Driver compilation:${normal}"
-    echo ""
-    echo "cd $DRIVER_DIR && make"
-    echo ""
-    cd $DRIVER_DIR && make
+    ##driver compilation
+    #echo ""
+    #echo "${bold}Driver compilation:${normal}"
+    #echo ""
+    #echo "cd $DRIVER_DIR && make"
+    #echo ""
+    #cd $DRIVER_DIR && make
 
-    #application compilation
-    echo ""
-    echo "${bold}Application compilation:${normal}"
-    echo ""
-    echo "cmake ../ -DTARGET_DIR=../examples/$config_sw && make"
-    echo ""
-    if ! [ -d "$APP_BUILD_DIR" ]; then
-        mkdir $APP_BUILD_DIR
-    fi
-    cd $APP_BUILD_DIR
-    /usr/bin/cmake ../../../ -DTARGET_DIR=examples/$config_sw && make
+
+    #APP_BUILD_DIR="$DIR/sw/examples/$config_sw/build"
+    #APP_BUILD_DIR="$DIR/examples_sw/$config_sw/build"
+
+    ##application compilation
+    #echo ""
+    #echo "${bold}Application compilation:${normal}"
+    #echo ""
+    ##echo "cmake ../ -DTARGET_DIR=../examples_sw/$config_sw && make"
+    #echo "/usr/bin/cmake ../../ -DTARGET_DIR=examples_sw/$config_sw && make"
+    #echo ""
+    #if ! [ -d "$APP_BUILD_DIR" ]; then
+    #    mkdir $APP_BUILD_DIR
+    #fi
+    #cd $APP_BUILD_DIR
+    #/usr/bin/cmake ../../ -DTARGET_DIR=examples_sw/$config_sw && make
+    
     #copy bitstream
-    cp $SHELL_BUILD_DIR/bitstreams/cyt_top.bit $APP_BUILD_DIR
+    #cp $SHELL_BUILD_DIR/bitstreams/cyt_top.bit $APP_BUILD_DIR
+    cp $SHELL_BUILD_DIR/bitstreams/cyt_top.bit $MY_PROJECTS_PATH/$WORKFLOW/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit
+    cp $SHELL_BUILD_DIR/bitstreams/cyt_top.ltx $MY_PROJECTS_PATH/$WORKFLOW/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx
+    
+    
+    
     #copy driver
-    cp $DRIVER_DIR/coyote_drv.ko $APP_BUILD_DIR
+    #cp $DRIVER_DIR/coyote_drv.ko $APP_BUILD_DIR
+    
+    
+    
     #rename folder
-    mv $APP_BUILD_DIR $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/
+    #mv $APP_BUILD_DIR $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/
+    
     #remove all other build temporal folders
     rm -rf $SHELL_BUILD_DIR
-    rm $DRIVER_DIR/coyote_drv*
-    rm $DRIVER_DIR/fpga_dev.o
-    rm $DRIVER_DIR/fpga_drv.o
-    rm $DRIVER_DIR/fpga_fops.o
-    rm $DRIVER_DIR/fpga_isr.o
-    rm $DRIVER_DIR/fpga_mmu.o
-    rm $DRIVER_DIR/fpga_sysfs.o
-    rm $DRIVER_DIR/modules.order
+    #rm $DRIVER_DIR/coyote_drv*
+    #rm $DRIVER_DIR/fpga_dev.o
+    #rm $DRIVER_DIR/fpga_drv.o
+    #rm $DRIVER_DIR/fpga_fops.o
+    #rm $DRIVER_DIR/fpga_isr.o
+    #rm $DRIVER_DIR/fpga_mmu.o
+    #rm $DRIVER_DIR/fpga_sysfs.o
+    #rm $DRIVER_DIR/modules.order
 else
     echo ""
     echo "${bold}Coyote shell compilation:${normal}"
     echo ""
     echo "$project_name/build_dir.$FDEV_NAME.$vivado_version shell already exists!"
 
-    #driver compilation
-    echo ""
-    echo "${bold}Driver compilation:${normal}"
-    echo ""
-    echo "cd $DRIVER_DIR && make"
-    echo ""
-    cd $DRIVER_DIR && make
+    ##driver compilation
+    #echo ""
+    #echo "${bold}Driver compilation:${normal}"
+    #echo ""
+    #echo "cd $DRIVER_DIR && make"
+    #echo ""
+    #cd $DRIVER_DIR && make
 
-    #application compilation
-    echo ""
-    echo "${bold}Application compilation:${normal}"
-    echo ""
-    echo "cmake ../ -DTARGET_DIR=../examples/$config_sw && make"
-    echo ""
-    if ! [ -d "$APP_BUILD_DIR" ]; then
-        mkdir $APP_BUILD_DIR
-    fi
-    cd $APP_BUILD_DIR
-    /usr/bin/cmake ../../../ -DTARGET_DIR=examples/$config_sw && make
+    ##application compilation
+    #echo ""
+    #echo "${bold}Application compilation:${normal}"
+    #echo ""
+    #echo "cmake ../ -DTARGET_DIR=../examples/$config_sw && make"
+    #echo ""
+    #if ! [ -d "$APP_BUILD_DIR" ]; then
+    #    mkdir $APP_BUILD_DIR
+    #fi
+    #cd $APP_BUILD_DIR
+    #/usr/bin/cmake ../../../ -DTARGET_DIR=examples/$config_sw && make
 
-    #change to project directory
-    cd $DIR
+    ##change to project directory
+    #cd $DIR
 
-    #copy driver
-    cp -f $DRIVER_DIR/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
-    #copy application
-    cp -f $APP_BUILD_DIR/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
-    #remove build directory
-    rm -rf $APP_BUILD_DIR
-    #remove all other build temporal files
-    rm $DRIVER_DIR/coyote_drv*
-    rm $DRIVER_DIR/fpga_dev.o
-    rm $DRIVER_DIR/fpga_drv.o
-    rm $DRIVER_DIR/fpga_fops.o
-    rm $DRIVER_DIR/fpga_isr.o
-    rm $DRIVER_DIR/fpga_mmu.o
-    rm $DRIVER_DIR/fpga_sysfs.o
-    rm $DRIVER_DIR/modules.order
+    ##copy driver
+    #cp -f $DRIVER_DIR/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
+    ##copy application
+    #cp -f $APP_BUILD_DIR/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
+    ##remove build directory
+    #rm -rf $APP_BUILD_DIR
+    ##remove all other build temporal files
+    #rm $DRIVER_DIR/coyote_drv*
+    #rm $DRIVER_DIR/fpga_dev.o
+    #rm $DRIVER_DIR/fpga_drv.o
+    #rm $DRIVER_DIR/fpga_fops.o
+    #rm $DRIVER_DIR/fpga_isr.o
+    #rm $DRIVER_DIR/fpga_mmu.o
+    #rm $DRIVER_DIR/fpga_sysfs.o
+    #rm $DRIVER_DIR/modules.order
 
 fi
 
-#remote programming (for perf_rdma_host) and run application
-if [ "$config_hw" = "perf_rdma_host" ]; then
-    #program
-    sgutil program coyote --project $project_name --device $device_index --remote 1
-
-    #get local CPU IP address
-    IP_address_cpu1=$($CLI_PATH/get/ifconfig | awk '$1 == "0:" {print $2}')
-    IP_address_cpu1_hex=$($CLI_PATH/common/address_to_hex IP $IP_address_cpu1)
-
-    echo "For finishing your ${bold}perf_rdma_host${normal} Coyote validation:"
-    echo ""
-    echo "    1. Open a new window terminal for ${bold}$servers_family_list${normal}"
-    echo "    2. From such a terminal, run: ${bold}$DIR/build_dir.$FDEV_NAME.$vivado_version/main -t $IP_address_cpu1${normal}"
-    echo "    3. Check your results on this terminal ${bold}($hostname)${normal}"
-    echo ""
-    
-    #run (local CPU)
-    cd $DIR/build_dir.$FDEV_NAME.$vivado_version
-    ./main
-
-else
-    #program
-    sgutil program coyote --project $project_name --device $device_index --remote 0
-    
-    #run
-    cd $DIR/build_dir.$FDEV_NAME.$vivado_version
-    ./main
+#driver compilation happens everytime (delete first)
+if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME" ]; then
+    rm $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME
 fi
+
+#make driver
+echo ""
+echo "${bold}Driver compilation:${normal}"
+echo ""
+echo "cd $DRIVER_DIR && make"
+echo ""
+cd $DRIVER_DIR && make
+
+#copy driver
+#cp $DRIVER_DIR/coyote_drv.ko $APP_BUILD_DIR
+cp $DRIVER_DIR/$DRIVER_NAME $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME
+
+#remove drivier files (generated while compilation)
+rm $DRIVER_DIR/coyote_drv*
+rm $DRIVER_DIR/fpga_dev.o
+rm $DRIVER_DIR/fpga_drv.o
+rm $DRIVER_DIR/fpga_fops.o
+#rm $DRIVER_DIR/fpga_isr.o
+rm $DRIVER_DIR/fpga_mmu.o
+rm $DRIVER_DIR/fpga_sysfs.o
+rm $DRIVER_DIR/modules.order
+rm $DRIVER_DIR/fpga_gup.o
+rm $DRIVER_DIR/fpga_hmm.o
+rm $DRIVER_DIR/fpga_hw.o
+rm $DRIVER_DIR/fpga_pops.o
+rm $DRIVER_DIR/fpga_pr.o
+rm $DRIVER_DIR/fpga_uisr.o
+rm $DRIVER_DIR/Module.symvers
+rm -rf $DRIVER_DIR/eci
+rm -rf $DRIVER_DIR/pci
+    
+#perf_local compilation happens everytime
+echo ""
+echo "${bold}Application compilation:${normal}"
+echo ""
+#echo "cmake ../ -DTARGET_DIR=../examples_sw/$config_sw && make"
+echo "/usr/bin/cmake ../../ -DTARGET_DIR=examples_sw/$config_sw && make"
+echo ""
+if ! [ -d "$APP_BUILD_DIR" ]; then
+    mkdir $APP_BUILD_DIR
+fi
+cd $APP_BUILD_DIR
+/usr/bin/cmake ../../ -DTARGET_DIR=examples_sw/$config_sw && make
+
+#rename folder
+mv $APP_BUILD_DIR $DIR/build_dir.$config_sw/
+
+#program coyote
+sgutil program coyote --project $project_name --device $device_index --remote 0
+    
+#run coyote
+#cd $DIR/build_dir.$FDEV_NAME.$vivado_version
+cd $DIR/build_dir.$config_sw/
+./main -t 1
+./main -t 0
+
+##remote programming (for perf_rdma_host) and run application
+#if [ "$config_hw" = "perf_rdma_host" ]; then
+#    #program
+#    sgutil program coyote --project $project_name --device $device_index --remote 1
+#
+#    #get local CPU IP address
+#    IP_address_cpu1=$($CLI_PATH/get/ifconfig | awk '$1 == "0:" {print $2}')
+#    IP_address_cpu1_hex=$($CLI_PATH/common/address_to_hex IP $IP_address_cpu1)
+#
+#    echo "For finishing your ${bold}perf_rdma_host${normal} Coyote validation:"
+#    echo ""
+#    echo "    1. Open a new window terminal for ${bold}$servers_family_list${normal}"
+#    echo "    2. From such a terminal, run: ${bold}$DIR/build_dir.$FDEV_NAME.$vivado_version/main -t $IP_address_cpu1${normal}"
+#    echo "    3. Check your results on this terminal ${bold}($hostname)${normal}"
+#    echo ""
+#    
+#    #run (local CPU)
+#    cd $DIR/build_dir.$FDEV_NAME.$vivado_version
+#    ./main
+#
+#else
+#    #program
+#    sgutil program coyote --project $project_name --device $device_index --remote 0
+#    
+#    #run
+#    cd $DIR/build_dir.$FDEV_NAME.$vivado_version
+#    ./main
+#fi
