@@ -226,21 +226,6 @@ FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 config_hw="static"
 config_sw="perf_local"
 
-# Verify servers for perf_rdma_host
-#if [ "$config_hw" = "perf_rdma_host" ]; then
-#    result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $USER)
-#    servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
-#    num_remote_servers=$(echo "$servers_family_list" | wc -w)
-#
-#    #check on number of remote servers
-#    if [ "$num_remote_servers" -ne 1 ]; then
-#        echo ""
-#        echo "Please, verify that you can ssh exactly one remote server for perf_rdma_host validation."
-#        echo ""
-#        exit
-#    fi
-#fi
-
 #set project name
 project_name="validate_$config_hw.$FDEV_NAME.$vivado_version"
 
@@ -248,19 +233,13 @@ project_name="validate_$config_hw.$FDEV_NAME.$vivado_version"
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"
 SHELL_BUILD_DIR="$DIR/examples_hw/build"
 DRIVER_DIR="$DIR/driver"
-#APP_BUILD_DIR="$DIR/sw/examples/$config_sw/build"
 APP_BUILD_DIR="$DIR/examples_sw/$config_sw/build"
 
 # create coyote validate config.device_name directory and checkout
 if ! [ -d "$DIR" ]; then
+    
+    #create project path
     mkdir ${DIR}
-    #echo ""
-    #echo "${bold}Checking out Coyote:${normal}"
-    #echo ""
-    #cd ${DIR}
-    #git clone https://github.com/fpgasystems/Coyote.git
-    #mv Coyote/* .
-    #rm -rf Coyote
 
     #clone Coyote
     $CLI_PATH/common/git_clone_coyote $DIR $COYOTE_COMMIT
@@ -345,108 +324,22 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_versi
     echo ""
     echo "${bold}Coyote shell bitstream generation:${normal}"
     echo ""
-    #echo "make shell && make compile"
-    #echo ""
-    #make shell && make compile
     echo "make project && make bitgen"
     echo ""
     make project && make bitgen
-
-    ##driver compilation
-    #echo ""
-    #echo "${bold}Driver compilation:${normal}"
-    #echo ""
-    #echo "cd $DRIVER_DIR && make"
-    #echo ""
-    #cd $DRIVER_DIR && make
-
-
-    #APP_BUILD_DIR="$DIR/sw/examples/$config_sw/build"
-    #APP_BUILD_DIR="$DIR/examples_sw/$config_sw/build"
-
-    ##application compilation
-    #echo ""
-    #echo "${bold}Application compilation:${normal}"
-    #echo ""
-    ##echo "cmake ../ -DTARGET_DIR=../examples_sw/$config_sw && make"
-    #echo "/usr/bin/cmake ../../ -DTARGET_DIR=examples_sw/$config_sw && make"
-    #echo ""
-    #if ! [ -d "$APP_BUILD_DIR" ]; then
-    #    mkdir $APP_BUILD_DIR
-    #fi
-    #cd $APP_BUILD_DIR
-    #/usr/bin/cmake ../../ -DTARGET_DIR=examples_sw/$config_sw && make
     
     #copy bitstream
-    #cp $SHELL_BUILD_DIR/bitstreams/cyt_top.bit $APP_BUILD_DIR
     cp $SHELL_BUILD_DIR/bitstreams/cyt_top.bit $MY_PROJECTS_PATH/$WORKFLOW/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit
     cp $SHELL_BUILD_DIR/bitstreams/cyt_top.ltx $MY_PROJECTS_PATH/$WORKFLOW/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx
-    
-    
-    
-    #copy driver
-    #cp $DRIVER_DIR/coyote_drv.ko $APP_BUILD_DIR
-    
-    
-    
-    #rename folder
-    #mv $APP_BUILD_DIR $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/
-    
+        
     #remove all other build temporal folders
     rm -rf $SHELL_BUILD_DIR
-    #rm $DRIVER_DIR/coyote_drv*
-    #rm $DRIVER_DIR/fpga_dev.o
-    #rm $DRIVER_DIR/fpga_drv.o
-    #rm $DRIVER_DIR/fpga_fops.o
-    #rm $DRIVER_DIR/fpga_isr.o
-    #rm $DRIVER_DIR/fpga_mmu.o
-    #rm $DRIVER_DIR/fpga_sysfs.o
-    #rm $DRIVER_DIR/modules.order
+    
 else
     echo ""
-    echo "${bold}Coyote shell compilation:${normal}"
+    echo "${bold}Coyote $config_hw shell compilation:${normal}"
     echo ""
-    echo "$project_name/build_dir.$FDEV_NAME.$vivado_version shell already exists!"
-
-    ##driver compilation
-    #echo ""
-    #echo "${bold}Driver compilation:${normal}"
-    #echo ""
-    #echo "cd $DRIVER_DIR && make"
-    #echo ""
-    #cd $DRIVER_DIR && make
-
-    ##application compilation
-    #echo ""
-    #echo "${bold}Application compilation:${normal}"
-    #echo ""
-    #echo "cmake ../ -DTARGET_DIR=../examples/$config_sw && make"
-    #echo ""
-    #if ! [ -d "$APP_BUILD_DIR" ]; then
-    #    mkdir $APP_BUILD_DIR
-    #fi
-    #cd $APP_BUILD_DIR
-    #/usr/bin/cmake ../../../ -DTARGET_DIR=examples/$config_sw && make
-
-    ##change to project directory
-    #cd $DIR
-
-    ##copy driver
-    #cp -f $DRIVER_DIR/coyote_drv.ko $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
-    ##copy application
-    #cp -f $APP_BUILD_DIR/main $MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version
-    ##remove build directory
-    #rm -rf $APP_BUILD_DIR
-    ##remove all other build temporal files
-    #rm $DRIVER_DIR/coyote_drv*
-    #rm $DRIVER_DIR/fpga_dev.o
-    #rm $DRIVER_DIR/fpga_drv.o
-    #rm $DRIVER_DIR/fpga_fops.o
-    #rm $DRIVER_DIR/fpga_isr.o
-    #rm $DRIVER_DIR/fpga_mmu.o
-    #rm $DRIVER_DIR/fpga_sysfs.o
-    #rm $DRIVER_DIR/modules.order
-
+    echo "$MY_PROJECTS_PATH/$WORKFLOW/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit shell already exists!"
 fi
 
 #driver compilation happens everytime (delete first)
@@ -463,7 +356,6 @@ echo ""
 cd $DRIVER_DIR && make
 
 #copy driver
-#cp $DRIVER_DIR/coyote_drv.ko $APP_BUILD_DIR
 cp $DRIVER_DIR/$DRIVER_NAME $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME
 
 #remove drivier files (generated while compilation)
@@ -471,7 +363,6 @@ rm $DRIVER_DIR/coyote_drv*
 rm $DRIVER_DIR/fpga_dev.o
 rm $DRIVER_DIR/fpga_drv.o
 rm $DRIVER_DIR/fpga_fops.o
-#rm $DRIVER_DIR/fpga_isr.o
 rm $DRIVER_DIR/fpga_mmu.o
 rm $DRIVER_DIR/fpga_sysfs.o
 rm $DRIVER_DIR/modules.order
@@ -489,15 +380,12 @@ rm $DRIVER_DIR/Module.symvers
 echo ""
 echo "${bold}Application compilation:${normal}"
 echo ""
-#echo "cmake ../ -DTARGET_DIR=../examples_sw/$config_sw && make"
-#echo "/usr/bin/cmake ../../ -DTARGET_DIR=examples_sw/$config_sw && make"
 echo "/usr/bin/cmake ../../ -DEXAMPLE=$config_sw && make"
 echo ""
 if ! [ -d "$APP_BUILD_DIR" ]; then
     mkdir $APP_BUILD_DIR
 fi
 cd $APP_BUILD_DIR
-#/usr/bin/cmake ../../ -DTARGET_DIR=examples_sw/$config_sw && make
 /usr/bin/cmake ../../ -DEXAMPLE=$config_sw && make
 
 #move compiled application (remove first)
@@ -510,10 +398,16 @@ mv $APP_BUILD_DIR $DIR/build_dir.$config_sw/
 sgutil program coyote --project $project_name --device $device_index --remote 0
     
 #run coyote
-#cd $DIR/build_dir.$FDEV_NAME.$vivado_version
 cd $DIR/build_dir.$config_sw/
+
+echo "${bold}Running perf_local host (./main -t 0):${normal}"
 ./main -t 1
+
+echo ""
+echo "${bold}Running perf_local HBM (./main -t 0):${normal}"
 ./main -t 0
+
+echo ""
 
 ##remote programming (for perf_rdma_host) and run application
 #if [ "$config_hw" = "perf_rdma_host" ]; then
