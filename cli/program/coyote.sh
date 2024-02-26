@@ -12,7 +12,7 @@ VIVADO_DEVICES_MAX=$(cat $CLI_PATH/constants/VIVADO_DEVICES_MAX)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="coyote"
-BIT_NAME="cyt_top.bit"
+#BIT_NAME="cyt_top.bit"
 DRIVER_NAME="coyote_drv.ko"
 COYOTE_MAX_REGIONS=16
 
@@ -334,24 +334,34 @@ platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 
 #define directories (2)
-APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/"
+#APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/"
 
 #check for build directory
-if ! [ -d "$APP_BUILD_DIR" ]; then
+#if ! [ -d "$APP_BUILD_DIR" ]; then
+#    echo "You must build your project first! Please, use sgutil build coyote"
+#    echo ""
+#    exit
+#fi
+
+#change directory
+#cd $APP_BUILD_DIR
+
+#set bitstream name
+BIT_NAME="cyt_top.$FDEV_NAME.$vivado_version.bit"
+
+#check on bitstream
+if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$BIT_NAME" ]; then
     echo "You must build your project first! Please, use sgutil build coyote"
     echo ""
     exit
 fi
-
-#change directory
-cd $APP_BUILD_DIR
 
 #prgramming local server
 echo "Programming ${bold}$hostname...${normal}"
 
 #program bitstream
 #$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
-$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME -v $vivado_version
+$CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$BIT_NAME -v $vivado_version
 
 #get IP address
 IP_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print $2}')
@@ -362,10 +372,16 @@ MAC_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print 
 MAC_address_0_hex=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
 
 #insert coyote driver
-eval "$CLI_PATH/program/driver -m $APP_BUILD_DIR$DRIVER_NAME -p ip_addr_q0=$IP_address_0_hex,mac_addr_q0=$MAC_address_0_hex"
+#eval "$CLI_PATH/program/driver -m $APP_BUILD_DIR$DRIVER_NAME -p ip_addr_q0=$IP_address_0_hex,mac_addr_q0=$MAC_address_0_hex"
+eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME -p ip_addr_q0=$IP_address_0_hex,mac_addr_q0=$MAC_address_0_hex"
 
 #enable vFPGA regions
 $CLI_PATH/program/enable_N_REGIONS $DIR
+
+#programm additional region
+ADDITIONAL_REGION="150"
+echo $ADDITIONAL_REGION
+sudo $CLI_PATH/program/fpga_chmod $ADDITIONAL_REGION
 
 #programming remote servers (if applies)
 if [ "$deploy_option" -eq 1 ]; then 
