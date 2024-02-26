@@ -485,7 +485,7 @@ rm $DRIVER_DIR/Module.symvers
 #rm -rf $DRIVER_DIR/eci
 #rm -rf $DRIVER_DIR/pci
     
-#perf_local compilation happens everytime
+#compilation happens everytime
 echo ""
 echo "${bold}Application compilation:${normal}"
 echo ""
@@ -498,7 +498,10 @@ fi
 cd $APP_BUILD_DIR
 /usr/bin/cmake ../../ -DTARGET_DIR=examples_sw/$config_sw && make
 
-#rename folder
+#move compiled application (remove first)
+if [ -d "$DIR/build_dir.$config_sw/" ]; then
+    rm -rf $DIR/build_dir.$config_sw/
+fi
 mv $APP_BUILD_DIR $DIR/build_dir.$config_sw/
 
 #program coyote
