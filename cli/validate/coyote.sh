@@ -272,12 +272,12 @@ if ! [ -d "$DIR" ]; then
     touch config_shell_$config_hw
     case "$config_hw" in
         static) 
-            echo "BUILD_STATIC 1" >> config_shell_$config_hw
-            echo "BUILD_SHELL 0"  >> config_shell_$config_hw
-            echo "COMP_CORES 40"  >> config_shell_$config_hw
-            echo "N_REGIONS 3"    >> config_shell_$config_hw
-            echo "EN_STRM 1"      >> config_shell_$config_hw
-            echo "EN_MEM 1"       >> config_shell_$config_hw
+            echo "BUILD_STATIC = 1;" >> config_shell_$config_hw
+            echo "BUILD_SHELL = 0;"  >> config_shell_$config_hw
+            echo "COMP_CORES = 40;"  >> config_shell_$config_hw
+            echo "N_REGIONS = 3;"    >> config_shell_$config_hw
+            echo "EN_STRM = 1;"      >> config_shell_$config_hw
+            echo "EN_MEM = 1;"       >> config_shell_$config_hw
             ;;
         #perf_host) 
         #    echo "const int EN_HLS = 0;" > config_shell.hpp
