@@ -482,8 +482,8 @@ rm $DRIVER_DIR/fpga_pops.o
 rm $DRIVER_DIR/fpga_pr.o
 rm $DRIVER_DIR/fpga_uisr.o
 rm $DRIVER_DIR/Module.symvers
-rm -rf $DRIVER_DIR/eci
-rm -rf $DRIVER_DIR/pci
+#rm -rf $DRIVER_DIR/eci
+#rm -rf $DRIVER_DIR/pci
     
 #perf_local compilation happens everytime
 echo ""
