@@ -490,13 +490,15 @@ echo ""
 echo "${bold}Application compilation:${normal}"
 echo ""
 #echo "cmake ../ -DTARGET_DIR=../examples_sw/$config_sw && make"
-echo "/usr/bin/cmake ../../ -DTARGET_DIR=examples_sw/$config_sw && make"
+#echo "/usr/bin/cmake ../../ -DTARGET_DIR=examples_sw/$config_sw && make"
+echo "/usr/bin/cmake ../../ -DEXAMPLE=$config_sw && make"
 echo ""
 if ! [ -d "$APP_BUILD_DIR" ]; then
     mkdir $APP_BUILD_DIR
 fi
 cd $APP_BUILD_DIR
-/usr/bin/cmake ../../ -DTARGET_DIR=examples_sw/$config_sw && make
+#/usr/bin/cmake ../../ -DTARGET_DIR=examples_sw/$config_sw && make
+/usr/bin/cmake ../../ -DEXAMPLE=$config_sw && make
 
 #move compiled application (remove first)
 if [ -d "$DIR/build_dir.$config_sw/" ]; then
