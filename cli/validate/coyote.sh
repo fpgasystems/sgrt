@@ -313,10 +313,6 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_versi
     echo ""
     mkdir $SHELL_BUILD_DIR
     
-    echo "SHELL_BUILD_DIR = $SHELL_BUILD_DIR"
-    echo "FDEV_NAME = $FDEV_NAME"
-    echo "DEXAMPLE = $config_hw"
-    
     cd $SHELL_BUILD_DIR
     /usr/bin/cmake ../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME 
 
