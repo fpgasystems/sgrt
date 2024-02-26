@@ -10,7 +10,7 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 DIR=$1
 
 #get N_REGIONS
-line=$(grep -n "N_REGIONS" $DIR/configs/config_shell.hpp)
+line=$(grep -n "N_REGIONS" $DIR/configs/config_shell_static)
 #find equal (=)
 idx=$(sed 's/ /\n/g' <<< "$line" | sed -n "/=/=")
 #get index
