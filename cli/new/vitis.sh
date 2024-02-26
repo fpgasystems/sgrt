@@ -85,16 +85,54 @@ if [ -d "$VITIS_DIR/tmp" ]; then
     rm -rf "$VITIS_DIR/tmp"
 fi
 
+VITIS_COMMIT="d1a35c3"
+
 #copy files
 #echo ""
-echo "${bold}Checking out Vitis_Accel_Examples/common:${normal}"
+echo "${bold}Checking out Vitis_Accel_Examples/common (commit: $VITIS_COMMIT):${normal}"
 echo ""
-wget https://github.com/Xilinx/Vitis_Accel_Examples/archive/master.zip -O $VITIS_DIR/master.zip
-mkdir $VITIS_DIR/tmp
-unzip -q $VITIS_DIR/master.zip -d $VITIS_DIR/tmp
-mv -f $VITIS_DIR/tmp/Vitis_Accel_Examples-main/common $VITIS_DIR
-rm -rf $VITIS_DIR/tmp
-rm $VITIS_DIR/master.zip
+#wget https://github.com/Xilinx/Vitis_Accel_Examples/archive/master.zip -O $VITIS_DIR/master.zip
+#mkdir $VITIS_DIR/tmp
+#unzip -q $VITIS_DIR/master.zip -d $VITIS_DIR/tmp
+#mv -f $VITIS_DIR/tmp/Vitis_Accel_Examples-main/common $VITIS_DIR
+#rm -rf $VITIS_DIR/tmp
+#rm $VITIS_DIR/master.zip
+
+
+# Download the repository zip file for the specific commit
+wget https://github.com/Xilinx/Vitis_Accel_Examples/archive/$VITIS_COMMIT.zip -O $VITIS_DIR/master.zip
+
+# Create a temporary directory
+mkdir "$VITIS_DIR/tmp"
+
+# Unzip the downloaded file to the temporary directory
+unzip -q "$VITIS_DIR/master.zip" -d "$VITIS_DIR/tmp"
+
+# Find the directory that matches the pattern Vitis_Accel_Examples-*
+EXAMPLES_DIR=$(find "$VITIS_DIR/tmp" -maxdepth 1 -type d -name "Vitis_Accel_Examples-*")
+
+# Move the common directory to the desired location
+#if [ -n "$EXAMPLES_DIR" ]; then
+mv -f "$EXAMPLES_DIR/common" "$VITIS_DIR"
+#fi
+
+# Move the necessary files/directories to the desired location
+#mv -f "$VITIS_DIR/tmp/Vitis_Accel_Examples-$COMMIT_ID*/common" "$VITIS_DIR"
+
+# Remove the temporary directory
+rm -rf "$VITIS_DIR/tmp"
+
+# Remove the downloaded zip file
+rm "$VITIS_DIR/master.zip"
+
+
+
+
+
+
+
+
+
 #copy template from SGRT_PATH
 SGRT_PATH=$(dirname "$CLI_PATH")
 cp -rf $SGRT_PATH/templates/$WORKFLOW/$TEMPLATE_NAME/* $DIR
