@@ -14,6 +14,7 @@ fi
 
 echo ""
 echo "${bold}sgutil get syslog${normal}"
+echo ""
 
 eval "sudo /bin/cat /var/log/syslog"
 
