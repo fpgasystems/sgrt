@@ -22,7 +22,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 get)
-                    COMPREPLY=($(compgen -W "bdf clock bus name ifconfig memory network platform resource serial slr servers workflow --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "bdf clock bus name ifconfig memory network platform resource serial slr servers syslog workflow --help" -- ${cur}))
                     ;;
                 new)
                     COMPREPLY=($(compgen -W "coyote hip mpi vitis --help" -- ${cur}))
@@ -111,6 +111,9 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
                         servers) 
+                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            ;;
+                        syslog) 
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         workflow) 

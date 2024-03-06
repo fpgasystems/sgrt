@@ -15,6 +15,7 @@
 
 * [ifconfig](./sgutil-get-ifconfig.md#sgutil-get-ifconfig)
 * [servers](./sgutil-get-servers.md#sgutil-get-servers)
+* [syslog](./sgutil-get-syslog.md#sgutil-get-syslog)
 
 <!-- Extra line -->
 
