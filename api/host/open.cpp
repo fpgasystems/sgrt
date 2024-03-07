@@ -136,7 +136,7 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
         //}
         
         // create XRT device
-        xrt_device = xrt::device(0);
+        xrt_device = xrt::device(device.device_index - 1);
 
         // fill minimum device struct members
         //device.bdf = bdf;
