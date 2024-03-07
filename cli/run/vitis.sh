@@ -421,8 +421,8 @@ cat $DIR/configs/$config_name
 echo ""
 
 #execution
-cd $DIR
-echo "${bold}Running accelerated application:${normal}"
+#cd $DIR
+#echo "${bold}Running accelerated application:${normal}"
 #echo ""
 
 #get the number of devices for emconfigutil
@@ -438,6 +438,11 @@ case "$target_name" in
         #echo ""
         #eval "make run TARGET=$target_name PLATFORM=$platform_name"
 
+        #execution
+        cd $DIR
+        echo "${bold}Running accelerated application:${normal}"
+        #echo ""
+
         #create emconfig.json (this was automatically done in sgutil build vitis when using make all and not make build)
         emconfigutil --platform $platform_name --od ./_x.$xclbin_name.$target_name.$platform_name --nd $nd
         echo ""
@@ -450,6 +455,25 @@ case "$target_name" in
         echo ""
         ;;
     hw)
+
+        #revert devices
+        echo "${bold}Reverting devices to XRT:${normal}"
+        echo ""
+        cat $DIR/sp | while read -r line; do
+            device_index=$(echo "$line" | awk '{print $1}')
+            workflow=$(sgutil get workflow -d $device_index | awk -F':' '{print $2}' | tr -d '[:space:]')
+            if [ "$workflow" = "vivado" ]; then
+                sgutil program revert -d $device_index
+            fi
+        done
+        echo "Done!"
+        echo ""
+
+        #execution
+        cd $DIR
+        echo "${bold}Running accelerated application:${normal}"
+        #echo ""
+
         echo "./host $config_name" # -p $DIR # $project_name
         #echo ""
         eval "./host $config_name" # -p $DIR # $project_name
