@@ -9,13 +9,10 @@ index=$2
 
 if sudo true; then
     #enable pr region
-    #if [[ $index -eq 0 ]]; then
     if [ $index -eq 0 ]; then
-        echo "chmod 666 /dev/fpga_${bus_device}_pr"
         chmod 666 /dev/fpga_${bus_device}_pr
     fi
     #enable vFPGA
-    echo "chmod 666 /dev/fpga_${bus_device}_v$index"
     chmod 666 /dev/fpga_${bus_device}_v$index
 else
     echo ""
