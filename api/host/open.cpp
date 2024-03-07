@@ -125,21 +125,10 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
     std::string binaryFile = project_path + "/build_dir." + xclbin_name + "." + target + "." + device.platform + "/" + xclbin_name + ".xclbin"; // get_target(emulationMode)
     device.binaryFile = replace_string(binaryFile, project_path, ".");
 
-    if (target == "sw_emu" || target == "hw_emu") { //if (device_index.empty()) {
+    if (target == "sw_emu" || target == "hw_emu") {
 
-        //int MAX_DEVICES = 4;
-        //xrt::device xrt_device_i;
-        //for (int i = 0; i < MAX_DEVICES; ++i) {
-        //    std::cout << "Device Index: " << i << std::endl;
-        //    xrt_device_i = xrt::device(i); //new
-        //    std::cout << "  device bdf      : " << xrt_device_i.get_info<xrt::info::device::bdf>() << "\n";
-        //}
-        
         // create XRT device
         xrt_device = xrt::device(device.device_index - 1);
-
-        // fill minimum device struct members
-        //device.bdf = bdf;
 
     } else {
         
