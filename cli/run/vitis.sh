@@ -55,7 +55,8 @@ multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 #check if workflow exists
 if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
     echo ""
-    echo "You must build and/or program (target = hw) your project/device first! Please, use sgutil build/program vitis"
+    #echo "You must build and/or program (target = hw) your project/device first! Please, use sgutil build/program vitis"
+    echo "You must build your project first! Please, use sgutil build vitis"
     echo ""
     exit
 fi
@@ -211,12 +212,20 @@ else
         fi
         #echo ""
     fi
+    #check on number of configs
+    result=$($CLI_PATH/common/config_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
+    num_configs=$(echo "$result" | sed -n '4p')
+    if [ $num_configs -eq 0 ]; then #${#configs_aux[@]}
+        echo "You must build your project first! Please, use sgutil build vitis"
+        echo ""
+        exit
+    fi
     #config_dialog (forgotten mandatory 2)
     if [[ $config_found = "0" ]]; then
         #echo ""
         echo "${bold}Please, choose your configuration:${normal}"
         echo ""
-        result=$($CLI_PATH/common/config_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
+        #result=$($CLI_PATH/common/config_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
         config_found=$(echo "$result" | sed -n '1p')
         config_name=$(echo "$result" | sed -n '2p')
         multiple_configs=$(echo "$result" | sed -n '3p')

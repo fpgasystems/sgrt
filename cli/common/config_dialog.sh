@@ -9,6 +9,7 @@ MY_PROJECT_PATH=$1
 declare -g config_found="0"
 declare -g config_name=""
 declare -g multiple_configs="0"
+declare -g num_configs
 
 # Enable nullglob to make unmatched globs expand to nothing
 shopt -s nullglob
@@ -25,10 +26,13 @@ for element in "${configs[@]}"; do
     fi
 done
 
+#number of configs
+num_configs=${#configs_aux[@]}
+
 # Check if there is only one directory
-if [ ${#configs_aux[@]} -eq 0 ]; then
+if [ $num_configs -eq 0 ]; then #${#configs_aux[@]}
     config_name=""
-elif [ ${#configs_aux[@]} -eq 1 ]; then
+elif [ $num_configs -eq 1 ]; then #${#configs_aux[@]}
     config_found="1"
     config_name=${configs_aux[0]}
 else
@@ -48,3 +52,4 @@ fi
 echo "$config_found"
 echo "$config_name"
 echo "$multiple_configs"
+echo "$num_configs"
