@@ -416,6 +416,9 @@ cd $DIR
 echo "${bold}Running accelerated application:${normal}"
 #echo ""
 
+#get the number of devices for emconfigutil
+nd=$(cat $DIR/sp | wc -l)
+
 case "$target_name" in
     sw_emu|hw_emu)
         #echo "./$project_name -x ./build_dir.$target_name.$platform_name/vadd.xclbin" 
@@ -427,7 +430,7 @@ case "$target_name" in
         #eval "make run TARGET=$target_name PLATFORM=$platform_name"
 
         #create emconfig.json (this was automatically done in sgutil build vitis when using make all and not make build)
-        emconfigutil --platform $platform_name --od ./_x.$xclbin_name.$target_name.$platform_name --nd 2
+        emconfigutil --platform $platform_name --od ./_x.$xclbin_name.$target_name.$platform_name --nd $nd
         echo ""
 
         echo "cp -rf ./_x.$xclbin_name.$target_name.$platform_name/emconfig.json ."
