@@ -7,10 +7,11 @@ normal=$(tput sgr0)
 CLI_PATH="$(dirname "$(dirname "$0")")"
 
 #inputs
-regions_number=$1
+bus_device=$1
+regions_number=$2
 
 for (( i = 0; i < $regions_number; i++ ))
 do 
     echo $i
-    sudo $CLI_PATH/program/fpga_chmod $i
+    sudo $CLI_PATH/program/fpga_chmod $bus_device $i
 done

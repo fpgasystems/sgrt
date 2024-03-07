@@ -375,13 +375,18 @@ MAC_address_0_hex=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
 #eval "$CLI_PATH/program/driver -m $APP_BUILD_DIR$DRIVER_NAME -p ip_addr_q0=$IP_address_0_hex,mac_addr_q0=$MAC_address_0_hex"
 eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME -p ip_addr_q0=$IP_address_0_hex,mac_addr_q0=$MAC_address_0_hex"
 
+
+#get N_REGIONS (vFPGAs) from /sys/kernel/coyote_cnfg/cyt_attr_cnfg  ==> /sys/kernel/coyote_sysfs_a1_00
+#N_REGIONS=$(cat /sys/kernel/coyote_cnfg/cyt_attr_cnfg | grep vFPGA | awk -F': ' '{print $2}')
+
 #enable vFPGA regions
-$CLI_PATH/program/enable_N_REGIONS $DIR
+#$CLI_PATH/program/enable_N_REGIONS $DIR $upstream_port
+$CLI_PATH/program/enable_N_REGIONS $device_index
 
 #programm additional region
-ADDITIONAL_REGION="150"
-echo $ADDITIONAL_REGION
-sudo $CLI_PATH/program/fpga_chmod $ADDITIONAL_REGION
+#ADDITIONAL_REGION="150"
+#echo $ADDITIONAL_REGION
+#sudo $CLI_PATH/program/fpga_chmod $ADDITIONAL_REGION
 
 #programming remote servers (if applies)
 if [ "$deploy_option" -eq 1 ]; then 

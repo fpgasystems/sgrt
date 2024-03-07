@@ -9,7 +9,7 @@ VIVADO_DEVICES_MAX=$(cat $CLI_PATH/constants/VIVADO_DEVICES_MAX)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="coyote"
-COYOTE_COMMIT="07bf9a8" #"7f8ba4e" #"4629886"
+COYOTE_COMMIT="f1c6e54" #"07bf9a8" #"7f8ba4e" #"4629886"
 BIT_NAME="cyt_top.bit"
 DRIVER_NAME="coyote_drv.ko"
 
@@ -227,13 +227,14 @@ config_hw="static"
 config_sw="perf_local"
 
 #set project name
-project_name="validate_$config_hw.$FDEV_NAME.$vivado_version"
+#project_name="validate_$config_hw.$FDEV_NAME.$vivado_version"
+project_name="validate_$config_sw.$FDEV_NAME.$vivado_version"
 
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"
-SHELL_BUILD_DIR="$DIR/examples_hw/build"
+SHELL_BUILD_DIR="$DIR/examples_hw/apps/build"           # 06.03.2024 ===> added /apps and does not work... something else is missing
 DRIVER_DIR="$DIR/driver"
-APP_BUILD_DIR="$DIR/examples_sw/$config_sw/build"
+APP_BUILD_DIR="$DIR/examples_sw/apps/$config_sw/build"  # 05.03.2024 ===> added /apps and works
 
 # create coyote validate config.device_name directory and checkout
 if ! [ -d "$DIR" ]; then
@@ -248,15 +249,16 @@ if ! [ -d "$DIR" ]; then
     cd $DIR
 
     #create configuration file (https://github.com/fpgasystems/Coyote/blob/dfx_v2/examples_hw/CMakeLists.txt)
-    touch config_shell_$config_hw
+    #touch config_shell_$config_hw
+    touch config_$config_sw
     case "$config_hw" in
         static) 
-            echo "BUILD_STATIC = 1;" >> config_shell_$config_hw
-            echo "BUILD_SHELL = 0;"  >> config_shell_$config_hw
-            echo "COMP_CORES = 40;"  >> config_shell_$config_hw
-            echo "N_REGIONS = 3;"    >> config_shell_$config_hw
-            echo "EN_STRM = 1;"      >> config_shell_$config_hw
-            echo "EN_MEM = 1;"       >> config_shell_$config_hw
+            echo "BUILD_STATIC = 1;" >> config_$config_sw
+            echo "BUILD_SHELL = 0;"  >> config_$config_sw
+            echo "COMP_CORES = 40;"  >> config_$config_sw
+            echo "N_REGIONS = 3;"    >> config_$config_sw
+            echo "EN_STRM = 1;"      >> config_$config_sw
+            echo "EN_MEM = 1;"       >> config_$config_sw
             ;;
         #perf_host) 
         #    echo "const int EN_HLS = 0;" > config_shell.hpp
@@ -300,7 +302,8 @@ if ! [ -d "$DIR" ]; then
         ;;  
     esac
     mkdir $DIR/configs
-    mv $DIR/config_shell_$config_hw $DIR/configs/config_shell_$config_hw
+    #mv $DIR/config_shell_$config_hw $DIR/configs/config_shell_$config_hw
+    mv $DIR/config_$config_sw $DIR/configs/config_$config_sw
 fi
 
 #check on build_dir.FDEV_NAME
@@ -309,12 +312,12 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_versi
     echo ""
     echo "${bold}Coyote $config_hw shell compilation:${normal}"
     echo ""
-    echo "/usr/bin/cmake ../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME"
+    echo "/usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME"
     echo ""
     mkdir $SHELL_BUILD_DIR
     
     cd $SHELL_BUILD_DIR
-    /usr/bin/cmake ../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME 
+    /usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME 
 
     #generate bitstream
     echo ""
@@ -376,13 +379,13 @@ rm $DRIVER_DIR/Module.symvers
 echo ""
 echo "${bold}Application compilation:${normal}"
 echo ""
-echo "/usr/bin/cmake ../../ -DEXAMPLE=$config_sw && make"
+echo "/usr/bin/cmake ../../../ -DEXAMPLE=$config_sw && make"
 echo ""
 if ! [ -d "$APP_BUILD_DIR" ]; then
     mkdir $APP_BUILD_DIR
 fi
 cd $APP_BUILD_DIR
-/usr/bin/cmake ../../ -DEXAMPLE=$config_sw && make
+/usr/bin/cmake ../../../ -DEXAMPLE=$config_sw && make
 
 #move compiled application (remove first)
 if [ -d "$DIR/build_dir.$config_sw/" ]; then
@@ -396,12 +399,12 @@ sgutil program coyote --project $project_name --device $device_index --remote 0
 #run coyote
 cd $DIR/build_dir.$config_sw/
 
-echo "${bold}Running perf_local host (./main -t 0):${normal}"
-./main -t 1
+echo "${bold}Running perf_local host (./main -t 1):${normal}"
+./main -t 1 -b a1 -s 00
 
 echo ""
 echo "${bold}Running perf_local HBM (./main -t 0):${normal}"
-./main -t 0
+./main -t 0 -b a1 -s 00
 
 echo ""
 
