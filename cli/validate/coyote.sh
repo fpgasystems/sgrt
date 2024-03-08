@@ -9,7 +9,7 @@ VIVADO_DEVICES_MAX=$(cat $CLI_PATH/constants/VIVADO_DEVICES_MAX)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="coyote"
-COYOTE_COMMIT="edebb00" #"f1c6e54" #"07bf9a8" #"7f8ba4e" #"4629886"
+COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT) #"edebb00" #"f1c6e54" #"07bf9a8" #"7f8ba4e" #"4629886"
 BIT_NAME="cyt_top.bit"
 DRIVER_NAME="coyote_drv.ko"
 
