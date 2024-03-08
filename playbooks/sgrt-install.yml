@@ -1,15 +1,15 @@
 ---
 
 - hosts: 
-    - hacc-build
-    - alveo-u250
-    - alveo-u280
-    - alveo-u50d
-    - alveo-u55c
-    - versal-vck5000
-    - hacc-boxes
+    #- hacc-build
+    #- alveo-u250
+    #- alveo-u280
+    #- alveo-u50d
+    #- alveo-u55c
+    #- versal-vck5000
+    #- hacc-boxes
     #- alveo-u55c-01.inf.ethz.ch
-    #- hacc-box-01.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -29,23 +29,23 @@
     #cli installation
     #scripts
     build: false
-    common: false
+    common: true
     enable: false
     examine: false
-    get: true
+    get: false
     new: false
-    program: false
+    program: true
     reboot: false
     run: false
     set: false
-    sgutil: true 
+    sgutil: false 
     templates: false #true-----------------------------------
     validate: false
     #workflows
-    coyote: false
+    coyote: true
     hip: false
     mpi: false
-    vitis: false #true---------------------------------
+    vitis: true #true---------------------------------
   tasks:
 
     #creating directories
@@ -402,6 +402,7 @@
       loop:
         - coyote
         - driver
+        - get_bus_device
         - enable_N_REGIONS
         - enable_regions
         - fpga_chmod
