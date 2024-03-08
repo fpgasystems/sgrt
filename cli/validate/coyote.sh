@@ -396,15 +396,19 @@ mv $APP_BUILD_DIR $DIR/build_dir.$config_sw/
 #program coyote
 sgutil program coyote --project $project_name --device $device_index --remote 0
     
+#get bus and device
+bus=$($CLI_PATH/program/get_bus_device $device_index bus)
+device=$($CLI_PATH/program/get_bus_device $device_index device)
+
 #run coyote
 cd $DIR/build_dir.$config_sw/
 
-echo "${bold}Running perf_local host (./main -t 1):${normal}"
-./main -t 1 -b a1 -s 00
+echo "${bold}Running perf_local host (./main -t 1 -b $bus -s $device):${normal}"
+./main -t 1 -b $bus -s $device
 
 echo ""
-echo "${bold}Running perf_local HBM (./main -t 0):${normal}"
-./main -t 0 -b a1 -s 00
+echo "${bold}Running perf_local HBM (./main -t 0 -b $bus -s $device):${normal}"
+./main -t 0 -b $bus -s $device
 
 echo ""
 
