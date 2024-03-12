@@ -36,17 +36,11 @@ else
     #forbidden combinations (1)
     if [ "$driver_found" = "0" ]; then
         $CLI_PATH/sgutil program driver -h
-
-        echo "Exit 1"
-
         exit
     fi
     #forbidden combinations (2)
     if [ "$driver_found" = "1" ] && ([ "$driver_name" = "" ] || [ ! -f "$driver_name" ] || [ "${driver_name##*.}" != "ko" ]); then
         $CLI_PATH/sgutil program driver -h
-
-        echo "Exit 2"
-
         exit
     fi
     #params_dialog_check
