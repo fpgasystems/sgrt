@@ -360,21 +360,17 @@ fi
 echo "Programming ${bold}$hostname...${normal}"
 
 #program bitstream
-#$CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME
 $CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$BIT_NAME -v $vivado_version
 
 #get IP address
-#IP_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print $2}')
 IP_address_0=$($CLI_PATH/get/network -d $device_index | awk "\$1 == \"$device_index:\" {print \$2}")
 IP_address_0_hex=$($CLI_PATH/common/address_to_hex IP $IP_address_0)
 
 #get MAC address
-#MAC_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print $3}' | tr -d '()')
 MAC_address_0=$($CLI_PATH/get/network -d $device_index | awk "\$1 == \"$device_index:\" {print \$3}" | tr -d '()')
 MAC_address_0_hex=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
 
 #insert coyote driver
-#eval "$CLI_PATH/program/driver -m $APP_BUILD_DIR$DRIVER_NAME -p ip_addr_q0=$IP_address_0_hex,mac_addr_q0=$MAC_address_0_hex"
 eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME -p ip_addr_q0=$IP_address_0_hex,mac_addr_q0=$MAC_address_0_hex"
 
 
