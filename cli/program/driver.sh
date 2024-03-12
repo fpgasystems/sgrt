@@ -16,8 +16,6 @@ if [ "$member" = "false" ]; then
     exit
 fi
 
-
-
 #inputs
 read -a flags <<< "$@"
 
