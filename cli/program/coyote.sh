@@ -364,11 +364,13 @@ echo "Programming ${bold}$hostname...${normal}"
 $CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$BIT_NAME -v $vivado_version
 
 #get IP address
-IP_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print $2}')
+#IP_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print $2}')
+IP_address_0=$($CLI_PATH/get/network -d $device_index | awk "\$1 == \"$device_index:\" {print \$2}")
 IP_address_0_hex=$($CLI_PATH/common/address_to_hex IP $IP_address_0)
 
 #get MAC address
-MAC_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print $3}' | tr -d '()')
+#MAC_address_0=$($CLI_PATH/get/network -d $device_index | awk '$1 == "1:" {print $3}' | tr -d '()')
+MAC_address_0=$($CLI_PATH/get/network -d $device_index | awk "\$1 == \"$device_index:\" {print \$3}" | tr -d '()')
 MAC_address_0_hex=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
 
 #insert coyote driver
