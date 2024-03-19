@@ -10,6 +10,8 @@
     #- hacc-boxes
     #- alveo-u55c-01.inf.ethz.ch
     - hacc-box-01.inf.ethz.ch
+    #- hacc-box-02.inf.ethz.ch
+    #- alveo-u55c-03.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -29,12 +31,12 @@
     #cli installation
     #scripts
     build: false
-    common: true
+    common: false
     enable: false
     examine: false
     get: false
     new: false
-    program: true
+    program: false
     reboot: false
     run: false
     set: false
@@ -42,7 +44,7 @@
     templates: false #true-----------------------------------
     validate: false
     #workflows
-    coyote: true
+    coyote: false
     hip: false
     mpi: false
     vitis: true #true---------------------------------
@@ -299,6 +301,7 @@
       loop:
         - address_to_hex
         - bitstream_dialog_check
+        - compare_files
         - config_dialog
         - config_dialog_check
         - deployment_dialog
