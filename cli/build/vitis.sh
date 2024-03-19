@@ -365,6 +365,10 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
                 user_email=$USER@ethz.ch
                 echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name / XCLBIN=$xclbin_i) is done!" | sendmail $user_email
             fi
+
+            #copy kernel_parameters
+            cp $DIR/configs/kernel_parameters.hpp $XCLBIN_BUILD_DIR/$xclbin_i.parameters
+
         else
 
             echo ""
