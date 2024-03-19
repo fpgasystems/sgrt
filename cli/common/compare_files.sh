@@ -1,7 +1,12 @@
 #!/bin/bash
 
+#read parameters
 file1=$1
 file2=$2
+
+# Remove blank lines from file1 and file2
+sed -i '/^\s*$/d' "$file1"
+sed -i '/^\s*$/d' "$file2"
 
 # Declare global variables
 declare -g equals="1"
