@@ -58,7 +58,7 @@ Input Vector 2 from Global Memory --->|             |      |__|
 #include <hls_stream.h>
 
 //#include "../sgrt_parameters.hpp"
-#include "../../configs/kernel_parameters.hpp" 
+#include "../../configs/device_config.hpp" 
 
 //#define DATA_SIZE 4096
 

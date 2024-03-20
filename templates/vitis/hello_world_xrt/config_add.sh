@@ -166,11 +166,11 @@ if [[ "$config_id" == "config_000" ]]; then
     config_id="config_001"
 fi
 
-#create kernel_parameters.hpp (it is created each time so we can capture new MAX parameters)
-if [ -f "$MY_PROJECT_PATH/configs/kernel_parameters.hpp" ]; then
-    rm "$MY_PROJECT_PATH/configs/kernel_parameters.hpp"
+#create device_config.hpp (it is created each time so we can capture new MAX parameters)
+if [ -f "$MY_PROJECT_PATH/configs/device_config.hpp" ]; then
+    rm "$MY_PROJECT_PATH/configs/device_config.hpp"
 fi
-touch $MY_PROJECT_PATH/configs/kernel_parameters.hpp
+touch $MY_PROJECT_PATH/configs/device_config.hpp
 
 #create configuration file
 touch $MY_PROJECT_PATH/configs/$config_id
@@ -289,10 +289,10 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
         done
     fi
 
-    #add parameter_i/selected_value to kernel_parameters.hpp or config_id
+    #add parameter_i/selected_value to device_config.hpp or config_id
     if [[ "$parameter_i" == *_MAX* ]]; then
         #it contains the suffix _MAX (assumed as a xclbin parameter)
-        add_to_config_file "kernel_parameters.hpp" "const int $parameter_i" "$selected_value"
+        add_to_config_file "device_config.hpp" "const int $parameter_i" "$selected_value"
     else
         #assumed as a host parameter
         add_to_config_file "$config_id" "$parameter_i" "$selected_value"

@@ -367,7 +367,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
             fi
 
             #copy kernel_parameters
-            cp $DIR/configs/kernel_parameters.hpp $XCLBIN_BUILD_DIR/$xclbin_i.parameters
+            cp $DIR/configs/device_config.hpp $XCLBIN_BUILD_DIR/$xclbin_i.parameters
 
         else
 
