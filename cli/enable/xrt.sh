@@ -9,6 +9,7 @@ LOCAL_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH) #we use it
 XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
+VERSIONS=("2022.1" "2022.2" "2023.1")
 
 #get hostname
 url="${HOSTNAME}"
@@ -35,9 +36,22 @@ else
         echo ""
         echo "${bold}Please, choose your XRT version:${normal}"
         echo ""
-        result=$($CLI_PATH/common/version_dialog $VIVADO_PATH)
-        version_found=$(echo "$result" | sed -n '1p')
-        version_name=$(echo "$result" | sed -n '2p')
+        #result=$($CLI_PATH/common/version_dialog $VIVADO_PATH)
+        #version_found=$(echo "$result" | sed -n '1p')
+        #version_name=$(echo "$result" | sed -n '2p')
+
+        version_found="0"
+        version_name=""
+        PS3=""
+        select version_name in "${VERSIONS[@]}"; do
+            if [[ -z $version_name ]]; then
+                echo "" >&/dev/null
+            else
+                version_found="1"
+                break
+            fi
+        done
+
         echo ""
     else
         #version_dialog_check
@@ -45,7 +59,7 @@ else
         version_found=$(echo "$result" | sed -n '1p')
         version_name=$(echo "$result" | sed -n '2p')
         #forbidden combinations
-        if [ "$version_found" = "1" ] && ([ "$version_name" = "" ] || [ ! -d "$VIVADO_PATH/$version_name" ]); then 
+        if [ "$version_found" = "1" ] && ([ "$version_name" = "" ] || [ ! -d "/opt/xilinx/xrt_$version_name" ]); then #-d "$VIVADO_PATH/$version_name"
             $CLI_PATH/sgutil enable xrt -h
             exit
         fi
@@ -62,7 +76,7 @@ else
 
     #print message
     #echo ""
-    if [[ -d $VIVADO_PATH/$version_name ]]; then
+    if [[ -d /opt/xilinx/xrt_$version_name ]]; then #$VIVADO_PATH/$version_name
         #Vitis is not installed
         echo "The server is ready to work with ${bold}XRT $version_name${normal} release branch:"
         echo ""
