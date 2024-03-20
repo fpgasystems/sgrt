@@ -187,7 +187,7 @@ while read -r line; do
     parameters+=("$column_1")
     ranges+=("$column_2")
     descriptions+=("$column_3")
-done < "$MY_PROJECT_PATH/parameters"
+done < "$MY_PROJECT_PATH/config_parameters"
 
 #store already declared parameters
 declare -a parameters_aux
