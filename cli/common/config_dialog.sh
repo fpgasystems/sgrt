@@ -16,7 +16,7 @@ shopt -s nullglob
 
 #get configs
 cd "$MY_PROJECT_PATH/configs/"
-configs=(host_config_*)
+configs=( *config_* )
 
 #remove selected files
 configs_aux=()
