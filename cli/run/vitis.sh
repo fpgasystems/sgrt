@@ -153,7 +153,7 @@ else
     config_found=$(echo "$result" | sed -n '1p')
     config_name=$(echo "$result" | sed -n '2p')
     #forbidden combinations
-    if [ "$config_found" = "1" ] && ([ "$config_name" = "" ] || [ "$config_name" = "config_000" ] || [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/configs/$config_name" ]); then #implies that --project must be specified
+    if [ "$config_found" = "1" ] && ([ "$config_name" = "" ] || [ "$config_name" = "host_config_000" ] || [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/configs/$config_name" ]); then #implies that --project must be specified
         $CLI_PATH/sgutil run vitis -h
         exit
     fi

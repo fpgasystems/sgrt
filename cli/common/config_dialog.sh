@@ -16,12 +16,12 @@ shopt -s nullglob
 
 #get configs
 cd "$MY_PROJECT_PATH/configs/"
-configs=(config_*)
+configs=(host_config_*)
 
 #remove selected files
 configs_aux=()
 for element in "${configs[@]}"; do
-    if [[ $element != "config_000" && $element != *.hpp ]]; then #config_* happens when there are no configs
+    if [[ ($element != "config_000" && $element != "host_config_000") && $element != *.hpp ]]; then
         configs_aux+=("$element")
     fi
 done

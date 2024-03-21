@@ -14,14 +14,14 @@ get_config_id() {
     CONFIGS_PATH=$1/configs
     cd $CONFIGS_PATH
     #get configs
-    configs=( "config_"* )
+    configs=( "host_config_"* )
     #get the last configuration name
     last_config="${configs[-1]}"
     #extract the number part of the configuration name
-    number_part="${last_config#*_}"
+    number_part="${last_config##*_}"  # This will extract the part after the last underscore
     number=$(printf "%03d" $((10#$number_part + 1)))  # Increment the number and format it as 3 digits with leading zeros
     #construct the new configuration name
-    config_id="config_$number"
+    config_id="host_config_$number"
     #change back directory
     cd ..
     #return
@@ -161,9 +161,9 @@ echo ""
 #get config_id
 config_id=$(get_config_id $MY_PROJECT_PATH)
 
-#we avoid config_000 is created when configs is empty
-if [[ "$config_id" == "config_000" ]]; then
-    config_id="config_001"
+#we avoid host_config_000 is created when configs is empty
+if [[ "$config_id" == "host_config_000" ]]; then
+    config_id="host_config_001"
 fi
 
 #create device_config.hpp (it is created each time so we can capture new MAX parameters)
@@ -307,7 +307,7 @@ echo ""
 echo "The configuration ${bold}$config_id has been created!${normal}"
 echo ""
 
-#remove config_000 if exists
-if [ -f "$MY_PROJECT_PATH/configs/config_000" ]; then
-    rm "$MY_PROJECT_PATH/configs/config_000"
+#remove host_config_000 if exists
+if [ -f "$MY_PROJECT_PATH/configs/host_config_000" ]; then
+    rm "$MY_PROJECT_PATH/configs/host_config_000"
 fi
