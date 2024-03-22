@@ -274,38 +274,9 @@ fi
 #xclbin compilation
 if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name" == "hw" ]]; then
 
-    #generate .cfg for all xclbins
-    #xclbin_names=$($CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR)
-    xclbin_names=($($CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR))
+    #generate .cfg for all xclbins and store xclbin_names as a vector
+    xclbin_names=( $($CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR) )
     
-    ##read from nk
-    #declare -a xclbin_names
-    #declare -a compute_units_num
-    #declare -a compute_units_names
-
-    #while read -r line; do
-    #    column_1=$(echo "$line" | awk '{print $1}')
-    #    column_2=$(echo "$line" | awk '{print $2}')
-    #    column_3=$(echo "$line" | awk '{print $3}')
-    #    xclbin_names+=("$column_1")
-    #    compute_units_num+=("$column_2")
-    #    compute_units_names+=("$column_3")
-    #done < "nk"
-
-    ##read from sp to create sp_aux (to append later)
-    #touch sp_aux
-    #while read -r line; do
-    #    # Extract second column (e.g., "vadd")
-    #    operation=$(echo "$line" | awk '{print $2}')
-    #    # Extract other columns except the first two
-    #    columns=$(echo "$line" | awk '{$1=""; $2=""; print $0}')
-    #    # Split the columns based on whitespace and iterate over them
-    #    for col in $columns; do
-    #        # Construct and print the desired output
-    #        echo "sp=$operation.$col" >> sp_aux
-    #    done
-    #done < "sp"
-
     #check on nk
     if [ "${#xclbin_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
         echo ""
@@ -315,32 +286,13 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     fi
 
     #compile for each xclbin_i
-    #for i in "${xclbin_names[@]}"; do #xclbin_i
     for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
     
         #map to nk
         xclbin_i="${xclbin_names[i]}"
-        #compute_units_num_i="${compute_units_num[i]}"
-        #compute_units_names_i="${compute_units_names[i]}"
         
         #define directories (2)
         XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name"
-
-        ##create <xclbin.cfg>
-        #touch $xclbin_i.cfg
-        #echo "[connectivity]" >> $xclbin_i.cfg
-
-        ##nk
-        #if [ "$compute_units_names_i" = "" ]; then
-        #    echo "nk=$xclbin_i:$compute_units_num_i" >> $xclbin_i.cfg 
-        #else
-        #    echo "nk=$xclbin_i:$compute_units_num_i:$compute_units_names_i" >> $xclbin_i.cfg 
-        #fi
-
-        #echo >> $xclbin_i.cfg
-
-        ##sp
-        #grep "sp=$xclbin_i" sp_aux >> $xclbin_i.cfg
 
         #print .cfg contents
         echo "${bold}Using $xclbin_i.cfg configuration file:${normal}"
@@ -348,15 +300,11 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         cat $xclbin_i.cfg
         echo ""
         
-        #move to build_dir
-        #mv $xclbin_i"_config.cfg" $XCLBIN_BUILD_DIR
-
         echo "${bold}XCLBIN $xclbin_i compilation and linking:${normal}"
         echo ""
 
         if ! [ -d "$XCLBIN_BUILD_DIR" ]; then
             # XCLBIN_BUILD_DIR does not exist
-            #echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
             #echo ""
             echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_i" 
             echo ""
@@ -382,75 +330,12 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
 
         fi
 
-        #increase index
-        #i=$(($i+1))
-
     done
 
-    #echo "All compiled!"
-    #exit    
-    #
-    #xclbin_name="vadd"
-    #
-    ##define directories (2)
-    #XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_name.$target_name.$platform_name"
-    #
-    #if ! [ -d "$XCLBIN_BUILD_DIR" ]; then
-    #    # XCLBIN_BUILD_DIR does not exist
-    #    echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
-    #    echo ""
-    #    echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
-    #    echo ""
-    #    export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
-    #    eval "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
-    #    echo ""        
-    #
-    #    #send email at the end
-    #    if [ "$target_name" = "hw" ]; then
-    #        user_email=$USER@ethz.ch
-    #        echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name) is done!" | sendmail $user_email
-    #    fi
-    #else
-    #    echo ""
-    #    echo "${bold}The XCLBIN $xclbin_name.$target_name.$platform_name already exists. Do you want to build it again (y/n)?${normal}"
-    #    while true; do
-    #        read -p "" yn
-    #        case $yn in
-    #            "y") 
-    #                #delete
-    #                rm -rf $XCLBIN_BUILD_DIR
-    #                
-    #                #rebuild
-    #                echo ""
-    #                echo "${bold}PL kernel compilation and linking: generating .xo and .xclbin:${normal}"
-    #                echo ""
-    #                echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name" 
-    #                echo ""
-    #                export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
-    #                eval "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name"
-    #                echo ""
-    #
-    #                #send email at the end
-    #                if [ "$target_name" = "hw" ]; then
-    #                    user_email=$USER@ethz.ch
-    #                    echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name) is done!" | sendmail $user_email
-    #                fi
-    #
-    #                break
-    #                ;;
-    #            "n") 
-    #                echo ""
-    #                break
-    #                ;;
-    #        esac
-    #    done
-    #    
-    #fi
-
     #remove sp_aux
-    if [ -f "sp_aux" ]; then
-        rm "sp_aux"
-    fi
+    #if [ -f "sp_aux" ]; then
+    #    rm "sp_aux"
+    #fi
 
     #copy device_config.hpp to project folder
     cp $DIR/configs/device_config.hpp $DIR/_device_config.hpp #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
