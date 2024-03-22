@@ -358,7 +358,11 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
             echo ""
             export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
             eval "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_i"
-            echo ""        
+            echo ""
+
+            #copy device_config.hpp and .cfg for reference (will be compared to _device_config.hpp and .cfg)
+            cp $DIR/configs/device_config.hpp $XCLBIN_BUILD_DIR/_${xclbin_i}_device_config.hpp
+            cp $xclbin_i.cfg $XCLBIN_BUILD_DIR/_${xclbin_i}.cfg
 
             #send email at the end
             if [ "$target_name" = "hw" ]; then
