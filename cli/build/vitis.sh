@@ -274,36 +274,40 @@ fi
 #xclbin compilation
 if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name" == "hw" ]]; then
 
-    #read from nk
-    declare -a xclbin_names
-    declare -a compute_units_num
-    declare -a compute_units_names
+    #generate .cfg for all xclbins
+    #xclbin_names=$($CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR)
+    xclbin_names=($($CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR))
+    
+    ##read from nk
+    #declare -a xclbin_names
+    #declare -a compute_units_num
+    #declare -a compute_units_names
 
-    while read -r line; do
-        column_1=$(echo "$line" | awk '{print $1}')
-        column_2=$(echo "$line" | awk '{print $2}')
-        column_3=$(echo "$line" | awk '{print $3}')
-        xclbin_names+=("$column_1")
-        compute_units_num+=("$column_2")
-        compute_units_names+=("$column_3")
-    done < "nk"
+    #while read -r line; do
+    #    column_1=$(echo "$line" | awk '{print $1}')
+    #    column_2=$(echo "$line" | awk '{print $2}')
+    #    column_3=$(echo "$line" | awk '{print $3}')
+    #    xclbin_names+=("$column_1")
+    #    compute_units_num+=("$column_2")
+    #    compute_units_names+=("$column_3")
+    #done < "nk"
 
-    #read from sp to create sp_aux (to append later)
-    touch sp_aux
-    while read -r line; do
-        # Extract second column (e.g., "vadd")
-        operation=$(echo "$line" | awk '{print $2}')
-        # Extract other columns except the first two
-        columns=$(echo "$line" | awk '{$1=""; $2=""; print $0}')
-        # Split the columns based on whitespace and iterate over them
-        for col in $columns; do
-            # Construct and print the desired output
-            echo "sp=$operation.$col" >> sp_aux
-        done
-    done < "sp"
+    ##read from sp to create sp_aux (to append later)
+    #touch sp_aux
+    #while read -r line; do
+    #    # Extract second column (e.g., "vadd")
+    #    operation=$(echo "$line" | awk '{print $2}')
+    #    # Extract other columns except the first two
+    #    columns=$(echo "$line" | awk '{$1=""; $2=""; print $0}')
+    #    # Split the columns based on whitespace and iterate over them
+    #    for col in $columns; do
+    #        # Construct and print the desired output
+    #        echo "sp=$operation.$col" >> sp_aux
+    #    done
+    #done < "sp"
 
     #check on nk
-    if [ "${#xclbin_names[@]}" -eq 0 ] || [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]; then
+    if [ "${#xclbin_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
         echo ""
         echo "Please, review nk configuration file!"
         echo ""
@@ -316,27 +320,27 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     
         #map to nk
         xclbin_i="${xclbin_names[i]}"
-        compute_units_num_i="${compute_units_num[i]}"
-        compute_units_names_i="${compute_units_names[i]}"
+        #compute_units_num_i="${compute_units_num[i]}"
+        #compute_units_names_i="${compute_units_names[i]}"
         
         #define directories (2)
         XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name"
 
-        #create <xclbin.cfg>
-        touch $xclbin_i.cfg
-        echo "[connectivity]" >> $xclbin_i.cfg
+        ##create <xclbin.cfg>
+        #touch $xclbin_i.cfg
+        #echo "[connectivity]" >> $xclbin_i.cfg
 
-        #nk
-        if [ "$compute_units_names_i" = "" ]; then
-            echo "nk=$xclbin_i:$compute_units_num_i" >> $xclbin_i.cfg 
-        else
-            echo "nk=$xclbin_i:$compute_units_num_i:$compute_units_names_i" >> $xclbin_i.cfg 
-        fi
+        ##nk
+        #if [ "$compute_units_names_i" = "" ]; then
+        #    echo "nk=$xclbin_i:$compute_units_num_i" >> $xclbin_i.cfg 
+        #else
+        #    echo "nk=$xclbin_i:$compute_units_num_i:$compute_units_names_i" >> $xclbin_i.cfg 
+        #fi
 
-        echo >> $xclbin_i.cfg
+        #echo >> $xclbin_i.cfg
 
-        #sp
-        grep "sp=$xclbin_i" sp_aux >> $xclbin_i.cfg
+        ##sp
+        #grep "sp=$xclbin_i" sp_aux >> $xclbin_i.cfg
 
         #print .cfg contents
         echo "${bold}Using $xclbin_i.cfg configuration file:${normal}"

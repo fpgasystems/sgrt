@@ -5,7 +5,7 @@ normal=$(tput sgr0)
 
 nk_file=$1
 sp_file=$2
-output_dir=$3
+output_dir=${3%/}  # Remove trailing slash if present
 
 #read from nk
 declare -a xclbin_names
@@ -42,6 +42,11 @@ for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
     compute_units_num_i="${compute_units_num[i]}"
     compute_units_names_i="${compute_units_names[i]}"
 
+    #delete first
+    if [ -f "$output_dir/$xclbin_i.cfg" ]; then
+        rm $output_dir/$xclbin_i.cfg
+    fi
+    
     #create <xclbin.cfg>
     touch $output_dir/$xclbin_i.cfg
     echo "[connectivity]" >> $output_dir/$xclbin_i.cfg
@@ -65,3 +70,6 @@ done
 if [ -f "$output_dir/sp_aux" ]; then
     rm "$output_dir/sp_aux"
 fi
+
+#return xclbin_names
+echo "${xclbin_names[@]}"
