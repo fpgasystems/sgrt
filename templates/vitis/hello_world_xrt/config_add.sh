@@ -163,8 +163,10 @@ if [[ "$config_id" == "host_config_000" ]]; then
 fi
 
 #create device_config.hpp (it is created each time so we can capture new MAX parameters)
+device_config_exists="0"
 if [ -f "$MY_PROJECT_PATH/configs/device_config.hpp" ]; then
     rm "$MY_PROJECT_PATH/configs/device_config.hpp"
+    device_config_exists="1"
 fi
 touch $MY_PROJECT_PATH/configs/device_config.hpp
 
@@ -314,9 +316,43 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
 
 done
 
-echo ""
-echo "The configuration ${bold}$config_id has been created!${normal}"
-echo ""
+
+if [[ "$device_config_exists" == "0" ]]; then
+    echo ""
+    echo "The configurations ${bold}device_config.hpp${normal} and ${bold}$config_id have been created!${normal}"
+    echo ""
+
+    #copy device_config.hpp to project folder
+    cp $MY_PROJECT_PATH/configs/device_config.hpp $MY_PROJECT_PATH/_device_config.hpp #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
+
+else
+
+    #compare existing _device_config.hpp with just generated device_config.hpp
+    are_equals=$($CLI_PATH/common/compare_files "$MY_PROJECT_PATH/configs/device_config.hpp" "$MY_PROJECT_PATH/_device_config.hpp")
+    
+    #print message
+    if [[ "$are_equals" == "1" ]]; then
+        echo ""
+        echo "The configuration ${bold}$config_id has been created!${normal}"
+        echo ""
+    else
+        echo ""
+        echo "${bold}device_config.hpp${normal} has been updated; ${bold}$config_id has been created!${normal}"
+        echo ""
+
+        #update _device_config.hpp
+        rm "$MY_PROJECT_PATH/_device_config.hpp"    
+        cp $MY_PROJECT_PATH/configs/device_config.hpp $MY_PROJECT_PATH/_device_config.hpp #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
+
+    fi
+
+fi
+
+#copy device_config.hpp to project folder (we always update)
+#if [ -f "$MY_PROJECT_PATH/_device_config.hpp" ]; then
+#    rm "$MY_PROJECT_PATH/_device_config.hpp"
+#fi
+#cp $MY_PROJECT_PATH/configs/device_config.hpp $MY_PROJECT_PATH/_device_config.hpp #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
 
 #remove host_config_000 if exists
 if [ -f "$MY_PROJECT_PATH/configs/host_config_000" ]; then
