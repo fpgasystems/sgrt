@@ -150,10 +150,6 @@ is_integer() {
     fi
 }
 
-#to be deleted
-#rm $MY_PROJECT_PATH/configs/config_parameters
-#rm $MY_PROJECT_PATH/configs/kernel*
-
 echo ""
 echo "${bold}config_add${normal}"
 echo ""
@@ -193,113 +189,136 @@ done < "$MY_PROJECT_PATH/config_parameters"
 declare -a parameters_aux
 
 #create configuration
+output_file=""
 for ((i = 0; i < ${#parameters[@]}; i++)); do
     
     #map to parameters
     parameter_i="${parameters[i]}"
     ranges_i="${ranges[i]}"
 
-    min=""
-    max=""
-    inc=""
-    list=""
-    constant=""
-    selectable_values=""
-    selected_value=""
-    selectable_values_prompt=""
-    case "$ranges_i" in
-        *:*)
-            colon_count=$(grep -o ":" <<< "$ranges_i" | wc -l)
-            if [[ $colon_count -eq 1 ]]; then
-                
-                #extract min and max from ranges_i
-                IFS=':' read -r min max <<< "$ranges_i"
-
-                #replace already declared
-                min=$(find_existing_parameter $min)
-                max=$(find_existing_parameter $max)
-
-                #check on integer
-                is_integer_min=$(is_integer "$min")
-                is_integer_max=$(is_integer "$max")
-
-                # Derive increment
-                if [[ "$is_integer_min" == "1" && "$is_integer_max" == "1" ]]; then
-                    #min and max are integers
-                    inc="1"
-                elif [[ "$is_integer_min" == "0" && "$is_integer_max" == "0" ]]; then
-                    #min and max are decimals
-                    inc=$(echo "scale=$INC_DECIMALS; ($max - $min) / $INC_STEPS" | bc)                
-                fi
-
-            elif [[ $colon_count -eq 2 ]]; then
-                
-                #extract min, inc and max from ranges_i
-                min="${ranges_i%%:*}"
-                remaining="${ranges_i#*:}"
-                inc="${remaining%%:*}"
-                max="${remaining#*:}"
-
-                #replace already declared
-                min=$(find_existing_parameter $min)
-                inc=$(find_existing_parameter $inc)
-                max=$(find_existing_parameter $max)
-
-            fi
-
-            #generate selectable values
-            selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
-
-            #get prompt
-            num_elements=$(echo "$selectable_values" | wc -w)
-
-            #check if the number of elements is more than 10
-            if (( num_elements > $MAX_PROMPT_ELEMENTS )); then
-                #more elements than expected
-                if [[ "$inc" == "1" ]]; then
-                    selectable_values_prompt="$min .. $max"
-                else
-                    selectable_values_prompt="$min:$inc:$max"
-                fi
-            else
-                #less elements than expected
-                selectable_values_prompt=$selectable_values
-            fi    
-            
-            ;;
-        *","*)
-            #ranges_i is a comma separated list
-            selectable_values=$(echo "$ranges_i" | tr "," " ")
-            selectable_values_prompt=$selectable_values
-            ;;
-        *)
-            #ranges_i is a constant (a string without any colon (:), comma (,), or any other specified character)
-            selected_value=$ranges_i
-            ;;
-    esac
-
-    #get value from the user
-    if ! [[ "$selectable_values_prompt" == "" ]]; then
-        #prompt the user to choose one of the selectable values
-        read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
-        
-        #validate user input
-        while ! validate_input "$selected_value" "$selectable_values"; do
-            read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
-        done
-    fi
-
-    #add parameter_i/selected_value to device_config.hpp or config_id
-    if [[ "$parameter_i" == *_MAX* ]]; then
-        #it contains the suffix _MAX (assumed as a xclbin parameter)
-        add_to_config_file "device_config.hpp" "const int $parameter_i" "$selected_value"
+    #select output file (should appear in the correct order)
+    if [[ "$parameter_i" == "device:" ]]; then
+        output_file="device_config.hpp"
+        echo "${bold}Device parameters:${normal}"
+        echo ""
+    elif [[ "$parameter_i" == "host:" ]]; then
+        output_file="$config_id"
+        echo ""
+        echo "${bold}Host parameters:${normal}"
+        echo ""
     else
-        #assumed as a host parameter
-        add_to_config_file "$config_id" "$parameter_i" "$selected_value"
+
+        min=""
+        max=""
+        inc=""
+        list=""
+        constant=""
+        selectable_values=""
+        selected_value=""
+        selectable_values_prompt=""
+        case "$ranges_i" in
+            *:*)
+                colon_count=$(grep -o ":" <<< "$ranges_i" | wc -l)
+                if [[ $colon_count -eq 1 ]]; then
+                    
+                    #extract min and max from ranges_i
+                    IFS=':' read -r min max <<< "$ranges_i"
+
+                    #replace already declared
+                    min=$(find_existing_parameter $min)
+                    max=$(find_existing_parameter $max)
+
+                    #check on integer
+                    is_integer_min=$(is_integer "$min")
+                    is_integer_max=$(is_integer "$max")
+
+                    # Derive increment
+                    if [[ "$is_integer_min" == "1" && "$is_integer_max" == "1" ]]; then
+                        #min and max are integers
+                        inc="1"
+                    elif [[ "$is_integer_min" == "0" && "$is_integer_max" == "0" ]]; then
+                        #min and max are decimals
+                        inc=$(echo "scale=$INC_DECIMALS; ($max - $min) / $INC_STEPS" | bc)                
+                    fi
+
+                elif [[ $colon_count -eq 2 ]]; then
+                    
+                    #extract min, inc and max from ranges_i
+                    min="${ranges_i%%:*}"
+                    remaining="${ranges_i#*:}"
+                    inc="${remaining%%:*}"
+                    max="${remaining#*:}"
+
+                    #replace already declared
+                    min=$(find_existing_parameter $min)
+                    inc=$(find_existing_parameter $inc)
+                    max=$(find_existing_parameter $max)
+
+                fi
+
+                #generate selectable values
+                selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
+
+                #get prompt
+                num_elements=$(echo "$selectable_values" | wc -w)
+
+                #check if the number of elements is more than 10
+                if (( num_elements > $MAX_PROMPT_ELEMENTS )); then
+                    #more elements than expected
+                    if [[ "$inc" == "1" ]]; then
+                        selectable_values_prompt="$min .. $max"
+                    else
+                        selectable_values_prompt="$min:$inc:$max"
+                    fi
+                else
+                    #less elements than expected
+                    selectable_values_prompt=$selectable_values
+                fi    
+                
+                ;;
+            *","*)
+                #ranges_i is a comma separated list
+                selectable_values=$(echo "$ranges_i" | tr "," " ")
+                selectable_values_prompt=$selectable_values
+                ;;
+            *)
+                #ranges_i is a constant (a string without any colon (:), comma (,), or any other specified character)
+                selected_value=$ranges_i
+                ;;
+        esac
+
+        #get value from the user
+        if ! [[ "$selectable_values_prompt" == "" ]]; then
+            #prompt the user to choose one of the selectable values
+            read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
+            
+            #validate user input
+            while ! validate_input "$selected_value" "$selectable_values"; do
+                read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
+            done
+        fi
+
+        #add parameter_i/selected_value to device_config.hpp or config_id
+        aux_str=""
+        if [[ "$output_file" == "device_config.hpp" ]]; then
+            #it contains the suffix _MAX (assumed as a xclbin parameter)
+            #add_to_config_file "device_config.hpp" "const int $parameter_i" "$selected_value"
+
+            aux_str="const int "
+        #else
+        #    #assumed as a host parameter
+        #    add_to_config_file "$config_id" "$parameter_i" "$selected_value"
+        fi
+
+        add_to_config_file "$output_file" "$aux_str$parameter_i" "$selected_value"
+
+        #save already declared
+        parameters_aux+=("$parameter_i = $selected_value")
+
+
     fi
 
-    #save already declared
-    parameters_aux+=("$parameter_i = $selected_value")
+    
 
 done
 

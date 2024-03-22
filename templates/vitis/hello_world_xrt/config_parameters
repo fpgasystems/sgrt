@@ -1,5 +1,8 @@
+device:
 N_MAX    16:16:128                "Maximium number of elements" 
 W_MAX    1,2,4,8,16,32,64,128,256 "Maximum number of bits" 
+
+host:
 N        16:16:N_MAX              "Number of elements"
 W        1:W_MAX                  "Number of bits"
 F        0:W                      "Fractional part"
