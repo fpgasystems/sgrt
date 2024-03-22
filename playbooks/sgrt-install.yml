@@ -31,7 +31,7 @@
     #cli installation
     #scripts
     build: false
-    common: false
+    common: true
     enable: false
     examine: false
     get: false
@@ -41,7 +41,7 @@
     run: false
     set: false
     sgutil: false 
-    templates: false #true-----------------------------------
+    templates: true #true-----------------------------------
     validate: false
     #workflows
     coyote: false
@@ -317,6 +317,7 @@
         - get_multiple_devices
         - get_servers
         - get_vivado_devices
+        - get_xclbin_cfg
         - get_xilinx_version
         - git_clone_coyote
         - git_clone_vitis
