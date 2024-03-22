@@ -298,27 +298,19 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
             done
         fi
 
-        #add parameter_i/selected_value to device_config.hpp or config_id
+        #add "const int" for device_config
         aux_str=""
         if [[ "$output_file" == "device_config.hpp" ]]; then
-            #it contains the suffix _MAX (assumed as a xclbin parameter)
-            #add_to_config_file "device_config.hpp" "const int $parameter_i" "$selected_value"
-
             aux_str="const int "
-        #else
-        #    #assumed as a host parameter
-        #    add_to_config_file "$config_id" "$parameter_i" "$selected_value"
         fi
 
+        #add parameter to config
         add_to_config_file "$output_file" "$aux_str$parameter_i" "$selected_value"
 
         #save already declared
         parameters_aux+=("$parameter_i = $selected_value")
 
-
     fi
-
-    
 
 done
 
