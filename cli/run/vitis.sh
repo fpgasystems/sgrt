@@ -346,11 +346,6 @@ fi
 #config_id="${config%%.*}"
 #touch $config_id.active
 
-
-#echo "HEY!"
-#echo "$config_id"
-#exit
-
 #read from sp
 declare -a device_indexes
 declare -a xclbin_names
@@ -425,8 +420,20 @@ echo ""
 #echo "${bold}Running accelerated application:${normal}"
 #echo ""
 
-#get the number of devices for emconfigutil
-nd=$(cat $DIR/sp | wc -l)
+#generate .cfg for all xclbins and store xclbin_names as a vector
+$CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR
+
+#re-build report =========================================================
+for ((i = 0; i < ${#device_indexes[@]}; i++)); do
+
+    xclbin_name="${xclbin_names[i]}"
+    device_config_equal=$($CLI_PATH/common/compare_files "$DIR/_device_config.hpp" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name/_${xclbin_name}_device_config.hpp")
+    cfg_equal=$($CLI_PATH/common/compare_files "$DIR/$xclbin_name.cfg" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name/_${xclbin_name}.cfg")
+
+    echo "Device equal $xclbin_name: $device_config_equal"
+    echo "CFG equal $xclbin_name: $cfg_equal"
+
+done
 
 case "$target_name" in
     sw_emu|hw_emu)
@@ -442,6 +449,9 @@ case "$target_name" in
         cd $DIR
         echo "${bold}Running accelerated application:${normal}"
         #echo ""
+
+        #get the number of devices for emconfigutil
+        nd=$(cat $DIR/sp | wc -l)
 
         #create emconfig.json (this was automatically done in sgutil build vitis when using make all and not make build)
         emconfigutil --platform $platform_name --od ./_x.$xclbin_name.$target_name.$platform_name --nd $nd
