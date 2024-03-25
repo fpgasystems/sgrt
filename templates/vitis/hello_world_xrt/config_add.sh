@@ -316,7 +316,7 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
 
 done
 
-
+#print message (tracks changes on device_config.hpp)
 if [[ "$device_config_exists" == "0" ]]; then
     echo ""
     echo "The configurations ${bold}device_config.hpp${normal} and ${bold}$config_id have been created!${normal}"
@@ -348,13 +348,12 @@ else
 
 fi
 
-#copy device_config.hpp to project folder (we always update)
-#if [ -f "$MY_PROJECT_PATH/_device_config.hpp" ]; then
-#    rm "$MY_PROJECT_PATH/_device_config.hpp"
-#fi
-#cp $MY_PROJECT_PATH/configs/device_config.hpp $MY_PROJECT_PATH/_device_config.hpp #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
-
 #remove host_config_000 if exists
 if [ -f "$MY_PROJECT_PATH/configs/host_config_000" ]; then
     rm "$MY_PROJECT_PATH/configs/host_config_000"
 fi
+
+#change permissions (we avoid that user directly uses vi)
+chmod a-w "$MY_PROJECT_PATH/configs/device_config.hpp"
+#chmod a-w "$MY_PROJECT_PATH/_device_config.hpp"
+#chmod a-w "$MY_PROJECT_PATH/configs/$config_id"
