@@ -45,28 +45,27 @@ else
         #forbidden combinations
         if [ "$version_found" = "1" ] && ([ "$version_name" = "" ] || [ ! -d "$VIVADO_PATH/$version_name" ]); then 
             $CLI_PATH/sgutil enable vivado -h
-            exit
+            #exit
+        else
+            #source vivado
+            source $XILINX_TOOLS_PATH//Vivado/$version_name/.settings64-Vivado.sh
+
+            #echo ""
+
+            #print message
+            #echo ""
+            if [[ -d $VIVADO_PATH/$version_name ]]; then
+                #Vivado is installed
+                echo "The server is ready to work with ${bold}Vivado $version_name${normal} release branch:"
+                echo ""
+                echo "    Vivado                       : ${bold}$VIVADO_PATH/$version_name${normal}"
+                echo ""
+            else
+                echo "The server needs special care to operate with Vivado normally (Xilinx tools are not properly installed)."
+                echo ""
+                echo "${bold}An email has been sent to the person in charge;${normal} we will let you know when Vivado is ready to use again."
+                echo "Subject: $hostname requires special attention ($username): Xilinx tools are not properly installed" | sendmail $email
+            fi
         fi
     fi 
-
-    #source vivado
-    source $XILINX_TOOLS_PATH//Vivado/$version_name/.settings64-Vivado.sh
-
-    #echo ""
-
-    #print message
-    #echo ""
-    if [[ -d $VIVADO_PATH/$version_name ]]; then
-        #Vivado is installed
-        echo "The server is ready to work with ${bold}Vivado $version_name${normal} release branch:"
-        echo ""
-        echo "    Vivado                       : ${bold}$VIVADO_PATH/$version_name${normal}"
-        echo ""
-    else
-        echo "The server needs special care to operate with Vivado normally (Xilinx tools are not properly installed)."
-        echo ""
-        echo "${bold}An email has been sent to the person in charge;${normal} we will let you know when Vivado is ready to use again."
-        echo "Subject: $hostname requires special attention ($username): Xilinx tools are not properly installed" | sendmail $email
-    fi
-
 fi

@@ -45,28 +45,28 @@ else
         #forbidden combinations
         if [ "$version_found" = "1" ] && ([ "$version_name" = "" ] || [ ! -d "$VITIS_PATH/$version_name" ]); then 
             $CLI_PATH/sgutil enable vitis -h
-            exit
+            #exit
+        else
+            #source vitis
+            source $XILINX_TOOLS_PATH//Vitis/$version_name/.settings64-Vitis.sh
+            source $XILINX_TOOLS_PATH//Vitis_HLS/$version_name/.settings64-Vitis_HLS.sh
+
+            #echo ""
+
+            #print message
+            #echo ""
+            if [[ -d $VITIS_PATH/$version_name ]]; then
+                #Vitis is installed
+                echo "The server is ready to work with ${bold}Vitis $version_name${normal} release branch:"
+                echo ""
+                echo "    Vitis, Vitis_HLS             : ${bold}$VITIS_PATH/$version_name${normal}"
+                echo ""
+            else
+                echo "The server needs special care to operate with Vitis normally (Xilinx tools are not properly installed)."
+                echo ""
+                echo "${bold}An email has been sent to the person in charge;${normal} we will let you know when Vitis is ready to use again."
+                echo "Subject: $hostname requires special attention ($username): Xilinx tools are not properly installed" | sendmail $email
+            fi
         fi
-    fi
-
-    #source vitis
-    source $XILINX_TOOLS_PATH//Vitis/$version_name/.settings64-Vitis.sh
-    source $XILINX_TOOLS_PATH//Vitis_HLS/$version_name/.settings64-Vitis_HLS.sh
-
-    #echo ""
-
-    #print message
-    #echo ""
-    if [[ -d $VITIS_PATH/$version_name ]]; then
-        #Vitis is installed
-        echo "The server is ready to work with ${bold}Vitis $version_name${normal} release branch:"
-        echo ""
-        echo "    Vitis, Vitis_HLS             : ${bold}$VITIS_PATH/$version_name${normal}"
-        echo ""
-    else
-        echo "The server needs special care to operate with Vitis normally (Xilinx tools are not properly installed)."
-        echo ""
-        echo "${bold}An email has been sent to the person in charge;${normal} we will let you know when Vitis is ready to use again."
-        echo "Subject: $hostname requires special attention ($username): Xilinx tools are not properly installed" | sendmail $email
     fi
 fi

@@ -66,31 +66,31 @@ else
         #forbidden combinations
         if [ "$version_found" = "1" ] && ([ "$version_name" = "" ] || [ ! -d "$XILINX_OPT_PATH/xrt_$version_name" ]); then #-d "$VIVADO_PATH/$version_name"
             $CLI_PATH/sgutil enable xrt -h
-            exit
+            #exit
+        else
+            #copy the desired XRT version to user’s local and preserve /opt/xilinx/xrt structure (Xilinx workaroud)
+            mkdir -p $LOCAL_PATH/xrt_${version_name}$XRT_PATH
+            cp -r $XRT_PATH"_"${version_name}/* $LOCAL_PATH/xrt_${version_name}$XRT_PATH 
+
+            #source xrt
+            source $LOCAL_PATH/xrt_${version_name}$XRT_PATH/setup.sh
+
+            echo ""
+
+            #print message
+            #echo ""
+            if [[ -d $XILINX_OPT_PATH/xrt_$version_name ]]; then #$VIVADO_PATH/$version_name
+                #Vitis is not installed
+                echo "The server is ready to work with ${bold}XRT $version_name${normal} release branch:"
+                echo ""
+                echo "    Xilinx Board Utility (xbutil): ${bold}$XILINX_XRT/bin${normal}"
+                echo ""
+            else
+                echo "The server needs special care to operate with XRT normally (Xilinx tools are not properly installed)."
+                echo ""
+                echo "${bold}An email has been sent to the person in charge;${normal} we will let you know when XRT is ready to use again."
+                echo "Subject: $hostname requires special attention ($username): Xilinx tools are not properly installed" | sendmail $email
+            fi
         fi
-    fi
-
-    #copy the desired XRT version to user’s local and preserve /opt/xilinx/xrt structure (Xilinx workaroud)
-    mkdir -p $LOCAL_PATH/xrt_${version_name}$XRT_PATH
-    cp -r $XRT_PATH"_"${version_name}/* $LOCAL_PATH/xrt_${version_name}$XRT_PATH 
-
-    #source xrt
-    source $LOCAL_PATH/xrt_${version_name}$XRT_PATH/setup.sh
-
-    echo ""
-
-    #print message
-    #echo ""
-    if [[ -d $XILINX_OPT_PATH/xrt_$version_name ]]; then #$VIVADO_PATH/$version_name
-        #Vitis is not installed
-        echo "The server is ready to work with ${bold}XRT $version_name${normal} release branch:"
-        echo ""
-        echo "    Xilinx Board Utility (xbutil): ${bold}$XILINX_XRT/bin${normal}"
-        echo ""
-    else
-        echo "The server needs special care to operate with XRT normally (Xilinx tools are not properly installed)."
-        echo ""
-        echo "${bold}An email has been sent to the person in charge;${normal} we will let you know when XRT is ready to use again."
-        echo "Subject: $hostname requires special attention ($username): Xilinx tools are not properly installed" | sendmail $email
     fi
 fi
