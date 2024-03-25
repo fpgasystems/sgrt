@@ -1,5 +1,3 @@
-#!/bin/bash
-
 bold=$(tput bold)
 normal=$(tput sgr0)
 
@@ -14,6 +12,9 @@ hostname="${url%%.*}"
 
 #inputs
 read -a flags <<< "$@"
+
+#set to false
+enable="0"
 
 #check on valid Vivado version
 if [ -n "$XILINX_VIVADO" ]; then
@@ -36,6 +37,10 @@ else
         result=$($CLI_PATH/common/version_dialog $VIVADO_PATH)
         version_found=$(echo "$result" | sed -n '1p')
         version_name=$(echo "$result" | sed -n '2p')
+
+        #set to true
+        enable="1"
+
         echo ""
     else
         #version_dialog_check
@@ -47,25 +52,31 @@ else
             $CLI_PATH/sgutil enable vivado -h
             #exit
         else
-            #source vivado
-            source $XILINX_TOOLS_PATH//Vivado/$version_name/.settings64-Vivado.sh
-
-            #echo ""
-
-            #print message
-            #echo ""
-            if [[ -d $VIVADO_PATH/$version_name ]]; then
-                #Vivado is installed
-                echo "The server is ready to work with ${bold}Vivado $version_name${normal} release branch:"
-                echo ""
-                echo "    Vivado                       : ${bold}$VIVADO_PATH/$version_name${normal}"
-                echo ""
-            else
-                echo "The server needs special care to operate with Vivado normally (Xilinx tools are not properly installed)."
-                echo ""
-                echo "${bold}An email has been sent to the person in charge;${normal} we will let you know when Vivado is ready to use again."
-                echo "Subject: $hostname requires special attention ($username): Xilinx tools are not properly installed" | sendmail $email
-            fi
+            #set to true
+            enable="1"
+            echo ""
         fi
     fi 
+
+    if [ "$enable" = "1" ]; then
+        #source vivado
+        source $XILINX_TOOLS_PATH//Vivado/$version_name/.settings64-Vivado.sh
+
+        #echo ""
+
+        #print message
+        #echo ""
+        if [[ -d $VIVADO_PATH/$version_name ]]; then
+            #Vivado is installed
+            echo "The server is ready to work with ${bold}Vivado $version_name${normal} release branch:"
+            echo ""
+            echo "    Vivado                       : ${bold}$VIVADO_PATH/$version_name${normal}"
+            echo ""
+        else
+            echo "The server needs special care to operate with Vivado normally (Xilinx tools are not properly installed)."
+            echo ""
+            echo "${bold}An email has been sent to the person in charge;${normal} we will let you know when Vivado is ready to use again."
+            echo "Subject: $hostname requires special attention ($username): Xilinx tools are not properly installed" | sendmail $email
+        fi
+    fi
 fi
