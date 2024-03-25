@@ -3,6 +3,49 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+get_num_configs(){
+
+    MY_PROJECT_PATH=$1
+
+    #this is part of config_dialog.ch
+    cd "$MY_PROJECT_PATH/configs/"
+    configs=( *config_* )
+
+    #remove selected files
+    configs_aux=()
+    for element in "${configs[@]}"; do
+        if [[ ($element != "config_000" && $element != "host_config_000") && $element != *.hpp ]]; then
+            configs_aux+=("$element")
+        fi
+    done
+
+    #number of configs
+    num_configs=${#configs_aux[@]}
+
+    #return value
+    echo $num_configs
+
+}
+
+check_on_changes(){
+
+    results=$1
+
+    sum=0
+    for result in "${results[@]}"; do
+        sum=$((sum + result))
+    done
+
+    count=${#results[@]}  # Count the number of elements in the array
+
+    if [ "$sum" -eq "$count" ]; then  # Compare if $sum equals the count
+        echo "0" #there are no changes (1 1 1) = 3
+    else
+        echo "1"
+    fi
+
+}
+
 #constants
 CLI_PATH="$(dirname "$(dirname "$0")")"
 XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS_PATH)
@@ -213,8 +256,9 @@ else
         #echo ""
     fi
     #check on number of configs
-    result=$($CLI_PATH/common/config_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
-    num_configs=$(echo "$result" | sed -n '4p')
+    #result=$($CLI_PATH/common/config_dialog "$MY_PROJECTS_PATH/$WORKFLOW/$project_name" >/dev/null 2>&1)
+    #num_configs=$(echo "$result" | sed -n '4p')
+    num_configs=$(get_num_configs "$MY_PROJECTS_PATH/$WORKFLOW/$project_name")
     if [ $num_configs -eq 0 ]; then #${#configs_aux[@]}
         echo "You must build your project first! Please, use sgutil build vitis"
         echo ""
@@ -225,7 +269,7 @@ else
         #echo ""
         echo "${bold}Please, choose your configuration:${normal}"
         echo ""
-        #result=$($CLI_PATH/common/config_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
+        result=$($CLI_PATH/common/config_dialog $MY_PROJECTS_PATH/$WORKFLOW/$project_name)
         config_found=$(echo "$result" | sed -n '1p')
         config_name=$(echo "$result" | sed -n '2p')
         multiple_configs=$(echo "$result" | sed -n '3p')
@@ -375,27 +419,6 @@ for ((i = 0; i < ${#device_indexes[@]}; i++)); do
     fi
 done
 
-#get platform
-#if [ "$target_name" = "hw" ]; then 
-#    platform_name=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
-#fi
-
-#xclbin_name="vadd"
-
-#define directories (2)
-#APP_BUILD_DIR="$DIR/build_dir.$xclbin_name.$target_name.$platform_name"
-
-#check for build directory
-#if ! [ -d "$APP_BUILD_DIR" ]; then
-#    echo ""
-#    echo "You must build your project first! Please, use sgutil build vitis"
-#    echo ""
-#    exit
-#fi
-
-#revert to xrt first if FPGA is already in baremetal (this is needed also for sw_emu and hw_emu, i.e. when we do not use sgutil program vitis)
-#$CLI_PATH/program/revert -d $device_index
-
 #change directory
 #echo ""
 echo "${bold}Changing directory:${normal}"
@@ -415,23 +438,31 @@ echo ""
 cat $DIR/configs/$config_name
 echo ""
 
-#execution
-#cd $DIR
-#echo "${bold}Running accelerated application:${normal}"
-#echo ""
-
-#generate .cfg for all xclbins and store xclbin_names as a vector
+#re-generate .cfg for all xclbins
 $CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR
 
-#re-build report =========================================================
+#create building report (check for changes on device_config and/or .cfg)
+device_config_equal_results=()
+cfg_equal_results=()
 for ((i = 0; i < ${#device_indexes[@]}; i++)); do
 
+    #map to sp
+    device_index="${device_indexes[i]}"
     xclbin_name="${xclbin_names[i]}"
+
+    #get platform
+    platform_name=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
+
+    #compare files
     device_config_equal=$($CLI_PATH/common/compare_files "$DIR/_device_config.hpp" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name/_${xclbin_name}_device_config.hpp")
     cfg_equal=$($CLI_PATH/common/compare_files "$DIR/$xclbin_name.cfg" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name/_${xclbin_name}.cfg")
 
     echo "Device equal $xclbin_name: $device_config_equal"
     echo "CFG equal $xclbin_name: $cfg_equal"
+
+    #add results to arrays
+    device_config_equal_results+=("$device_config_equal")
+    cfg_equal_results+=("$cfg_equal")
 
 done
 
@@ -490,3 +521,26 @@ case "$target_name" in
         echo ""
         ;;
 esac
+
+device_changes=$(check_on_changes $device_config_equal_results)
+cfg_changes=$(check_on_changes $cfg_equal_results)
+
+#print re-build report
+if [ "$device_changes" = "1" ] || [ "$cfg_changes" = "1" ]; then
+
+    echo "${bold}The following needs to be recompiled:${normal}"
+    echo ""
+    for ((i = 0; i < ${#device_indexes[@]}; i++)); do
+
+        device_config_equal_i="${device_config_equal_results[i]}"
+        cfg_equal_i="${cfg_equal_results[i]}"
+        xclbin_name_i="${xclbin_names[i]}"
+
+
+        if [ "$device_config_equal_i" = "0" ] || [ "$cfg_equal_i" = "1" ]; then
+            echo $xclbin_name_i
+        fi
+
+    done
+    echo ""
+fi
