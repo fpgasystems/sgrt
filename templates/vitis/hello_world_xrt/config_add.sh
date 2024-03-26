@@ -162,10 +162,10 @@ if [[ "$config_id" == "host_config_000" ]]; then
     config_id="host_config_001"
 fi
 
-#create device_config.hpp (it is created each time so we can capture new MAX parameters)
+#create device_config.hpp (it is created each time)
 device_config_exists="0"
 if [ -f "$MY_PROJECT_PATH/configs/device_config.hpp" ]; then
-    rm "$MY_PROJECT_PATH/configs/device_config.hpp"
+    rm -f "$MY_PROJECT_PATH/configs/device_config.hpp"
     device_config_exists="1"
 fi
 touch $MY_PROJECT_PATH/configs/device_config.hpp
@@ -341,7 +341,7 @@ else
         echo ""
 
         #update _device_config.hpp
-        rm "$MY_PROJECT_PATH/_device_config.hpp"    
+        rm -f "$MY_PROJECT_PATH/_device_config.hpp"    
         cp $MY_PROJECT_PATH/configs/device_config.hpp $MY_PROJECT_PATH/_device_config.hpp #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
 
     fi
@@ -355,5 +355,5 @@ fi
 
 #change permissions (we avoid that user directly uses vi)
 chmod a-w "$MY_PROJECT_PATH/configs/device_config.hpp"
-#chmod a-w "$MY_PROJECT_PATH/_device_config.hpp"
-#chmod a-w "$MY_PROJECT_PATH/configs/$config_id"
+chmod a-w "$MY_PROJECT_PATH/_device_config.hpp"
+chmod a-w "$MY_PROJECT_PATH/configs/$config_id"
