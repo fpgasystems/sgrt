@@ -432,8 +432,8 @@ echo ""
 cat $DIR/configs/$config_name
 echo ""
 
-#re-generate .cfg for all xclbins
-$CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR
+#re-generate .cfg for all xclbins (avoid printing xclbin_names)
+$CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR > /dev/null
 
 #create building report (check for changes on device_config and/or .cfg)
 device_config_equal_results=()
@@ -451,8 +451,8 @@ for ((i = 0; i < ${#device_indexes[@]}; i++)); do
     device_config_equal=$($CLI_PATH/common/compare_files "$DIR/_device_config.hpp" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name/_${xclbin_name}_device_config.hpp")
     cfg_equal=$($CLI_PATH/common/compare_files "$DIR/$xclbin_name.cfg" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name/_${xclbin_name}.cfg")
 
-    echo "device_config equal $xclbin_name: $device_config_equal"
-    echo ".cfg equal $xclbin_name: $cfg_equal"
+    #echo "device_config equal $xclbin_name: $device_config_equal"
+    #echo ".cfg equal $xclbin_name: $cfg_equal"
 
     #add results to arrays
     device_config_equal_results+=("$device_config_equal")
@@ -516,24 +516,9 @@ case "$target_name" in
         ;;
 esac
 
+#check on changes
 device_changes=$(check_on_changes $device_config_equal_results)
 cfg_changes=$(check_on_changes $cfg_equal_results)
-
-echo "device_config changes: $device_changes"
-echo ".cfg changes: $cfg_changes"
-
-for ((i = 0; i < ${#device_indexes[@]}; i++)); do
-
-    device_config_equal_i="${device_config_equal_results[i]}"
-    cfg_equal_i="${cfg_equal_results[i]}"
-    xclbin_name_i="${xclbin_names[i]}"
-
-    echo $i
-    echo $xclbin_name_i
-    echo $device_config_equal_i
-    echo $cfg_equal_i
-
-done
 
 #print re-build report
 if [ "$device_changes" = "1" ] || [ "$cfg_changes" = "1" ]; then
@@ -542,13 +527,17 @@ if [ "$device_changes" = "1" ] || [ "$cfg_changes" = "1" ]; then
     echo ""
     for ((i = 0; i < ${#device_indexes[@]}; i++)); do
 
+        device_index_i="${device_indexes[i]}"
         device_config_equal_i="${device_config_equal_results[i]}"
         cfg_equal_i="${cfg_equal_results[i]}"
         xclbin_name_i="${xclbin_names[i]}"
 
+        #platform can be potentially different for each FPGA index
+        platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index_i platform)
 
+        #print xclbin if not equal
         if [ "$device_config_equal_i" = "0" ] || [ "$cfg_equal_i" = "0" ]; then
-            echo $xclbin_name_i
+            echo $xclbin_name_i.$target_name.$platform_name_i
         fi
 
     done
