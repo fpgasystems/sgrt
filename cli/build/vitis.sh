@@ -338,6 +338,6 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     #fi
 
     #copy device_config.hpp to project folder
-    cp $DIR/configs/device_config.hpp $DIR/_device_config.hpp #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
+    #cp $DIR/configs/device_config.hpp $DIR/_device_config.hpp #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
 
 fi
