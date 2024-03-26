@@ -83,6 +83,10 @@ multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 read -a flags <<< "$@"
 
 #create coyote directory (we do not know if sgutil new coyote has been run)
+if ! [ -d "$MY_PROJECTS_PATH" ]; then
+    mkdir ${MY_PROJECTS_PATH}
+fi
+
 DIR="$MY_PROJECTS_PATH/$WORKFLOW"
 if ! [ -d "$DIR" ]; then
     mkdir ${DIR}

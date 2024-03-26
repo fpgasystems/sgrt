@@ -44,6 +44,10 @@ echo ""
 echo "${bold}sgutil validate $WORKFLOW${normal}"
 
 #create mpi directory (we do not know if sgutil new mpi has been run)
+if ! [ -d "$MY_PROJECTS_PATH" ]; then
+    mkdir ${MY_PROJECTS_PATH}
+fi
+
 DIR="$MY_PROJECTS_PATH/$WORKFLOW"
 if ! [ -d "$DIR" ]; then
     mkdir ${DIR}
