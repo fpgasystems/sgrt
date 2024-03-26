@@ -29,20 +29,14 @@ get_num_configs(){
 
 check_on_changes(){
 
-    results=$1
-
-    sum=0
-    for result in "${results[@]}"; do
-        sum=$((sum + result))
+    results=("$@")  # Get all arguments into the results array
+    for element in "${results[@]}"; do
+        if [ "$element" -ne 1 ]; then
+            echo 1
+            return
+        fi
     done
-
-    count=${#results[@]}  # Count the number of elements in the array
-
-    if [ "$sum" -eq "$count" ]; then  # Compare if $sum equals the count
-        echo "0" #there are no changes (1 1 1) = 3
-    else
-        echo "1"
-    fi
+    echo 0
 
 }
 
@@ -457,8 +451,8 @@ for ((i = 0; i < ${#device_indexes[@]}; i++)); do
     device_config_equal=$($CLI_PATH/common/compare_files "$DIR/_device_config.hpp" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name/_${xclbin_name}_device_config.hpp")
     cfg_equal=$($CLI_PATH/common/compare_files "$DIR/$xclbin_name.cfg" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name/_${xclbin_name}.cfg")
 
-    echo "Device equal $xclbin_name: $device_config_equal"
-    echo "CFG equal $xclbin_name: $cfg_equal"
+    echo "device_config equal $xclbin_name: $device_config_equal"
+    echo ".cfg equal $xclbin_name: $cfg_equal"
 
     #add results to arrays
     device_config_equal_results+=("$device_config_equal")
@@ -525,6 +519,22 @@ esac
 device_changes=$(check_on_changes $device_config_equal_results)
 cfg_changes=$(check_on_changes $cfg_equal_results)
 
+echo "device_config changes: $device_changes"
+echo ".cfg changes: $cfg_changes"
+
+for ((i = 0; i < ${#device_indexes[@]}; i++)); do
+
+    device_config_equal_i="${device_config_equal_results[i]}"
+    cfg_equal_i="${cfg_equal_results[i]}"
+    xclbin_name_i="${xclbin_names[i]}"
+
+    echo $i
+    echo $xclbin_name_i
+    echo $device_config_equal_i
+    echo $cfg_equal_i
+
+done
+
 #print re-build report
 if [ "$device_changes" = "1" ] || [ "$cfg_changes" = "1" ]; then
 
@@ -537,7 +547,7 @@ if [ "$device_changes" = "1" ] || [ "$cfg_changes" = "1" ]; then
         xclbin_name_i="${xclbin_names[i]}"
 
 
-        if [ "$device_config_equal_i" = "0" ] || [ "$cfg_equal_i" = "1" ]; then
+        if [ "$device_config_equal_i" = "0" ] || [ "$cfg_equal_i" = "0" ]; then
             echo $xclbin_name_i
         fi
 
