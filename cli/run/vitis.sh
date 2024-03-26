@@ -397,6 +397,7 @@ done < "$DIR/sp"
 
 #check for build directories
 for ((i = 0; i < ${#device_indexes[@]}; i++)); do
+    
     #map to sp
     device_index="${device_indexes[i]}"
     xclbin_name="${xclbin_names[i]}"
@@ -411,6 +412,7 @@ for ((i = 0; i < ${#device_indexes[@]}; i++)); do
         echo ""
         exit
     fi
+
 done
 
 #change directory
@@ -527,10 +529,11 @@ if [ "$device_changes" = "1" ] || [ "$cfg_changes" = "1" ]; then
     echo ""
     for ((i = 0; i < ${#device_indexes[@]}; i++)); do
 
+        #map to sp
         device_index_i="${device_indexes[i]}"
+        xclbin_name_i="${xclbin_names[i]}"
         device_config_equal_i="${device_config_equal_results[i]}"
         cfg_equal_i="${cfg_equal_results[i]}"
-        xclbin_name_i="${xclbin_names[i]}"
 
         #platform can be potentially different for each FPGA index
         platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index_i platform)
