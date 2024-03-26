@@ -403,10 +403,10 @@ for ((i = 0; i < ${#device_indexes[@]}; i++)); do
     xclbin_name="${xclbin_names[i]}"
 
     #get platform
-    platform_name=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
+    platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 
     #check for build directory
-    if ! [ -d "$DIR/build_dir.$xclbin_name.$target_name.$platform_name" ]; then
+    if ! [ -d "$DIR/build_dir.$xclbin_name.$target_name.$platform_name_i" ]; then
         echo ""
         echo "You must build your project first! ${bold}Please, use sgutil build vitis${normal}"
         echo ""
@@ -447,11 +447,11 @@ for ((i = 0; i < ${#device_indexes[@]}; i++)); do
     xclbin_name="${xclbin_names[i]}"
 
     #get platform
-    platform_name=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
+    platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 
     #compare files
-    device_config_equal=$($CLI_PATH/common/compare_files "$DIR/_device_config.hpp" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name/_${xclbin_name}_device_config.hpp")
-    cfg_equal=$($CLI_PATH/common/compare_files "$DIR/$xclbin_name.cfg" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name/_${xclbin_name}.cfg")
+    device_config_equal=$($CLI_PATH/common/compare_files "$DIR/_device_config.hpp" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name_i/_${xclbin_name}_device_config.hpp")
+    cfg_equal=$($CLI_PATH/common/compare_files "$DIR/$xclbin_name.cfg" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name_i/_${xclbin_name}.cfg")
 
     #echo "device_config equal $xclbin_name: $device_config_equal"
     #echo ".cfg equal $xclbin_name: $cfg_equal"
