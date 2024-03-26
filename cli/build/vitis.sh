@@ -45,8 +45,8 @@ project_found=""
 project_name=""
 target_found=""
 target_name=""
-platform_found=""
-platform_name=""
+#platform_found=""
+#platform_name=""
 #xclbin_found=""
 #xclbin_name=""
 if [ "$flags" = "" ]; then
@@ -75,18 +75,18 @@ if [ "$flags" = "" ]; then
     echo ""
     target_name=$($CLI_PATH/common/target_dialog $target_host)
     #platform/xclbin dialogs
-    if [ "$target_name" != "host" ]; then
+    #if [ "$target_name" != "host" ]; then
         #platform_dialog
-        echo ""
-        echo "${bold}Please, choose your platform:${normal}"
-        echo ""
-        result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
-        platform_found=$(echo "$result" | sed -n '1p')
-        platform_name=$(echo "$result" | sed -n '2p')
-        multiple_platforms=$(echo "$result" | sed -n '3p')
-        if [[ $multiple_platforms = "0" ]]; then
-            echo $platform_name
-        fi
+        #echo ""
+        #echo "${bold}Please, choose your platform:${normal}"
+        #echo ""
+        #result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
+        #platform_found=$(echo "$result" | sed -n '1p')
+        #platform_name=$(echo "$result" | sed -n '2p')
+        #multiple_platforms=$(echo "$result" | sed -n '3p')
+        #if [[ $multiple_platforms = "0" ]]; then
+        #    echo $platform_name
+        #fi
         #xclbin_dialog
         #echo ""
         #echo "${bold}Please, choose your XCLBIN:${normal}"
@@ -98,7 +98,7 @@ if [ "$flags" = "" ]; then
         #if [[ $multiple_xclbins = "0" ]]; then
         #    echo $xclbin_name
         #fi
-    fi
+    #fi
 else
     #project_dialog_check
     result="$("$CLI_PATH/common/project_dialog_check" "${flags[@]}")"
@@ -119,14 +119,14 @@ else
         exit
     fi
     #platform_dialog_check
-    result="$("$CLI_PATH/common/platform_dialog_check" "${flags[@]}")"
-    platform_found=$(echo "$result" | sed -n '1p')
-    platform_name=$(echo "$result" | sed -n '2p')    
-    #forbidden combinations (1/2)
-    if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
-        $CLI_PATH/sgutil build vitis -h
-        exit
-    fi
+    #result="$("$CLI_PATH/common/platform_dialog_check" "${flags[@]}")"
+    #platform_found=$(echo "$result" | sed -n '1p')
+    #platform_name=$(echo "$result" | sed -n '2p')    
+    ##forbidden combinations (1/2)
+    #if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
+    #    $CLI_PATH/sgutil build vitis -h
+    #    exit
+    #fi
     #forbidden combinations (2/2)
     if ([ "$target_found" = "1" ] && [ "$target_name" = "host" ]) && [ "$platform_found" = "1" ]; then 
         $CLI_PATH/sgutil build vitis -h
@@ -171,20 +171,20 @@ else
         target_name=$($CLI_PATH/common/target_dialog $target_host)
     fi
     #platform and xclbin_dialog (forgotten mandatory 2)
-    if [ "$target_name" != "host" ]; then
-        #platform_dialog
-        if [[ $platform_found = "0" ]]; then
-            echo ""
-            echo "${bold}Please, choose your platform:${normal}"
-            echo ""
-            result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
-            platform_found=$(echo "$result" | sed -n '1p')
-            platform_name=$(echo "$result" | sed -n '2p')
-            multiple_platforms=$(echo "$result" | sed -n '3p')
-            if [[ $multiple_platforms = "0" ]]; then
-                echo $platform_name
-            fi
-        fi
+    #if [ "$target_name" != "host" ]; then
+        ##platform_dialog
+        #if [[ $platform_found = "0" ]]; then
+        #    echo ""
+        #    echo "${bold}Please, choose your platform:${normal}"
+        #    echo ""
+        #    result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
+        #    platform_found=$(echo "$result" | sed -n '1p')
+        #    platform_name=$(echo "$result" | sed -n '2p')
+        #    multiple_platforms=$(echo "$result" | sed -n '3p')
+        #    if [[ $multiple_platforms = "0" ]]; then
+        #        echo $platform_name
+        #    fi
+        #fi
         #xclbin_dialog
         #if [[ $xclbin_found = "0" ]]; then
         #    echo ""
@@ -198,7 +198,7 @@ else
         #        echo $xclbin_name
         #    fi
         #fi
-    fi
+    #fi
 fi
 
 #define directories (1)
@@ -304,10 +304,14 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
     
         #map to sp
+        device_index_i="${device_indexes[i]}"
         xclbin_i="${xclbin_names[i]}"
+
+        #platform can be potentially different for each FPGA index
+        platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index_i platform)
         
         #define directories (2)
-        XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name"
+        XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name_i"
 
         #build/print upon existing directory
         if ! [ -d "$XCLBIN_BUILD_DIR" ]; then
@@ -323,10 +327,10 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
 
             # XCLBIN_BUILD_DIR does not exist
             #echo ""
-            echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_i" 
+            echo "make build TARGET=$target_name PLATFORM=$platform_name_i API_PATH=$API_PATH XCLBIN_NAME=$xclbin_i" 
             echo ""
             export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
-            eval "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_i"
+            eval "make build TARGET=$target_name PLATFORM=$platform_name_i API_PATH=$API_PATH XCLBIN_NAME=$xclbin_i"
             echo ""
 
             #copy device_config.hpp and .cfg for reference (will be compared to _device_config.hpp and .cfg)
@@ -336,12 +340,12 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
             #send email at the end
             if [ "$target_name" = "hw" ]; then
                 user_email=$USER@ethz.ch
-                echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name / XCLBIN=$xclbin_i) is done!" | sendmail $user_email
+                echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name_i / XCLBIN=$xclbin_i) is done!" | sendmail $user_email
             fi
 
         else
 
-            echo "The XCLBIN $xclbin_i.$target_name.$platform_name already exists!"
+            echo "The XCLBIN $xclbin_i.$target_name.$platform_name_i already exists!"
             echo ""
 
         fi
