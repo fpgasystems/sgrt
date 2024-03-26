@@ -44,7 +44,7 @@ for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
 
     #delete first
     if [ -f "$output_dir/$xclbin_i.cfg" ]; then
-        rm $output_dir/$xclbin_i.cfg
+        rm -f $output_dir/$xclbin_i.cfg
     fi
     
     #create <xclbin.cfg>
@@ -63,6 +63,8 @@ for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
     #sp
     grep "sp=$xclbin_i" $output_dir/sp_aux >> $output_dir/$xclbin_i.cfg
 
+    #change permissions (we avoid that user directly uses vi)
+    chmod a-w "$output_dir/$xclbin_i.cfg"
 
 done
 
