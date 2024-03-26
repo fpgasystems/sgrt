@@ -274,8 +274,20 @@ fi
 #xclbin compilation
 if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name" == "hw" ]]; then
 
-    #generate .cfg for all xclbins and store xclbin_names as a vector
-    xclbin_names=( $($CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR) )
+    #read from sp (we build all the xclbins defined in sp)
+    declare -a device_indexes
+    declare -a xclbin_names
+
+    while read -r line; do
+        column_1=$(echo "$line" | awk '{print $1}')
+        column_2=$(echo "$line" | awk '{print $2}')
+        device_indexes+=("$column_1")
+        xclbin_names+=("$column_2")
+    done < "$DIR/sp"
+
+    #generate .cfg for all xclbins defined in sp
+    #xclbin_names=( $($CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR) )
+    $CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR > /dev/null
     
     #check on nk
     if [ "${#xclbin_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
@@ -285,25 +297,30 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         exit
     fi
 
+    echo "${bold}XCLBIN compilation and linking:${normal}"
+    echo ""
+
     #compile for each xclbin_i
     for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
     
-        #map to nk
+        #map to sp
         xclbin_i="${xclbin_names[i]}"
         
         #define directories (2)
         XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name"
 
-        #print .cfg contents
-        echo "${bold}Using $xclbin_i.cfg configuration file:${normal}"
-        echo ""
-        cat $xclbin_i.cfg
-        echo ""
-        
-        echo "${bold}XCLBIN $xclbin_i compilation and linking:${normal}"
-        echo ""
-
+        #build/print upon existing directory
         if ! [ -d "$XCLBIN_BUILD_DIR" ]; then
+
+            #print .cfg contents
+            echo "${bold}Using $xclbin_i.cfg configuration file:${normal}"
+            echo ""
+            cat $xclbin_i.cfg
+            echo ""
+            
+            #echo "${bold}XCLBIN $xclbin_i compilation and linking:${normal}"
+            #echo ""
+
             # XCLBIN_BUILD_DIR does not exist
             #echo ""
             echo "make build TARGET=$target_name PLATFORM=$platform_name API_PATH=$API_PATH XCLBIN_NAME=$xclbin_i" 
@@ -324,8 +341,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
 
         else
 
-            echo ""
-            echo "The XCLBIN $xclbin_name.$target_name.$platform_name already exists!"
+            echo "The XCLBIN $xclbin_i.$target_name.$platform_name already exists!"
             echo ""
 
         fi
