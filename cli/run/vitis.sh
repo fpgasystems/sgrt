@@ -481,13 +481,30 @@ case "$target_name" in
         nd=$(cat $DIR/sp | wc -l)
 
         #create emconfig.json (this was automatically done in sgutil build vitis when using make all and not make build)
-        emconfigutil --platform $platform_name --od ./_x.$xclbin_name.$target_name.$platform_name --nd $nd
-        echo ""
+        #emconfigutil --platform $platform_name --od ./_x.$xclbin_name.$target_name.$platform_name --nd $nd
+        #echo ""
 
-        echo "cp -rf ./_x.$xclbin_name.$target_name.$platform_name/emconfig.json ."
+        #create emconfig.json (this was automatically done in sgutil build vitis when using make all and not make build)
+        for ((i = 0; i < ${#device_indexes[@]}; i++)); do
+
+            #map to sp
+            device_index_i="${device_indexes[i]}"
+            xclbin_name_i="${xclbin_names[i]}"
+
+            #get platform
+            platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index_i platform)
+
+            #generate emconfig.json for each platform
+            emconfigutil --platform $platform_name_i --od ./_x.$xclbin_name_i.$target_name.$platform_name_i --nd 1
+
+        done
+
+
+
+        #echo "cp -rf ./_x.$xclbin_name.$target_name.$platform_name/emconfig.json ."
         echo "XCL_EMULATION_MODE=$target_name ./host $config_name" # -p $DIR # $project_name 
         echo ""
-        eval "cp -rf ./_x.$xclbin_name.$target_name.$platform_name/emconfig.json ."
+        #eval "cp -rf ./_x.$xclbin_name.$target_name.$platform_name/emconfig.json ."
         eval "XCL_EMULATION_MODE=$target_name ./host $config_name" # -p $DIR # $project_name
         echo ""
         ;;
