@@ -54,23 +54,12 @@ merge_emconfig_json() {
     # Extract the JSON file paths from the argument
     read -ra json_files_array <<< "$json_files"
 
-    # Loop through each JSON file and merge the device objects
-    #for file_path in "${json_files_array[@]}"; do
-    #    cat $file_path
-    #done
-
     #get number of files
     array_length=${#json_files_array[@]}
 
     # Loop through each JSON file in the array
     for ((i=0; i<$array_length; i++)); do
         file_path="${json_files_array[$i]}"
-        
-
-        ## Check if the current file is the last element in the array
-        #if [[ $i -eq $(($array_length - 1)) ]]; then
-        #  #some code  
-        #fi
 
         #append a comma (not the last file)
         if [[ $i -ne $(($array_length - 1)) ]]; then
@@ -80,14 +69,7 @@ merge_emconfig_json() {
         # Print the contents of the current file
         cat "$file_path"
 
-        # Check if the current file is not the last element in the array
-        #if [[ $i -lt $(($array_length - 1)) ]]; then
-        #    echo -n ","  # Add a comma after the contents if it's not the last element
-        #fi
-    done > "emconfig_devices.json" #"$output_file"  # Redirect the output to the merged output file
-
-    #add a comma between devices
-    #sed -i 's/}\n{/},\n{/g' emconfig_aux.json
+    done > "emconfig_devices.json"
 
     # Initialize variables to hold the merged JSON strings
     merged_json='{
