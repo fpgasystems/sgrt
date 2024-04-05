@@ -98,6 +98,12 @@ merge_emconfig_json() {
     devices_content=$(<emconfig_devices.json)
     awk -v content="$devices_content" '{gsub(/##YOUR_DEVICES##/, content)}1' $output_file > temp.json && mv temp.json $output_file
 
+    #number of devices
+    nd=$array_length
+
+    # Replace "NumBoards": "2" with "NumBoards": "$nd" using sed
+    sed -i "s/\"NumBoards\": \"2\"/\"NumBoards\": \"$nd\"/g" "$output_file"
+
 }
 
 #constants
