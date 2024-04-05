@@ -101,8 +101,11 @@ merge_emconfig_json() {
     #number of devices
     nd=$array_length
 
-    # Replace "NumBoards": "2" with "NumBoards": "$nd" using sed
+    #replace "NumBoards": "2" with "NumBoards": "$nd" using sed
     sed -i "s/\"NumBoards\": \"2\"/\"NumBoards\": \"$nd\"/g" "$output_file"
+
+    #delete
+    rm emconfig_devices.json
 
 }
 
@@ -565,9 +568,6 @@ case "$target_name" in
             json_files+="./_x.$xclbin_name_i.$target_name.$platform_name_i/emconfig_device.json "
             
         done
-
-        #get the number of devices for emconfigutil
-        nd=$(cat $DIR/sp | wc -l)
 
         #merge emconfigs
         merge_emconfig_json "$json_files" "./emconfig.json" 
