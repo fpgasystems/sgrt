@@ -91,8 +91,6 @@ merge_emconfig_json() {
         "ExpandedPR": "false"
     }
 }'
-
-#                   ##YOUR_DEVICES##
     #write merged_json
     echo "$merged_json" > "$output_file"
 
@@ -515,9 +513,6 @@ for ((i = 0; i < ${#device_indexes[@]}; i++)); do
     device_config_equal=$($CLI_PATH/common/compare_files "$DIR/_device_config.hpp" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name_i/_${xclbin_name}_device_config.hpp")
     cfg_equal=$($CLI_PATH/common/compare_files "$DIR/$xclbin_name.cfg" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name_i/_${xclbin_name}.cfg")
 
-    #echo "device_config equal $xclbin_name: $device_config_equal"
-    #echo ".cfg equal $xclbin_name: $cfg_equal"
-
     #add results to arrays
     device_config_equal_results+=("$device_config_equal")
     cfg_equal_results+=("$cfg_equal")
@@ -537,10 +532,6 @@ case "$target_name" in
         #execution
         cd $DIR
         echo "${bold}Running accelerated application:${normal}"
-        #echo ""
-
-        #create emconfig.json (this was automatically done in sgutil build vitis when using make all and not make build)
-        #emconfigutil --platform $platform_name --od ./_x.$xclbin_name.$target_name.$platform_name --nd $nd
         #echo ""
 
         #create emconfig.json (this was automatically done in sgutil build vitis when using make all and not make build)
@@ -571,8 +562,6 @@ case "$target_name" in
 
         #get the number of devices for emconfigutil
         nd=$(cat $DIR/sp | wc -l)
-
-        echo "Cadena es $json_files"
 
         #merge emconfigs
         merge_emconfig_json "$json_files" "./emconfig.json" 
