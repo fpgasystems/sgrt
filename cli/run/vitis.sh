@@ -62,15 +62,21 @@ merge_emconfig_json() {
     for ((i=0; i<$array_length; i++)); do
         file_path="${json_files_array[$i]}"
 
+        #copy to temporal file
+        cp -f $file_path emconfig.temp
+
         #append a comma (not the last file)
         if [[ $i -ne $(($array_length - 1)) ]]; then
-            sed -i '$s/$/,/' $file_path    
+            sed -i '$s/$/,/' emconfig.temp    
         fi
 
         # Print the contents of the current file
-        cat "$file_path"
+        cat emconfig.temp
 
     done > "emconfig_devices.json"
+
+    #remove temporal file
+    rm -f emconfig.temp
 
     # Initialize variables to hold the merged JSON strings
     merged_json='{
@@ -571,17 +577,22 @@ case "$target_name" in
                 sed -n '/"Devices": \[/,/],/ { /"Devices": \[/! { /]/! p; }; }' ./emconfigs/emconfig.json > ./emconfigs/emconfig_$platform_name_i.json
 
                 #collect emconfigs paths
-                json_files+="./emconfigs/emconfig_$platform_name_i.json "
+                #json_files+="./emconfigs/emconfig_$platform_name_i.json "
 
             fi
 
             #collect emconfigs paths
             #json_files+="./_x.$xclbin_name_i.$target_name.$platform_name_i/emconfig_device.json "
-            
+            json_files+="./emconfigs/emconfig_$platform_name_i.json "
             
         done
 
         echo "La cadena es $json_files"
+
+        #remove duplicates in json_files
+        json_files=$(echo "${json_files[@]}" | awk 'BEGIN {RS=" ";} !a[$0]++ {printf "%s ", $0}')
+
+        echo "La cadena simplificada es $json_files"
 
         #get the number of devices for emconfigutil
         nd=$(cat $DIR/sp | wc -l)
