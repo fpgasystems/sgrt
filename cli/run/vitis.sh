@@ -43,9 +43,10 @@ check_on_changes(){
 merge_emconfig_json() {
 
     # Read input parameters
-    json_files="$1"
-    nd="$2"
-    output_file="$3"
+    xrt_version="$1"
+    json_files="$2"
+    nd="$3"
+    output_file="$4"
 
     # Extract the JSON file paths from the argument
     read -ra json_files_array <<< "$json_files"
@@ -100,6 +101,9 @@ merge_emconfig_json() {
     devices_content=$(<emconfig_devices.json)
     awk -v content="$devices_content" '{gsub(/##YOUR_DEVICES##/, content)}1' $output_file > temp.json && mv temp.json $output_file
 
+    #replace "ToolVersion": "2022.2" with "ToolVersion": "$version" using sed
+    sed -i "s/\"ToolVersion\": \"2022.2\"/\"ToolVersion\": \"$xrt_version\"/g" "$output_file"
+    
     #replace "NumBoards": "2" with "NumBoards": "$nd" using sed
     sed -i "s/\"NumBoards\": \"2\"/\"NumBoards\": \"$nd\"/g" "$output_file"
 
@@ -580,7 +584,7 @@ case "$target_name" in
         nd=$(cat $DIR/sp | wc -l)
 
         #merge emconfigs
-        merge_emconfig_json "$json_files" "$nd" "./emconfig.json"
+        merge_emconfig_json "$xrt_version" "$json_files" "$nd" "./emconfig.json"
 
         #echo "cp -rf ./_x.$xclbin_name.$target_name.$platform_name/emconfig.json ."
         echo "XCL_EMULATION_MODE=$target_name ./host $config_name" # -p $DIR # $project_name 
