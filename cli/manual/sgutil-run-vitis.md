@@ -17,11 +17,6 @@
   &nbsp; &nbsp; Specifies a configuration of your choice.
 </p>
 
-<code>    --platform</code>
-<p>
-  &nbsp; &nbsp; Xilinx platform (according to sgutil get platform).
-</p>
-
 <code>    --project</code>
 <p>
   &nbsp; &nbsp; Specifies your Vitis project name.

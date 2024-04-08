@@ -155,7 +155,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--project --help" -- ${cur}))
                             ;;
                         vitis)
-                            COMPREPLY=($(compgen -W "--config --platform --project --target --help" -- ${cur})) #--device 
+                            COMPREPLY=($(compgen -W "--config --project --target --help" -- ${cur})) #--device 
                             ;;
                     esac
                     ;;

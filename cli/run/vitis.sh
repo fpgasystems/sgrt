@@ -218,35 +218,35 @@ if [ "$flags" = "" ]; then
     echo ""
     target_name=$($CLI_PATH/common/target_dialog)
     #platform or device dialog
-    if [ "$target_name" = "sw_emu" ] || [ "$target_name" = "hw_emu" ]; then
-        #platform_dialog
-        echo ""
-        echo "${bold}Please, choose your platform:${normal}"
-        echo ""
-        result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
-        platform_found=$(echo "$result" | sed -n '1p')
-        platform_name=$(echo "$result" | sed -n '2p')
-        multiple_platforms=$(echo "$result" | sed -n '3p')
-        if [[ $multiple_platforms = "0" ]]; then
-            echo $platform_name
-        fi
-        #set default device
-        #device_found="1"
-        #device_index="1"
-    #elif [ "$target_name" = "hw" ]; then 
-    #    #device_dialog
-    #    if [[ $multiple_devices = "0" ]]; then
-    #        device_found="1"
-    #        device_index="1"
-    #    else
-    #        echo ""
-    #        echo "${bold}Please, choose your device:${normal}"
-    #        echo ""
-    #        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
-    #        device_found=$(echo "$result" | sed -n '1p')
-    #        device_index=$(echo "$result" | sed -n '2p')
-    #    fi    
-    fi    
+    #if [ "$target_name" = "sw_emu" ] || [ "$target_name" = "hw_emu" ]; then
+    #    #platform_dialog
+    #    echo ""
+    #    echo "${bold}Please, choose your platform:${normal}"
+    #    echo ""
+    #    result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
+    #    platform_found=$(echo "$result" | sed -n '1p')
+    #    platform_name=$(echo "$result" | sed -n '2p')
+    #    multiple_platforms=$(echo "$result" | sed -n '3p')
+    #    if [[ $multiple_platforms = "0" ]]; then
+    #        echo $platform_name
+    #    fi
+    #    #set default device
+    #    #device_found="1"
+    #    #device_index="1"
+    ##elif [ "$target_name" = "hw" ]; then 
+    ##    #device_dialog
+    ##    if [[ $multiple_devices = "0" ]]; then
+    ##        device_found="1"
+    ##        device_index="1"
+    ##    else
+    ##        echo ""
+    ##        echo "${bold}Please, choose your device:${normal}"
+    ##        echo ""
+    ##        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+    ##        device_found=$(echo "$result" | sed -n '1p')
+    ##        device_index=$(echo "$result" | sed -n '2p')
+    ##    fi    
+    #fi    
 else
     #project_dialog_check
     result="$("$CLI_PATH/common/project_dialog_check" "${flags[@]}")"
@@ -276,14 +276,14 @@ else
         exit
     fi
     #platform_dialog_check
-    result="$("$CLI_PATH/common/platform_dialog_check" "${flags[@]}")"
-    platform_found=$(echo "$result" | sed -n '1p')
-    platform_name=$(echo "$result" | sed -n '2p')    
-    #forbidden combinations
-    if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
-        $CLI_PATH/sgutil run vitis -h
-        exit
-    fi
+    #result="$("$CLI_PATH/common/platform_dialog_check" "${flags[@]}")"
+    #platform_found=$(echo "$result" | sed -n '1p')
+    #platform_name=$(echo "$result" | sed -n '2p')    
+    ##forbidden combinations
+    #if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
+    #    $CLI_PATH/sgutil run vitis -h
+    #    exit
+    #fi
     #device_dialog_check
     #result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
     #device_found=$(echo "$result" | sed -n '1p')
@@ -299,10 +299,10 @@ else
     #    exit
     #fi
     #forbidden target/device combinations (2)
-    if [[ "$target_name" = "hw" ]] && [[ "$platform_found" = "1" ]]; then
-        $CLI_PATH/sgutil run vitis -h
-        exit
-    fi
+    #if [[ "$target_name" = "hw" ]] && [[ "$platform_found" = "1" ]]; then
+    #    $CLI_PATH/sgutil run vitis -h
+    #    exit
+    #fi
     #header (2/2)
     echo ""
     echo "${bold}sgutil run vitis${normal}"
@@ -357,38 +357,38 @@ else
         target_name=$($CLI_PATH/common/target_dialog)
     fi
     #platform or device dialog
-    if [ "$target_name" = "sw_emu" ] || [ "$target_name" = "hw_emu" ]; then
-        #platform_dialog (forgotten mandatory emu)
-        if [[ $platform_found = "0" ]]; then
-            #echo ""
-            echo "${bold}Please, choose your platform:${normal}"
-            echo ""
-            result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
-            platform_found=$(echo "$result" | sed -n '1p')
-            platform_name=$(echo "$result" | sed -n '2p')
-            multiple_platforms=$(echo "$result" | sed -n '3p')
-            if [[ $multiple_platforms = "0" ]]; then
-                echo $platform_name
-            fi
-        fi
-        ##set default device
-        #device_found="1"
-        #device_index="1"
-    #elif [ "$target_name" = "hw" ]; then 
-    #    #device_dialog (forgotten mandatory hw)
-    #    if [[ $multiple_devices = "0" ]]; then
-    #        device_found="1"
-    #        device_index="1"
-    #    elif [[ $device_found = "0" ]]; then
+    #if [ "$target_name" = "sw_emu" ] || [ "$target_name" = "hw_emu" ]; then
+    #    #platform_dialog (forgotten mandatory emu)
+    #    if [[ $platform_found = "0" ]]; then
+    #        #echo ""
+    #        echo "${bold}Please, choose your platform:${normal}"
     #        echo ""
-    #        echo "${bold}Please, choose your device:${normal}"
-    #        echo ""
-    #        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
-    #        device_found=$(echo "$result" | sed -n '1p')
-    #        device_index=$(echo "$result" | sed -n '2p')
-    #        echo ""
+    #        result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
+    #        platform_found=$(echo "$result" | sed -n '1p')
+    #        platform_name=$(echo "$result" | sed -n '2p')
+    #        multiple_platforms=$(echo "$result" | sed -n '3p')
+    #        if [[ $multiple_platforms = "0" ]]; then
+    #            echo $platform_name
+    #        fi
     #    fi
-    fi
+    #    ##set default device
+    #    #device_found="1"
+    #    #device_index="1"
+    ##elif [ "$target_name" = "hw" ]; then 
+    ##    #device_dialog (forgotten mandatory hw)
+    ##    if [[ $multiple_devices = "0" ]]; then
+    ##        device_found="1"
+    ##        device_index="1"
+    ##    elif [[ $device_found = "0" ]]; then
+    ##        echo ""
+    ##        echo "${bold}Please, choose your device:${normal}"
+    ##        echo ""
+    ##        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+    ##        device_found=$(echo "$result" | sed -n '1p')
+    ##        device_index=$(echo "$result" | sed -n '2p')
+    ##        echo ""
+    ##    fi
+    #fi
 fi
 
 #define directories (1)
