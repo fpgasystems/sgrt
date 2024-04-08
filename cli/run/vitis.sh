@@ -41,11 +41,6 @@ check_on_changes(){
 }
 
 merge_emconfig_json() {
-    # Check if input file paths are provided
-    #if [ "$#" -ne 2 ]; then
-    #    echo "Usage: merge_emconfig_json <json_files> <output_file>"
-    #    return 1
-    #fi
 
     # Read input parameters
     json_files="$1"
@@ -104,9 +99,6 @@ merge_emconfig_json() {
     #replace ###YOUR_DEVICES### with emconfig_devices.json
     devices_content=$(<emconfig_devices.json)
     awk -v content="$devices_content" '{gsub(/##YOUR_DEVICES##/, content)}1' $output_file > temp.json && mv temp.json $output_file
-
-    #number of devices
-    #nd=$array_length
 
     #replace "NumBoards": "2" with "NumBoards": "$nd" using sed
     sed -i "s/\"NumBoards\": \"2\"/\"NumBoards\": \"$nd\"/g" "$output_file"
@@ -567,32 +559,22 @@ case "$target_name" in
             platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index_i platform)
 
             #generate emconfig.json for each platform
-            #if [ ! -e "./_x.$xclbin_name_i.$target_name.$platform_name_i/emconfig.json" ]; then
             if [ ! -e "./emconfigs/emconfig_$platform_name_i.json" ]; then
                 #generate emconfig.json
-                emconfigutil --platform $platform_name_i --od ./emconfigs --nd 1 #_x.$xclbin_name_i.$target_name.$platform_name_i
+                emconfigutil --platform $platform_name_i --od ./emconfigs --nd 1
 
                 #keep only the device section
-                #sed -n '/"Devices": \[/,/],/ { /"Devices": \[/! { /]/! p; }; }' ./_x.$xclbin_name_i.$target_name.$platform_name_i/emconfig.json > ./_x.$xclbin_name_i.$target_name.$platform_name_i/emconfig_device.json
                 sed -n '/"Devices": \[/,/],/ { /"Devices": \[/! { /]/! p; }; }' ./emconfigs/emconfig.json > ./emconfigs/emconfig_$platform_name_i.json
-
-                #collect emconfigs paths
-                #json_files+="./emconfigs/emconfig_$platform_name_i.json "
 
             fi
 
             #collect emconfigs paths
-            #json_files+="./_x.$xclbin_name_i.$target_name.$platform_name_i/emconfig_device.json "
             json_files+="./emconfigs/emconfig_$platform_name_i.json "
             
         done
 
-        echo "La cadena es $json_files"
-
         #remove duplicates in json_files
         json_files=$(echo "${json_files[@]}" | awk 'BEGIN {RS=" ";} !a[$0]++ {printf "%s ", $0}')
-
-        echo "La cadena simplificada es $json_files"
 
         #get the number of devices for emconfigutil
         nd=$(cat $DIR/sp | wc -l)
