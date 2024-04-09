@@ -5,6 +5,8 @@ normal=$(tput sgr0)
 
 #constants
 MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
+XCLBIN_NAME_SP_COLUMN=2
+XCLBIN_NAME_NK_COLUMN=1
 
 #change to xclbin directory
 #cd $MY_PROJECT_PATH/src/xclbin
@@ -115,6 +117,10 @@ while true; do
                 if [ -d "$MY_PROJECT_PATH/$file.hw.$platform_name_i" ]; then
                     rm -rf $MY_PROJECT_PATH/$file.hw.$platform_name_i
                 fi
+
+                # Update sp and nk files
+                awk -v xclbin_name="$file" -v col="$XCLBIN_NAME_SP_COLUMN" '$col != xclbin_name && NF' sp > temp.txt && mv temp.txt sp
+                awk -v xclbin_name="$file" -v col="$XCLBIN_NAME_NK_COLUMN" '$col != xclbin_name && NF' nk > temp.txt && mv temp.txt nk
             elif [[ "$file" == *".sw_emu."* ]] || [[ "$file" == *".hw_emu."* ]] || [[ "$file" == *".hw."* ]]; then
                 #we only delete builds
                 rm -rf $MY_PROJECT_PATH/$file
