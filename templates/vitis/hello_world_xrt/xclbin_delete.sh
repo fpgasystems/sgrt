@@ -83,7 +83,7 @@ select file in "${files[@]}"; do
 done
 
 echo ""
-echo "${bold}You are about to delete $file. Do you want to continue (y/n)?${normal}"
+echo "You are about to delete ${bold}$file.${normal} Do you want to continue (y/n)?"
 while true; do
     read -p "" yn
     case $yn in
@@ -94,7 +94,14 @@ while true; do
                 file=${file%.cpp}
                 
                 #delete .cpp
-                rm $MY_PROJECT_PATH/src/$file.cpp
+                if [ -f "$MY_PROJECT_PATH/src/xclbin/$file.cpp" ]; then
+                    rm $MY_PROJECT_PATH/src/xclbin/$file.cpp
+                fi
+                
+                #delete .cfg
+                if [ -f "$MY_PROJECT_PATH/$file.cfg" ]; then
+                    rm -f $MY_PROJECT_PATH/$file.cfg
+                fi
                 
                 #delete builds    
                 if [ -d "$MY_PROJECT_PATH/$file.sw_emu.$platform_name_i" ]; then
