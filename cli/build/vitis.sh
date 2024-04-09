@@ -353,6 +353,14 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
 
     done
 
+    #manage compilation logs
+    if ! [ -d "$DIR/logs" ]; then
+        mkdir $DIR/logs
+    fi
+
+    #move
+    mv $DIR/v++_*.log $DIR/logs
+
     #remove sp_aux
     #if [ -f "sp_aux" ]; then
     #    rm "sp_aux"
