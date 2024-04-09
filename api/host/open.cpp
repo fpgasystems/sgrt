@@ -122,7 +122,8 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
     device.platform = sgutil_get(device.device_index, PLATFORM);
     
     // set binaryFile
-    std::string binaryFile = project_path + "/build_dir." + xclbin_name + "." + target + "." + device.platform + "/" + xclbin_name + ".xclbin"; // get_target(emulationMode)
+    //std::string binaryFile = project_path + "/build_dir." + xclbin_name + "." + target + "." + device.platform + "/" + xclbin_name + ".xclbin"; // get_target(emulationMode)
+    std::string binaryFile = project_path + "/" + xclbin_name + "." + target + "." + device.platform + "/" + xclbin_name + ".xclbin"; // get_target(emulationMode)
     device.binaryFile = replace_string(binaryFile, project_path, ".");
 
     if (target == "sw_emu" || target == "hw_emu") {

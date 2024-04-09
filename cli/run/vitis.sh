@@ -165,7 +165,7 @@ multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
     echo ""
     #echo "You must build and/or program (target = hw) your project/device first! Please, use sgutil build/program vitis"
-    echo "You must build your project first! Please, use sgutil build vitis"
+    echo "You must build your project first! ${bold}Please, use sgutil build vitis${normal}"
     echo ""
     exit
 fi
@@ -326,7 +326,7 @@ else
     #num_configs=$(echo "$result" | sed -n '4p')
     num_configs=$(get_num_configs "$MY_PROJECTS_PATH/$WORKFLOW/$project_name")
     if [ $num_configs -eq 0 ]; then #${#configs_aux[@]}
-        echo "You must build your project first! Please, use sgutil build vitis"
+        echo "You must build your project first! ${bold}Please, use sgutil build vitis${normal}"
         echo ""
         exit
     fi
@@ -478,7 +478,8 @@ for ((i = 0; i < ${#device_indexes[@]}; i++)); do
     platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 
     #check for build directory
-    if ! [ -d "$DIR/build_dir.$xclbin_name.$target_name.$platform_name_i" ]; then
+    #if ! [ -d "$DIR/build_dir.$xclbin_name.$target_name.$platform_name_i" ]; then
+    if ! [ -d "$DIR/$xclbin_name.$target_name.$platform_name_i" ]; then
         echo ""
         echo "You must build your project first! ${bold}Please, use sgutil build vitis${normal}"
         echo ""
@@ -522,8 +523,10 @@ for ((i = 0; i < ${#device_indexes[@]}; i++)); do
     platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 
     #compare files
-    device_config_equal=$($CLI_PATH/common/compare_files "$DIR/_device_config.hpp" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name_i/_${xclbin_name}_device_config.hpp")
-    cfg_equal=$($CLI_PATH/common/compare_files "$DIR/$xclbin_name.cfg" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name_i/_${xclbin_name}.cfg")
+    #device_config_equal=$($CLI_PATH/common/compare_files "$DIR/_device_config.hpp" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name_i/_${xclbin_name}_device_config.hpp")
+    #cfg_equal=$($CLI_PATH/common/compare_files "$DIR/$xclbin_name.cfg" "$DIR/build_dir.$xclbin_name.$target_name.$platform_name_i/_${xclbin_name}.cfg")
+    device_config_equal=$($CLI_PATH/common/compare_files "$DIR/_device_config.hpp" "$DIR/$xclbin_name.$target_name.$platform_name_i/_${xclbin_name}_device_config.hpp")
+    cfg_equal=$($CLI_PATH/common/compare_files "$DIR/$xclbin_name.cfg" "$DIR/$xclbin_name.$target_name.$platform_name_i/_${xclbin_name}.cfg")
 
     #add results to arrays
     device_config_equal_results+=("$device_config_equal")

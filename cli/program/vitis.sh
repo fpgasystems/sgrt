@@ -252,7 +252,8 @@ fi
 platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 
 #define directories (2)
-APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_name.$TARGET.$platform"
+#APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_name.$TARGET.$platform"
+APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/$xclbin_name.$TARGET.$platform"
 
 #check for build directory
 if ! [ -d "$APP_BUILD_DIR" ]; then

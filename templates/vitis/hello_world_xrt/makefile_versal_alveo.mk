@@ -47,7 +47,7 @@ include ./utils.mk
 XCLBIN_NAME ?= vadd # Javier: this a default value if not provided
 
 TEMP_DIR := ./_x.$(XCLBIN_NAME).$(TARGET).$(XSA)
-BUILD_DIR := ./build_dir.$(XCLBIN_NAME).$(TARGET).$(XSA)
+BUILD_DIR := ./$(XCLBIN_NAME).$(TARGET).$(XSA)
 
 LINK_OUTPUT := $(BUILD_DIR)/$(XCLBIN_NAME).link.xsa
 PACKAGE_OUT = ./package.$(XCLBIN_NAME).$(TARGET)
@@ -148,7 +148,7 @@ clean:
 	-$(RMDIR) src/*.ll *v++* .Xil emconfig.json dltmp* xmltmp* *.log *.jou *.wcfg *.wdb
 
 cleanall: clean
-	-$(RMDIR) build_dir*
+	-$(RMDIR) $(XCLBIN_NAME).$(TARGET).$(XSA)
 	-$(RMDIR) package.*
 	-$(RMDIR) _x* *xclbin.run_summary qemu-memory-_* emulation _vimage pl* start_simulation.sh *.xclbin
 

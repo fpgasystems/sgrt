@@ -311,7 +311,8 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index_i platform)
         
         #define directories (2)
-        XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name_i"
+        #XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name_i"
+        XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/$xclbin_i.$target_name.$platform_name_i"
 
         #build/print upon existing directory
         if ! [ -d "$XCLBIN_BUILD_DIR" ]; then
