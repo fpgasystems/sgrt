@@ -357,9 +357,9 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     if ! [ -d "$DIR/logs" ]; then
         mkdir $DIR/logs
     fi
-
-    #move
+    
     mv $DIR/v++_*.log $DIR/logs
+    mv $DIR/xcd.log $DIR/logs
 
     #remove sp_aux
     #if [ -f "sp_aux" ]; then
