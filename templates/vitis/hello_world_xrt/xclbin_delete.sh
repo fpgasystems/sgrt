@@ -118,46 +118,22 @@ while true; do
                     rm -rf $MY_PROJECT_PATH/$file.hw.$platform_name_i
                 fi
 
-                #echo "Hola 1"
-
                 #delete logs
                 xclbin_name=$file
-
-                #if [ -d "$MY_PROJECT_PATH/logs" ]; then
-                    #echo "Hola 2"
-                    #echo "File: $file"
-                    #rm -f v++_$file*.log
-                #fi
 
                 # Update sp and nk files
                 awk -v xclbin_name="$file" -v col="$XCLBIN_NAME_SP_COLUMN" '$col != xclbin_name && NF' sp > temp.txt && mv temp.txt sp
                 awk -v xclbin_name="$file" -v col="$XCLBIN_NAME_NK_COLUMN" '$col != xclbin_name && NF' nk > temp.txt && mv temp.txt nk
             elif [[ "$file" == *".sw_emu."* ]] || [[ "$file" == *".hw_emu."* ]] || [[ "$file" == *".hw."* ]]; then
-                #we only delete builds
+                #wdelete builds
                 rm -rf $MY_PROJECT_PATH/$file
-
-                #echo "Hola 3"
 
                 #delete logs
                 xclbin_name=$(echo "$file" | cut -d '.' -f1)
-                #if [ -d "$MY_PROJECT_PATH/logs" ]; then
-                #    #echo "Hola 4"
-                #    #echo "File: $file"
-
-                #    xclbin_name=$(echo "$file" | cut -d '.' -f1)
-
-                #    #echo "File: $xclbin_name"
-
-                #    #rm -f v++_$xclbin_name*.log
-                #fi
             fi 
 
             #delete logs
             if [ -d "$MY_PROJECT_PATH/logs" ]; then
-                echo "Hola 4"
-                echo "File: $file"
-                echo "File: $xclbin_name"
-
                 rm -f "$MY_PROJECT_PATH/logs/v++_${xclbin_name}"*.log
             fi
             
