@@ -573,6 +573,11 @@ case "$target_name" in
                 #keep only the device section
                 sed -n '/"Devices": \[/,/],/ { /"Devices": \[/! { /]/! p; }; }' ./emconfigs/emconfig.json > ./emconfigs/emconfig_$platform_name_i.json
 
+                #remove other files
+                rm -f ./emconfigs/emconfig.json
+                rm -f ./emconfigs/ext_metadata.json
+                rm -f ./emconfigs/xsa.xml
+
             fi
 
             #collect emconfigs paths
