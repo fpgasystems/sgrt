@@ -7,11 +7,16 @@
 // XRT includes
 #include <xrt/xrt_device.h>
 #include "experimental/xrt_kernel.h"
+#include "experimental/xrt_bo.h"
 
 namespace device {
     struct vitis {
+
+        // XRT
+        xrt::device fpga; // Use xrt::device as a member
+        xrt::kernel kernel;
         
-        // sgutil
+        // SGRT (sgutil)
         int device_index;
         std::string bdf;
         std::string device_name;
@@ -24,14 +29,33 @@ namespace device {
         std::string MAC1;
         std::string platform;
 
-        // xrt
-        xrt::device fpga; // Use xrt::device as a member
-        xrt::kernel kernel;
-
         std::string get_uuid() {
             auto current_uuid = fpga.get_xclbin_uuid();
             std::string current_uuid_str = current_uuid.to_string();
             return current_uuid_str;
+        }
+
+        // struct to represent an input or output
+        struct Port {
+            xrt::bo bo;
+            std::string name;
+            std::string type;
+        };
+
+        // inputs is an array ports
+        std::vector<Port> inputs;
+
+        // output is an array ports
+        std::vector<Port> outputs;
+
+        // Function to add an input port
+        void add_input(xrt::device& device, size_t buffer_size, uint32_t kernel_argument_index, const std::string& name, const std::string& type) {
+            inputs.push_back({xrt::bo(device, buffer_size, kernel_argument_index), name, type});
+        }
+
+        // Function to add an output port
+        void add_output(xrt::device& device, size_t buffer_size, uint32_t kernel_argument_index, const std::string& name, const std::string& type) {
+            outputs.push_back({xrt::bo(device, buffer_size, kernel_argument_index), name, type});
         }
 
         void print() {
@@ -46,6 +70,19 @@ namespace device {
             std::cout << "MAC0: " << MAC0 << std::endl;
             std::cout << "MAC1: " << MAC1 << std::endl;
             std::cout << "Platform: " << platform << std::endl;
+
+            // inputs
+            std::cout << "\nDeclared Inputs:" << std::endl;
+            for (size_t i = 0; i < inputs.size(); ++i) {
+                std::cout << i + 1 << ": " << inputs[i].name << " (Type: " << inputs[i].type << ")" << std::endl;
+            }
+
+            // outputs
+            std::cout << "\nDeclared Outputs:" << std::endl;
+            for (size_t i = 0; i < outputs.size(); ++i) {
+                std::cout << i + 1 << ": " << outputs[i].name << " (Type: " << outputs[i].type << ")" << std::endl;
+            }
+
         }
 
         // Constructor (optional)

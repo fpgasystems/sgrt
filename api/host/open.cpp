@@ -92,10 +92,12 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
     int MAC = 8;
     int PLATFORM = 9;
 
-    // XRT and SGRT objects
+    // XRT objects
     xrt::device xrt_device;
     xrt::uuid uuid;
     xrt::kernel kernel;
+    
+    // SGRT objects
     device::vitis device;
     
     // constants
@@ -178,6 +180,16 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
 
     // assign XRT kernel
     device.kernel = kernel;
+
+    // ------------------------------------------------------------
+
+    // add input ports
+    size_t vector_size_bytes = sizeof(int) * 32; //DATA_SIZE
+    auto bank_grp_arg0 = kernel.group_id(0);
+
+    // ------------------------------------------------------------
+
+    device.add_input(device.fpga, vector_size_bytes, bank_grp_arg0, "in1", "INTEGER");
     
     return device;
 
