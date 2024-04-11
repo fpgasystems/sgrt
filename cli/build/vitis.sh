@@ -358,9 +358,24 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         mkdir $DIR/logs
     fi
     
-    mv $DIR/v++_*.log $DIR/logs
-    mv $DIR/xcd.log $DIR/logs
+    #mv $DIR/v++_*.log $DIR/logs
 
+    #move v++ logs
+    shopt -s nullglob
+    vpp_logs=($DIR/v++_*.log)
+    shopt -u nullglob
+
+    if [ ${#vpp_logs[@]} -gt 0 ]; then
+        for file in "${vpp_logs[@]}"; do
+            mv "$file" "$DIR/logs/"
+        done
+    fi
+
+    #move other logs
+    if [ -f "$DIR/xcd.log" ]; then
+        mv $DIR/xcd.log $DIR/logs
+    fi
+    
     #remove sp_aux
     #if [ -f "sp_aux" ]; then
     #    rm "sp_aux"
