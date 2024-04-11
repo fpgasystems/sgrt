@@ -12,11 +12,6 @@
 </p>
 
 ### Flags
-<code>    --platform <string></code>
-<p>
-  &nbsp; &nbsp; Xilinx platform (according to sgutil get platform).
-</p>
-
 <code>    --project</code>
 <p>
   &nbsp; &nbsp; Specifies your Vitis project name.
@@ -40,5 +35,5 @@
 ### Examples
 ```
 $ sgutil build vitis
-$ sgutil build vitis --platform xilinx_u55c_gen3x16_xdma_3_202210_1 --project hello_world -t sw_emu
+$ sgutil build vitis --project hello_world -t sw_emu
 ```

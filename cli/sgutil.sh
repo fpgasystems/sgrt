@@ -208,8 +208,8 @@ build_vitis_help() {
     echo "Uses acap_fpga_xclbin to generate XCLBIN binaries for Vitis workflow."
     echo ""
     echo "FLAGS:"
-    echo "       --platform  - Xilinx platform (according to sgutil get platform)."
-    echo "       --project   - Specifies your Vitis project name."
+    #echo "       --platform  - Xilinx platform (according to sgutil get platform)."
+    echo "   -p, --project   - Specifies your Vitis project name."
     echo "   -t, --target    - Binary compilation target (host, sw_emu, hw_emu, hw)."
     #echo "   -x, --xclbin    - The name of the XCLBIN to be compiled."
     echo ""
@@ -1097,7 +1097,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis) 
-        valid_flags="--platform --project -t --target -h --help" #-x --xclbin 
+        valid_flags="-p --project -t --target -h --help" #-x --xclbin 
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       *)
