@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
     //xrt::kernel krnl = alveo_1.kernel; //xrt::kernel(alveo_1.fpga, uuid, "vadd");
     alveo_1.print();
 
-    size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
+    //size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
 
     std::cout << "Allocate Buffer in Global Memory\n";
     //auto bo0 = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(0));
@@ -130,14 +130,15 @@ int main(int argc, char** argv) {
     alveo_2.print();
 
     std::cout << "Allocate Buffer in Global Memory\n";
-    auto bo0_2 = xrt::bo(alveo_2.fpga, vector_size_bytes, alveo_2.kernel.group_id(0));
-    auto bo1_2 = xrt::bo(alveo_2.fpga, vector_size_bytes, alveo_2.kernel.group_id(1));
-    auto bo_out_2 = xrt::bo(alveo_2.fpga, vector_size_bytes, alveo_2.kernel.group_id(2));
+    //auto bo0_2 = xrt::bo(alveo_2.fpga, vector_size_bytes, alveo_2.kernel.group_id(0));
+    //auto bo1_2 = xrt::bo(alveo_2.fpga, vector_size_bytes, alveo_2.kernel.group_id(1));
+    //auto bo_out_2 = xrt::bo(alveo_2.fpga, vector_size_bytes, alveo_2.kernel.group_id(2));
 
     // Map the contents of the buffer object into host memory
-    auto bo0_map_2 = bo0_2.map<int*>();
-    auto bo1_map_2 = bo1_2.map<int*>();
-    auto bo_out_map_2 = bo_out_2.map<int*>();
+    auto bo0_map_2 = alveo_2.inputs[0].bo.map<int*>();
+    auto bo1_map_2 = alveo_2.inputs[1].bo.map<int*>();
+    auto bo_out_map_2 = alveo_2.outputs[0].bo.map<int*>();
+
     std::fill(bo0_map_2, bo0_map_2 + N, 0); // DATA_SIZE
     std::fill(bo1_map_2, bo1_map_2 + N, 0); // DATA_SIZE
     std::fill(bo_out_map_2, bo_out_map_2 + N, 0); // DATA_SIZE
@@ -153,16 +154,16 @@ int main(int argc, char** argv) {
     // Synchronize buffer content with device side
     std::cout << "synchronize input buffer data to device global memory\n";
 
-    bo0_2.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    bo1_2.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    alveo_2.inputs[0].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    alveo_2.inputs[1].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
 
     std::cout << "Execution of the kernel\n";
-    auto run_2 = alveo_2.kernel(bo0_2, bo1_2, bo_out_2, N); // DATA_SIZE
+    auto run_2 = alveo_2.kernel(alveo_2.inputs[0].bo, alveo_2.inputs[1].bo, alveo_2.outputs[0].bo, N); // DATA_SIZE
     run_2.wait();
 
     // Get the output;
     std::cout << "Get the output data from the device" << std::endl;
-    bo_out_2.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
+    alveo_2.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
     // Validate our results
     if (std::memcmp(bo_out_map_2, bufReference, N)) // DATA_SIZE
