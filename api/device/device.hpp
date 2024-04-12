@@ -74,13 +74,13 @@ namespace device {
             // inputs
             std::cout << "\nDeclared Inputs:" << std::endl;
             for (size_t i = 0; i < inputs.size(); ++i) {
-                std::cout << i + 1 << ": " << inputs[i].name << " (Type: " << inputs[i].type << ")" << std::endl;
+                std::cout << i << ": " << inputs[i].name << " (Type: " << inputs[i].type << ")" << std::endl;
             }
 
             // outputs
             std::cout << "\nDeclared Outputs:" << std::endl;
             for (size_t i = 0; i < outputs.size(); ++i) {
-                std::cout << i + 1 << ": " << outputs[i].name << " (Type: " << outputs[i].type << ")" << std::endl;
+                std::cout << i << ": " << outputs[i].name << " (Type: " << outputs[i].type << ")" << std::endl;
             }
 
         }

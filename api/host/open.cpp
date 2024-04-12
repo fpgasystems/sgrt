@@ -183,13 +183,13 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
 
     // ------------------------------------------------------------
 
-    // add input ports
+    // add input ports (this adds to the device, which links to the device.fpga)
     size_t vector_size_bytes = sizeof(int) * 32; //DATA_SIZE
-    auto bank_grp_arg0 = kernel.group_id(0);
+    auto bank_grp_arg0 = device.kernel.group_id(0);
+
+    device.add_input(device.fpga, vector_size_bytes, bank_grp_arg0, "v_0", "INTEGER");
 
     // ------------------------------------------------------------
-
-    device.add_input(device.fpga, vector_size_bytes, bank_grp_arg0, "in1", "INTEGER");
     
     return device;
 

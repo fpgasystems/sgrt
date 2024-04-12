@@ -76,7 +76,9 @@ int main(int argc, char** argv) {
     size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
 
     std::cout << "Allocate Buffer in Global Memory\n";
-    auto bo0 = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(0));
+    //auto bo0 = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(0));
+
+    auto bo0 = alveo_1.inputs[0].bo;
     auto bo1 = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(1));
     auto bo_out = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(2));
 
