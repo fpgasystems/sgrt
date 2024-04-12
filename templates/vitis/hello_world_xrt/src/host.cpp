@@ -79,8 +79,11 @@ int main(int argc, char** argv) {
     //auto bo0 = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(0));
 
     auto bo0 = alveo_1.inputs[0].bo;
-    auto bo1 = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(1));
-    auto bo_out = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(2));
+    auto bo1 = alveo_1.inputs[1].bo;
+    auto bo_out = alveo_1.outputs[0].bo;    
+
+    //auto bo1 = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(1));
+    //auto bo_out = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(2));
 
     // Map the contents of the buffer object into host memory
     auto bo0_map = bo0.map<int*>();
