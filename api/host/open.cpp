@@ -82,7 +82,7 @@ std::string get_string(const std::string& input, int position) {
 //
 //}
 
-device::vitis host::open(const std::string& device_index, const std::string& xclbin_name, const std::string& target) {
+device::vitis host::open(const std::string& device_index, const std::string& xclbin_name, const std::string& config_id, const std::string& target) {
 
     // sgutil_get constants 
     int UPSTREAM_PORT = 1;
@@ -122,6 +122,9 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
 
     // get platform
     device.platform = sgutil_get(device.device_index, PLATFORM);
+
+    // get parameters
+    int N = host::get_config_parameter<int>(project_path, config_id, "N");
     
     // set binaryFile
     //std::string binaryFile = project_path + "/build_dir." + xclbin_name + "." + target + "." + device.platform + "/" + xclbin_name + ".xclbin"; // get_target(emulationMode)
@@ -184,7 +187,7 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
     // ------------------------------------------------------------
 
     // add input ports (this adds to the device, which links to the device.fpga)
-    size_t vector_size_bytes = sizeof(int) * 32; //DATA_SIZE
+    size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
     auto bank_grp_arg0 = device.kernel.group_id(0);
     auto bank_grp_arg1 = device.kernel.group_id(1);
 
