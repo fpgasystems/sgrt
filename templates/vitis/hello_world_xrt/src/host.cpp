@@ -78,17 +78,18 @@ int main(int argc, char** argv) {
     std::cout << "Allocate Buffer in Global Memory\n";
     //auto bo0 = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(0));
 
-    auto bo0 = alveo_1.inputs[0].bo;
-    auto bo1 = alveo_1.inputs[1].bo;
-    auto bo_out = alveo_1.outputs[0].bo;    
+    //auto bo0 = alveo_1.inputs[0].bo;
+    //auto bo1 = alveo_1.inputs[1].bo;
+    //auto bo_out = alveo_1.outputs[0].bo;    
 
     //auto bo1 = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(1));
     //auto bo_out = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(2));
 
     // Map the contents of the buffer object into host memory
-    auto bo0_map = bo0.map<int*>();
-    auto bo1_map = bo1.map<int*>();
-    auto bo_out_map = bo_out.map<int*>();
+    auto bo0_map = alveo_1.inputs[0].bo.map<int*>();
+    auto bo1_map = alveo_1.inputs[1].bo.map<int*>();
+    auto bo_out_map = alveo_1.outputs[0].bo.map<int*>();
+
     std::fill(bo0_map, bo0_map + N, 0); // DATA_SIZE
     std::fill(bo1_map, bo1_map + N, 0); // DATA_SIZE
     std::fill(bo_out_map, bo_out_map + N, 0); // DATA_SIZE
@@ -104,16 +105,16 @@ int main(int argc, char** argv) {
     // Synchronize buffer content with device side
     std::cout << "synchronize input buffer data to device global memory\n";
 
-    bo0.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    bo1.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    alveo_1.inputs[0].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    alveo_1.inputs[1].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
 
     std::cout << "Execution of the kernel\n";
-    auto run = alveo_1.kernel(bo0, bo1, bo_out, N); // DATA_SIZE
+    auto run = alveo_1.kernel(alveo_1.inputs[0].bo, alveo_1.inputs[1].bo, alveo_1.outputs[0].bo, N); // DATA_SIZE
     run.wait();
 
     // Get the output;
     std::cout << "Get the output data from the device" << std::endl;
-    bo_out.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
+    alveo_1.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
     // Validate our results
     if (std::memcmp(bo_out_map, bufReference, N)) // DATA_SIZE
