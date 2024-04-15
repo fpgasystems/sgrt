@@ -10,7 +10,7 @@
     #- hacc-boxes
     #- alveo-u55c-01.inf.ethz.ch
     - hacc-box-01.inf.ethz.ch
-    #- hacc-box-02.inf.ethz.ch
+    #- hacc-box-03.inf.ethz.ch
     #- alveo-u55c-03.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
@@ -27,11 +27,11 @@
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
     #api installation
-    api: false #true----------------
+    api: true #true----------------
     #cli installation
     #scripts
     build: false
-    common: true
+    common: false
     enable: false
     examine: false
     get: false
@@ -117,6 +117,8 @@
         mode: "0755"
       when: all or api
       loop:
+        - create_data.hpp
+        - create_data.cpp
         - get_config_parameter.hpp
         - get_config_parameter.cpp
         - get_config.hpp
@@ -127,6 +129,8 @@
         - get_target.cpp
         - open.hpp
         - open.cpp
+        - write.hpp
+        - write.cpp
         
     #cli
     #copying files (when all/only if they do not exist on the remote)

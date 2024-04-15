@@ -42,6 +42,45 @@
 //    }
 //}
 
+namespace host {
+    std::vector<int> run(const std::string& mode, const std::vector<int>& v_1, const std::vector<int>& v_2) {
+        // Check if mode is "spec" or "des"
+        if (mode != "spec" && mode != "des") {
+            // Handle error for invalid mode
+            throw std::runtime_error("Invalid mode. Mode must be 'spec' or 'des'");
+        }
+        
+        // Derive N as the length of v_1
+        int N = v_1.size();
+        //size_t N = v_1.size();
+
+        // Ensure v_2 and out have the same size as v_1
+        if (v_2.size() != static_cast<size_t>(N)) {
+            // Handle error appropriately
+            throw std::runtime_error("Input vectors must have the same size");
+        }
+
+        // declare out vector
+        std::vector<int> out(N);
+
+        // Perform specific operation based on mode
+        if (mode == "spec") {
+            // Place here your specification code. Make use of external functions for clarity
+            for (int i = 0; i < N; ++i) {
+                out[i] = v_1[i] + v_2[i];
+            }
+        } else if (mode == "des") {
+            // Perform specific operation for "des" mode
+            for (int i = 0; i < N; ++i) {
+                out[i] = v_1[i] - v_2[i];
+            }
+        }
+
+        return out;
+
+    }
+}
+
 int main(int argc, char** argv) {
 
     if (argc > 2) {
@@ -64,6 +103,13 @@ int main(int argc, char** argv) {
     // get target
     std::string target = host::get_target();
 
+    // create data
+    std::vector<int> v_1 = host::create_data(config_id);
+    std::vector<int> v_2 = host::create_data(config_id);
+
+    // spec
+    std::vector<int> out_spec = host::run("spec", v_1, v_2);
+    
     std::cout << "\nDEVICE 1\n" << std::endl;
 
     // device 1
