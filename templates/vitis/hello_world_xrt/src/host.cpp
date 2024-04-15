@@ -122,7 +122,7 @@ int main(int argc, char** argv) {
     alveo_1.print();
 
     //std::vector<int> bufReference = host::write(alveo_1, config_id);
-    std::vector<int> bufReference = host::write(alveo_1, inputs);
+    host::write(alveo_1, inputs);
 
     // Synchronize buffer content with device side
     std::cout << "synchronize input buffer data to device global memory\n";
