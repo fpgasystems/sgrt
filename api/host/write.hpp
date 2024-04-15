@@ -2,10 +2,11 @@
 //#define HOST_HPP
 
 #include <string>
-//#include "../host.hpp" // Include the device.hpp header
+#include <vector>
+#include "../device.hpp" // Include the device.hpp header
 
 namespace host {
-    std::vector<int> write(device::vitis device, const std::string& config_id);
+    std::vector<int> write(device::vitis device, const std::vector<std::vector<int>>& host_inputs);
 }
 
 //#endif // HOST_HPP
