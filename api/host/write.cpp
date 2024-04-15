@@ -29,6 +29,10 @@ std::vector<int> host::write(device::vitis device, const std::string& config_id)
         bufReference[i] = bo0_map[i] + bo1_map[i];
     }
 
+    // write
+    device.inputs[0].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    device.inputs[1].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+
     return bufReference;
 
 }

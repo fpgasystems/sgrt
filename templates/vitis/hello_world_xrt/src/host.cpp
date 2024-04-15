@@ -70,32 +70,13 @@ int main(int argc, char** argv) {
     device::vitis alveo_1 = host::open("1", "vadd", config_id, target);
     alveo_1.print();
 
-    std::cout << "Allocate Buffer in Global Memory\n";
-    
-    // Map the contents of the buffer object into host memory
-    //auto bo0_map = alveo_1.inputs[0].bo.map<int*>();
-    //auto bo1_map = alveo_1.inputs[1].bo.map<int*>();
-    //auto bo_out_map = alveo_1.outputs[0].bo.map<int*>();
-
-    //std::fill(bo0_map, bo0_map + N, 0); // DATA_SIZE
-    //std::fill(bo1_map, bo1_map + N, 0); // DATA_SIZE
-    //std::fill(bo_out_map, bo_out_map + N, 0); // DATA_SIZE
-
-    // Create the test data
-    //int bufReference[N]; // DATA_SIZE
-    //for (int i = 0; i < N; ++i) { // DATA_SIZE
-    //    bo0_map[i] = i;
-    //    bo1_map[i] = i;
-    //    bufReference[i] = bo0_map[i] + bo1_map[i];
-    //}
-
     std::vector<int> bufReference = host::write(alveo_1, config_id);
 
     // Synchronize buffer content with device side
     std::cout << "synchronize input buffer data to device global memory\n";
 
-    alveo_1.inputs[0].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    alveo_1.inputs[1].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    //alveo_1.inputs[0].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    //alveo_1.inputs[1].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
 
     std::cout << "Execution of the kernel\n";
     auto run = alveo_1.kernel(alveo_1.inputs[0].bo, alveo_1.inputs[1].bo, alveo_1.outputs[0].bo, N); // DATA_SIZE
@@ -119,35 +100,13 @@ int main(int argc, char** argv) {
     device::vitis alveo_2 = host::open("2", "vsub", config_id, target);
     alveo_2.print();
 
-    std::cout << "Allocate Buffer in Global Memory\n";
-    //auto bo0_2 = xrt::bo(alveo_2.fpga, vector_size_bytes, alveo_2.kernel.group_id(0));
-    //auto bo1_2 = xrt::bo(alveo_2.fpga, vector_size_bytes, alveo_2.kernel.group_id(1));
-    //auto bo_out_2 = xrt::bo(alveo_2.fpga, vector_size_bytes, alveo_2.kernel.group_id(2));
-
-    // Map the contents of the buffer object into host memory
-    //auto bo0_map_2 = alveo_2.inputs[0].bo.map<int*>();
-    //auto bo1_map_2 = alveo_2.inputs[1].bo.map<int*>();
-    //auto bo_out_map_2 = alveo_2.outputs[0].bo.map<int*>();
-
-    //std::fill(bo0_map_2, bo0_map_2 + N, 0); // DATA_SIZE
-    //std::fill(bo1_map_2, bo1_map_2 + N, 0); // DATA_SIZE
-    //std::fill(bo_out_map_2, bo_out_map_2 + N, 0); // DATA_SIZE
-
-    // Create the test data
-    //int bufReference[N]; // DATA_SIZE
-    //for (int i = 0; i < N; ++i) { // DATA_SIZE
-    //    bo0_map_2[i] = i;
-    //    bo1_map_2[i] = i;
-    //    bufReference[i] = bo0_map_2[i] + bo1_map_2[i];
-    //}
-
     host::write(alveo_2, config_id);
 
     // Synchronize buffer content with device side
     std::cout << "synchronize input buffer data to device global memory\n";
 
-    alveo_2.inputs[0].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    alveo_2.inputs[1].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    //alveo_2.inputs[0].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
+    //alveo_2.inputs[1].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
 
     std::cout << "Execution of the kernel\n";
     auto run_2 = alveo_2.kernel(alveo_2.inputs[0].bo, alveo_2.inputs[1].bo, alveo_2.outputs[0].bo, N); // DATA_SIZE
