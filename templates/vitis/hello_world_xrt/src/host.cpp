@@ -107,16 +107,22 @@ int main(int argc, char** argv) {
     std::vector<int> v_1 = host::create_data(config_id);
     std::vector<int> v_2 = host::create_data(config_id);
 
-    // spec
+    // specification
     std::vector<int> out_spec = host::run("spec", v_1, v_2);
-    
-    std::cout << "\nDEVICE 1\n" << std::endl;
+
+    // design
+
+    // Initialize inputs vector with v_1 and v_2
+    std::vector<std::vector<int>> inputs;
+    inputs.push_back(v_1);
+    inputs.push_back(v_2);
 
     // device 1
     device::vitis alveo_1 = host::open("1", "vadd", config_id, target);
     alveo_1.print();
 
-    std::vector<int> bufReference = host::write(alveo_1, config_id);
+    //std::vector<int> bufReference = host::write(alveo_1, config_id);
+    std::vector<int> bufReference = host::write(alveo_1, inputs);
 
     // Synchronize buffer content with device side
     std::cout << "synchronize input buffer data to device global memory\n";
@@ -133,7 +139,7 @@ int main(int argc, char** argv) {
     alveo_1.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
     // Validate our results
-    if (std::memcmp(alveo_1.outputs[0].bo.map<int*>(), bufReference.data(), N * sizeof(int)) != 0) { // DATA_SIZE
+    if (std::memcmp(alveo_1.outputs[0].bo.map<int*>(), out_spec.data(), N * sizeof(int)) != 0) { // DATA_SIZE
         throw std::runtime_error("Value read back does not match reference");
     }
 
@@ -146,7 +152,8 @@ int main(int argc, char** argv) {
     device::vitis alveo_2 = host::open("2", "vsub", config_id, target);
     alveo_2.print();
 
-    host::write(alveo_2, config_id);
+    //host::write(alveo_2, config_id);
+    host::write(alveo_2, inputs);
 
     // Synchronize buffer content with device side
     std::cout << "synchronize input buffer data to device global memory\n";
@@ -166,7 +173,7 @@ int main(int argc, char** argv) {
     //if (std::memcmp(bo_out_map_2, bufReference, N)) // DATA_SIZE
     //    throw std::runtime_error("Value read back does not match reference");
 
-    if (std::memcmp(alveo_2.outputs[0].bo.map<int*>(), bufReference.data(), N * sizeof(int)) != 0) { // DATA_SIZE
+    if (std::memcmp(alveo_2.outputs[0].bo.map<int*>(), out_spec.data(), N * sizeof(int)) != 0) { // DATA_SIZE
         throw std::runtime_error("Value read back does not match reference");
     }    
 
