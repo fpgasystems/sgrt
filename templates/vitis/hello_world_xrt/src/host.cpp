@@ -125,21 +125,23 @@ int main(int argc, char** argv) {
     //auto bo_out_2 = xrt::bo(alveo_2.fpga, vector_size_bytes, alveo_2.kernel.group_id(2));
 
     // Map the contents of the buffer object into host memory
-    auto bo0_map_2 = alveo_2.inputs[0].bo.map<int*>();
-    auto bo1_map_2 = alveo_2.inputs[1].bo.map<int*>();
-    auto bo_out_map_2 = alveo_2.outputs[0].bo.map<int*>();
+    //auto bo0_map_2 = alveo_2.inputs[0].bo.map<int*>();
+    //auto bo1_map_2 = alveo_2.inputs[1].bo.map<int*>();
+    //auto bo_out_map_2 = alveo_2.outputs[0].bo.map<int*>();
 
-    std::fill(bo0_map_2, bo0_map_2 + N, 0); // DATA_SIZE
-    std::fill(bo1_map_2, bo1_map_2 + N, 0); // DATA_SIZE
-    std::fill(bo_out_map_2, bo_out_map_2 + N, 0); // DATA_SIZE
+    //std::fill(bo0_map_2, bo0_map_2 + N, 0); // DATA_SIZE
+    //std::fill(bo1_map_2, bo1_map_2 + N, 0); // DATA_SIZE
+    //std::fill(bo_out_map_2, bo_out_map_2 + N, 0); // DATA_SIZE
 
     // Create the test data
     //int bufReference[N]; // DATA_SIZE
-    for (int i = 0; i < N; ++i) { // DATA_SIZE
-        bo0_map_2[i] = i;
-        bo1_map_2[i] = i;
-        bufReference[i] = bo0_map_2[i] + bo1_map_2[i];
-    }
+    //for (int i = 0; i < N; ++i) { // DATA_SIZE
+    //    bo0_map_2[i] = i;
+    //    bo1_map_2[i] = i;
+    //    bufReference[i] = bo0_map_2[i] + bo1_map_2[i];
+    //}
+
+    host::write(alveo_2, config_id);
 
     // Synchronize buffer content with device side
     std::cout << "synchronize input buffer data to device global memory\n";
