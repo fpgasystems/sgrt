@@ -94,11 +94,9 @@ int main(int argc, char** argv) {
 
     // get config_id
     std::string config_id = host::get_config(argv);
-    //std::cout << "\nconfig_id = " << config_id << std::endl;
 
     // get config_parameters
     int N = host::get_config_parameter<int>(project_path, config_id, "N");
-    //std::cout << "Value of parameter 'N': " << N << std::endl;
 
     // get target
     std::string target = host::get_target();
@@ -121,14 +119,7 @@ int main(int argc, char** argv) {
     device::vitis alveo_1 = host::open("1", "vadd", config_id, target);
     alveo_1.print();
 
-    //std::vector<int> bufReference = host::write(alveo_1, config_id);
     host::write(alveo_1, inputs);
-
-    // Synchronize buffer content with device side
-    std::cout << "synchronize input buffer data to device global memory\n";
-
-    //alveo_1.inputs[0].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    //alveo_1.inputs[1].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
 
     std::cout << "Execution of the kernel\n";
     auto run = alveo_1.kernel(alveo_1.inputs[0].bo, alveo_1.inputs[1].bo, alveo_1.outputs[0].bo, N); // DATA_SIZE
@@ -138,7 +129,7 @@ int main(int argc, char** argv) {
     std::cout << "Get the output data from the device" << std::endl;
     alveo_1.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
-    // Validate our results
+    // test 1
     if (std::memcmp(alveo_1.outputs[0].bo.map<int*>(), out_spec.data(), N * sizeof(int)) != 0) { // DATA_SIZE
         throw std::runtime_error("Value read back does not match reference");
     }
@@ -152,14 +143,7 @@ int main(int argc, char** argv) {
     device::vitis alveo_2 = host::open("2", "vsub", config_id, target);
     alveo_2.print();
 
-    //host::write(alveo_2, config_id);
     host::write(alveo_2, inputs);
-
-    // Synchronize buffer content with device side
-    std::cout << "synchronize input buffer data to device global memory\n";
-
-    //alveo_2.inputs[0].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
-    //alveo_2.inputs[1].bo.sync(XCL_BO_SYNC_BO_TO_DEVICE);
 
     std::cout << "Execution of the kernel\n";
     auto run_2 = alveo_2.kernel(alveo_2.inputs[0].bo, alveo_2.inputs[1].bo, alveo_2.outputs[0].bo, N); // DATA_SIZE
@@ -169,10 +153,7 @@ int main(int argc, char** argv) {
     std::cout << "Get the output data from the device" << std::endl;
     alveo_2.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
-    // Validate our results
-    //if (std::memcmp(bo_out_map_2, bufReference, N)) // DATA_SIZE
-    //    throw std::runtime_error("Value read back does not match reference");
-
+    // test 2
     if (std::memcmp(alveo_2.outputs[0].bo.map<int*>(), out_spec.data(), N * sizeof(int)) != 0) { // DATA_SIZE
         throw std::runtime_error("Value read back does not match reference");
     }    
