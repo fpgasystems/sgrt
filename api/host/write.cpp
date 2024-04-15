@@ -6,7 +6,10 @@
 
 //std::vector<int> host::write(device::vitis device, const std::string& config_id) {
 void host::write(device::vitis device, const std::vector<std::vector<int>>& host_inputs) {
-    int N = 32; // Or uncomment code to obtain N from inputs
+    //int N = 32; // Or uncomment code to obtain N from inputs
+
+    // derive N
+    int N = host_inputs[0].size();
 
     // Map the contents of the buffer object into host memory and reset
     // Inputs
