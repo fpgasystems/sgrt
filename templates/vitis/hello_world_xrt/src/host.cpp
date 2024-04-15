@@ -68,39 +68,28 @@ int main(int argc, char** argv) {
 
     // device 1
     device::vitis alveo_1 = host::open("1", "vadd", config_id, target);
-    //xrt::uuid uuid = alveo_1.fpga.load_xclbin(alveo_1.binaryFile);
-    //xrt::kernel krnl = xrt::kernel(alveo_1.fpga, uuid, "vadd");
-    //xrt::kernel krnl = alveo_1.kernel; //xrt::kernel(alveo_1.fpga, uuid, "vadd");
     alveo_1.print();
 
-    //size_t vector_size_bytes = sizeof(int) * N; //DATA_SIZE
-
     std::cout << "Allocate Buffer in Global Memory\n";
-    //auto bo0 = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(0));
-
-    //auto bo0 = alveo_1.inputs[0].bo;
-    //auto bo1 = alveo_1.inputs[1].bo;
-    //auto bo_out = alveo_1.outputs[0].bo;    
-
-    //auto bo1 = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(1));
-    //auto bo_out = xrt::bo(alveo_1.fpga, vector_size_bytes, alveo_1.kernel.group_id(2));
-
+    
     // Map the contents of the buffer object into host memory
-    auto bo0_map = alveo_1.inputs[0].bo.map<int*>();
-    auto bo1_map = alveo_1.inputs[1].bo.map<int*>();
-    auto bo_out_map = alveo_1.outputs[0].bo.map<int*>();
+    //auto bo0_map = alveo_1.inputs[0].bo.map<int*>();
+    //auto bo1_map = alveo_1.inputs[1].bo.map<int*>();
+    //auto bo_out_map = alveo_1.outputs[0].bo.map<int*>();
 
-    std::fill(bo0_map, bo0_map + N, 0); // DATA_SIZE
-    std::fill(bo1_map, bo1_map + N, 0); // DATA_SIZE
-    std::fill(bo_out_map, bo_out_map + N, 0); // DATA_SIZE
+    //std::fill(bo0_map, bo0_map + N, 0); // DATA_SIZE
+    //std::fill(bo1_map, bo1_map + N, 0); // DATA_SIZE
+    //std::fill(bo_out_map, bo_out_map + N, 0); // DATA_SIZE
 
     // Create the test data
-    int bufReference[N]; // DATA_SIZE
-    for (int i = 0; i < N; ++i) { // DATA_SIZE
-        bo0_map[i] = i;
-        bo1_map[i] = i;
-        bufReference[i] = bo0_map[i] + bo1_map[i];
-    }
+    //int bufReference[N]; // DATA_SIZE
+    //for (int i = 0; i < N; ++i) { // DATA_SIZE
+    //    bo0_map[i] = i;
+    //    bo1_map[i] = i;
+    //    bufReference[i] = bo0_map[i] + bo1_map[i];
+    //}
+
+    std::vector<int> bufReference = host::write(alveo_1, config_id);
 
     // Synchronize buffer content with device side
     std::cout << "synchronize input buffer data to device global memory\n";
@@ -117,8 +106,9 @@ int main(int argc, char** argv) {
     alveo_1.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
     // Validate our results
-    if (std::memcmp(bo_out_map, bufReference, N)) // DATA_SIZE
+    if (std::memcmp(alveo_1.outputs[0].bo.map<int*>(), bufReference.data(), N * sizeof(int)) != 0) { // DATA_SIZE
         throw std::runtime_error("Value read back does not match reference");
+    }
 
     std::cout << "TEST PASSED 1\n";
     //return 0;
@@ -166,8 +156,12 @@ int main(int argc, char** argv) {
     alveo_2.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
     // Validate our results
-    if (std::memcmp(bo_out_map_2, bufReference, N)) // DATA_SIZE
+    //if (std::memcmp(bo_out_map_2, bufReference, N)) // DATA_SIZE
+    //    throw std::runtime_error("Value read back does not match reference");
+
+    if (std::memcmp(alveo_2.outputs[0].bo.map<int*>(), bufReference.data(), N * sizeof(int)) != 0) { // DATA_SIZE
         throw std::runtime_error("Value read back does not match reference");
+    }    
 
     std::cout << "TEST PASSED 2\n";
     return 0;
