@@ -31,7 +31,7 @@
     #cli installation
     #scripts
     build: false
-    common: false
+    common: true
     enable: false
     examine: false
     get: false
@@ -41,13 +41,13 @@
     run: false
     set: false
     sgutil: false 
-    templates: true #true-----------------------------------
+    templates: false #true-----------------------------------
     validate: false
     #workflows
     coyote: false
     hip: false
     mpi: false
-    vitis: true #true---------------------------------
+    vitis: false #true---------------------------------
   tasks:
 
     #creating directories
@@ -315,6 +315,7 @@
         - device_dialog_gpu
         - device_list_check
         - driver_dialog_check
+        - get_devices_acap_fpga_coyote
         - get_constant
         - get_email
         - get_files
