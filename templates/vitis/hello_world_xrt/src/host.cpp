@@ -49,16 +49,6 @@ namespace host {
             // Handle error for invalid mode
             throw std::runtime_error("Invalid mode. Mode must be 'spec' or 'des'");
         }
-        
-        // Derive N as the length of the first input vector
-        //int N = device.inputs[0].size();
-
-        // Ensure all input vectors have the same size
-        //for (int i = 1; i < device.inputs.size(); ++i) {
-        //    if (device.inputs[i].size() != N) {
-        //        throw std::runtime_error("Input vectors must have the same size");
-        //    }
-        //}
 
         // get project_path
         std::string project_path = host::get_project_path();
@@ -75,36 +65,19 @@ namespace host {
             auto v_1 = device.inputs[0].bo.map<int*>();
             auto v_2 = device.inputs[1].bo.map<int*>();    
 
-            // Derive N as the length of the first input vector
-            //int N = 32; //v_1.size();
-
-            // Declare output vector
-            //std::vector<int> out(N);    
-
             // Perform specific operation for "spec" mode
             for (int i = 0; i < N; ++i) {
                 out[i] = v_1[i] + v_2[i];
             }
-
-            //return out;
-
         } else if (mode == "des") {
             // Read inputs from the device
             auto v_1 = device.inputs[0].bo.map<int*>();
             auto v_2 = device.inputs[1].bo.map<int*>();
 
-            // Derive N as the length of the first input vector
-            int N = 32; //v_1.size();
-
-            // Declare output vector
-            //std::vector<int> out(N);    
-
             // Perform specific operation for "des" mode
             for (int i = 0; i < N; ++i) {
                 out[i] = v_1[i] - v_2[i];
             }
-
-            //return out;
         }
 
         return out;
