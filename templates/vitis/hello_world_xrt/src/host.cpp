@@ -43,7 +43,7 @@
 //}
 
 namespace host {
-    std::vector<int> run(const std::string& mode, device::vitis device) {    
+    std::vector<int> run(const std::string& mode, device::vitis device, const std::string& config_id) {    
         // Check if mode is "spec" or "des"
         if (mode != "spec" && mode != "des") {
             // Handle error for invalid mode
@@ -59,6 +59,12 @@ namespace host {
         //        throw std::runtime_error("Input vectors must have the same size");
         //    }
         //}
+
+        // get project_path
+        std::string project_path = host::get_project_path();
+        
+        // get parameters
+        int N = host::get_config_parameter<int>(project_path, config_id, "N");
 
         // Perform specific operation based on mode
         if (mode == "spec") {
@@ -143,7 +149,7 @@ int main(int argc, char** argv) {
     host::write(alveo_1, inputs);
 
     // specification
-    std::vector<int> out_spec = host::run("spec", alveo_1);
+    std::vector<int> out_spec = host::run("spec", alveo_1, config_id);
 
     std::cout << "Execution of the kernel\n";
     auto run = alveo_1.kernel(alveo_1.inputs[0].bo, alveo_1.inputs[1].bo, alveo_1.outputs[0].bo, N); // DATA_SIZE
