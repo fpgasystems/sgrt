@@ -66,6 +66,9 @@ namespace host {
         // get parameters
         int N = host::get_config_parameter<int>(project_path, config_id, "N");
 
+        // Declare output vector
+        std::vector<int> out(N);    
+
         // Perform specific operation based on mode
         if (mode == "spec") {
             // Read inputs from the device
@@ -73,17 +76,17 @@ namespace host {
             auto v_2 = device.inputs[1].bo.map<int*>();    
 
             // Derive N as the length of the first input vector
-            int N = 32; //v_1.size();
+            //int N = 32; //v_1.size();
 
             // Declare output vector
-            std::vector<int> out(N);    
+            //std::vector<int> out(N);    
 
             // Perform specific operation for "spec" mode
             for (int i = 0; i < N; ++i) {
                 out[i] = v_1[i] + v_2[i];
             }
 
-            return out;
+            //return out;
 
         } else if (mode == "des") {
             // Read inputs from the device
@@ -94,17 +97,17 @@ namespace host {
             int N = 32; //v_1.size();
 
             // Declare output vector
-            std::vector<int> out(N);    
+            //std::vector<int> out(N);    
 
             // Perform specific operation for "des" mode
             for (int i = 0; i < N; ++i) {
                 out[i] = v_1[i] - v_2[i];
             }
 
-            return out;
+            //return out;
         }
 
-        //return out;
+        return out;
     }
 }
 
