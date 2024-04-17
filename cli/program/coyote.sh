@@ -15,6 +15,7 @@ WORKFLOW="coyote"
 #BIT_NAME="cyt_top.bit"
 DRIVER_NAME="coyote_drv.ko"
 COYOTE_MAX_REGIONS=16
+CONFIG_FNAME="$CLI_PATH/devices_acap_fpga_coyote"
 
 #combine ACAP and FPGA lists removing duplicates
 SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
@@ -80,6 +81,9 @@ MAX_DEVICES=$(grep -E "fpga|acap" $DEVICES_LIST | wc -l)
 
 #check on multiple devices
 multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+
+#create devices_acap_fpga_coyote
+sudo $CLI_PATH/common/get_devices_acap_fpga_coyote
 
 #inputs
 read -a flags <<< "$@"
@@ -363,28 +367,19 @@ echo "Programming ${bold}$hostname...${normal}"
 $CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$BIT_NAME -v $vivado_version
 
 #get IP address
-IP_address_0=$($CLI_PATH/get/network -d $device_index | awk "\$1 == \"$device_index:\" {print \$2}")
-IP_address_0_hex=$($CLI_PATH/common/address_to_hex IP $IP_address_0)
+#IP_address_0=$($CLI_PATH/get/network -d $device_index | awk "\$1 == \"$device_index:\" {print \$2}")
+#IP_address_0_hex=$($CLI_PATH/common/address_to_hex IP $IP_address_0)
 
 #get MAC address
-MAC_address_0=$($CLI_PATH/get/network -d $device_index | awk "\$1 == \"$device_index:\" {print \$3}" | tr -d '()')
-MAC_address_0_hex=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
+#MAC_address_0=$($CLI_PATH/get/network -d $device_index | awk "\$1 == \"$device_index:\" {print \$3}" | tr -d '()')
+#MAC_address_0_hex=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
 
 #insert coyote driver
-eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME -p ip_addr_q0=$IP_address_0_hex,mac_addr_q0=$MAC_address_0_hex"
-
-
-#get N_REGIONS (vFPGAs) from /sys/kernel/coyote_cnfg/cyt_attr_cnfg  ==> /sys/kernel/coyote_sysfs_a1_00
-#N_REGIONS=$(cat /sys/kernel/coyote_cnfg/cyt_attr_cnfg | grep vFPGA | awk -F': ' '{print $2}')
+#eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME -p ip_addr_q0=$IP_address_0_hex,mac_addr_q0=$MAC_address_0_hex"
+eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME -p config_fname=$CONFIG_FNAME"
 
 #enable vFPGA regions
-#$CLI_PATH/program/enable_N_REGIONS $DIR $upstream_port
-$CLI_PATH/program/enable_N_REGIONS $device_index
-
-#programm additional region
-#ADDITIONAL_REGION="150"
-#echo $ADDITIONAL_REGION
-#sudo $CLI_PATH/program/fpga_chmod $ADDITIONAL_REGION
+#$CLI_PATH/program/enable_N_REGIONS $device_index
 
 #programming remote servers (if applies)
 if [ "$deploy_option" -eq 1 ]; then 
