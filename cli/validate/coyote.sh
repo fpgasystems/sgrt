@@ -410,12 +410,12 @@ device=$($CLI_PATH/program/get_bus_device $device_index device)
 #run coyote
 cd $DIR/build_dir.$config_sw/
 
-echo "${bold}Running perf_local host (./main -t 1 -b $bus -s $device):${normal}"
-./main -t 1 -b $bus -s $device
+echo "${bold}Running perf_local host (./main -t 1 -d $device_index):${normal}"
+./main -t 1 -d $device_index #-b $bus -s $device
 
 echo ""
-echo "${bold}Running perf_local HBM (./main -t 0 -b $bus -s $device):${normal}"
-./main -t 0 -b $bus -s $device
+echo "${bold}Running perf_local HBM (./main -t 0 -d $device_index):${normal}"
+./main -t 0 -d $device_index #-b $bus -s $device
 
 echo ""
 
