@@ -6,6 +6,7 @@ normal=$(tput sgr0)
 #constants
 CLI_PATH="$(dirname "$(dirname "$0")")"
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
+DRIVERS_LIST="/tmp/devices_acap_fpga_drivers"
 
 #check on vivado_developers
 member=$($CLI_PATH/common/is_member $USER vivado_developers)
@@ -87,3 +88,28 @@ echo "sudo insmod $MY_DRIVERS_PATH/$driver_name $params_string"
 sudo insmod $MY_DRIVERS_PATH/$driver_name $params_string
 sleep 1
 echo ""
+
+#add to $DRIVERS_LIST
+if [ ! -f "$DRIVERS_LIST" ]; then
+    touch "$DRIVERS_LIST"
+    
+    # Set permissions to allow other users to write to it
+    #chmod o+w "$DRIVERS_LIST"
+
+    # Change the group ownership of the file to the shared group
+    chown :vivado_developers $DRIVERS_LIST
+
+    # Grant group write permissions to the file
+    chmod g+w $DRIVERS_LIST
+fi
+
+#change ownership to ensure writing permissions
+#sudo chown $USER:vivado_developers $DRIVERS_LIST
+sudo $CLI_PATH/common/chown $USER vivado_developers $DRIVERS_LIST
+
+#define line to add
+line_to_add="$USER:${driver_name%.ko}"
+
+if ! grep -qFx "$line_to_add" "$DRIVERS_LIST"; then
+    echo "$line_to_add" >> "$DRIVERS_LIST"
+fi
