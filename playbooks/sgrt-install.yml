@@ -11,7 +11,7 @@
     #- alveo-u55c-01.inf.ethz.ch
     #- hacc-box-01.inf.ethz.ch
     - hacc-box-01.inf.ethz.ch
-    - hacc-box-02.inf.ethz.ch
+    #- hacc-box-02.inf.ethz.ch
     #- alveo-u55c-03.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
@@ -414,9 +414,9 @@
       loop:
         - coyote
         - driver
-        - get_bus_device
-        - enable_N_REGIONS
-        - enable_regions
+        #- get_bus_device
+        #- enable_N_REGIONS
+        #- enable_regions
         - fpga_chmod
         - pci_hot_plug
         - reset
@@ -634,3 +634,14 @@
             dest: "{{ cli_path }}/validate/vitis"
             mode: "0755"
       when: all or vitis
+    
+    #deleting files
+    #program
+    - name: deleting program scripts
+      file:
+        path: "{{ cli_path }}/program/{{ item }}"
+        state: absent
+      loop:
+        - get_bus_device
+        - enable_N_REGIONS
+        - enable_regions
