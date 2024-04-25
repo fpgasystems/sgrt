@@ -363,6 +363,16 @@ fi
 #prgramming local server
 echo "Programming ${bold}$hostname...${normal}"
 
+#remove driver if exists
+if lsmod | grep "coyote_drv" >/dev/null; then
+    echo ""
+    echo "${bold}Removing drivers:${normal}"
+    echo ""
+
+    echo "sudo rmmod ${DRIVER_NAME%.ko}" 
+    sudo rmmod ${DRIVER_NAME%.ko} 2>/dev/null # with 2>/dev/null we avoid printing a message if the module does not exist
+fi
+
 #program bitstream
 $CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$BIT_NAME -v $vivado_version
 
