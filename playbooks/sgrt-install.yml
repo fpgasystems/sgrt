@@ -9,9 +9,9 @@
     #- versal-vck5000
     #- hacc-boxes
     #- alveo-u55c-01.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
     - hacc-box-01.inf.ethz.ch
     - hacc-box-02.inf.ethz.ch
-    #- hacc-box-03.inf.ethz.ch
     #- alveo-u55c-03.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
@@ -32,7 +32,7 @@
     #cli installation
     #scripts
     build: false
-    common: true
+    common: false
     enable: false
     examine: false
     get: false
@@ -339,6 +339,7 @@
         - platform_dialog_check
         - project_dialog
         - project_dialog_check
+        - rm
         - ssh_key_add
         - target_dialog
         - target_dialog_check
