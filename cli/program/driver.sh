@@ -61,11 +61,27 @@ fi
 echo ""
 echo "${bold}sgutil program driver${normal}"
 
+#create folder
+if [ ! -d "$MY_DRIVERS_PATH" ]; then
+    mkdir "$MY_DRIVERS_PATH"
+#else
+#    #change ownership to ensure writing permissions
+#    sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
+fi
+
+#change ownership to ensure writing permissions
+sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
+
 #we need to copy the driver to /local to avoid permission problems
 echo ""
 echo "${bold}Copying driver to $MY_DRIVERS_PATH:${normal}"
 echo ""
 echo "cp -f $driver_name $MY_DRIVERS_PATH"
+
+#remove first
+sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name
+
+#copy driver
 cp -f $driver_name $MY_DRIVERS_PATH
 
 #insert coyote driver
@@ -90,26 +106,25 @@ sleep 1
 echo ""
 
 #add to $DRIVERS_LIST
-if [ ! -f "$DRIVERS_LIST" ]; then
-    touch "$DRIVERS_LIST"
-    
-    # Set permissions to allow other users to write to it
-    #chmod o+w "$DRIVERS_LIST"
-
-    # Change the group ownership of the file to the shared group
-    chown :vivado_developers $DRIVERS_LIST
-
-    # Grant group write permissions to the file
-    chmod g+w $DRIVERS_LIST
-fi
+#if [ ! -f "$DRIVERS_LIST" ]; then
+#    touch "$DRIVERS_LIST"
+#    
+#    # Set permissions to allow other users to write to it
+#    #chmod o+w "$DRIVERS_LIST"
+#
+#    # Change the group ownership of the file to the shared group
+#    chown :vivado_developers $DRIVERS_LIST
+#
+#    # Grant group write permissions to the file
+#    chmod g+w $DRIVERS_LIST
+#fi
 
 #change ownership to ensure writing permissions
-#sudo chown $USER:vivado_developers $DRIVERS_LIST
-sudo $CLI_PATH/common/chown $USER vivado_developers $DRIVERS_LIST
+#sudo $CLI_PATH/common/chown $USER vivado_developers $DRIVERS_LIST
 
 #define line to add
-line_to_add="$USER:${driver_name%.ko}"
+#line_to_add="$USER:${driver_name%.ko}"
 
-if ! grep -qFx "$line_to_add" "$DRIVERS_LIST"; then
-    echo "$line_to_add" >> "$DRIVERS_LIST"
-fi
+#if ! grep -qFx "$line_to_add" "$DRIVERS_LIST"; then
+#    echo "$line_to_add" >> "$DRIVERS_LIST"
+#fi
