@@ -414,10 +414,6 @@
       loop:
         - coyote
         - driver
-        #- get_bus_device
-        #- enable_N_REGIONS
-        #- enable_regions
-        - fpga_chmod
         - pci_hot_plug
         - reset
         - revert
@@ -642,6 +638,7 @@
         path: "{{ cli_path }}/program/{{ item }}"
         state: absent
       loop:
-        - get_bus_device
         - enable_N_REGIONS
         - enable_regions
+        - fpga_chmod
+        - get_bus_device
