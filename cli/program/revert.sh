@@ -182,35 +182,6 @@ if [ "${#loaded_drivers[@]}" -gt 0 ]; then
     done
 fi
 
-#remove all drivers previously inserted with sgutil program driver
-#if [ -f "$DRIVERS_LIST" ]; then
-#    # Declare an empty array
-#    values=()
-#
-#    # Read each line from the file and extract the value after the colon
-#    while IFS=':' read -r _ value; do
-#        # Remove leading and trailing whitespace from the value
-#        value=$(echo "$value" | awk '{$1=$1;print}')
-#        # Check if the value is not already in the array
-#        if [[ ! " ${values[@]} " =~ " ${value} " ]]; then
-#            values+=("$value")
-#        fi
-#    done < "$DRIVERS_LIST"
-#
-#    # Loop through the values array
-#    if [ ${#values[@]} -gt 0 ]; then
-#        echo ""
-#        echo "${bold}Removing drivers:${normal}"
-#        echo ""
-#        
-#        # Loop through the values array
-#        for val in "${values[@]}"; do
-#            echo "sudo rmmod $val"
-#            sudo rmmod $val 2>/dev/null # with 2>/dev/null we avoid printing a message if the module does not exist
-#        done
-#    fi
-#fi
-
 #get device and serial name
 serial_number=$($CLI_PATH/get/serial -d $device_index | awk -F': ' '{print $2}' | grep -v '^$')
 device_name=$($CLI_PATH/get/name -d $device_index | awk -F': ' '{print $2}' | grep -v '^$')
