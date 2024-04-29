@@ -8,7 +8,19 @@ _sgutil_completions()
 
     # Check if the current word is a file path
     if [[ ${cur} == /* ]]; then
+        # Trim trailing spaces and slash if present
+        cur="${cur%%[[:space:]]}"
+        cur="${cur%/}"
+        # Generate completions
         COMPREPLY=($(compgen -f -- ${cur}))
+        # If the completion is a directory, add a trailing slash
+        for ((i = 0; i < ${#COMPREPLY[@]}; i++)); do
+            if [[ -d ${COMPREPLY[$i]} ]]; then
+                COMPREPLY[$i]+="/"
+            fi
+        done
+        # Disable appending space after completion
+        compopt -o nospace
         return 0
     fi
 
