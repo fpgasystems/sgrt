@@ -6,6 +6,12 @@ _sgutil_completions()
 
     cur=${COMP_WORDS[COMP_CWORD]}
 
+    # Check if the current word is a file path
+    if [[ ${cur} == /* ]]; then
+        COMPREPLY=($(compgen -f -- ${cur}))
+        return 0
+    fi
+
     case ${COMP_CWORD} in
         1)
             COMPREPLY=($(compgen -W "build enable examine get new program reboot run set validate --help --version" -- ${cur}))
