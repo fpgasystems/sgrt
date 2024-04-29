@@ -7,7 +7,17 @@ _sgutil_completions()
     cur=${COMP_WORDS[COMP_CWORD]}
 
     # Check if the current word is a file path
-    if [[ ${cur} == /* ]]; then
+    if [[ ${cur} == ./* ]]; then
+        # Trim trailing spaces and slash if present
+        cur="${cur%%[[:space:]]}"
+        cur="${cur%/}"
+        # Generate completions for files
+        file_completions=($(compgen -f -- ${cur}))
+        COMPREPLY=("${file_completions[@]}")
+        # Disable appending space after completion
+        compopt -o nospace
+        return 0
+    elif [[ ${cur} == /* ]]; then
         # Trim trailing spaces and slash if present
         cur="${cur%%[[:space:]]}"
         cur="${cur%/}"
