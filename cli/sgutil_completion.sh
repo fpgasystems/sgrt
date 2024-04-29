@@ -11,8 +11,16 @@ _sgutil_completions()
         # Trim trailing spaces and slash if present
         cur="${cur%%[[:space:]]}"
         cur="${cur%/}"
-        # Generate completions
-        COMPREPLY=($(compgen -f -- ${cur}))
+        # Generate completions for directories
+        dir_completions=($(compgen -d -- ${cur}))
+        # Generate completions for files
+        file_completions=($(compgen -f -- ${cur}))
+        # Check if there are directory completions
+        if [[ ${#dir_completions[@]} -gt 0 ]]; then
+            COMPREPLY=("${dir_completions[@]}")
+        else
+            COMPREPLY=("${file_completions[@]}")
+        fi
         # If the completion is a directory, add a trailing slash
         for ((i = 0; i < ${#COMPREPLY[@]}; i++)); do
             if [[ -d ${COMPREPLY[$i]} ]]; then
