@@ -14,7 +14,7 @@
 ### Flags
 <code>-b, --bitstream <string></code>
 <p>
-  &nbsp; &nbsp; Bitstream (.bit) file path.
+  &nbsp; &nbsp; Full path to the .bit bitstream to be programmed.
 </p>
 
 <code>-d, --device <string></code>

@@ -698,7 +698,7 @@ program_vivado_help() {
     echo "Programs a Vivado bitstream to a given FPGA."
     echo ""
     echo "FLAGS:"
-    echo "   -b, --bitstream - Bitstream (.bit) file path." 
+    echo "   -b, --bitstream - Full path to the .bit bitstream to be programmed." 
     echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
     #echo "       --driver    - Driver (.ko) file path."
     echo ""
