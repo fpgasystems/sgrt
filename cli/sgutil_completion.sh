@@ -303,6 +303,16 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "--device --project" -- ${cur}))
                 fi
             fi
+            #program[1] coyote[2] --remote[3] [4] --flag[5] [6] --flag[7] for --device --project --regions
+            if [[ "${COMP_WORDS[1]}" == "program" && "${COMP_WORDS[2]}" == "coyote" && "${COMP_WORDS[3]}" == "--remote" ]]; then
+                if [[ "${COMP_WORDS[COMP_CWORD-3]}" == "--device" ]]; then
+                    COMPREPLY=($(compgen -W "--project --regions" -- ${cur}))
+                elif [[ "${COMP_WORDS[COMP_CWORD-3]}" == "--project" ]]; then
+                    COMPREPLY=($(compgen -W "--device --regions" -- ${cur}))
+                elif [[ "${COMP_WORDS[COMP_CWORD-3]}" == "--regions" ]]; then
+                    COMPREPLY=($(compgen -W "--device --project" -- ${cur}))
+                fi
+            fi
             ;;
         *)
             COMPREPLY=()
