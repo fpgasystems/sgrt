@@ -242,8 +242,8 @@ _sgutil_completions()
             esac
             ;;
         5) 
-            #completions with multiple flags
-            #sgutil build coyote --platform --project
+            #completions up to 5 flags
+            #build[1] coyote[2] --platform[3] [4] --project[5]
             if [[ "${COMP_WORDS[1]}" == "build" && "${COMP_WORDS[2]}" == "coyote" ]]; then
                 if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--platform" && "${COMP_WORDS[COMP_CWORD-1]}" != "--project" ]]; then
                     COMPREPLY=($(compgen -W "--project" -- ${cur}))
@@ -251,7 +251,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "--platform" -- ${cur}))
                 fi
             fi
-            #sgutil build vitis --project --target
+            #build[1] vitis[2] --project[3] [4] --target[5]
             if [[ "${COMP_WORDS[1]}" == "build" && "${COMP_WORDS[2]}" == "vitis" ]]; then
                 if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--project" && "${COMP_WORDS[COMP_CWORD-1]}" != "--target" ]]; then
                     COMPREPLY=($(compgen -W "--target" -- ${cur}))
@@ -259,6 +259,15 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "--project" -- ${cur}))
                 fi
             fi
+            #program[1] coyote[2] --device[3] [4] --project[5] --device --project --regions --remote --help
+            if [[ "${COMP_WORDS[1]}" == "program" && "${COMP_WORDS[2]}" == "coyote" ]]; then
+                if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--device" && "${COMP_WORDS[COMP_CWORD-1]}" != "--project" ]]; then
+                    COMPREPLY=($(compgen -W "--project --regions --remote" -- ${cur}))
+                elif [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--project" && "${COMP_WORDS[COMP_CWORD-1]}" != "--device" ]]; then
+                    COMPREPLY=($(compgen -W "--device" -- ${cur}))
+                fi
+            fi
+            
             ;;
         *)
             COMPREPLY=()
