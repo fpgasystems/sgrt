@@ -272,6 +272,18 @@ _sgutil_completions()
                 fi
             fi
             ;;
+        7)
+            #program[1] coyote[2] --device[3] [4] --flag[5] [6] --flag[7] for --project --regions --remote --help
+            if [[ "${COMP_WORDS[1]}" == "program" && "${COMP_WORDS[2]}" == "coyote" && "${COMP_WORDS[3]}" == "--device" ]]; then
+                if [[ "${COMP_WORDS[COMP_CWORD-3]}" == "--project" ]]; then
+                    COMPREPLY=($(compgen -W "--regions --remote" -- ${cur}))
+                elif [[ "${COMP_WORDS[COMP_CWORD-3]}" == "--regions" ]]; then
+                    COMPREPLY=($(compgen -W "--project --remote" -- ${cur}))
+                elif [[ "${COMP_WORDS[COMP_CWORD-3]}" == "--remote" ]]; then
+                    COMPREPLY=($(compgen -W "--project --regions" -- ${cur}))
+                fi
+            fi
+            ;;
         *)
             COMPREPLY=()
             ;;
