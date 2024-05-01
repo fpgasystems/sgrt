@@ -264,10 +264,9 @@ _sgutil_completions()
                 if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--device" && "${COMP_WORDS[COMP_CWORD-1]}" != "--project" ]]; then
                     COMPREPLY=($(compgen -W "--project --regions --remote" -- ${cur}))
                 elif [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--project" && "${COMP_WORDS[COMP_CWORD-1]}" != "--device" ]]; then
-                    COMPREPLY=($(compgen -W "--device" -- ${cur}))
+                    COMPREPLY=($(compgen -W "--device --regions --remote" -- ${cur}))
                 fi
             fi
-            
             ;;
         *)
             COMPREPLY=()
