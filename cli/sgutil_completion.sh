@@ -241,6 +241,14 @@ _sgutil_completions()
                     ;;
             esac
             ;;
+        5)
+            # Check if the previous word is "--project" or "--target", if so, offer the other flag as completion
+            if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--project" && "${COMP_WORDS[COMP_CWORD-1]}" != "--target" ]]; then
+                COMPREPLY=($(compgen -W "--target" -- ${cur}))
+            elif [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--target" && "${COMP_WORDS[COMP_CWORD-1]}" != "--project" ]]; then
+                COMPREPLY=($(compgen -W "--project" -- ${cur}))
+            fi
+            ;;
         *)
             COMPREPLY=()
             ;;
