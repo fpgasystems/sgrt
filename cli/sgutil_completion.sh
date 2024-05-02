@@ -1,9 +1,6 @@
 #!/bin/bash
 
 command_completion_5() {
-    #other_flags=( "--device" "--project" "--regions" "--remote" )
-    #command_completion_5 "$cur" "$COMP_CWORD" "program" "coyote" "${other_flags[@]}"
-    
     CURRENT_WORD=$1
     COMP_CWORD=$2
     COMP_WORDS_1=$3
@@ -31,16 +28,6 @@ command_completion_5() {
             COMPREPLY=($(compgen -W "$COMP_CWORD_2_1 $COMP_CWORD_2_2 $COMP_CWORD_2_3" -- ${cur}))
         fi
     fi
-    #program[1] coyote[2] --device[3] [4] --flag[5] [6] --flag[7] [8] for --project --regions --remote
-    #if [[ "${COMP_WORDS[1]}" == "$COMP_WORDS_1" && "${COMP_WORDS[2]}" == "$COMP_WORDS_2" ]]; then
-    #    if [[ "${COMP_WORDS[${COMP_CWORD}-2]}" == "$COMP_CWORD_2_1" ]]; then
-    #        COMPREPLY=($(compgen -W "$COMP_CWORD_2_2 $COMP_CWORD_2_3" -- ${CURRENT_WORD}))
-    #    elif [[ "${COMP_WORDS[${COMP_CWORD}-2]}" == "$COMP_CWORD_2_2" ]]; then
-    #        COMPREPLY=($(compgen -W "$COMP_CWORD_2_1 $COMP_CWORD_2_3" -- ${CURRENT_WORD}))
-    #    elif [[ "${COMP_WORDS[${COMP_CWORD}-2]}" == "$COMP_CWORD_2_3" ]]; then
-    #        COMPREPLY=($(compgen -W "$COMP_CWORD_2_1 $COMP_CWORD_2_2" -- ${CURRENT_WORD}))
-    #    fi
-    #fi
 }
 
 command_completion_7() {
@@ -380,6 +367,7 @@ _sgutil_completions()
                     fi
                 fi
             fi
+
             #program[1] coyote[2] --project[3] [4] ...
             if [[ "${COMP_WORDS[1]}" == "program" && "${COMP_WORDS[2]}" == "coyote" && "${COMP_WORDS[3]}" == "--project" ]]; then
                 if [[ "${COMP_WORDS[5]}" == "--device" ]]; then
