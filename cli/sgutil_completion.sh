@@ -318,7 +318,7 @@ _sgutil_completions()
             #COMP_WORDS[2]=coyote
             #COMP_WORDS[3]=other_flags
             #COMP_WORDS[4]=value
-            #Example: sgutil program coyote --device 1 -- (there are five components)
+            #Example: sgutil program coyote --device 1 -- (there are five words)
 
             #build
             other_flags=( "--platform" "--project" )
@@ -335,10 +335,11 @@ _sgutil_completions()
             #COMP_WORDS[0]=sgutil
             #COMP_WORDS[1]=program
             #COMP_WORDS[2]=coyote
-            #COMP_WORDS[3]=--device / --project / --regions / --remote
+            #COMP_WORDS[3]=--device
             #COMP_WORDS[4]=value
-            #COMP_WORDS[5]=other_flags
+            #COMP_WORDS[5]=--project / --regions / --remote
             #COMP_WORDS[6]=value
+            #Example: sgutil program coyote --device 1 --project hello_world -- (there are seven words)
             
             other_flags=( "--project" "--regions" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "${other_flags[@]}"
