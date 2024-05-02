@@ -331,13 +331,15 @@ _sgutil_completions()
             command_completion_5 "$cur" "$COMP_CWORD" "build" "coyote" "${other_flags[@]}"
 
             #build[1] vitis[2] --flag[3] [4] --flag[5] [6] for --project --target
-            if [[ "${COMP_WORDS[1]}" == "build" && "${COMP_WORDS[2]}" == "vitis" ]]; then
-                if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--project" && "${COMP_WORDS[COMP_CWORD-1]}" != "--target" ]]; then
-                    COMPREPLY=($(compgen -W "--target" -- ${cur}))
-                elif [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--target" && "${COMP_WORDS[COMP_CWORD-1]}" != "--project" ]]; then
-                    COMPREPLY=($(compgen -W "--project" -- ${cur}))
-                fi
-            fi
+            #if [[ "${COMP_WORDS[1]}" == "build" && "${COMP_WORDS[2]}" == "vitis" ]]; then
+            #    if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--project" && "${COMP_WORDS[COMP_CWORD-1]}" != "--target" ]]; then
+            #        COMPREPLY=($(compgen -W "--target" -- ${cur}))
+            #    elif [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--target" && "${COMP_WORDS[COMP_CWORD-1]}" != "--project" ]]; then
+            #        COMPREPLY=($(compgen -W "--project" -- ${cur}))
+            #    fi
+            #fi
+            other_flags=( "--project" "--target" )
+            command_completion_5 "$cur" "$COMP_CWORD" "build" "vitis" "${other_flags[@]}"
 
             #COMP_WORDS[0]=sgutil
             #COMP_WORDS[1]=program
