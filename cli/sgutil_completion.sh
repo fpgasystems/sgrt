@@ -380,9 +380,9 @@ _sgutil_completions()
             #COMP_WORDS[1]=program
             #COMP_WORDS[2]=coyote
             #COMP_WORDS[3]=--device
-            #COMP_WORDS[4]=value
+            #COMP_WORDS[4]=1
             #COMP_WORDS[5]=--project / --regions / --remote
-            #COMP_WORDS[6]=value
+            #COMP_WORDS[6]=hello_world
             #Example: sgutil program coyote --device 1 --project hello_world -- (there are seven words)
             
             #program coyote
@@ -400,8 +400,26 @@ _sgutil_completions()
             ;;
         9)
 
+            #COMP_WORDS[0]=sgutil
+            #COMP_WORDS[1]=program
+            #COMP_WORDS[2]=coyote
+            #COMP_WORDS[3]=--device
+            #COMP_WORDS[4]=1
+            #COMP_WORDS[5]=--project
+            #COMP_WORDS[6]=hello_world
+            #COMP_WORDS[7]=--regions / --remote
+            #COMP_WORDS[8]=0
+            #Example: sgutil program coyote --device 1 --project hello_world --regions 0 -- (there are nine words)
+
+            #program coyote --device
             other_flags=( "--regions" "--remote" )
             command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--project" "${other_flags[@]}"
+
+            other_flags=( "--project" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--regions" "${other_flags[@]}"
+
+            other_flags=( "--project" "--regions" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--remote" "${other_flags[@]}"
 
             #program[1] coyote[2] --device[3] [4] ...
             #if [[ "${COMP_WORDS[1]}" == "program" && "${COMP_WORDS[2]}" == "coyote" && "${COMP_WORDS[3]}" == "--device" ]]; then
