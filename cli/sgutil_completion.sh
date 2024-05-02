@@ -341,6 +341,7 @@ _sgutil_completions()
             #COMP_WORDS[6]=value
             #Example: sgutil program coyote --device 1 --project hello_world -- (there are seven words)
             
+            #program coyote
             other_flags=( "--project" "--regions" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "${other_flags[@]}"
 
