@@ -315,28 +315,29 @@ _sgutil_completions()
             fi
             ;;
         9)
-            #program[1] coyote[2] --device[3] [4] --project[5] [6] --flag[7] [8] --flag[9] for --regions --remote
-            if [[ "${COMP_WORDS[1]}" == "program" && "${COMP_WORDS[2]}" == "coyote" && "${COMP_WORDS[3]}" == "--device" && "${COMP_WORDS[5]}" == "--project" ]]; then
-                if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--regions" ]]; then
-                    COMPREPLY=($(compgen -W "--remote" -- ${cur}))
-                elif [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--remote" ]]; then
-                    COMPREPLY=($(compgen -W "--regions" -- ${cur}))
-                fi
-            fi
-            #program[1] coyote[2] --device[3] [4] --regions[5] [6] --flag[7] [8] --flag[9] for --project --remote
-            if [[ "${COMP_WORDS[1]}" == "program" && "${COMP_WORDS[2]}" == "coyote" && "${COMP_WORDS[3]}" == "--device" && "${COMP_WORDS[5]}" == "--regions" ]]; then
-                if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--project" ]]; then
-                    COMPREPLY=($(compgen -W "--remote" -- ${cur}))
-                elif [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--remote" ]]; then
-                    COMPREPLY=($(compgen -W "--project" -- ${cur}))
-                fi
-            fi
-            #program[1] coyote[2] --device[3] [4] --remote[5] [6] --flag[7] [8] --flag[9] for --project --regions
-            if [[ "${COMP_WORDS[1]}" == "program" && "${COMP_WORDS[2]}" == "coyote" && "${COMP_WORDS[3]}" == "--device" && "${COMP_WORDS[5]}" == "--remote" ]]; then
-                if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--project" ]]; then
-                    COMPREPLY=($(compgen -W "--regions" -- ${cur}))
-                elif [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--regions" ]]; then
-                    COMPREPLY=($(compgen -W "--project" -- ${cur}))
+            #program[1] coyote[2] --device[3] [4] ...
+            if [[ "${COMP_WORDS[1]}" == "program" && "${COMP_WORDS[2]}" == "coyote" && "${COMP_WORDS[3]}" == "--device" ]]; then
+                if [[ "${COMP_WORDS[5]}" == "--project" ]]; then
+                    #... --project[5] [6] --flag[7] [8] --flag[9] for --regions --remote 
+                    if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--regions" ]]; then
+                        COMPREPLY=($(compgen -W "--remote" -- ${cur}))
+                    elif [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--remote" ]]; then
+                        COMPREPLY=($(compgen -W "--regions" -- ${cur}))
+                    fi
+                elif [[ "${COMP_WORDS[5]}" == "--regions" ]]; then
+                    #... --regions[5] [6] --flag[7] [8] --flag[9] for --project --remote 
+                    if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--project" ]]; then
+                        COMPREPLY=($(compgen -W "--remote" -- ${cur}))
+                    elif [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--remote" ]]; then
+                        COMPREPLY=($(compgen -W "--project" -- ${cur}))
+                    fi
+                elif [[ "${COMP_WORDS[5]}" == "--remote" ]]; then
+                    #... --remote[5] [6] --flag[7] [8] --flag[9] for --project --regions 
+                    if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--project" ]]; then
+                        COMPREPLY=($(compgen -W "--regions" -- ${cur}))
+                    elif [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--regions" ]]; then
+                        COMPREPLY=($(compgen -W "--project" -- ${cur}))
+                    fi
                 fi
             fi
             ;;
