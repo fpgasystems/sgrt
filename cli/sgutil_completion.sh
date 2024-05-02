@@ -320,14 +320,16 @@ _sgutil_completions()
             #COMP_WORDS[4]=value
 
             #build[1] coyote[2] --flag[3] [4] --flag[5] [6] for --platform --project
-            if [[ "${COMP_WORDS[1]}" == "build" && "${COMP_WORDS[2]}" == "coyote" ]]; then
-                if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--platform" && "${COMP_WORDS[COMP_CWORD-1]}" != "--project" ]]; then
-                    COMPREPLY=($(compgen -W "--project" -- ${cur}))
-                elif [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--project" && "${COMP_WORDS[COMP_CWORD-1]}" != "--platform" ]]; then
-                    COMPREPLY=($(compgen -W "--platform" -- ${cur}))
-                fi
-            fi
-            
+            #if [[ "${COMP_WORDS[1]}" == "build" && "${COMP_WORDS[2]}" == "coyote" ]]; then
+            #    if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--platform" && "${COMP_WORDS[COMP_CWORD-1]}" != "--project" ]]; then
+            #        COMPREPLY=($(compgen -W "--project" -- ${cur}))
+            #    elif [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--project" && "${COMP_WORDS[COMP_CWORD-1]}" != "--platform" ]]; then
+            #        COMPREPLY=($(compgen -W "--platform" -- ${cur}))
+            #    fi
+            #fi
+            other_flags=( "--platform" "--project" )
+            command_completion_5 "$cur" "$COMP_CWORD" "build" "coyote" "${other_flags[@]}"
+
             #build[1] vitis[2] --flag[3] [4] --flag[5] [6] for --project --target
             if [[ "${COMP_WORDS[1]}" == "build" && "${COMP_WORDS[2]}" == "vitis" ]]; then
                 if [[ "${COMP_WORDS[COMP_CWORD-2]}" == "--project" && "${COMP_WORDS[COMP_CWORD-1]}" != "--target" ]]; then
@@ -342,6 +344,7 @@ _sgutil_completions()
             #COMP_WORDS[2]=coyote
             #COMP_WORDS[3]=other_flags
             #COMP_WORDS[4]=value
+            #Example: sgutil program coyote --device 1 -- (there are five components)
 
             other_flags=( "--device" "--project" "--regions" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "coyote" "${other_flags[@]}"
