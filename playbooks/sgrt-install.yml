@@ -37,15 +37,15 @@
     examine: false
     get: false
     new: false
-    program: true
+    program: false
     reboot: false
     run: false
     set: false
-    sgutil: false 
+    sgutil: true 
     templates: false #true-----------------------------------
     validate: false
     #workflows
-    coyote: true
+    coyote: false
     hip: false
     mpi: false
     vitis: false #true---------------------------------
