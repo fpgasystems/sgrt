@@ -128,39 +128,39 @@ _sgutil_completions()
 
     case ${COMP_CWORD} in
         1)
-            COMPREPLY=($(compgen -W "build enable examine get new program reboot run set validate --help --version" -- ${cur}))
+            COMPREPLY=($(compgen -W "build enable examine get new program reboot run set validate -h --help -v --version" -- ${cur}))
             ;;
         2)
             case ${COMP_WORDS[COMP_CWORD-1]} in
                 build)
-                    COMPREPLY=($(compgen -W "coyote hip mpi vitis --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote hip mpi vitis -h --help" -- ${cur}))
                     ;;
                 enable)
-                    COMPREPLY=($(compgen -W "vitis vivado xrt --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "vitis vivado xrt -h --help" -- ${cur}))
                     ;;
                 examine)
-                    COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "-h --help" -- ${cur}))
                     ;;
                 get)
-                    COMPREPLY=($(compgen -W "bdf clock bus name ifconfig memory network platform resource serial slr servers syslog workflow --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "bdf clock bus name ifconfig memory network platform resource serial slr servers syslog workflow -h --help" -- ${cur}))
                     ;;
                 new)
-                    COMPREPLY=($(compgen -W "coyote hip mpi vitis --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote hip mpi vitis -h --help" -- ${cur}))
                     ;;
                 program)
-                    COMPREPLY=($(compgen -W "coyote driver reset revert vitis vivado --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote driver reset revert vitis vivado -h --help" -- ${cur}))
                     ;;
                 reboot)
-                    COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "-h --help" -- ${cur}))
                     ;;
                 run)
-                    COMPREPLY=($(compgen -W "coyote hip mpi vitis --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote hip mpi vitis -h --help" -- ${cur}))
                     ;;
                 set)
-                    COMPREPLY=($(compgen -W "gh keys license mtu --help" -- ${cur})) #write
+                    COMPREPLY=($(compgen -W "gh keys license mtu -h --help" -- ${cur})) #write
                     ;;
                 validate)
-                    COMPREPLY=($(compgen -W "coyote docker hip iperf mpi vitis vitis-ai --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote docker hip iperf mpi vitis vitis-ai -h --help" -- ${cur}))
                     ;;
             esac
             ;;
@@ -169,129 +169,129 @@ _sgutil_completions()
                 build)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote)
-                            COMPREPLY=($(compgen -W "--platform --project --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--platform --project -h --help" -- ${cur}))
                             ;;
                         hip)
-                            COMPREPLY=($(compgen -W "--project --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--project -h --help" -- ${cur}))
                             ;;
                         mpi)
-                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "-h --help" -- ${cur}))
                             ;;
                         vitis) 
-                            COMPREPLY=($(compgen -W "--project --target --help" -- ${cur})) #--xclbin 
+                            COMPREPLY=($(compgen -W "--project --target -h --help" -- ${cur})) #--xclbin 
                             ;;
                     esac
                     ;;
                 enable) 
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         vitis)
-                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "-h --help" -- ${cur}))
                             ;;
                         vivado) 
-                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "-h --help" -- ${cur}))
                             ;;
                         xrt) 
-                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "-h --help" -- ${cur}))
                             ;;
                     esac
                     ;;
                 get)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         bdf)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         clock)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         bus)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         memory)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         name)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         ifconfig) 
-                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "-h --help" -- ${cur}))
                             ;;
                         network) 
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         platform) 
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         resource)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         serial) 
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         slr)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         servers) 
-                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "-h --help" -- ${cur}))
                             ;;
                         syslog) 
-                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "-h --help" -- ${cur}))
                             ;;
                         workflow) 
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                     esac
                     ;;
                 program)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote)
-                            COMPREPLY=($(compgen -W "--device --project --regions --remote --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device --project --regions --remote -h --help" -- ${cur}))
                             ;;
                         driver)
-                            COMPREPLY=($(compgen -W "--module --params --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--module --params -h --help" -- ${cur}))
                             ;;
                         reset)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         revert)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         vitis) 
-                            COMPREPLY=($(compgen -W "--device --project --remote --xclbin --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device --project --remote --xclbin -h --help" -- ${cur}))
                             ;;
                         vivado) 
-                            COMPREPLY=($(compgen -W "--bitstream --device --help" -- ${cur})) # --driver 
+                            COMPREPLY=($(compgen -W "--bitstream --device -h --help" -- ${cur})) # --driver 
                             ;;
                     esac
                     ;;
                 run)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote) # run 
-                            COMPREPLY=($(compgen -W "--device --project --help" -- ${cur})) 
+                            COMPREPLY=($(compgen -W "--device --project -h --help" -- ${cur})) 
                             ;;
                         hip)
-                            COMPREPLY=($(compgen -W "--device --project --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device --project -h --help" -- ${cur}))
                             ;;
                         mpi)
-                            COMPREPLY=($(compgen -W "--project --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--project -h --help" -- ${cur}))
                             ;;
                         vitis)
-                            COMPREPLY=($(compgen -W "--config --project --target --help" -- ${cur})) #--device 
+                            COMPREPLY=($(compgen -W "--config --project --target -h --help" -- ${cur})) #--device 
                             ;;
                     esac
                     ;;
                 set)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         gh)
-                            COMPREPLY=($(compgen -W "--help" -- ${cur})) 
+                            COMPREPLY=($(compgen -W "-h --help" -- ${cur})) 
                             ;;
                         keys)
-                            COMPREPLY=($(compgen -W "--help" -- ${cur})) 
+                            COMPREPLY=($(compgen -W "-h --help" -- ${cur})) 
                             ;;
                         license)
-                            COMPREPLY=($(compgen -W "--help" -- ${cur})) 
+                            COMPREPLY=($(compgen -W "-h --help" -- ${cur})) 
                             ;;
                         mtu)
-                            COMPREPLY=($(compgen -W "--help" -- ${cur})) 
+                            COMPREPLY=($(compgen -W "-h --help" -- ${cur})) 
                             ;;
                         #write)
                         #    COMPREPLY=($(compgen -W "--index --help" -- ${cur})) 
@@ -301,25 +301,25 @@ _sgutil_completions()
                 validate)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         docker)
-                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "-h --help" -- ${cur}))
                             ;;
                         hip)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         iperf)
-                            COMPREPLY=($(compgen -W "--bandwidth --parallel --time --udp --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--bandwidth --parallel --time --udp -h --help" -- ${cur}))
                             ;;
                         mpi) 
-                            COMPREPLY=($(compgen -W "--processes --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--processes -h --help" -- ${cur}))
                             ;;
                         vitis) 
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                         vitis-ai) 
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device -h --help" -- ${cur}))
                             ;;
                     esac
                     ;;
