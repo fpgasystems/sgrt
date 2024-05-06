@@ -362,6 +362,10 @@ _sgutil_completions()
 
             other_flags=( "--config" "--project" "--target" )
             command_completion_5 "$cur" "$COMP_CWORD" "run" "vitis" "${other_flags[@]}"
+
+            #validate
+            other_flags=( "--bandwidth" "--parallel" "--time" "--udp" )
+            command_completion_5 "$cur" "$COMP_CWORD" "validate" "iperf" "${other_flags[@]}"
             ;;
         7)
             #COMP_WORDS[0]=sgutil
@@ -408,6 +412,19 @@ _sgutil_completions()
 
             other_flags=( "--config" "--project" )
             command_completion_7 "$cur" "$COMP_CWORD" "run" "vitis" "--target" "${other_flags[@]}"
+
+            #validate iperf
+            other_flags=( "--parallel" "--time" "--udp" )
+            command_completion_7 "$cur" "$COMP_CWORD" "validate" "iperf" "--bandwidth" "${other_flags[@]}"
+
+            other_flags=( "--bandwidth" "--time" "--udp" )
+            command_completion_7 "$cur" "$COMP_CWORD" "validate" "iperf" "--parallel" "${other_flags[@]}"
+
+            other_flags=( "--bandwidth" "--parallel" "--udp" )
+            command_completion_7 "$cur" "$COMP_CWORD" "validate" "iperf" "--time" "${other_flags[@]}"
+
+            other_flags=( "--bandwidth" "--parallel" "--time" )
+            command_completion_7 "$cur" "$COMP_CWORD" "validate" "iperf" "--udp" "${other_flags[@]}"
             ;;
         9)
 
@@ -501,6 +518,46 @@ _sgutil_completions()
 
             other_flags=( "--device" "--project" )
             command_completion_9 "$cur" "$COMP_CWORD" "program" "vitis" "--xclbin" "--remote" "${other_flags[@]}"
+            
+            #validate iperf --bandwidth
+            other_flags=( "--time" "--udp" )
+            command_completion_9 "$cur" "$COMP_CWORD" "validate" "iperf" "--bandwidth" "--parallel" "${other_flags[@]}"
+
+            other_flags=( "--parallel" "--udp" )
+            command_completion_9 "$cur" "$COMP_CWORD" "validate" "iperf" "--bandwidth" "--time" "${other_flags[@]}"
+
+            other_flags=( "--parallel" "--time" )
+            command_completion_9 "$cur" "$COMP_CWORD" "validate" "iperf" "--bandwidth" "--udp" "${other_flags[@]}"
+
+            #validate iperf --parallel
+            other_flags=( "--time" "--udp" )
+            command_completion_9 "$cur" "$COMP_CWORD" "validate" "iperf" "--parallel" "--bandwidth" "${other_flags[@]}"
+
+            other_flags=( "--bandwidth" "--udp" )
+            command_completion_9 "$cur" "$COMP_CWORD" "validate" "iperf" "--parallel" "--time" "${other_flags[@]}"
+
+            other_flags=( "--bandwidth" "--time" )
+            command_completion_9 "$cur" "$COMP_CWORD" "validate" "iperf" "--parallel" "--udp" "${other_flags[@]}"
+
+            #validate iperf --time
+            other_flags=( "--parallel" "--udp" )
+            command_completion_9 "$cur" "$COMP_CWORD" "validate" "iperf" "--time" "--bandwidth" "${other_flags[@]}"
+
+            other_flags=( "--bandwidth" "--udp" )
+            command_completion_9 "$cur" "$COMP_CWORD" "validate" "iperf" "--time" "--parallel" "${other_flags[@]}"
+
+            other_flags=( "--bandwidth" "--parallel" )
+            command_completion_9 "$cur" "$COMP_CWORD" "validate" "iperf" "--time" "--udp" "${other_flags[@]}"
+
+            #validate iperf --udp
+            other_flags=( "--parallel" "--time" )
+            command_completion_9 "$cur" "$COMP_CWORD" "validate" "iperf" "--udp" "--bandwidth" "${other_flags[@]}"
+
+            other_flags=( "--bandwidth" "--time" )
+            command_completion_9 "$cur" "$COMP_CWORD" "validate" "iperf" "--udp" "--parallel" "${other_flags[@]}"
+
+            other_flags=( "--bandwidth" "--parallel" )
+            command_completion_9 "$cur" "$COMP_CWORD" "validate" "iperf" "--udp" "--time" "${other_flags[@]}"
             ;;
         *)
             COMPREPLY=()
