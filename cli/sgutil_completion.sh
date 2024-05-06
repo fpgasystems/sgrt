@@ -352,6 +352,10 @@ _sgutil_completions()
 
             other_flags=( "--bitstream" "--device" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "vivado" "${other_flags[@]}"
+
+            #run
+            other_flags=( "--device" "--project" )
+            command_completion_5 "$cur" "$COMP_CWORD" "run" "coyote" "${other_flags[@]}"
             ;;
         7)
             #COMP_WORDS[0]=sgutil
