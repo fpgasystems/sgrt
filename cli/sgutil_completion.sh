@@ -341,11 +341,14 @@ _sgutil_completions()
             command_completion_5 "$cur" "$COMP_CWORD" "build" "vitis" "${other_flags[@]}"
 
             #program
+            other_flags=( "--device" "--project" "--regions" "--remote" )
+            command_completion_5 "$cur" "$COMP_CWORD" "program" "coyote" "${other_flags[@]}"
+            
             other_flags=( "--module" "--params" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "${other_flags[@]}"
 
-            other_flags=( "--device" "--project" "--regions" "--remote" )
-            command_completion_5 "$cur" "$COMP_CWORD" "program" "coyote" "${other_flags[@]}"
+            other_flags=( "--device" "--project" "--remote" "--xclbin" )
+            command_completion_5 "$cur" "$COMP_CWORD" "program" "vitis" "${other_flags[@]}"
             ;;
         7)
             #COMP_WORDS[0]=sgutil
@@ -369,6 +372,19 @@ _sgutil_completions()
 
             other_flags=( "--device" "--project" "--regions" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "${other_flags[@]}"
+
+            #program vitis    
+            other_flags=( "--project" "--remote" "--xclbin" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "vitis" "--device" "${other_flags[@]}"
+
+            other_flags=( "--device" "--remote" "--xclbin" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "vitis" "--project" "${other_flags[@]}"
+
+            other_flags=( "--device" "--project" "--xclbin" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "vitis" "--remote" "${other_flags[@]}"
+
+            other_flags=( "--device" "--project" "--remote" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "vitis" "--xclbin" "${other_flags[@]}"
             ;;
         9)
 
@@ -422,6 +438,46 @@ _sgutil_completions()
 
             other_flags=( "--device" "--project" )
             command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--regions" "${other_flags[@]}"
+
+            #program vitis --device
+            other_flags=( "--remote" "--xclbin" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "vitis" "--device" "--project" "${other_flags[@]}"
+
+            other_flags=( "--project" "--xclbin" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "vitis" "--device" "--remote" "${other_flags[@]}"
+
+            other_flags=( "--project" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "vitis" "--device" "--xclbin" "${other_flags[@]}"
+
+            #program vitis --project
+            other_flags=( "--remote" "--xclbin" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "vitis" "--project" "--device" "${other_flags[@]}"
+
+            other_flags=( "--device" "--xclbin" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "vitis" "--project" "--remote" "${other_flags[@]}"
+
+            other_flags=( "--device" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "vitis" "--project" "--xclbin" "${other_flags[@]}"
+
+            #program vitis --remote
+            other_flags=( "--project" "--xclbin" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "vitis" "--remote" "--device" "${other_flags[@]}"
+
+            other_flags=( "--device" "--xclbin" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "vitis" "--remote" "--project" "${other_flags[@]}"
+
+            other_flags=( "--device" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "vitis" "--remote" "--xclbin" "${other_flags[@]}"
+
+            #program vitis --xclbin
+            other_flags=( "--project" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "vitis" "--xclbin" "--device" "${other_flags[@]}"
+
+            other_flags=( "--device" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "vitis" "--xclbin" "--project" "${other_flags[@]}"
+
+            other_flags=( "--device" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "vitis" "--xclbin" "--remote" "${other_flags[@]}"
             ;;
         *)
             COMPREPLY=()
