@@ -356,6 +356,12 @@ _sgutil_completions()
             #run
             other_flags=( "--device" "--project" )
             command_completion_5 "$cur" "$COMP_CWORD" "run" "coyote" "${other_flags[@]}"
+
+            other_flags=( "--device" "--project" )
+            command_completion_5 "$cur" "$COMP_CWORD" "run" "hip" "${other_flags[@]}"
+
+            other_flags=( "--config" "--project" "--target" )
+            command_completion_5 "$cur" "$COMP_CWORD" "run" "vitis" "${other_flags[@]}"
             ;;
         7)
             #COMP_WORDS[0]=sgutil
@@ -392,6 +398,16 @@ _sgutil_completions()
 
             other_flags=( "--device" "--project" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "vitis" "--xclbin" "${other_flags[@]}"
+
+            #run vitis    
+            other_flags=( "--project" "--target" )
+            command_completion_7 "$cur" "$COMP_CWORD" "run" "vitis" "--config" "${other_flags[@]}"
+
+            other_flags=( "--config" "--target" )
+            command_completion_7 "$cur" "$COMP_CWORD" "run" "vitis" "--project" "${other_flags[@]}"
+
+            other_flags=( "--config" "--project" )
+            command_completion_7 "$cur" "$COMP_CWORD" "run" "vitis" "--target" "${other_flags[@]}"
             ;;
         9)
 
