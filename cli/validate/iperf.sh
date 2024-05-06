@@ -19,8 +19,8 @@ username=$USER
 #inputs
 flags=$@
 
-#replace p by P
-flags=${flags/p/P}
+#replace -p by -P
+flags=$(echo "$flags" | sed 's/-p\($\| \)/-P /g')
 
 echo ""
 echo "${bold}sgutil validate iperf${normal}"
@@ -33,6 +33,11 @@ elif [ "$flags" = "-u" ]; then
     flags="-P 4 -u"
     udp_server=" -u"
 fi
+
+echo "Hey I am here"
+echo "Received Flags: $flags"
+
+exit
 
 #get booked servers accessible with ssh
 echo ""
