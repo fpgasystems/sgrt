@@ -34,6 +34,18 @@ elif [ "$flags" = "-u" ]; then
     udp_server=" -u"
 fi
 
+#check on flags
+if [[ $flags =~ --udp\ [^'01'] || $flags =~ -u\ [^'01'] ]]; then
+    $CLI_PATH/sgutil validate iperf -h
+    exit
+fi
+
+# Remove "--udp 0" or "-u 0" from flags
+flags=$(echo "$flags" | sed 's/\(--udp\| -u\) 0//')
+
+# Remove "1" after "--udp" or "-u" from flags
+flags=$(echo "$flags" | sed 's/\(--udp\| -u\) 1/\1/')
+
 echo "Hey I am here"
 echo "Received Flags: $flags"
 
