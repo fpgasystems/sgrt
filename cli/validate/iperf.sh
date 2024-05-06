@@ -46,11 +46,6 @@ flags=$(echo "$flags" | sed 's/\(--udp\| -u\) 0//')
 # Remove "1" after "--udp" or "-u" from flags
 flags=$(echo "$flags" | sed 's/\(--udp\| -u\) 1/\1/')
 
-echo "Hey I am here"
-echo "Received Flags: $flags"
-
-exit
-
 #get booked servers accessible with ssh
 echo ""
 echo "${bold}Quering remote servers with ssh:${normal}"
