@@ -94,7 +94,7 @@ _sgutil_completions()
     if [[ ${cur} == ./* ]]; then
         # Trim trailing spaces and slash if present
         cur="${cur%%[[:space:]]}"
-        cur="${cur%/}"
+        #cur="${cur%/}"
         # Generate completions for files
         file_completions=($(compgen -f -- ${cur}))
         COMPREPLY=("${file_completions[@]}")
