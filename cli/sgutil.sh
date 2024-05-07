@@ -640,7 +640,7 @@ program_coyote_help() {
     echo "FLAGS:"
     echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
     echo "   -p, --project   - Specifies your Coyote project name." 
-    echo "       --regions   - Sets the number of independent regions (vFPGA)."
+    #echo "       --regions   - Sets the number of independent regions (vFPGA)."
     echo "       --remote    - Local or remote deployment."
     echo ""
     echo "   -h, --help      - Help to use this command."
@@ -1264,7 +1264,7 @@ case "$command" in
         program_help
         ;;
       coyote)
-        valid_flags="-d --device -p --project --regions --remote -h --help"
+        valid_flags="-d --device -p --project --remote -h --help" #--regions
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       driver)

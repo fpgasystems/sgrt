@@ -89,19 +89,19 @@ sudo $CLI_PATH/common/get_devices_acap_fpga_coyote
 read -a flags <<< "$@"
 
 #program regions (only two flags are detected and the first one is --regions)
-if [[ ${#flags[@]} -eq 2 && ${flags[0]} = "--regions" ]]; then
-    regions_number=${flags[1]}
-    if [[ "$regions_number" -gt "$COYOTE_MAX_REGIONS" || "$regions_number" -lt 1 ]]; then
-        $CLI_PATH/sgutil program coyote -h
-    else
-        echo ""
-        echo "${bold}Enabling vFPGA regions:${normal}"
-        echo ""
-        $CLI_PATH/program/enable_regions $regions_number
-        echo ""
-    fi
-    exit
-fi
+#if [[ ${#flags[@]} -eq 2 && ${flags[0]} = "--regions" ]]; then
+#    regions_number=${flags[1]}
+#    if [[ "$regions_number" -gt "$COYOTE_MAX_REGIONS" || "$regions_number" -lt 1 ]]; then
+#        $CLI_PATH/sgutil program coyote -h
+#    else
+#        echo ""
+#        echo "${bold}Enabling vFPGA regions:${normal}"
+#        echo ""
+#        $CLI_PATH/program/enable_regions $regions_number
+#        echo ""
+#    fi
+#    exit
+#fi
 
 #version_dialog_check
 result="$("$CLI_PATH/common/version_dialog_check" "${flags[@]}")"

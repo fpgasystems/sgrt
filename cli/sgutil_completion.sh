@@ -13,10 +13,9 @@ command_completion_5() {
     # Access elements of the array (we could extend this)
     COMP_CWORD_2_1=${args[0]} #--device
     COMP_CWORD_2_2=${args[1]} #--project
-    COMP_CWORD_2_3=${args[2]} #--regions
-    COMP_CWORD_2_4=${args[3]} #--remote
+    COMP_CWORD_2_3=${args[2]} 
+    COMP_CWORD_2_4=${args[3]} 
 
-    #program[1] coyote[2] --flag[3] [4] --flag[5] [6] for --device --project --regions --remote
     if [[ "${COMP_WORDS[1]}" == "$COMP_WORDS_1" && "${COMP_WORDS[2]}" == "$COMP_WORDS_2" ]]; then
         if [[ "${COMP_WORDS[${COMP_CWORD}-2]}" == "$COMP_CWORD_2_1" || "${COMP_WORDS[${COMP_CWORD}-2]}" == "-${COMP_CWORD_2_1:2:1}" ]]; then
             COMPREPLY=($(compgen -W "$COMP_CWORD_2_2 $COMP_CWORD_2_3 $COMP_CWORD_2_4" -- ${CURRENT_WORD}))
@@ -46,7 +45,6 @@ command_completion_7() {
     COMP_CWORD_2_2=${args[1]}
     COMP_CWORD_2_3=${args[2]}
 
-    #program[1] coyote[2] --device[3] [4] --flag[5] [6] --flag[7] [8] for --project --regions --remote
     if [[ "${COMP_WORDS[1]}" == "$COMP_WORDS_1" && "${COMP_WORDS[2]}" == "$COMP_WORDS_2" && ( "${COMP_WORDS[3]}" == "$COMP_WORDS_3" || "${COMP_WORDS[3]}" == "-${COMP_WORDS_3:2:1}" ) ]]; then
         if [[ "${COMP_WORDS[${COMP_CWORD}-2]}" == "$COMP_CWORD_2_1" || "${COMP_WORDS[${COMP_CWORD}-2]}" == "-${COMP_CWORD_2_1:2:1}" ]]; then
             COMPREPLY=($(compgen -W "$COMP_CWORD_2_2 $COMP_CWORD_2_3" -- ${CURRENT_WORD}))
@@ -244,7 +242,7 @@ _sgutil_completions()
                 program)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote)
-                            COMPREPLY=($(compgen -W "--device --project --regions --remote --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device --project --remote --help" -- ${cur}))
                             ;;
                         driver)
                             COMPREPLY=($(compgen -W "--module --params --help" -- ${cur}))
@@ -341,7 +339,7 @@ _sgutil_completions()
             command_completion_5 "$cur" "$COMP_CWORD" "build" "vitis" "${other_flags[@]}"
 
             #program
-            other_flags=( "--device" "--project" "--regions" "--remote" )
+            other_flags=( "--device" "--project" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "coyote" "${other_flags[@]}"
             
             other_flags=( "--module" "--params" )
@@ -373,21 +371,21 @@ _sgutil_completions()
             #COMP_WORDS[2]=coyote
             #COMP_WORDS[3]=--device
             #COMP_WORDS[4]=1
-            #COMP_WORDS[5]=--project / --regions / --remote
+            #COMP_WORDS[5]=--project / --remote
             #COMP_WORDS[6]=hello_world
             #Example: sgutil program coyote --device 1 --project hello_world -- (there are seven words)
             
             #program coyote
-            other_flags=( "--project" "--regions" "--remote" )
+            other_flags=( "--project" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "${other_flags[@]}"
 
-            other_flags=( "--device" "--regions" "--remote" )
+            other_flags=( "--device" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "${other_flags[@]}"
 
-            other_flags=( "--device" "--project" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--regions" "${other_flags[@]}"
+            #other_flags=( "--device" "--project" "--remote" )
+            #command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--regions" "${other_flags[@]}"
 
-            other_flags=( "--device" "--project" "--regions" )
+            other_flags=( "--device" "--project" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "${other_flags[@]}"
 
             #program vitis    
@@ -440,44 +438,34 @@ _sgutil_completions()
             #Example: sgutil program coyote --device 1 --project hello_world --regions 0 -- (there are nine words)
 
             #program coyote --device
-            other_flags=( "--regions" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--project" "${other_flags[@]}"
+            #other_flags=( "--regions" "--remote" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--project" "${other_flags[@]}"
 
-            other_flags=( "--project" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--regions" "${other_flags[@]}"
+            #other_flags=( "--project" "--remote" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--regions" "${other_flags[@]}"
 
-            other_flags=( "--project" "--regions" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--remote" "${other_flags[@]}"
+            #other_flags=( "--project" "--regions" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--remote" "${other_flags[@]}"
 
             #program coyote --project
-            other_flags=( "--regions" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--device" "${other_flags[@]}"
+            #other_flags=( "--regions" "--remote" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--device" "${other_flags[@]}"
 
-            other_flags=( "--device" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--regions" "${other_flags[@]}"
+            #other_flags=( "--device" "--remote" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--regions" "${other_flags[@]}"
 
-            other_flags=( "--device" "--regions" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--remote" "${other_flags[@]}"
-
-            #program coyote --regions
-            other_flags=( "--project" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--regions" "--device" "${other_flags[@]}"
-
-            other_flags=( "--device" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--regions" "--project" "${other_flags[@]}"
-
-            other_flags=( "--device" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--regions" "--remote" "${other_flags[@]}"
+            #other_flags=( "--device" "--regions" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--remote" "${other_flags[@]}"
 
             #program coyote --remote
-            other_flags=( "--project" "--regions" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--device" "${other_flags[@]}"
+            #other_flags=( "--project" "--regions" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--device" "${other_flags[@]}"
 
-            other_flags=( "--device" "--regions" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--project" "${other_flags[@]}"
+            #other_flags=( "--device" "--regions" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--project" "${other_flags[@]}"
 
-            other_flags=( "--device" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--regions" "${other_flags[@]}"
+            #other_flags=( "--device" "--project" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--regions" "${other_flags[@]}"
 
             #program vitis --device
             other_flags=( "--remote" "--xclbin" )
