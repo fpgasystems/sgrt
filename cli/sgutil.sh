@@ -987,7 +987,7 @@ validate_iperf_help() {
       echo "   -b, --bandwidth - Bandwidth to send at in bits/sec or packets per second."
       echo "   -p, --parallel  - Number of parallel client threads to run."
       echo "   -t, --time      - Time in seconds to transmit for."
-      echo "   -u, --udp       - Use UDP rather than TCP."
+      echo "   -u, --udp       - When set to 1, uses UDP rather than TCP."
       echo ""
       echo "   -h, --help      - Help to use iperf validation."
       echo ""
@@ -1393,18 +1393,18 @@ case "$command" in
         valid_flags="-b --bandwidth -h --help -p --parallel -t --time -u --udp"
         
         # ensure -u or --udp are going at the end
-        if [[ $(echo "$command_arguments_flags" | grep "\-u\b" | wc -l) = 1 ]]; then
-          #remove -u
-          command_arguments_flags=${command_arguments_flags/-u/""}
-          #add it at the end
-          command_arguments_flags=$command_arguments_flags" -u"
-        fi
-        if [[ $(echo "$command_arguments_flags" | grep "\-\-udp\b" | wc -l) = 1 ]]; then
-          #remove --udp
-          command_arguments_flags=${command_arguments_flags/--udp/""}
-          #add it at the end
-          command_arguments_flags=$command_arguments_flags" -u" # this is done on purpose (see iperf.sh)
-        fi
+        #if [[ $(echo "$command_arguments_flags" | grep "\-u\b" | wc -l) = 1 ]]; then
+        #  #remove -u
+        #  command_arguments_flags=${command_arguments_flags/-u/""}
+        #  #add it at the end
+        #  command_arguments_flags=$command_arguments_flags" -u"
+        #fi
+        #if [[ $(echo "$command_arguments_flags" | grep "\-\-udp\b" | wc -l) = 1 ]]; then
+        #  #remove --udp
+        #  command_arguments_flags=${command_arguments_flags/--udp/""}
+        #  #add it at the end
+        #  command_arguments_flags=$command_arguments_flags" -u" # this is done on purpose (see iperf.sh)
+        #fi
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       mpi)

@@ -27,7 +27,7 @@
 </p>
 <code>-u, --udp <string></code>
 <p>
-  &nbsp; &nbsp; Use UDP rather than TCP.
+  &nbsp; &nbsp; When set to 1, uses UDP rather than TCP.
 </p>
 
 <code>-h, --help <string></code>

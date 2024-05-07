@@ -35,7 +35,14 @@ elif [ "$flags" = "-u" ]; then
 fi
 
 #check on flags
+# Check if "--udp" or "-u" is followed by a "0" or a "1"
 if [[ $flags =~ --udp\ [^'01'] || $flags =~ -u\ [^'01'] ]]; then
+    $CLI_PATH/sgutil validate iperf -h
+    exit
+fi
+
+# Check if "--udp" or "-u" is followed by a "-", "--", or an empty string
+if [[ $flags =~ (--udp|-u)$ ]]; then
     $CLI_PATH/sgutil validate iperf -h
     exit
 fi
