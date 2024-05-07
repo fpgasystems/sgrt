@@ -255,6 +255,9 @@ if ! [ -d "$DIR" ]; then
     #change to project directory
     cd $DIR
 
+    #save COYOTE_COMMIT
+    echo "$COYOTE_COMMIT" > COYOTE_COMMIT
+
     #create configuration file (https://github.com/fpgasystems/Coyote/blob/dfx_v2/examples_hw/CMakeLists.txt)
     #touch config_shell_$config_hw
     touch config_$config_sw

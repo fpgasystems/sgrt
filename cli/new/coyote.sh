@@ -7,7 +7,7 @@ normal=$(tput sgr0)
 CLI_PATH="$(dirname "$(dirname "$0")")"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="coyote"
-COYOTE_COMMIT="4629886"
+COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT) #COYOTE_COMMIT="4629886"
 
 #get hostname
 url="${HOSTNAME}"
@@ -120,12 +120,15 @@ $CLI_PATH/common/git_clone_coyote $DIR $COYOTE_COMMIT
 #change to project directory
 cd $DIR
 
+#save COYOTE_COMMIT
+echo "$COYOTE_COMMIT" > COYOTE_COMMIT
+
 #copy template from SGRT_PATH
 SGRT_PATH=$(dirname "$CLI_PATH")
 cp -rf $SGRT_PATH/templates/$WORKFLOW/hello_world/* $DIR
-#replace Makefile (main.cpp specific version)
-rm $DIR/sw/CMakeLists.txt
-mv $DIR/CMakeLists.txt $DIR/sw
+#replace Makefile (main.cpp specific version) ------------- 2024.05.07: I need to see what we do with this
+#rm $DIR/sw/CMakeLists.txt
+#mv $DIR/CMakeLists.txt $DIR/sw
 #compile create config
 cd $DIR/src
 g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
