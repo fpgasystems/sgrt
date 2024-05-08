@@ -131,6 +131,9 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
     std::string binaryFile = project_path + "/" + xclbin_name + "." + target + "." + device.platform + "/" + xclbin_name + ".xclbin"; // get_target(emulationMode)
     device.binaryFile = replace_string(binaryFile, project_path, ".");
 
+    // print
+    std::cout << "Openning device " << device_index << " (" << xclbin_name << ")\n" << std::endl;
+
     if (target == "sw_emu" || target == "hw_emu") {
 
         // create XRT device
@@ -170,7 +173,7 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
             // requested xclbin was already loaded
             device.uuid = current_uuid_str;
         }
-        std::cout << "Done!\n" << std::endl;
+        // std::cout << "Done!\n" << std::endl;
 
     }
 
@@ -200,6 +203,9 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
 
     // ------------------------------------------------------------
     
+    // print
+    std::cout << "\nDone!\n" << std::endl;
+
     return device;
 
 }
