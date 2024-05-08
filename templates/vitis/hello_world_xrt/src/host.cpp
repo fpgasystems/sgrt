@@ -140,15 +140,16 @@ int main(int argc, char** argv) {
     host::write(alveo_2, inputs);
 
     // specification
-    std::vector<int> out_spec = host::run("spec", alveo_1, config_id);
+    std::vector<int> device_1_spec = host::run("spec", alveo_1, config_id);
+    std::vector<int> device_2_spec = host::run("spec", alveo_2, config_id);
 
     // design
-    std::vector<int> out_des_1 = host::run("des", alveo_1, config_id);
-    std::vector<int> out_des_2 = host::run("des", alveo_2, config_id);
+    std::vector<int> device_1_des = host::run("des", alveo_1, config_id);
+    std::vector<int> device_2_des = host::run("des", alveo_2, config_id);
 
     // test
-    host::test(out_spec, out_des_1);
-    host::test(out_spec, out_des_2);
+    host::test(device_1_spec, device_1_des);
+    host::test(device_2_spec, device_2_des);
 
     return 0;
 }
