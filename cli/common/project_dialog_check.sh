@@ -17,6 +17,9 @@ do
     fi
 done
 
+# Remove everything before the last '/' character
+project_name="${project_name##*/}"
+
 #return the values
 echo "$project_found"
 #echo "$project_idx"
