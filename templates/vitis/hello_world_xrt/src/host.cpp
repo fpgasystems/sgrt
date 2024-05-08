@@ -89,6 +89,28 @@ namespace host {
 
         return out;
     }
+
+    void test(const std::vector<int>& out_spec, const std::vector<int>& out_des) {
+        if (out_spec.size() != out_des.size()) {
+            std::cout << "TEST FAILED (vector sizes are different)\n";
+        } else {
+            // Compare the contents of the vectors element-wise
+            bool passed = true; // Use a bool instead of int
+            for (size_t i = 0; i < out_spec.size(); ++i) {
+                if (out_des[i] != out_spec[i]) {
+                    // If a mismatch is found, set passed to false and break out of the loop
+                    passed = false;
+                    break;
+                }
+            }
+
+            // print based on the value of passed
+            if (!passed)
+                std::cout << "TEST FAILED (vector contents are different)\n";
+            else
+                std::cout << "TEST PASSED\n";
+        } 
+    }
 }
 
 int main(int argc, char** argv) {
@@ -139,43 +161,31 @@ int main(int argc, char** argv) {
     //run.wait();
 
     // design
-    std::vector<int> out_des = host::run("des", alveo_1, config_id);
+    std::vector<int> out_des_1 = host::run("des", alveo_1, config_id);
 
-    // Get the output;
-    //std::cout << "Get the output data from the device" << std::endl;
-    //alveo_1.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-
-    //int* out_des = alveo_1.outputs[0].bo.map<int*>();
-
-    // test 1
-    //if (std::memcmp(out_des.data(), out_spec.data(), N * sizeof(int)) != 0) { // DATA_SIZE
-    //    throw std::runtime_error("Value read back does not match reference");
-    //}
-
-    // Change an element in out_spec
-    //out_spec[0] = 1;
+    host::test(out_spec, out_des_1);
 
     // test 1
     // Compare the sizes of the vectors first
-    if (out_spec.size() != out_des.size()) {
-        std::cout << "TEST FAILED (vector sizes are different)\n";
-    } else {
-        // Compare the contents of the vectors element-wise
-        int passed = 1;
-        for (size_t i = 0; i < out_spec.size(); ++i) {
-            if (out_des[i] != out_spec[i]) {
-                //throw std::runtime_error("Value read back does not match reference");
-                passed = 0;
-                break;
-            }
-        }
-
-        // print
-        if (passed == 0)
-            std::cout << "TEST FAILED (vector contents are different)\n";
-        else if (passed == 1)
-            std::cout << "TEST PASSED\n";
-    } 
+    //if (out_spec.size() != out_des.size()) {
+    //    std::cout << "TEST FAILED (vector sizes are different)\n";
+    //} else {
+    //    // Compare the contents of the vectors element-wise
+    //    int passed = 1;
+    //    for (size_t i = 0; i < out_spec.size(); ++i) {
+    //        if (out_des[i] != out_spec[i]) {
+    //            //throw std::runtime_error("Value read back does not match reference");
+    //            passed = 0;
+    //            break;
+    //        }
+    //    }
+    //
+    //    // print
+    //    if (passed == 0)
+    //        std::cout << "TEST FAILED (vector contents are different)\n";
+    //    else if (passed == 1)
+    //        std::cout << "TEST PASSED\n";
+    //} 
     
     //return 0;
 
