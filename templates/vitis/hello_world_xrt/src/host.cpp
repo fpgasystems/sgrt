@@ -31,16 +31,6 @@
 
 // project includes
 #include "../sgrt_parameters.hpp"
-//#include "../configs/config_000.hpp" // config_000.hpp is overwritten with the configuration you select
-
-//std::string get_current_path() {
-//    char currentPath[FILENAME_MAX];
-//    if (getcwd(currentPath, sizeof(currentPath)) != NULL) {
-//        return std::string(currentPath);
-//    } else {
-//        return std::string(); // Return an empty string to indicate an error
-//    }
-//}
 
 namespace host {
     std::vector<int> run(const std::string& mode, device::vitis device, const std::string& config_id) {    
@@ -116,7 +106,6 @@ namespace host {
 int main(int argc, char** argv) {
 
     if (argc > 2) {
-        //std::cout << "\n" << argv[0] << " does not accept any additional parameters.\n" << std::endl;
         std::cout << "\n" << argv[0] << ": too many input parameters.\n" << std::endl;
         return 1;
     }
@@ -126,9 +115,6 @@ int main(int argc, char** argv) {
 
     // get config_id
     std::string config_id = host::get_config(argv);
-
-    // get config_parameters
-    //int N = host::get_config_parameter<int>(project_path, config_id, "N");
 
     // get target
     std::string target = host::get_target();
