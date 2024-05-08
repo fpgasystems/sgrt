@@ -88,7 +88,7 @@ namespace device {
             for (size_t i = 0; i < outputs.size(); ++i) {
                 std::cout << i << ": " << outputs[i].name << " (Type: " << outputs[i].type << ")" << std::endl;
             }
-            std::cout << "\n" << std::endl;
+            std::cout << std::endl; // Remove \n or std::endl here
 
         }
 
