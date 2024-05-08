@@ -347,6 +347,7 @@ else
             exit
         elif [[ $multiple_configs = "0" ]]; then
             echo $config_name
+            echo ""
         fi
         #echo ""
     fi
@@ -595,6 +596,7 @@ case "$target_name" in
         merge_emconfig_json "$xrt_version" "$json_files" "$nd" "./emconfig.json"
 
         #echo "cp -rf ./_x.$xclbin_name.$target_name.$platform_name/emconfig.json ."
+        echo ""
         echo "XCL_EMULATION_MODE=$target_name ./host $config_name" # -p $DIR # $project_name 
         echo ""
         #eval "cp -rf ./_x.$xclbin_name.$target_name.$platform_name/emconfig.json ."
