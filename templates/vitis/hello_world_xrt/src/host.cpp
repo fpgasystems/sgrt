@@ -70,20 +70,20 @@ namespace host {
                 out[i] = v_1[i] + v_2[i];
             }
         } else if (mode == "des") {
-            // Read inputs from the device
-            //auto v_1 = device.inputs[0].bo.map<int*>();
-            //auto v_2 = device.inputs[1].bo.map<int*>();
-
-            // Perform specific operation for "des" mode
-            //for (int i = 0; i < N; ++i) {
-            //    out[i] = v_1[i] - v_2[i];
-            //}
-
+            
             std::cout << "Execution of the kernel\n";
             auto run = device.kernel(device.inputs[0].bo, device.inputs[1].bo, device.outputs[0].bo, N);
             run.wait();
 
+            // Get the output;
+            std::cout << "Get the output data from the device" << std::endl;
+            device.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
+            // Map the output buffer
+            int* out_map = device.outputs[0].bo.map<int*>();
+
+            // Construct a vector from the mapped data
+            out.assign(out_map, out_map + N);
 
         }
 
@@ -135,21 +135,34 @@ int main(int argc, char** argv) {
     std::vector<int> out_spec = host::run("spec", alveo_1, config_id);
 
     //std::cout << "Execution of the kernel\n";
-    auto run = alveo_1.kernel(alveo_1.inputs[0].bo, alveo_1.inputs[1].bo, alveo_1.outputs[0].bo, N); // DATA_SIZE
-    run.wait();
+    //auto run = alveo_1.kernel(alveo_1.inputs[0].bo, alveo_1.inputs[1].bo, alveo_1.outputs[0].bo, N); // DATA_SIZE
+    //run.wait();
 
     // design
-    //std::vector<int> out_des = host::run("des", alveo_1, config_id);
+    std::vector<int> out_des = host::run("des", alveo_1, config_id);
 
     // Get the output;
-    std::cout << "Get the output data from the device" << std::endl;
-    alveo_1.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
+    //std::cout << "Get the output data from the device" << std::endl;
+    //alveo_1.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
-    int* out_des = alveo_1.outputs[0].bo.map<int*>();
+    //int* out_des = alveo_1.outputs[0].bo.map<int*>();
 
     // test 1
-    if (std::memcmp(out_des, out_spec.data(), N * sizeof(int)) != 0) { // DATA_SIZE
-        throw std::runtime_error("Value read back does not match reference");
+    //if (std::memcmp(out_des.data(), out_spec.data(), N * sizeof(int)) != 0) { // DATA_SIZE
+    //    throw std::runtime_error("Value read back does not match reference");
+    //}
+
+    // test 1
+    // Compare the sizes of the vectors first
+    if (out_spec.size() != out_des.size()) {
+        throw std::runtime_error("Output vectors have different sizes");
+    }
+
+    // Compare the contents of the vectors element-wise
+    for (size_t i = 0; i < out_spec.size(); ++i) {
+        if (out_des[i] != out_spec[i]) {
+            throw std::runtime_error("Value read back does not match reference");
+        }
     }
 
     std::cout << "TEST PASSED 1\n";
