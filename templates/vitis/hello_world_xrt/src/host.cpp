@@ -152,20 +152,31 @@ int main(int argc, char** argv) {
     //    throw std::runtime_error("Value read back does not match reference");
     //}
 
+    // Change an element in out_spec
+    //out_spec[0] = 1;
+
     // test 1
     // Compare the sizes of the vectors first
     if (out_spec.size() != out_des.size()) {
-        throw std::runtime_error("Output vectors have different sizes");
-    }
-
-    // Compare the contents of the vectors element-wise
-    for (size_t i = 0; i < out_spec.size(); ++i) {
-        if (out_des[i] != out_spec[i]) {
-            throw std::runtime_error("Value read back does not match reference");
+        std::cout << "TEST FAILED (vector sizes are different)\n";
+    } else {
+        // Compare the contents of the vectors element-wise
+        int passed = 1;
+        for (size_t i = 0; i < out_spec.size(); ++i) {
+            if (out_des[i] != out_spec[i]) {
+                //throw std::runtime_error("Value read back does not match reference");
+                passed = 0;
+                break;
+            }
         }
-    }
 
-    std::cout << "TEST PASSED 1\n";
+        // print
+        if (passed == 0)
+            std::cout << "TEST FAILED (vector contents are different)\n";
+        else if (passed == 1)
+            std::cout << "TEST PASSED\n";
+    } 
+    
     //return 0;
 
     // device 2 ------------------------------------------------------------------------------------------------
