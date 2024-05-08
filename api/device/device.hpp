@@ -59,7 +59,7 @@ namespace device {
         }
 
         void print() {
-            std::cout << "Printing device " << device_index << " information:\n" << std::endl;
+            std::cout << "\e[1m" << "Printing device " << device_index << " information:" << "\e[0m\n" << std::endl;
             
             std::cout << "BDF: " << bdf << std::endl;
             std::cout << "Device Name: " << device_name << std::endl;

@@ -132,7 +132,7 @@ device::vitis host::open(const std::string& device_index, const std::string& xcl
     device.binaryFile = replace_string(binaryFile, project_path, ".");
 
     // print
-    std::cout << "Openning device " << device_index << " (" << xclbin_name << "):\n" << std::endl;
+    std::cout << "\e[1m" << "Openning device " << device_index << " (" << xclbin_name << "):" << "\e[0m\n" << std::endl;
 
     if (target == "sw_emu" || target == "hw_emu") {
 
