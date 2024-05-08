@@ -137,11 +137,6 @@ int main(int argc, char** argv) {
     std::vector<int> v_1 = host::create_data(config_id);
     std::vector<int> v_2 = host::create_data(config_id);
 
-    // specification
-    //std::vector<int> out_spec = host::run("spec", v_1, v_2);
-
-    // design
-
     // Initialize inputs vector with v_1 and v_2
     std::vector<std::vector<int>> inputs;
     inputs.push_back(v_1);
@@ -161,10 +156,6 @@ int main(int argc, char** argv) {
     // specification
     std::vector<int> out_spec = host::run("spec", alveo_1, config_id);
 
-    //std::cout << "Execution of the kernel\n";
-    //auto run = alveo_1.kernel(alveo_1.inputs[0].bo, alveo_1.inputs[1].bo, alveo_1.outputs[0].bo, N); // DATA_SIZE
-    //run.wait();
-
     // design
     std::vector<int> out_des_1 = host::run("des", alveo_1, config_id);
     std::vector<int> out_des_2 = host::run("des", alveo_2, config_id);
@@ -173,52 +164,5 @@ int main(int argc, char** argv) {
     host::test(out_spec, out_des_1);
     host::test(out_spec, out_des_2);
 
-    // test 1
-    // Compare the sizes of the vectors first
-    //if (out_spec.size() != out_des.size()) {
-    //    std::cout << "TEST FAILED (vector sizes are different)\n";
-    //} else {
-    //    // Compare the contents of the vectors element-wise
-    //    int passed = 1;
-    //    for (size_t i = 0; i < out_spec.size(); ++i) {
-    //        if (out_des[i] != out_spec[i]) {
-    //            //throw std::runtime_error("Value read back does not match reference");
-    //            passed = 0;
-    //            break;
-    //        }
-    //    }
-    //
-    //    // print
-    //    if (passed == 0)
-    //        std::cout << "TEST FAILED (vector contents are different)\n";
-    //    else if (passed == 1)
-    //        std::cout << "TEST PASSED\n";
-    //} 
-    
-    //return 0;
-
-    // device 2 ------------------------------------------------------------------------------------------------
-    //std::cout << "\nDEVICE 2\n" << std::endl;
-    
-    //device::vitis alveo_2 = host::open("2", "vsub", config_id, target);
-    //alveo_2.print();
-
-    //host::write(alveo_2, inputs);
-
-    //std::cout << "Execution of the kernel\n";
-    //auto run_2 = alveo_2.kernel(alveo_2.inputs[0].bo, alveo_2.inputs[1].bo, alveo_2.outputs[0].bo, N); // DATA_SIZE
-    //run_2.wait();
-
-    // Get the output;
-    //std::cout << "Get the output data from the device" << std::endl;
-    //alveo_2.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
-
-    // test 2
-    //if (std::memcmp(alveo_2.outputs[0].bo.map<int*>(), out_spec.data(), N * sizeof(int)) != 0) { // DATA_SIZE
-    //    throw std::runtime_error("Value read back does not match reference");
-    //}    
-
-    //std::cout << "TEST PASSED 2\n";
     return 0;
-
 }
