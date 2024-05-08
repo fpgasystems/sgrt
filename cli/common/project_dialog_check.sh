@@ -17,6 +17,9 @@ do
     fi
 done
 
+# Remove trailing '/' characters
+project_name="${project_name%%/}"
+
 # Remove everything before the last '/' character
 project_name="${project_name##*/}"
 
