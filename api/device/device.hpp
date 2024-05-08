@@ -59,7 +59,8 @@ namespace device {
         }
 
         void print() {
-            //std::cout << "Device Index: " << device_index << std::endl;
+            std::cout << "Printing device " << device_index << " information:\n" << std::endl;
+            
             std::cout << "BDF: " << bdf << std::endl;
             std::cout << "Device Name: " << device_name << std::endl;
             std::cout << "Serial Number: " << serial_number << std::endl;
@@ -72,16 +73,17 @@ namespace device {
             std::cout << "Platform: " << platform << std::endl;
 
             // inputs
-            std::cout << "\nDeclared Inputs:" << std::endl;
+            std::cout << "\nInput ports:" << std::endl;
             for (size_t i = 0; i < inputs.size(); ++i) {
                 std::cout << i << ": " << inputs[i].name << " (Type: " << inputs[i].type << ")" << std::endl;
             }
 
             // outputs
-            std::cout << "\nDeclared Outputs:" << std::endl;
+            std::cout << "\nOutput ports:" << std::endl;
             for (size_t i = 0; i < outputs.size(); ++i) {
                 std::cout << i << ": " << outputs[i].name << " (Type: " << outputs[i].type << ")" << std::endl;
             }
+            std::cout << "\n" << std::endl;
 
         }
 
