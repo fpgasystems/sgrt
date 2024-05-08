@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
     std::string config_id = host::get_config(argv);
 
     // get config_parameters
-    int N = host::get_config_parameter<int>(project_path, config_id, "N");
+    //int N = host::get_config_parameter<int>(project_path, config_id, "N");
 
     // get target
     std::string target = host::get_target();
