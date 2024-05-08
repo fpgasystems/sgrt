@@ -59,7 +59,12 @@ namespace device {
         }
 
         void print() {
-            std::cout << "\e[1m" << "Printing device " << device_index << " information:" << "\e[0m\n" << std::endl;
+            // get xclbin_name
+            size_t lastSlashPos = binaryFile.find_last_of('/');
+            size_t xclbinPos = binaryFile.find(".xclbin", lastSlashPos);
+            std::string xclbin_name = binaryFile.substr(lastSlashPos + 1, xclbinPos - lastSlashPos - 1);
+
+            std::cout << "\e[1m" << "Printing device " << device_index << " (" << xclbin_name << ") information:" << "\e[0m\n" << std::endl;
             
             std::cout << "BDF: " << bdf << std::endl;
             std::cout << "Device Name: " << device_name << std::endl;
