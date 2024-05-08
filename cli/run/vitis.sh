@@ -621,10 +621,10 @@ case "$target_name" in
         #execution
         cd $DIR
         echo "${bold}Running accelerated application:${normal}"
-        #echo ""
+        echo ""
 
         echo "./host $config_name" # -p $DIR # $project_name
-        #echo ""
+        echo ""
         eval "./host $config_name" # -p $DIR # $project_name
         echo ""
         ;;
