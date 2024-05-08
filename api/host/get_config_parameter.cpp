@@ -26,7 +26,7 @@ T host::get_config_parameter(const std::string& project_path, const std::string&
     // Read the configuration file line by line
     std::string line;
     while (std::getline(config_file, line)) {
-        std::cout << "Read line: " << line << std::endl; // Debugging output
+        //std::cout << "Read line: " << line << std::endl; // Debugging output
 
         std::istringstream iss(line);
         std::string name;
