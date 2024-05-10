@@ -74,11 +74,6 @@ namespace device {
         }
 
         void print() {
-            // get xclbin_name
-            //size_t lastSlashPos = binaryFile.find_last_of('/');
-            //size_t xclbinPos = binaryFile.find(".xclbin", lastSlashPos);
-            //std::string xclbin_name = binaryFile.substr(lastSlashPos + 1, xclbinPos - lastSlashPos - 1);
-            
             // get xclbin_name using the get_xclbin_name() function
             std::string xclbin_name = get_xclbin_name();
 
