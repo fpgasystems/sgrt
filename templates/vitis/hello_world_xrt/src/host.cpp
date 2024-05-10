@@ -50,15 +50,6 @@ namespace host {
         std::vector<int> out(N);
 
         // get device info
-        //int device_index = device.device_index;
-
-        //auto device_index = device::get_field(device, "device_index");
-
-        //std::string binaryFile = device.binaryFile;
-        //size_t lastSlashPos = binaryFile.find_last_of('/');
-        //size_t xclbinPos = binaryFile.find(".xclbin", lastSlashPos);
-        //std::string xclbin_name = binaryFile.substr(lastSlashPos + 1, xclbinPos - lastSlashPos - 1);
-
         std::string device_index = device.get_device_index();
         std::string xclbin_name = device.get_xclbin_name();
 
