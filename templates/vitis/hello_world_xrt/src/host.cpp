@@ -47,12 +47,20 @@ namespace host {
         int N = host::get_config_parameter<int>(project_path, config_id, "N");
 
         // Declare output vector
-        std::vector<int> out(N);    
+        std::vector<int> out(N);
+
+        // get device info
+        int device_index = device.device_index;
+
+        std::string binaryFile = device.binaryFile;
+        size_t lastSlashPos = binaryFile.find_last_of('/');
+        size_t xclbinPos = binaryFile.find(".xclbin", lastSlashPos);
+        std::string xclbin_name = binaryFile.substr(lastSlashPos + 1, xclbinPos - lastSlashPos - 1);
 
         // Perform specific operation based on mode
         if (mode == "spec") {
 
-            std::cout << "\e[1m" << "Running specification:" << "\e[0m\n" << std::endl;
+            std::cout << "\e[1m" << "Running device " << device_index << " (" << xclbin_name << ") specification:" << "\e[0m\n" << std::endl;
 
             // Read inputs from the device
             auto v_1 = device.inputs[0].bo.map<int*>();
@@ -65,8 +73,9 @@ namespace host {
 
             std::cout << "Done!\n" << std::endl;
         } else if (mode == "des") {
-            
-            std::cout << "\e[1m" << "Running design:" << "\e[0m\n" << std::endl;
+
+            std::cout << "\e[1m" << "Running device " << device_index << " (" << xclbin_name << ") design:" << "\e[0m\n" << std::endl;
+
             auto run = device.kernel(device.inputs[0].bo, device.inputs[1].bo, device.outputs[0].bo, N);
             run.wait();
 
