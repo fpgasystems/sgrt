@@ -178,12 +178,10 @@ int main(int argc, char** argv) {
     std::vector<int> alveo_2_spec = host::run("spec", alveo_2, config_id);
 
     // design
-    std::vector<int> device_1_des = host::run("des", alveo_1, config_id);
-    std::vector<int> device_2_des = host::run("des", alveo_2, config_id);
+    host::run("des", alveo_1, config_id);
+    host::run("des", alveo_2, config_id);
 
     // test
-    //host::test(device_1_spec, device_1_des);
-    //host::test(device_2_spec, device_2_des);
     host::test(alveo_1_spec, alveo_1, config_id);
     host::test(alveo_2_spec, alveo_2, config_id);
 
