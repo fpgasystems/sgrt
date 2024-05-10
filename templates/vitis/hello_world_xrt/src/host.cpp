@@ -76,7 +76,6 @@ namespace host {
             run.wait();
 
             // Get the output;
-            //std::cout << "Get the output data from the device" << std::endl;
             device.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
             // Map the output buffer
@@ -91,7 +90,31 @@ namespace host {
         return out;
     }
 
-    void test(const std::vector<int>& out_spec, const std::vector<int>& out_des) {
+    void test(const std::vector<int>& out_spec, device::vitis device, std::string config_id) { //, const std::vector<int>& out_des
+        // get project_path
+        std::string project_path = host::get_project_path();
+        
+        // get parameters
+        int N = host::get_config_parameter<int>(project_path, config_id, "N");
+
+        // Declare output vector
+        std::vector<int> out_des(N);
+        
+        // get device info
+        std::string device_index = device.get_device_index();
+        std::string xclbin_name = device.get_xclbin_name();
+
+        // Get the output;
+        device.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
+
+        // Map the output buffer
+        int* out_map = device.outputs[0].bo.map<int*>();
+
+        // Construct a vector from the mapped data
+        out_des.assign(out_map, out_map + N);
+
+        std::cout << "\e[1m" << "Running test " << device_index << " (" << xclbin_name << "):" << "\e[0m\n" << std::endl;
+
         if (out_spec.size() != out_des.size()) {
             std::cout << "TEST FAILED (vector sizes are different)\n";
         } else {
@@ -151,16 +174,18 @@ int main(int argc, char** argv) {
     host::write(alveo_2, inputs);
 
     // specification
-    std::vector<int> device_1_spec = host::run("spec", alveo_1, config_id);
-    std::vector<int> device_2_spec = host::run("spec", alveo_2, config_id);
+    std::vector<int> alveo_1_spec = host::run("spec", alveo_1, config_id);
+    std::vector<int> alveo_2_spec = host::run("spec", alveo_2, config_id);
 
     // design
     std::vector<int> device_1_des = host::run("des", alveo_1, config_id);
     std::vector<int> device_2_des = host::run("des", alveo_2, config_id);
 
     // test
-    host::test(device_1_spec, device_1_des);
-    host::test(device_2_spec, device_2_des);
+    //host::test(device_1_spec, device_1_des);
+    //host::test(device_2_spec, device_2_des);
+    host::test(alveo_1_spec, alveo_1, config_id);
+    host::test(alveo_2_spec, alveo_2, config_id);
 
     return 0;
 }
