@@ -58,11 +58,29 @@ namespace device {
             outputs.push_back({xrt::bo(device, buffer_size, kernel_argument_index), name, type});
         }
 
-        void print() {
-            // get xclbin_name
+        std::string get_device_index() {
+            // Convert device_index integer to string
+            std::string index_str = std::to_string(device_index);
+
+            return index_str;
+        }
+        
+        std::string get_xclbin_name() {
             size_t lastSlashPos = binaryFile.find_last_of('/');
             size_t xclbinPos = binaryFile.find(".xclbin", lastSlashPos);
             std::string xclbin_name = binaryFile.substr(lastSlashPos + 1, xclbinPos - lastSlashPos - 1);
+
+            return xclbin_name;
+        }
+
+        void print() {
+            // get xclbin_name
+            //size_t lastSlashPos = binaryFile.find_last_of('/');
+            //size_t xclbinPos = binaryFile.find(".xclbin", lastSlashPos);
+            //std::string xclbin_name = binaryFile.substr(lastSlashPos + 1, xclbinPos - lastSlashPos - 1);
+            
+            // get xclbin_name using the get_xclbin_name() function
+            std::string xclbin_name = get_xclbin_name();
 
             std::cout << "\e[1m" << "Printing device " << device_index << " (" << xclbin_name << ") information:" << "\e[0m\n" << std::endl;
             
