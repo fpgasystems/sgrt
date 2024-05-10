@@ -113,10 +113,10 @@ namespace host {
         // Construct a vector from the mapped data
         out_des.assign(out_map, out_map + N);
 
-        std::cout << "\e[1m" << "Running test " << device_index << " (" << xclbin_name << "):" << "\e[0m\n" << std::endl;
+        std::cout << "\e[1m" << "Testing device " << device_index << " (" << xclbin_name << "):" << "\e[0m\n" << std::endl;
 
         if (out_spec.size() != out_des.size()) {
-            std::cout << "TEST FAILED (vector sizes are different)\n";
+            std::cout << "TEST FAILED (vector sizes are different)\n" << std::endl;;
         } else {
             // Compare the contents of the vectors element-wise
             bool passed = true; // Use a bool instead of int
@@ -130,9 +130,9 @@ namespace host {
 
             // print based on the value of passed
             if (!passed)
-                std::cout << "TEST FAILED (vector contents are different)\n";
+                std::cout << "TEST FAILED (vector contents are different)\n" << std::endl;
             else
-                std::cout << "TEST PASSED\n";
+                std::cout << "TEST PASSED\n" << std::endl;
         } 
     }
 }
