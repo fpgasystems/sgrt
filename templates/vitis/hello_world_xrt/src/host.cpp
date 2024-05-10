@@ -51,6 +51,9 @@ namespace host {
 
         // Perform specific operation based on mode
         if (mode == "spec") {
+
+            std::cout << "\e[1m" << "Running specification:" << "\e[0m\n" << std::endl;
+
             // Read inputs from the device
             auto v_1 = device.inputs[0].bo.map<int*>();
             auto v_2 = device.inputs[1].bo.map<int*>();    
@@ -59,14 +62,16 @@ namespace host {
             for (int i = 0; i < N; ++i) {
                 out[i] = v_1[i] + v_2[i];
             }
+
+            std::cout << "Done!\n" << std::endl;
         } else if (mode == "des") {
             
-            std::cout << "Execution of the kernel\n";
+            std::cout << "\e[1m" << "Running design:" << "\e[0m\n" << std::endl;
             auto run = device.kernel(device.inputs[0].bo, device.inputs[1].bo, device.outputs[0].bo, N);
             run.wait();
 
             // Get the output;
-            std::cout << "Get the output data from the device" << std::endl;
+            //std::cout << "Get the output data from the device" << std::endl;
             device.outputs[0].bo.sync(XCL_BO_SYNC_BO_FROM_DEVICE);
 
             // Map the output buffer
@@ -75,6 +80,7 @@ namespace host {
             // Construct a vector from the mapped data
             out.assign(out_map, out_map + N);
 
+            std::cout << "Done!\n" << std::endl;
         }
 
         return out;
