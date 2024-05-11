@@ -5,7 +5,12 @@ normal=$(tput sgr0)
 
 #constants
 #CLI_PATH="/opt/sgrt/cli" #"$(dirname "$(dirname "$0")")" # CLI_PATH is declared as an environment variable
-LOCAL_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH) #we use it like this for now
+
+#LOCAL_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH) #we use it like this for now
+
+LOCAL_PATH="/local/home/$USER"
+
+
 XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
 #XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 #VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
