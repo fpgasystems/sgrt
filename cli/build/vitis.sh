@@ -339,7 +339,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
             cp $xclbin_i.cfg $XCLBIN_BUILD_DIR/_${xclbin_i}.cfg
 
             #send email at the end
-            if [ "$target_name" = "hw" ]; then
+            if [ "$target_name" = "hw" ] && [ -f "$XCLBIN_BUILD_DIR/$xclbin_i.xclbin" ]; then
                 user_email=$USER@ethz.ch
                 echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name_i / XCLBIN=$xclbin_i) is done!" | sendmail $user_email
             fi
