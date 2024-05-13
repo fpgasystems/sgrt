@@ -62,9 +62,17 @@ namespace host {
             auto v_1 = device.inputs[0].bo.map<int*>();
             auto v_2 = device.inputs[1].bo.map<int*>();    
 
-            // Perform specific operation for "spec" mode
-            for (int i = 0; i < N; ++i) {
-                out[i] = v_1[i] + v_2[i];
+            // Switch statement based on xclbin_name
+            if (xclbin_name == "vadd") {
+                // vadd specification
+                for (int i = 0; i < N; ++i) {
+                    out[i] = v_1[i] + v_2[i];
+                }
+            } else if (xclbin_name == "vsub") {
+                // vsub specification
+                for (int i = 0; i < N; ++i) {
+                    out[i] = v_1[i] - v_2[i];
+                }
             }
 
             std::cout << "Done!\n" << std::endl;

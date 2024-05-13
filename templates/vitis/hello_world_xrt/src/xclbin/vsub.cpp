@@ -45,7 +45,7 @@ Input Vector 2 from Global Memory --->|             |      |__|
                               |  |<---|_____________|        |
                    in2_stream |  |     _____________         |
                               |__|--->|             |<--------
-                                      | compute_add |      __
+                                      | compute_sub |      __
                                       |_____________|---->|  |
                                        ______________     |  | out_stream
                                       |              |<---|__|
@@ -74,7 +74,7 @@ mem_rd:
     }
 }
 
-static void compute_add(hls::stream<unsigned int>& inStream1,
+static void compute_sub(hls::stream<unsigned int>& inStream1,
                         hls::stream<unsigned int>& inStream2,
                         hls::stream<unsigned int>& outStream,
                         int size) {
@@ -82,7 +82,7 @@ static void compute_add(hls::stream<unsigned int>& inStream1,
 execute:
     for (int i = 0; i < size; i++) {
 #pragma HLS LOOP_TRIPCOUNT min = c_size max = c_size
-        outStream << (inStream1.read() + inStream2.read());
+        outStream << (inStream1.read() - inStream2.read());
     }
 }
 
@@ -117,7 +117,7 @@ void vsub(unsigned int* in1, unsigned int* in2, unsigned int* out, int size) {
     // dataflow pragma instruct compiler to run following three APIs in parallel
     read_input(in1, inStream1, size);
     read_input(in2, inStream2, size);
-    compute_add(inStream1, inStream2, outStream, size);
+    compute_sub(inStream1, inStream2, outStream, size);
     write_result(out, outStream, size);
 }
 }
