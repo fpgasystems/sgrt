@@ -1,9 +1,6 @@
 
 #include <vector>
-//#include "../host.hpp"
-//#include "../device.hpp"
 #include "../api.hpp"
-//#include "../common/sgutil_get.hpp"
 
 void host::write(device::vitis device, const std::vector<std::vector<int>>& host_inputs) {
     // derive N
