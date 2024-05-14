@@ -300,30 +300,30 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     echo "${bold}XCLBIN compilation and linking:${normal}"
     echo ""
 
-    #compile for each xclbin_i
+    #compile for each xclbin_name_i
     for ((i = 0; i < ${#kernel_names[@]}; i++)); do
     
         #map to sp
         device_index_i="${device_indexes[i]}"
-        kernel_i="${kernel_names[i]}"
+        kernel_name_i="${kernel_names[i]}"
 
         #derive the xclbin name
-        xclbin_i=$(echo "$kernel_i" | cut -d'_' -f1)
+        xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)
 
         #platform can be potentially different for each FPGA index
         platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index_i platform)
         
         #define directories (2)
         #XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$xclbin_i.$target_name.$platform_name_i"
-        XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/$xclbin_i.$target_name.$platform_name_i"
+        XCLBIN_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/$xclbin_name_i.$target_name.$platform_name_i"
 
         #build/print upon existing directory
         if ! [ -d "$XCLBIN_BUILD_DIR" ]; then
 
             #print .cfg contents
-            echo "${bold}Using $xclbin_i.cfg configuration file:${normal}"
+            echo "${bold}Using $xclbin_name_i.cfg configuration file:${normal}"
             echo ""
-            cat $xclbin_i.cfg
+            cat $xclbin_name_i.cfg
             echo ""
             
             #echo "${bold}XCLBIN $xclbin_i compilation and linking:${normal}"
@@ -331,25 +331,25 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
 
             # XCLBIN_BUILD_DIR does not exist
             #echo ""
-            echo "make build TARGET=$target_name PLATFORM=$platform_name_i API_PATH=$API_PATH XCLBIN_NAME=$xclbin_i" 
+            echo "make build TARGET=$target_name PLATFORM=$platform_name_i API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name_i" 
             echo ""
             export CPATH="/usr/include/x86_64-linux-gnu" #https://support.xilinx.com/s/article/Fatal-error-sys-cdefs-h-No-such-file-or-directory?language=en_US
-            eval "make build TARGET=$target_name PLATFORM=$platform_name_i API_PATH=$API_PATH XCLBIN_NAME=$xclbin_i"
+            eval "make build TARGET=$target_name PLATFORM=$platform_name_i API_PATH=$API_PATH XCLBIN_NAME=$xclbin_name_i"
             echo ""
 
             #copy device_config.hpp and .cfg for reference (will be compared to _device_config.hpp and .cfg)
-            cp $DIR/configs/device_config.hpp $XCLBIN_BUILD_DIR/_${xclbin_i}_device_config.hpp
-            cp $xclbin_i.cfg $XCLBIN_BUILD_DIR/_${xclbin_i}.cfg
+            cp $DIR/configs/device_config.hpp $XCLBIN_BUILD_DIR/_${xclbin_name_i}_device_config.hpp
+            cp $xclbin_name_i.cfg $XCLBIN_BUILD_DIR/_${xclbin_name_i}.cfg
 
             #send email at the end
-            if [ "$target_name" = "hw" ] && [ -f "$XCLBIN_BUILD_DIR/$xclbin_i.xclbin" ]; then
+            if [ "$target_name" = "hw" ] && [ -f "$XCLBIN_BUILD_DIR/$xclbin_name_i.xclbin" ]; then
                 user_email=$USER@ethz.ch
-                echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name_i / XCLBIN=$xclbin_i) is done!" | sendmail $user_email
+                echo "Subject: Good news! sgutil build vitis ($project_name / TARGET=$target_name / PLATFORM=$platform_name_i / XCLBIN=$xclbin_name_i) is done!" | sendmail $user_email
             fi
 
         else
 
-            echo "The XCLBIN $xclbin_i.$target_name.$platform_name_i already exists!"
+            echo "The XCLBIN $xclbin_name_i.$target_name.$platform_name_i already exists!"
             echo ""
 
         fi
