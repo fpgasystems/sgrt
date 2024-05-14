@@ -285,17 +285,17 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         kernel_names+=("$column_2")
     done < "$DIR/sp"
 
-    #generate .cfg for all xclbins defined in sp
-    #xclbin_names=( $($CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR) )
-    $CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR > /dev/null
-    
-    #check on nk
+    #check on sp
     if [ "${#kernel_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
         echo ""
         echo "Please, review sp configuration file!"
         echo ""
         exit
     fi
+
+    #generate .cfg for all xclbins defined in sp
+    #xclbin_names=( $($CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR) )
+    $CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR > /dev/null
 
     echo "${bold}XCLBIN compilation and linking:${normal}"
     echo ""
