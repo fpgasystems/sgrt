@@ -276,13 +276,13 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
 
     #read from sp (we build all the xclbins defined in sp)
     declare -a device_indexes
-    declare -a xclbin_names
+    declare -a kernel_names
 
     while read -r line; do
         column_1=$(echo "$line" | awk '{print $1}')
         column_2=$(echo "$line" | awk '{print $2}')
         device_indexes+=("$column_1")
-        xclbin_names+=("$column_2")
+        kernel_names+=("$column_2")
     done < "$DIR/sp"
 
     #generate .cfg for all xclbins defined in sp
@@ -290,9 +290,9 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     $CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR > /dev/null
     
     #check on nk
-    if [ "${#xclbin_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
+    if [ "${#kernel_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
         echo ""
-        echo "Please, review nk configuration file!"
+        echo "Please, review sp configuration file!"
         echo ""
         exit
     fi
@@ -301,11 +301,14 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     echo ""
 
     #compile for each xclbin_i
-    for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
+    for ((i = 0; i < ${#kernel_names[@]}; i++)); do
     
         #map to sp
         device_index_i="${device_indexes[i]}"
-        xclbin_i="${xclbin_names[i]}"
+        kernel_i="${kernel_names[i]}"
+
+        #derive the xclbin name
+        xclbin_i=$(echo "$kernel_i" | cut -d'_' -f1)
 
         #platform can be potentially different for each FPGA index
         platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index_i platform)

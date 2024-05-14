@@ -459,13 +459,13 @@ fi
 
 #read from sp
 declare -a device_indexes
-declare -a xclbin_names
+declare -a kernel_names
 
 while read -r line; do
     column_1=$(echo "$line" | awk '{print $1}')
     column_2=$(echo "$line" | awk '{print $2}')
     device_indexes+=("$column_1")
-    xclbin_names+=("$column_2")
+    kernel_names+=("$column_2")
 done < "$DIR/sp"
 
 #check for build directories
@@ -473,7 +473,10 @@ for ((i = 0; i < ${#device_indexes[@]}; i++)); do
     
     #map to sp
     device_index="${device_indexes[i]}"
-    xclbin_name="${xclbin_names[i]}"
+    kernel_name="${kernel_names[i]}"
+
+    #derive the xclbin name
+    xclbin_name=$(echo "$kernel_name" | cut -d'_' -f1)
 
     #get platform
     platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
@@ -518,7 +521,10 @@ for ((i = 0; i < ${#device_indexes[@]}; i++)); do
 
     #map to sp
     device_index="${device_indexes[i]}"
-    xclbin_name="${xclbin_names[i]}"
+    kernel_name="${kernel_names[i]}"
+
+    #derive the xclbin name
+    xclbin_name=$(echo "$kernel_name" | cut -d'_' -f1)
 
     #get platform
     platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
@@ -561,7 +567,10 @@ case "$target_name" in
 
             #map to sp
             device_index_i="${device_indexes[i]}"
-            xclbin_name_i="${xclbin_names[i]}"
+            kernel_name_i="${kernel_names[i]}"
+
+            #derive the xclbin name
+            xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)
 
             #get platform
             platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index_i platform)
@@ -643,7 +652,8 @@ if [ "$device_changes" = "1" ] || [ "$cfg_changes" = "1" ]; then
 
         #map to sp
         device_index_i="${device_indexes[i]}"
-        xclbin_name_i="${xclbin_names[i]}"
+        kernel_name_i="${kernel_names[i]}"
+        xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)
         device_config_equal_i="${device_config_equal_results[i]}"
         cfg_equal_i="${cfg_equal_results[i]}"
 
