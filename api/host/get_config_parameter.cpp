@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_map>
 
-#include "../host.hpp"
+#include "../api.hpp"
 
 template <typename T>
 T host::get_config_parameter(const std::string& project_path, const std::string& config_id, const std::string& param) {

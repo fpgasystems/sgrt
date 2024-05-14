@@ -3,9 +3,10 @@
 #include <sstream>
 
 //#include "open.hpp" // Include the header file
-#include "../host.hpp"
-#include "../device.hpp"
-#include "../common/sgutil_get.hpp"
+//#include "../host.hpp"
+//#include "../device.hpp"
+#include "../api.hpp"
+//#include "../common/sgutil_get.hpp"
 
 std::string replace_string(const std::string& input, const std::string& target, const std::string& replacement) {
     std::string result = input;

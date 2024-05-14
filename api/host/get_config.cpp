@@ -3,7 +3,7 @@
 #include <sstream>
 
 //#include "get_config.hpp" // Include the header file
-#include "../host.hpp"
+#include "../api.hpp"
 
 //host::config host::get_config(const std::string& project_path, const std::string& xcl_emulation_mode) {
 std::string host::get_config(char** argv) {

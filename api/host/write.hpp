@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include "../device.hpp" // Include the device.hpp header
+//#include "../api.hpp" // Include the device.hpp header
 
 namespace host {
     void write(device::vitis device, const std::vector<std::vector<int>>& host_inputs);
