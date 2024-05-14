@@ -468,6 +468,14 @@ while read -r line; do
     kernel_names+=("$column_2")
 done < "$DIR/sp"
 
+#check on sp
+if [ "${#kernel_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
+    echo ""
+    echo "Please, review sp configuration file!"
+    echo ""
+    exit
+fi
+
 #check for build directories
 for ((i = 0; i < ${#device_indexes[@]}; i++)); do
     
