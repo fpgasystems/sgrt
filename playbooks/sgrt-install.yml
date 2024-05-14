@@ -28,7 +28,7 @@
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
     #api installation
-    api: false #true----------------
+    api: true #true----------------
     #cli installation
     #scripts
     build: false
@@ -41,14 +41,14 @@
     reboot: false
     run: false
     set: false
-    sgutil: true 
-    templates: false #true-----------------------------------
+    sgutil: false 
+    templates: true #true-----------------------------------
     validate: false
     #workflows
     coyote: false
     hip: false
     mpi: false
-    vitis: false #true---------------------------------
+    vitis: true #true---------------------------------
   tasks:
 
     #creating directories
@@ -89,8 +89,7 @@
         mode: "0755"
       when: all or api
       loop:
-        - device.hpp
-        - host.hpp
+        - api.hpp
     #common    
     - name: copying common functions
       copy:
@@ -632,6 +631,15 @@
       when: all or vitis
     
     #deleting files
+    #api
+    - name: deleting includes
+      file:
+        path: "{{ api_path }}/{{ item }}"
+        state: absent
+      loop:
+        - device.hpp
+        - host.hpp
+        - host.cpp # I believe that was an error
     #program
     - name: deleting program scripts
       file:
