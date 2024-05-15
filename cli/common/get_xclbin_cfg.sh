@@ -63,9 +63,16 @@ for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
     #sp
     grep "sp=$xclbin_i" $output_dir/sp_aux >> $output_dir/$xclbin_i.cfg
 
-    #change permissions (we avoid that user directly uses vi)
-    chmod a-w "$output_dir/$xclbin_i.cfg"
-
+    #check on sp
+    if ! grep -q '^sp=' "$output_dir/$xclbin_i.cfg"; then
+        #echo "The file '$file' does not contain any line that starts with 'sp='."
+        #the xclbin was not defined on sp
+        rm $output_dir/$xclbin_i.cfg
+    else
+        #echo "The file '$file' contains a line that starts with 'sp='."
+        #change permissions (we avoid that user directly uses vi)
+        chmod a-w "$output_dir/$xclbin_i.cfg"
+    fi
 done
 
 #remove sp_aux
