@@ -245,6 +245,7 @@ if [ "$target_host" = "0" ] || [ "$target_name" = "host" ]; then
     $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp \
     $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp \
     src/host.cpp \
+    src/host/*.cpp \
     $API_PATH/host/*.cpp \
     $API_PATH/common/*.cpp \
     -I$API_PATH \
@@ -259,6 +260,7 @@ if [ "$target_host" = "0" ] || [ "$target_name" = "host" ]; then
     $MY_PROJECTS_PATH/$WORKFLOW/common/includes/cmdparser/cmdlineparser.cpp \
     $MY_PROJECTS_PATH/$WORKFLOW/common/includes/logger/logger.cpp \
     src/host.cpp \
+    src/host/*.cpp \
     $API_PATH/host/*.cpp \
     $API_PATH/common/*.cpp \
     -I$API_PATH \

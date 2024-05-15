@@ -30,6 +30,7 @@
 
 // project includes
 #include "../sgrt_parameters.hpp"
+#include "./host.hpp"
 
 namespace host {
     std::vector<int> run(const std::string& mode, device::vitis device, const std::string& config_id) {    
@@ -97,7 +98,7 @@ namespace host {
         return out;
     }
 
-    void test(const std::vector<int>& out_spec, device::vitis device, std::string config_id) { //, const std::vector<int>& out_des
+    /* void test(const std::vector<int>& out_spec, device::vitis device, std::string config_id) { //, const std::vector<int>& out_des
         // get project_path
         std::string project_path = host::get_project_path();
         
@@ -141,7 +142,7 @@ namespace host {
             else
                 std::cout << "TEST PASSED\n" << std::endl;
         } 
-    }
+    } */
 }
 
 int main(int argc, char** argv) {
