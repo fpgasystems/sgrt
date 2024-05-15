@@ -32,8 +32,8 @@
 #include "../sgrt_parameters.hpp"
 #include "./host.hpp"
 
-namespace host {
-    std::vector<int> run(const std::string& mode, device::vitis device, const std::string& config_id) {    
+//namespace host {
+    /* std::vector<int> run(const std::string& mode, device::vitis device, const std::string& config_id) {    
         // Check if mode is "spec" or "des"
         if (mode != "spec" && mode != "des") {
             // Handle error for invalid mode
@@ -96,7 +96,7 @@ namespace host {
         }
 
         return out;
-    }
+    } */
 
     /* void test(const std::vector<int>& out_spec, device::vitis device, std::string config_id) { //, const std::vector<int>& out_des
         // get project_path
@@ -143,7 +143,7 @@ namespace host {
                 std::cout << "TEST PASSED\n" << std::endl;
         } 
     } */
-}
+//}
 
 int main(int argc, char** argv) {
 
