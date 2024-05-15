@@ -26,7 +26,7 @@ while read -r line; do
     column_1=$(echo "$line" | awk '{print $1}')
     column_2=$(echo "$line" | awk '{print $2}')
     device_indexes+=("$column_1")
-    xclbin_names+=("$column_2")
+    kernel_names+=("$column_2")
 done < "$MY_PROJECT_PATH/sp"
 
 #initialize arrays
@@ -35,30 +35,34 @@ files=()
 #check for build directories
 for ((i = 0; i < ${#device_indexes[@]}; i++)); do
     #map to sp
-    device_index="${device_indexes[i]}"
-    xclbin_name="${xclbin_names[i]}"
+    device_index_i="${device_indexes[i]}"
+    kernel_name_i="${kernel_names[i]}"
+    #xclbin_name="${xclbin_names[i]}"
+
+    #derive the xclbin name
+    xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)
 
     #get platform
-    platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
+    platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index_i platform)
 
     #check on .cpp
-    if [ -f "$MY_PROJECT_PATH/src/xclbin/$xclbin_name.cpp" ]; then
-        files+=( "$xclbin_name.cpp" )
+    if [ -f "$MY_PROJECT_PATH/src/xclbin/$xclbin_name_i.cpp" ]; then
+        files+=( "$xclbin_name_i.cpp" )
     fi
 
     #check on sw_emu
-    if [ -d "$MY_PROJECT_PATH/$xclbin_name.sw_emu.$platform_name_i" ]; then
-        files+=( "$xclbin_name.sw_emu.$platform_name_i" )
+    if [ -d "$MY_PROJECT_PATH/$xclbin_name_i.sw_emu.$platform_name_i" ]; then
+        files+=( "$xclbin_name_i.sw_emu.$platform_name_i" )
     fi
 
     #check on sw_emu
-    if [ -d "$MY_PROJECT_PATH/$xclbin_name.hw_emu.$platform_name_i" ]; then
-        files+=( "$xclbin_name.hw_emu.$platform_name_i" )
+    if [ -d "$MY_PROJECT_PATH/$xclbin_name_i.hw_emu.$platform_name_i" ]; then
+        files+=( "$xclbin_name_i.hw_emu.$platform_name_i" )
     fi
 
     #check on hw
-    if [ -d "$MY_PROJECT_PATH/$xclbin_name.hw.$platform_name_i" ]; then
-        files+=( "$xclbin_name.hw.$platform_name_i" )
+    if [ -d "$MY_PROJECT_PATH/$xclbin_name_i.hw.$platform_name_i" ]; then
+        files+=( "$xclbin_name_i.hw.$platform_name_i" )
     fi
 done
 
@@ -119,22 +123,22 @@ while true; do
                 fi
 
                 #delete logs
-                xclbin_name=$file
+                xclbin_name_i=$file
 
                 # Update sp and nk files
-                awk -v xclbin_name="$file" -v col="$XCLBIN_NAME_SP_COLUMN" '$col != xclbin_name && NF' sp > temp.txt && mv temp.txt sp
-                awk -v xclbin_name="$file" -v col="$XCLBIN_NAME_NK_COLUMN" '$col != xclbin_name && NF' nk > temp.txt && mv temp.txt nk
+                awk -v xclbin_name_i="$file" -v col="$XCLBIN_NAME_SP_COLUMN" '$col != xclbin_name_i && NF' sp > temp.txt && mv temp.txt sp
+                awk -v xclbin_name_i="$file" -v col="$XCLBIN_NAME_NK_COLUMN" '$col != xclbin_name_i && NF' nk > temp.txt && mv temp.txt nk
             elif [[ "$file" == *".sw_emu."* ]] || [[ "$file" == *".hw_emu."* ]] || [[ "$file" == *".hw."* ]]; then
                 #wdelete builds
                 rm -rf $MY_PROJECT_PATH/$file
 
                 #delete logs
-                xclbin_name=$(echo "$file" | cut -d '.' -f1)
+                xclbin_name_i=$(echo "$file" | cut -d '.' -f1)
             fi 
 
             #delete logs
             if [ -d "$MY_PROJECT_PATH/logs" ]; then
-                rm -f "$MY_PROJECT_PATH/logs/v++_${xclbin_name}"*.log
+                rm -f "$MY_PROJECT_PATH/logs/v++_${xclbin_name_i}"*.log
             fi
             
             echo ""

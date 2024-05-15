@@ -27,6 +27,9 @@ done
 #copy template
 cp $TEMPLATE $MY_PROJECT_PATH/src/xclbin/$xclbin_name.cpp
 
+#add to nk
+echo "$xclbin_name 1 ${xclbin_name}_a" >> $MY_PROJECT_PATH/nk
+
 echo ""
 echo "The XCLBIN ${bold}$xclbin_name${normal} has been added!"
 echo ""
