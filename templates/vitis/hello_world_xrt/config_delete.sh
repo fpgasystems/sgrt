@@ -34,29 +34,11 @@ echo ""
 echo "${bold}Please, choose the configuration you want to delete:${normal}"
 echo ""
 
-
-#delete TEMPLATE from projects =====================> to complete!
-#j=0
-#for i in "${projects[@]}"
-#do
-#    if [[ $i =~ "common/" ]]; then
-#        echo "" >&/dev/null
-#    else
-#        aux[j]=$i
-#        j=$(($j + 1))
-#    fi
-#done
-
-# Check if there is only one directory
-#if [ ${#configs[@]} -eq 1 ]; then
-#    #project_found="1"
-#    #project_name=${aux[0]}
-#    #project_name=${project_name::-1} # remove the last character, i.e. "/"
-#
-#    echo "Only one!"
-#
-#else
-    #multiple_projects="1"
+#select configuration
+if [ ${#configs[@]} -eq 1 ]; then
+    config="host_config_001"
+    echo $config 
+else
     PS3=""
     select config in "${configs[@]}"; do
         if [[ -z $config ]]; then
@@ -67,7 +49,7 @@ echo ""
             break
         fi
     done
-#fi
+fi
 
 echo ""
 echo "${bold}You are about to delete $config. Do you want to continue (y/n)?${normal}"
