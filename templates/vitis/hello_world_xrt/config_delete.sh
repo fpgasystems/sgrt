@@ -75,7 +75,7 @@ while true; do
     read -p "" yn
     case $yn in
         "y") 
-            rm $config
+            rm -f $config
             echo ""
             echo "The configuration ${bold}$config${normal} has been removed!"
             echo ""
