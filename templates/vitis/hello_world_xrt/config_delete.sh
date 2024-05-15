@@ -9,7 +9,7 @@ TEMPLATE="vadd"
 
 cd $MY_PROJECT_PATH/configs
 #exclude config_parameters (we can add other pipes for additional exclusions)
-configs=( $(ls -d config_* | grep -v "config_parameters") )
+configs=( $(ls -d host_config_* | grep -v "config_parameters") )
 
 # Remove file extension from each element in the array
 #for ((i=0; i<${#configs[@]}; i++)); do
