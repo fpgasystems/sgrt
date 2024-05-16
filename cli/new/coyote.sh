@@ -14,13 +14,13 @@ url="${HOSTNAME}"
 hostname="${url%%.*}"
 
 #check on virtualized servers
-virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
-if [ "$virtualized" = "1" ]; then
-    echo ""
-    echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
-    echo ""
-    exit
-fi
+#virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
+#if [ "$virtualized" = "1" ]; then
+#    echo ""
+#    echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
+#    echo ""
+#    exit
+#fi
 
 #check on valid Vivado version
 #if [ -z "$(echo $XILINX_VIVADO)" ]; then
