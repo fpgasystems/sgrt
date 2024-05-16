@@ -45,8 +45,6 @@ source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
 #get number of fpga and acap devices present
 MAX_DEVICES=$(grep -E "fpga|acap" $DEVICES_LIST | wc -l)
 
-echo "HEEEEEE $MAX_DEVICES"
-
 #inputs
 read -a flags <<< "$@"
 
@@ -298,13 +296,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         if [[ $column_1 =~ ^[1-9][0-9]*$ && $column_1 -le $MAX_DEVICES ]]; then
             device_indexes+=("$column_1")
             kernel_names+=("$column_2")
-        #else
-        #    echo "Column 1 is not a valid integer between 1 and $MAX_DEVICES: $column_1"
-        #    # Handle the error or skip this line
-        #    continue
         fi
-        #device_indexes+=("$column_1")
-        #kernel_names+=("$column_2")
     done < "$DIR/$BUILD_FILE"
 
     #check on sp
