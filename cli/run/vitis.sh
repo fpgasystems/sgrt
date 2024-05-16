@@ -119,6 +119,7 @@ XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vitis"
+BUILD_FILE="sp"
 
 #get hostname
 url="${HOSTNAME}"
@@ -466,7 +467,7 @@ while read -r line; do
     column_2=$(echo "$line" | awk '{print $2}')
     device_indexes+=("$column_1")
     kernel_names+=("$column_2")
-done < "$DIR/sp"
+done < "$DIR/$BUILD_FILE"
 
 #check on sp
 if [ "${#kernel_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
@@ -520,7 +521,7 @@ cat $DIR/configs/$config_name
 echo ""
 
 #re-generate .cfg for all xclbins (avoid printing xclbin_names)
-$CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR > /dev/null
+$CLI_PATH/common/get_xclbin_cfg $DIR/$BUILD_FILE $DIR > /dev/null #$DIR/nk
 
 #create building report (check for changes on device_config and/or .cfg)
 device_config_equal_results=()
@@ -607,7 +608,8 @@ case "$target_name" in
         json_files=$(echo "${json_files[@]}" | awk 'BEGIN {RS=" ";} !a[$0]++ {printf "%s ", $0}')
 
         #get the number of devices for emconfigutil
-        nd=$(cat $DIR/sp | wc -l)
+        #nd=$(cat $DIR/$BUILD_FILE | wc -l)
+        nd=$(cut -d' ' -f1 $DIR/$BUILD_FILE | grep -c -v "^$")
 
         #merge emconfigs
         merge_emconfig_json "$xrt_version" "$json_files" "$nd" "./emconfig.json"
@@ -625,7 +627,7 @@ case "$target_name" in
         #revert devices
         echo "${bold}Reverting devices to XRT:${normal}"
         echo ""
-        cat $DIR/sp | while read -r line; do
+        cat $DIR/$BUILD_FILE | while read -r line; do
             device_index=$(echo "$line" | awk '{print $1}')
             workflow=$(sgutil get workflow -d $device_index | awk -F':' '{print $2}' | tr -d '[:space:]')
             if [ "$workflow" = "vivado" ]; then

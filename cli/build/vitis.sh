@@ -10,6 +10,7 @@ XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS
 XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vitis"
+BUILD_FILE="sp"
 
 #set environmental variables
 #export API_PATH="$(dirname "$CLI_PATH")/api"
@@ -285,7 +286,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         column_2=$(echo "$line" | awk '{print $2}')
         device_indexes+=("$column_1")
         kernel_names+=("$column_2")
-    done < "$DIR/sp"
+    done < "$DIR/$BUILD_FILE"
 
     #check on sp
     if [ "${#kernel_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
@@ -296,8 +297,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     fi
 
     #generate .cfg for all xclbins defined in sp
-    #xclbin_names=( $($CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR) )
-    $CLI_PATH/common/get_xclbin_cfg $DIR/nk $DIR/sp $DIR > /dev/null
+    $CLI_PATH/common/get_xclbin_cfg $DIR/$BUILD_FILE $DIR > /dev/null #$DIR/nk
 
     echo "${bold}XCLBIN compilation and linking:${normal}"
     echo ""
