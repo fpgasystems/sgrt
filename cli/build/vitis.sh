@@ -11,6 +11,7 @@ XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vitis"
 BUILD_FILE="sp"
+DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 
 #set environmental variables
 #export API_PATH="$(dirname "$CLI_PATH")/api"
@@ -37,6 +38,14 @@ if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
     echo ""
     exit
 fi
+
+#check on DEVICES_LIST
+source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+
+#get number of fpga and acap devices present
+MAX_DEVICES=$(grep -E "fpga|acap" $DEVICES_LIST | wc -l)
+
+echo "HEEEEEE $MAX_DEVICES"
 
 #inputs
 read -a flags <<< "$@"
@@ -284,8 +293,18 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     while read -r line; do
         column_1=$(echo "$line" | awk '{print $1}')
         column_2=$(echo "$line" | awk '{print $2}')
-        device_indexes+=("$column_1")
-        kernel_names+=("$column_2")
+
+        #check if column_1 is a device_index (ann integer between 1 and MAX_DEVICES)
+        if [[ $column_1 =~ ^[1-9][0-9]*$ && $column_1 -le $MAX_DEVICES ]]; then
+            device_indexes+=("$column_1")
+            kernel_names+=("$column_2")
+        #else
+        #    echo "Column 1 is not a valid integer between 1 and $MAX_DEVICES: $column_1"
+        #    # Handle the error or skip this line
+        #    continue
+        fi
+        #device_indexes+=("$column_1")
+        #kernel_names+=("$column_2")
     done < "$DIR/$BUILD_FILE"
 
     #check on sp
