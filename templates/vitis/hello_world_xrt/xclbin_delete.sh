@@ -126,8 +126,8 @@ while true; do
                 xclbin_name_i=$file
 
                 # Update sp and nk files
-                awk -v xclbin_name_i="$file" -v col="$XCLBIN_NAME_SP_COLUMN" '$col != xclbin_name_i && NF' sp > temp.txt && mv temp.txt sp
                 awk -v xclbin_name_i="$file" -v col="$XCLBIN_NAME_NK_COLUMN" '$col != xclbin_name_i && NF' nk > temp.txt && mv temp.txt nk
+                awk -v pattern="^(${file}|${file}_)" -v col="$XCLBIN_NAME_SP_COLUMN" '$col !~ pattern && NF' sp > temp.txt && mv temp.txt sp # sp contains kernel names like vadd_a, vadd_b and not xclbin names (vadd)
             elif [[ "$file" == *".sw_emu."* ]] || [[ "$file" == *".hw_emu."* ]] || [[ "$file" == *".hw."* ]]; then
                 #wdelete builds
                 rm -rf $MY_PROJECT_PATH/$file
