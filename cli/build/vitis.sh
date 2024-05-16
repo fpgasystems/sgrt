@@ -286,7 +286,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
 
     #read from sp (we build all the xclbins defined in sp)
     declare -a device_indexes
-    declare -a kernel_names
+    declare -a xclbin_names
 
     while read -r line; do
         column_1=$(echo "$line" | awk '{print $1}')
@@ -295,12 +295,12 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         #check if column_1 is a device_index (ann integer between 1 and MAX_DEVICES)
         if [[ $column_1 =~ ^[1-9][0-9]*$ && $column_1 -le $MAX_DEVICES ]]; then
             device_indexes+=("$column_1")
-            kernel_names+=("$column_2")
+            xclbin_names+=("$column_2")
         fi
     done < "$DIR/$BUILD_FILE"
 
     #check on sp
-    if [ "${#kernel_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
+    if [ "${#xclbin_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
         echo ""
         echo "Please, review sp configuration file!"
         echo ""
@@ -314,14 +314,14 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     echo ""
 
     #compile for each xclbin_name_i
-    for ((i = 0; i < ${#kernel_names[@]}; i++)); do
+    for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
     
         #map to sp
         device_index_i="${device_indexes[i]}"
-        kernel_name_i="${kernel_names[i]}"
+        xclbin_name_i="${xclbin_names[i]}"
 
         #derive the xclbin name
-        xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)
+        #xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)
 
         #platform can be potentially different for each FPGA index
         platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index_i platform)
