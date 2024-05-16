@@ -14,12 +14,30 @@ declare -a compute_units_names
 
 while read -r line; do
     column_1=$(echo "$line" | awk '{print $1}')
+    #column_2=$(echo "$line" | awk '{print $2}')
     column_2=$(echo "$line" | awk '{print $2}')
-    column_3=$(echo "$line" | awk '{print $3}')
     xclbin_names+=("$column_1")
-    compute_units_num+=("$column_2")
-    compute_units_names+=("$column_3")
+    #compute_units_num+=("$column_2")
+    compute_units_names+=("$column_2")
 done < "$nk_file"
+
+compute_units_num=()
+for unit_name in "${compute_units_names[@]}"; do
+    count=$(echo "$unit_name" | tr -cd ',' | wc -c)
+    count=$((count + 1))
+    compute_units_num+=("$count")
+    #echo "$unit_name has $count units"
+done
+
+#echo "antic"
+#for unit_name in "${compute_units_num[@]}"; do
+#    echo "$unit_name"
+#done
+
+#echo "nou"
+#for unit_name in "${compute_units_num_aux[@]}"; do
+#    echo "$unit_name"
+#done
 
 #read from sp to create sp_aux (to append later)
 touch $output_dir/sp_aux
