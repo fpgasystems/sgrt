@@ -458,21 +458,25 @@ fi
 #config_id="${config%%.*}"
 #touch $config_id.active
 
-#read from sp
+#read from sp (we build all the xclbins defined in sp)
 declare -a device_indexes
-declare -a kernel_names
+declare -a xclbin_names
 
 while read -r line; do
     column_1=$(echo "$line" | awk '{print $1}')
     column_2=$(echo "$line" | awk '{print $2}')
-    device_indexes+=("$column_1")
-    kernel_names+=("$column_2")
+
+    #check if column_1 is a device_index (ann integer between 1 and MAX_DEVICES)
+    if [[ $column_1 =~ ^[1-9][0-9]*$ && $column_1 -le $MAX_DEVICES ]]; then
+        device_indexes+=("$column_1")
+        xclbin_names+=("$column_2")
+    fi
 done < "$DIR/$BUILD_FILE"
 
 #check on sp
-if [ "${#kernel_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
+if [ "${#xclbin_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
     echo ""
-    echo "Please, review sp configuration file!"
+    echo "Please, review the Synthesis and Implementation Process (sp) file!"
     echo ""
     exit
 fi
@@ -482,10 +486,10 @@ for ((i = 0; i < ${#device_indexes[@]}; i++)); do
     
     #map to sp
     device_index_i="${device_indexes[i]}"
-    kernel_name_i="${kernel_names[i]}"
+    xclbin_name_i="${xclbin_names[i]}"
 
     #derive the xclbin name
-    xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)
+    #xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)
 
     #get platform
     platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index_i platform)
@@ -530,10 +534,10 @@ for ((i = 0; i < ${#device_indexes[@]}; i++)); do
 
     #map to sp
     device_index_i="${device_indexes[i]}"
-    kernel_name_i="${kernel_names[i]}"
+    xclbin_name_i="${xclbin_names[i]}"
 
     #derive the xclbin name
-    xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)
+    #xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)
 
     #get platform
     platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index_i platform)
@@ -576,10 +580,10 @@ case "$target_name" in
 
             #map to sp
             device_index_i="${device_indexes[i]}"
-            kernel_name_i="${kernel_names[i]}"
+            xclbin_name_i="${xclbin_names[i]}"
 
             #derive the xclbin name
-            xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)
+            #xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)
 
             #get platform
             platform_name_i=$($CLI_PATH/get/get_fpga_device_param $device_index_i platform)
@@ -662,8 +666,8 @@ if [ "$device_changes" = "1" ] || [ "$cfg_changes" = "1" ]; then
 
         #map to sp
         device_index_i="${device_indexes[i]}"
-        kernel_name_i="${kernel_names[i]}"
-        xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)
+        xclbin_name_i="${xclbin_names[i]}"
+        #xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)
         device_config_equal_i="${device_config_equal_results[i]}"
         cfg_equal_i="${cfg_equal_results[i]}"
 
