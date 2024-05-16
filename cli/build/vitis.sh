@@ -302,7 +302,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     #check on sp
     if [ "${#xclbin_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
         echo ""
-        echo "Please, review sp configuration file!"
+        echo "Please, review the Synthesis and Implementation Process (sp) file!"
         echo ""
         exit
     fi
