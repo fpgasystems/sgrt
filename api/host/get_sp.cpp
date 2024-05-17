@@ -3,13 +3,15 @@
 #include <sstream>
 #include "../api.hpp"
 
-std::string host::get_sp(char** argv) {
+std::string host::get_sp() {
 
     // get project_path
     std::string project_path = host::get_project_path();
 
-    std::string config_id = argv[1];
+    std::cout << "\e[1m" << "Hi there" << "\e[0m\n" << std::endl;
 
-    return config_id;
+    
+
+    return project_path;
     
 }

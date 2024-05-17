@@ -57,6 +57,10 @@ int main(int argc, char** argv) {
     inputs.push_back(v_1);
     inputs.push_back(v_2);
 
+    // get sp (Synthesis and Implementation Process) file
+    std::string project_path = host::get_sp();
+    std::cout << "\e[1m" << project_path << "\e[0m\n" << std::endl;
+
     // open devices
     device::vitis alveo_1 = host::open("1", "vadd", config_id, target);
     alveo_1.print();
