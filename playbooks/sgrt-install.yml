@@ -413,6 +413,7 @@
       loop:
         - coyote
         - driver
+        - fpga_chmod
         - pci_hot_plug
         - reset
         - revert
@@ -648,5 +649,5 @@
       loop:
         - enable_N_REGIONS
         - enable_regions
-        - fpga_chmod
+        #- fpga_chmod
         - get_bus_device
