@@ -649,5 +649,4 @@
       loop:
         - enable_N_REGIONS
         - enable_regions
-        #- fpga_chmod
         - get_bus_device
