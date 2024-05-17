@@ -89,7 +89,7 @@ _sgutil_completions()
     cur=${COMP_WORDS[COMP_CWORD]}
 
     # Check if the current word is a file path
-    if [[ ${cur} == ./* ]]; then
+    if [[ ${cur} == ./* || ${cur} == /* || ${cur} == ../* ]]; then
         # Trim trailing spaces and slash if present
         cur="${cur%%[[:space:]]}"
         #cur="${cur%/}"
