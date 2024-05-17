@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
     }
 
     // get project_path
-    std::string project_path = host::get_project_path();
+    //std::string project_path = host::get_project_path();
 
     // get config_id
     std::string config_id = host::get_config(argv);
