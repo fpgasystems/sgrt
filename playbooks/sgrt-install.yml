@@ -41,7 +41,7 @@
     reboot: false
     run: false
     set: false
-    sgutil: false 
+    sgutil: true 
     templates: true #true-----------------------------------
     validate: false
     #workflows
@@ -125,6 +125,8 @@
         - get_config.cpp
         - get_project_path.hpp
         - get_project_path.cpp
+        - get_sp.hpp
+        - get_sp.cpp
         - get_target.hpp
         - get_target.cpp
         - open.hpp
