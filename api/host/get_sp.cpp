@@ -1,10 +1,9 @@
-//#include <fstream>
 #include <string>
 #include <vector>
-//#include <sstream>
+#include <tuple>  // Include the tuple header
 #include "../api.hpp"
 
-std::vector<std::string> host::get_sp() {
+std::tuple<std::vector<std::string>, std::vector<std::string>> host::get_sp() {
 
     // get project_path
     //std::string project_path = host::get_project_path();
@@ -24,6 +23,7 @@ std::vector<std::string> host::get_sp() {
     xclbin_names.push_back("vsub");
 
     
-    return devices;
+    // Return both vectors as a tuple
+    return std::make_tuple(devices, xclbin_names);
     
 }
