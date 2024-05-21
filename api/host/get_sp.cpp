@@ -9,8 +9,6 @@ std::vector<std::string> host::get_sp(const std::string& item) {
     // get project_path
     //std::string project_path = host::get_project_path();
 
-    std::cout << "\e[1m" << "Hi there" << "\e[0m\n" << std::endl;
-
     // Create a vector of strings for devices and xclbin_names
     std::vector<std::string> devices;
     std::vector<std::string> xclbin_names;

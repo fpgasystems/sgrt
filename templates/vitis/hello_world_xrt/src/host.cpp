@@ -33,14 +33,10 @@
 #include "./host.hpp"
 
 int main(int argc, char** argv) {
-
     if (argc > 2) {
         std::cout << "\n" << argv[0] << ": too many input parameters.\n" << std::endl;
         return 1;
     }
-
-    // get project_path
-    //std::string project_path = host::get_project_path();
 
     // get config_id
     std::string config_id = host::get_config(argv);
@@ -60,36 +56,48 @@ int main(int argc, char** argv) {
     // get sp (Synthesis and Implementation Process) file
     std::vector<std::string> devices = host::get_sp("devices");
     std::vector<std::string> xclbin_names = host::get_sp("xclbin_names");
-    for (const std::string& device : devices) {
-        std::cout << device << std::endl;
-    }
+    
+    // open, run, test
+    for (size_t i = 0; i < devices.size(); ++i) {
+        // open
+        device::vitis device = host::open(devices[i], xclbin_names[i], config_id, target);
+        device.print();
 
-    for (const std::string& xclbin_name : xclbin_names) {
-        std::cout << xclbin_name << std::endl;
+        // copy data to global memory
+        host::write(device, inputs);
+
+        // specification
+        std::vector<int> device_spec = host::run("spec", device, config_id);
+
+        // design
+        host::run("des", device, config_id);
+
+        // test
+        host::test(device_spec, device, config_id);
     }
 
     // open devices
-    device::vitis alveo_1 = host::open("1", "vadd", config_id, target);
-    alveo_1.print();
+    //device::vitis alveo_1 = host::open("1", "vadd", config_id, target);
+    //alveo_1.print();
 
-    device::vitis alveo_2 = host::open("2", "vsub", config_id, target);
-    alveo_2.print();
+    //device::vitis alveo_2 = host::open("2", "vsub", config_id, target);
+    //alveo_2.print();
 
     // copy data to global memory
-    host::write(alveo_1, inputs);
-    host::write(alveo_2, inputs);
+    //host::write(alveo_1, inputs);
+    //host::write(alveo_2, inputs);
 
     // specification
-    std::vector<int> alveo_1_spec = host::run("spec", alveo_1, config_id);
-    std::vector<int> alveo_2_spec = host::run("spec", alveo_2, config_id);
+    //std::vector<int> alveo_1_spec = host::run("spec", alveo_1, config_id);
+    //std::vector<int> alveo_2_spec = host::run("spec", alveo_2, config_id);
 
     // design
-    host::run("des", alveo_1, config_id);
-    host::run("des", alveo_2, config_id);
+    //host::run("des", alveo_1, config_id);
+    //host::run("des", alveo_2, config_id);
 
     // test
-    host::test(alveo_1_spec, alveo_1, config_id);
-    host::test(alveo_2_spec, alveo_2, config_id);
+    //host::test(alveo_1_spec, alveo_1, config_id);
+    //host::test(alveo_2_spec, alveo_2, config_id);
 
     return 0;
 }
