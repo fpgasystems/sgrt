@@ -13,8 +13,9 @@
 <!-- The number of parallel client threads to run is four by default. -->
 
 ### Flags
+<code>-c, --commit <string></code>
 <p>
-  &nbsp; &nbsp; This command has no flags.
+  &nbsp; &nbsp; Identifies a valid commit string on Coyote’s repository.
 </p>
 
 <code>-h, --help <string></code>

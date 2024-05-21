@@ -561,7 +561,7 @@ new_coyote_help() {
     echo "Creates a new project using Coyote Hello, world! template."
     echo ""
     echo "FLAGS"
-    echo "   This command has no flags."
+    echo "   -c, --commit    - Identifies a valid commit string on Coyote’s repository."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -1225,11 +1225,13 @@ case "$command" in
         new_help
         ;;
       coyote)
-        if [ "$#" -ne 2 ]; then
-          new_coyote_help
-          exit 1
-        fi
-        $CLI_PATH/new/coyote
+        #if [ "$#" -ne 2 ]; then
+        #  new_coyote_help
+        #  exit 1
+        #fi
+        #$CLI_PATH/new/coyote
+        valid_flags="-c --commit -h --help"
+        command_run $command_arguments_flags"@"$valid_flags
         ;;
       hip)
         if [ "$#" -ne 2 ]; then

@@ -8,6 +8,7 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="coyote"
 COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT) #COYOTE_COMMIT="4629886"
+COYOTE_REPO="https://github.com/fpgasystems/Coyote.git"
 
 #get hostname
 url="${HOSTNAME}"
@@ -39,8 +40,8 @@ if [ "$member" = "false" ]; then
     exit
 fi
 
-echo ""
-echo "${bold}sgutil new coyote${normal}"
+#echo ""
+#echo "${bold}sgutil new coyote${normal}"
 
 # create my_projects directory
 DIR="$MY_PROJECTS_PATH"
@@ -54,8 +55,60 @@ if ! [ -d "$DIR" ]; then
     mkdir ${DIR}
 fi
 
+# create commits file
+#if [ ! -e "$DIR/commits" ]; then
+#  #touch "$DIR/commits"
+#  cp $CLI_PATH/constants/COYOTE_COMMIT $DIR/commits
+#fi
+
+#inputs
+read -a flags <<< "$@"
+
+#check on flags
+commit_found=""
+commit_name=""
+if [ "$flags" = "" ]; then
+    #commit is given
+    commit_found="1"
+    commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
+    #header (1/2)
+    echo ""
+    echo "${bold}sgutil new $WORKFLOW (commit: $commit_name)${normal}"
+    echo ""
+    #project_dialog
+    #echo ""
+    #echo "${bold}Please, choose your $WORKFLOW commit:${normal}"
+    #echo ""    
+    #commit_found="1"
+    #commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
+    #echo $commit_name
+    #echo ""
+else
+    #project_dialog_check
+    result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
+    commit_found=$(echo "$result" | sed -n '1p')
+    commit_name=$(echo "$result" | sed -n '2p')
+    #forbidden combinations
+    if [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+        $CLI_PATH/sgutil new $WORKFLOW -h
+        exit
+    fi
+    #check if commit exists
+    exist=$(gh api repos/fpgasystems/Coyote/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    if [ "$exist" = "0" ]; then 
+        echo ""
+        echo "Sorry, the commit ${bold}$commit_name${normal} does not exist on the repository."
+        echo ""
+        exit
+    fi
+    #header (2/2)
+    echo ""
+    echo "${bold}sgutil new $WORKFLOW (commit: $commit_name)${normal}"
+    echo ""
+fi
+
 # create project
-echo ""
+#echo ""
 echo "${bold}Please, insert a non-existing name for your Coyote project:${normal}"
 echo ""
 while true; do
@@ -115,13 +168,13 @@ fi
 #rm -rf Coyote
 
 #clone Coyote
-$CLI_PATH/common/git_clone_coyote $DIR $COYOTE_COMMIT
+$CLI_PATH/common/git_clone_coyote $DIR $commit_name
 
 #change to project directory
 cd $DIR
 
-#save COYOTE_COMMIT
-echo "$COYOTE_COMMIT" > COYOTE_COMMIT
+#save commit_name
+echo "$commit_name" > COYOTE_COMMIT
 
 #copy template from SGRT_PATH
 SGRT_PATH=$(dirname "$CLI_PATH")

@@ -229,6 +229,13 @@ _sgutil_completions()
                             ;;
                     esac
                     ;;
+                new) 
+                    case ${COMP_WORDS[COMP_CWORD-1]} in
+                        coyote)
+                            COMPREPLY=($(compgen -W "--commit --help" -- ${cur}))
+                            ;;
+                    esac
+                    ;;
                 program)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote)
