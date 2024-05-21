@@ -5,7 +5,7 @@
 #include <vector>
 
 namespace host {
-    std::vector<std::string> get_sp();
+    std::vector<std::string> get_sp(const std::string& item);
 }
 
 //#endif // HOST_HPP

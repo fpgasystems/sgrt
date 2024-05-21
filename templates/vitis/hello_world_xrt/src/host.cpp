@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
     inputs.push_back(v_2);
 
     // get sp (Synthesis and Implementation Process) file
-    std::vector<std::string> devices = host::get_sp();
+    std::vector<std::string> devices = host::get_sp("devices");
     for (const std::string& device : devices) {
         std::cout << device << std::endl;
     }
