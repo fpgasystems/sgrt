@@ -58,18 +58,9 @@ int main(int argc, char** argv) {
     inputs.push_back(v_2);
 
     // get sp (Synthesis and Implementation Process) file
-    auto result = host::get_sp();
-    std::vector<std::string> devices = std::get<0>(result);
-    std::vector<std::string> xclbin_names = std::get<1>(result);
-
-    std::cout << "Devices:" << std::endl;
+    std::vector<std::string> devices = host::get_sp();
     for (const std::string& device : devices) {
         std::cout << device << std::endl;
-    }
-
-    std::cout << "Xclbin Names:" << std::endl;
-    for (const std::string& xclbin_name : xclbin_names) {
-        std::cout << xclbin_name << std::endl;
     }
 
     // open devices
