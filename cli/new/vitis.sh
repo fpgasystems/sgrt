@@ -7,7 +7,8 @@ normal=$(tput sgr0)
 CLI_PATH="$(dirname "$(dirname "$0")")"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vitis"
-VITIS_COMMIT="d1a35c3"
+#VITIS_COMMIT="d1a35c3"
+VITIS_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH VITIS_COMMIT)
 TEMPLATE_NAME="hello_world_xrt"
 
 # create my_projects directory
