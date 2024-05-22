@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
     inputs.push_back(v_1);
     inputs.push_back(v_2);
 
-    // get sp (Synthesis and Implementation Process) file
+    // get acap_fpga_xclbin (Synthesis and Implementation Process) file
     std::vector<std::string> devices = host::get_sp("devices");
     std::vector<std::string> xclbin_names = host::get_sp("xclbin_names");
     

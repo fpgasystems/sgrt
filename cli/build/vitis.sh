@@ -10,7 +10,7 @@ XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS
 XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vitis"
-BUILD_FILE="sp"
+BUILD_FILE="acap_fpga_xclbin"
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 
 #set environmental variables
@@ -285,7 +285,7 @@ fi
 #xclbin compilation
 if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name" == "hw" ]]; then
 
-    #read from sp (we build all the xclbins defined in sp)
+    #read from acap_fpga_xclbin (we build all the xclbins defined in acap_fpga_xclbin)
     declare -a device_indexes
     declare -a xclbin_names
 
@@ -300,15 +300,15 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
         fi
     done < "$DIR/$BUILD_FILE"
 
-    #check on sp
+    #check on acap_fpga_xclbin
     if [ "${#xclbin_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
         echo ""
-        echo "Please, review the Synthesis and Implementation Process (sp) file!"
+        echo "Please, review the Synthesis and Implementation Process (acap_fpga_xclbin) file!"
         echo ""
         exit
     fi
 
-    #generate .cfg for all xclbins defined in sp
+    #generate .cfg for all xclbins defined in acap_fpga_xclbin
     $CLI_PATH/common/get_xclbin_cfg $DIR/$BUILD_FILE $DIR > /dev/null #$DIR/nk
 
     echo "${bold}XCLBIN compilation and linking:${normal}"
@@ -317,7 +317,7 @@ if [[ "$target_name" == "sw_emu" || "$target_name" == "hw_emu" || "$target_name"
     #compile for each xclbin_name_i
     for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
     
-        #map to sp
+        #map to acap_fpga_xclbin
         device_index_i="${device_indexes[i]}"
         xclbin_name_i="${xclbin_names[i]}"
 

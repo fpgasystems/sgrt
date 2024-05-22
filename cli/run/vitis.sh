@@ -119,7 +119,7 @@ XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="vitis"
-BUILD_FILE="sp"
+BUILD_FILE="acap_fpga_xclbin"
 
 #get hostname
 url="${HOSTNAME}"
@@ -459,7 +459,7 @@ fi
 #config_id="${config%%.*}"
 #touch $config_id.active
 
-#read from sp (we build all the xclbins defined in sp)
+#read from acap_fpga_xclbin (we build all the xclbins defined in acap_fpga_xclbin)
 declare -a device_indexes
 declare -a xclbin_names
 
@@ -474,10 +474,10 @@ while read -r line; do
     fi
 done < "$DIR/$BUILD_FILE"
 
-#check on sp
+#check on acap_fpga_xclbin
 if [ "${#xclbin_names[@]}" -eq 0 ]; then #|| [ "${#compute_units_num[@]}" -eq 0 ] || [ "${#compute_units_names[@]}" -eq 0 ]
     echo ""
-    echo "Please, review the Synthesis and Implementation Process (sp) file!"
+    echo "Please, review the Synthesis and Implementation Process (acap_fpga_xclbin) file!"
     echo ""
     exit
 fi
@@ -485,7 +485,7 @@ fi
 #check for build directories
 for ((i = 0; i < ${#device_indexes[@]}; i++)); do
     
-    #map to sp
+    #map to acap_fpga_xclbin
     device_index_i="${device_indexes[i]}"
     xclbin_name_i="${xclbin_names[i]}"
 
@@ -533,7 +533,7 @@ device_config_equal_results=()
 cfg_equal_results=()
 for ((i = 0; i < ${#device_indexes[@]}; i++)); do
 
-    #map to sp
+    #map to acap_fpga_xclbin
     device_index_i="${device_indexes[i]}"
     xclbin_name_i="${xclbin_names[i]}"
 
@@ -579,7 +579,7 @@ case "$target_name" in
         json_files=""
         for ((i = 0; i < ${#device_indexes[@]}; i++)); do
 
-            #map to sp
+            #map to acap_fpga_xclbin
             device_index_i="${device_indexes[i]}"
             xclbin_name_i="${xclbin_names[i]}"
 
@@ -665,7 +665,7 @@ if [ "$device_changes" = "1" ] || [ "$cfg_changes" = "1" ]; then
     echo ""
     for ((i = 0; i < ${#device_indexes[@]}; i++)); do
 
-        #map to sp
+        #map to acap_fpga_xclbin
         device_index_i="${device_indexes[i]}"
         xclbin_name_i="${xclbin_names[i]}"
         #xclbin_name_i=$(echo "$kernel_name_i" | cut -d'_' -f1)

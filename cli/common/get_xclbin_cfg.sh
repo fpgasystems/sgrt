@@ -61,34 +61,6 @@ for unit_name in "${compute_units_names[@]}"; do
     compute_units_num+=("$count")
 done
 
-# Print contents of arrays for verification
-#echo "Device Indexes: ${device_indexes[@]}"
-#echo "XCLBIN Names: ${xclbin_names[@]}"
-#echo "Compute Units num: ${compute_units_num[@]}"
-#echo "Compute Units Names: ${compute_units_names[@]}"
-
-#echo "nou"
-#for unit_name in "${compute_units_num_aux[@]}"; do
-#    echo "$unit_name"
-#done
-
-#echo "HEY!!"
-#exit
-
-#read from sp to create sp_aux (to append later)
-#touch $output_dir/sp_aux
-#while read -r line; do
-#    # Extract second column (e.g., "vadd")
-#    operation=$(echo "$line" | awk '{print $2}')
-#    # Extract other columns except the first two
-#    columns=$(echo "$line" | awk '{$1=""; $2=""; print $0}')
-#    # Split the columns based on whitespace and iterate over them
-#    for col in $columns; do
-#        # Construct and print the desired output
-#        echo "sp=$operation.$col" >> $output_dir/sp_aux
-#    done
-#done < "$sp_file"
-
 for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
 
     #map to nk
@@ -112,7 +84,7 @@ for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
         echo "nk=$xclbin_name_i:$compute_units_num_i:$compute_units_names_i" >> "$output_dir/$xclbin_name_i.cfg"
     fi
 
-    #sp
+    #acap_fpga_xclbin
     # Set the IFS to comma to split the string
     IFS=','
     # Read the comma-separated values into an array
@@ -136,36 +108,7 @@ for ((i = 0; i < ${#xclbin_names[@]}; i++)); do
         done
 
     done
-    
-
-
-    #if [ -n "$compute_units_names_i" ]; then
-    #    IFS=',' read -ra kernel_names <<< "$compute_units_names_i"
-    #    # Iterate over the elements of the array
-    #    for kernel_names_i in "${kernel_names[@]}"; do
-    #        # Search for the matching line in the input file
-    #        match=$(grep "$kernel_names_i" "$sp_file")
-    #
-    #        # If a match is found, construct and print the desired output
-    #        if [[ -n "$match" ]]; then
-    #            # Extract columns starting from the fourth column (in1)
-    #            columns=$(echo "$match" | awk '{$1=$2=$3=""; print $0}')
-    #
-    #            # Iterate over each column
-    #            while IFS= read -r column; do
-    #                # Construct and print the output
-    #                echo "sp=$kernel_names_i.$column"
-    #            done <<< "$columns"
-    #        fi
-    #    done
-    #fi
-
 done
-
-#remove sp_aux
-#if [ -f "$output_dir/sp_aux" ]; then
-#    rm "$output_dir/sp_aux"
-#fi
 
 #return xclbin_names
 echo "${xclbin_names[@]}"

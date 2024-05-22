@@ -7,7 +7,7 @@ normal=$(tput sgr0)
 MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
 XCLBIN_NAME_SP_COLUMN=2
 XCLBIN_NAME_NK_COLUMN=1
-BUILD_FILE="sp"
+BUILD_FILE="acap_fpga_xclbin"
 
 #change to xclbin directory
 #cd $MY_PROJECT_PATH/src/xclbin
@@ -19,7 +19,7 @@ BUILD_FILE="sp"
 #hw_emu=( *".hw_emu."* )
 #hw=( *".hw."* )
 
-#read from sp
+#read from acap_fpga_xclbin
 declare -a device_indexes
 declare -a xclbin_names
 
@@ -35,7 +35,7 @@ files=()
 
 #check for build directories
 for ((i = 0; i < ${#device_indexes[@]}; i++)); do
-    #map to sp
+    #map to acap_fpga_xclbin
     device_index_i="${device_indexes[i]}"
     kernel_name_i="${kernel_names[i]}"
     #xclbin_name="${xclbin_names[i]}"
@@ -126,9 +126,9 @@ while true; do
                 #delete logs
                 xclbin_name_i=$file
 
-                # Update sp and nk files
+                # Update acap_fpga_xclbin and nk files
                 awk -v xclbin_name_i="$file" -v col="$XCLBIN_NAME_NK_COLUMN" '$col != xclbin_name_i && NF' nk > temp.txt && mv temp.txt nk
-                awk -v pattern="^(${file}|${file}_)" -v col="$XCLBIN_NAME_SP_COLUMN" '$col !~ pattern && NF' $BUILD_FILE > temp.txt && mv temp.txt $BUILD_FILE # sp contains kernel names like vadd_a, vadd_b and not xclbin names (vadd)
+                awk -v pattern="^(${file}|${file}_)" -v col="$XCLBIN_NAME_SP_COLUMN" '$col !~ pattern && NF' $BUILD_FILE > temp.txt && mv temp.txt $BUILD_FILE # acap_fpga_xclbin contains kernel names like vadd_a, vadd_b and not xclbin names (vadd)
             elif [[ "$file" == *".sw_emu."* ]] || [[ "$file" == *".hw_emu."* ]] || [[ "$file" == *".hw."* ]]; then
                 #wdelete builds
                 rm -rf $MY_PROJECT_PATH/$file
