@@ -252,9 +252,10 @@ else
     #project_dialog_check
     result="$("$CLI_PATH/common/project_dialog_check" "${flags[@]}")"
     project_found=$(echo "$result" | sed -n '1p')
-    project_name=$(echo "$result" | sed -n '2p')
+    project_path=$(echo "$result" | sed -n '2p')
+    project_name=$(echo "$result" | sed -n '3p')
     #forbidden combinations
-    if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name" ]); then 
+    if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name" ]); then  
         $CLI_PATH/sgutil run vitis -h
         exit
     fi
