@@ -151,14 +151,17 @@
       when: all and constants_contents.matched == 0
       loop:
         - ACAP_SERVERS_LIST
+        - COYOTE_COMMIT
         - CPU_SERVERS_LIST
         - FPGA_SERVERS_LIST
         - GPU_SERVERS_LIST
+        - LOCAL_PATH
         - MPICH_PATH
         - MY_DRIVERS_PATH #replaces my LOCAL_PATH
         - MY_PROJECTS_PATH
         - ROCM_PATH  
         - VIRTUALIZED_SERVERS_LIST
+        - VITIS_COMMIT
         - VIVADO_DEVICES_MAX
         - XILINX_PLATFORMS_PATH
         - XILINX_TOOLS_PATH
