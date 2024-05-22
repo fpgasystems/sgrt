@@ -7,6 +7,7 @@ normal=$(tput sgr0)
 MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
 XCLBIN_NAME_SP_COLUMN=2
 XCLBIN_NAME_NK_COLUMN=1
+BUILD_FILE="sp"
 
 #change to xclbin directory
 #cd $MY_PROJECT_PATH/src/xclbin
@@ -27,7 +28,7 @@ while read -r line; do
     column_2=$(echo "$line" | awk '{print $2}')
     device_indexes+=("$column_1")
     kernel_names+=("$column_2")
-done < "$MY_PROJECT_PATH/sp"
+done < "$MY_PROJECT_PATH/$BUILD_FILE"
 
 #initialize arrays
 files=()
@@ -127,7 +128,7 @@ while true; do
 
                 # Update sp and nk files
                 awk -v xclbin_name_i="$file" -v col="$XCLBIN_NAME_NK_COLUMN" '$col != xclbin_name_i && NF' nk > temp.txt && mv temp.txt nk
-                awk -v pattern="^(${file}|${file}_)" -v col="$XCLBIN_NAME_SP_COLUMN" '$col !~ pattern && NF' sp > temp.txt && mv temp.txt sp # sp contains kernel names like vadd_a, vadd_b and not xclbin names (vadd)
+                awk -v pattern="^(${file}|${file}_)" -v col="$XCLBIN_NAME_SP_COLUMN" '$col !~ pattern && NF' $BUILD_FILE > temp.txt && mv temp.txt $BUILD_FILE # sp contains kernel names like vadd_a, vadd_b and not xclbin names (vadd)
             elif [[ "$file" == *".sw_emu."* ]] || [[ "$file" == *".hw_emu."* ]] || [[ "$file" == *".hw."* ]]; then
                 #wdelete builds
                 rm -rf $MY_PROJECT_PATH/$file
