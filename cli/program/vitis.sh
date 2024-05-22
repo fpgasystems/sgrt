@@ -174,6 +174,12 @@ else
     echo ""
     echo "${bold}sgutil program vitis${normal}"
     echo ""
+    #check on PWD
+    project_path=$(dirname "$PWD")
+    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW" ]; then 
+        project_found="1"
+        project_name=$(basename "$PWD")
+    fi
     #project_dialog (forgotten mandatory 1)
     if [[ $project_found = "0" ]]; then
         #echo ""
