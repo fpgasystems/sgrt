@@ -73,7 +73,7 @@ if [ "$flags" = "" ]; then
     commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
     #header (1/2)
     echo ""
-    echo "${bold}sgutil new $WORKFLOW${normal}"
+    echo "${bold}sgutil new $WORKFLOW (commit: $commit_name)${normal}"
     echo ""
     #project_dialog
     #echo ""
@@ -94,8 +94,15 @@ else
         exit
     fi
     #check if commit exists
-    exist=$(gh api repos/fpgasystems/Coyote/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
-    if [ "$exist" = "0" ]; then 
+    exists=$(gh api repos/fpgasystems/Coyote/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    #forbidden combinations
+    if [ "$commit_found" = "0" ]; then 
+        commit_found="1"
+        commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
+    elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+        $CLI_PATH/sgutil program $WORKFLOW -h
+        exit
+    elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         echo ""
         echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist on the repository."
         echo ""
@@ -103,7 +110,7 @@ else
     fi
     #header (2/2)
     echo ""
-    echo "${bold}sgutil new $WORKFLOW${normal}"
+    echo "${bold}sgutil new $WORKFLOW (commit: $commit_name)${normal}"
     echo ""
 fi
 
