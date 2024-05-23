@@ -230,14 +230,6 @@ else
         echo ""
         exit
     fi
-    #check if commit exists
-    #exist=$(gh api repos/fpgasystems/Coyote/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
-    #if [ "$exist" = "0" ]; then 
-    #    echo ""
-    #    echo "Sorry, the commit ${bold}$commit_name${normal} does not exist on the repository."
-    #    echo ""
-    #    exit
-    #fi
     #project_dialog_check
     result="$("$CLI_PATH/common/project_dialog_check" "${flags[@]}")"
     project_found=$(echo "$result" | sed -n '1p')
