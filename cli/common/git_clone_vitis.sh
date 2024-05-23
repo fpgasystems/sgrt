@@ -19,7 +19,7 @@ fi
 
 #copy files
 #echo ""
-echo "${bold}Checking out Vitis_Accel_Examples/common (commit: $VITIS_COMMIT):${normal}"
+echo "${bold}Checking out Vitis_Accel_Examples/common (commit ID: $VITIS_COMMIT):${normal}"
 echo ""
 #wget https://github.com/Xilinx/Vitis_Accel_Examples/archive/master.zip -O $VITIS_DIR/master.zip
 #mkdir $VITIS_DIR/tmp

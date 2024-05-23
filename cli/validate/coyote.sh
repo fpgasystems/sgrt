@@ -116,7 +116,7 @@ if [ "$flags" = "" ]; then
         commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
         #header (1/2)
         echo ""
-        echo "${bold}sgutil validate $WORKFLOW (commit: $commit_name)${normal}"
+        echo "${bold}sgutil validate $WORKFLOW (commit ID: $commit_name)${normal}"
         echo ""
         #device dialog
         echo "${bold}Please, choose your device:${normal}"
@@ -161,7 +161,7 @@ else
     fi
     #header (2/2)
     echo ""
-    echo "${bold}sgutil validate $WORKFLOW (commit: $commit_name)${normal}"
+    echo "${bold}sgutil validate $WORKFLOW (commit ID: $commit_name)${normal}"
     echo ""
     #device_dialog_check
     result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"

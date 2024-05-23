@@ -12,7 +12,7 @@ COYOTE_COMMIT=$2
 
 #print
 echo ""
-echo "${bold}Checking out Coyote (commit: $COYOTE_COMMIT):${normal}"
+echo "${bold}Checking out Coyote (commit ID: $COYOTE_COMMIT):${normal}"
 echo ""
 
 #change directory
