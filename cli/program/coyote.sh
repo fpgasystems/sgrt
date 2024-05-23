@@ -217,10 +217,6 @@ else
     commit_name=$(echo "$result" | sed -n '2p')
     #check if commit exists
     exists=$(gh api repos/fpgasystems/Coyote/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
-    echo "exists: $exists"
-    echo "commit_found: $commit_found"
-    echo "commit_name: $commit_name"
-
     #forbidden combinations
     if [ "$commit_found" = "0" ]; then 
         commit_found="1"
