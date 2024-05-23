@@ -448,7 +448,7 @@ echo "project_name is $project_name"
 cd $MY_PROJECTS_PATH/$WORKFLOW/$commit_name
 
 #program coyote
-sgutil program coyote --project $project_name --device $device_index --remote 0
+sgutil program coyote --commit $commit_name --project $project_name --device $device_index --remote 0
     
 #get bus and device
 #bus=$($CLI_PATH/program/get_bus_device $device_index bus)
