@@ -160,7 +160,6 @@ if [ "$flags" = "" ]; then
     fi
     #project_dialog
     if [[ $project_found = "0" ]]; then
-        #project_dialog
         echo ""
         echo "${bold}Please, choose your $WORKFLOW project:${normal}"
         echo ""
