@@ -12,7 +12,7 @@ COYOTE_COMMIT=$2
 
 #print
 echo ""
-echo "${bold}Checking out Coyote (commit ID: $COYOTE_COMMIT):${normal}"
+echo "${bold}Checking out Coyote:${normal}"
 echo ""
 
 #change directory
@@ -26,6 +26,10 @@ cd Coyote
 
 # Checkout the specific commit in the main branch
 git checkout $COYOTE_COMMIT > /dev/null 2>&1
+
+echo ""
+echo "Checkout commit ID ${bold}$COYOTE_COMMIT${normal} done!"
+echo ""
 
 # Change back to the original directory
 cd $DIR

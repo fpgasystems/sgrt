@@ -19,7 +19,7 @@ fi
 
 #copy files
 #echo ""
-echo "${bold}Checking out Vitis_Accel_Examples/common (commit ID: $VITIS_COMMIT):${normal}"
+echo "${bold}Checking out Vitis_Accel_Examples/common:${normal}"
 echo ""
 #wget https://github.com/Xilinx/Vitis_Accel_Examples/archive/master.zip -O $VITIS_DIR/master.zip
 #mkdir $VITIS_DIR/tmp
@@ -31,6 +31,10 @@ echo ""
 
 # Download the repository zip file for the specific commit
 wget https://github.com/Xilinx/Vitis_Accel_Examples/archive/$VITIS_COMMIT.zip -O $VITIS_DIR/master.zip
+
+echo ""
+echo "Checkout commit ID ${bold}$VITIS_COMMIT${normal} done!"
+echo ""
 
 # Create a temporary directory
 mkdir "$VITIS_DIR/tmp"
