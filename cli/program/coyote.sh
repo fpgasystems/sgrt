@@ -150,17 +150,27 @@ if [ "$flags" = "" ]; then
     commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
     #header (1/2)
     echo ""
-    echo "${bold}sgutil program $WORKFLOW (commit: $commit_name)${normal}"
+    echo "${bold}sgutil program $WORKFLOW (commit ID: $commit_name)${normal}"
+    #check on PWD
+    project_path=$(dirname "$PWD")
+    project_found="0"
+    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+        project_found="1"
+        project_name=$(basename "$PWD")
+    fi
     #project_dialog
-    echo ""
-    echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-    echo ""
-    result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
-    project_found=$(echo "$result" | sed -n '1p')
-    project_name=$(echo "$result" | sed -n '2p')
-    multiple_projects=$(echo "$result" | sed -n '3p')
-    if [[ $multiple_projects = "0" ]]; then
-        echo $project_name
+    if [[ $project_found = "0" ]]; then
+        #project_dialog
+        echo ""
+        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+        echo ""
+        result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
+        project_found=$(echo "$result" | sed -n '1p')
+        project_name=$(echo "$result" | sed -n '2p')
+        multiple_projects=$(echo "$result" | sed -n '3p')
+        if [[ $multiple_projects = "0" ]]; then
+            echo $project_name
+        fi
     fi
     #device_dialog
     if [[ $multiple_devices = "0" ]]; then
@@ -278,7 +288,7 @@ else
     fi
     #header (2/2)
     echo ""
-    echo "${bold}sgutil program $WORKFLOW (commit: $commit_name)${normal}"
+    echo "${bold}sgutil program $WORKFLOW (commit ID: $commit_name)${normal}"
     echo ""
     #check on PWD
     project_path=$(dirname "$PWD")
