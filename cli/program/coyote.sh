@@ -138,19 +138,24 @@ if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
 fi
 
 #check on flags
+commit_found=""
+commit_name=""
 project_found=""
 project_name=""
 device_found=""
 device_index=""
 if [ "$flags" = "" ]; then
+    #commit dialog
+    commit_found="1"
+    commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
     #header (1/2)
     echo ""
-    echo "${bold}sgutil program coyote${normal}"
+    echo "${bold}sgutil program $WORKFLOW (commit: $commit_name)${normal}"
     #project_dialog
     echo ""
     echo "${bold}Please, choose your $WORKFLOW project:${normal}"
     echo ""
-    result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW)
+    result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
     project_found=$(echo "$result" | sed -n '1p')
     project_name=$(echo "$result" | sed -n '2p')
     multiple_projects=$(echo "$result" | sed -n '3p')
@@ -206,13 +211,45 @@ if [ "$flags" = "" ]; then
         echo ""
     fi
 else
+    #commit_dialog_check
+    result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
+    commit_found=$(echo "$result" | sed -n '1p')
+    commit_name=$(echo "$result" | sed -n '2p')
+    #check if commit exists
+    exists=$(gh api repos/fpgasystems/Coyote/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    echo "exists: $exists"
+    echo "commit_found: $commit_found"
+    echo "commit_name: $commit_name"
+
+    #forbidden combinations
+    if [ "$commit_found" = "0" ]; then 
+        commit_found="1"
+        commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
+    elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+        $CLI_PATH/sgutil program $WORKFLOW -h
+        exit
+    elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
+        echo ""
+        echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist on the repository."
+        echo ""
+        exit
+    fi
+    #check if commit exists
+    #exist=$(gh api repos/fpgasystems/Coyote/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    #if [ "$exist" = "0" ]; then 
+    #    echo ""
+    #    echo "Sorry, the commit ${bold}$commit_name${normal} does not exist on the repository."
+    #    echo ""
+    #    exit
+    #fi
     #project_dialog_check
     result="$("$CLI_PATH/common/project_dialog_check" "${flags[@]}")"
     project_found=$(echo "$result" | sed -n '1p')
-    project_name=$(echo "$result" | sed -n '2p')
+    project_path=$(echo "$result" | sed -n '2p')
+    project_name=$(echo "$result" | sed -n '3p')
     #forbidden combinations
-    if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name" ]); then 
-        $CLI_PATH/sgutil program coyote -h
+    if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
+        $CLI_PATH/sgutil program $WORKFLOW -h
         exit
     fi
     #device_dialog_check
@@ -253,14 +290,20 @@ else
     fi
     #header (2/2)
     echo ""
-    echo "${bold}sgutil program coyote${normal}"
+    echo "${bold}sgutil program $WORKFLOW (commit: $commit_name)${normal}"
     echo ""
+    #check on PWD
+    project_path=$(dirname "$PWD")
+    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+        project_found="1"
+        project_name=$(basename "$PWD")
+    fi
     #project_dialog (forgotten mandatory 1)
     if [[ $project_found = "0" ]]; then
         #echo ""
         echo "${bold}Please, choose your $WORKFLOW project:${normal}"
         echo ""
-        result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW)
+        result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
         project_found=$(echo "$result" | sed -n '1p')
         project_name=$(echo "$result" | sed -n '2p')
         multiple_projects=$(echo "$result" | sed -n '3p')
@@ -323,7 +366,7 @@ else
 fi
 
 #define directories (1)
-DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"
+DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
 
 #check if project exists
 if ! [ -d "$DIR" ]; then
@@ -337,24 +380,11 @@ fi
 platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 
-#define directories (2)
-#APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/"
-
-#check for build directory
-#if ! [ -d "$APP_BUILD_DIR" ]; then
-#    echo "You must build your project first! Please, use sgutil build coyote"
-#    echo ""
-#    exit
-#fi
-
-#change directory
-#cd $APP_BUILD_DIR
-
 #set bitstream name
 BIT_NAME="cyt_top.$FDEV_NAME.$vivado_version.bit"
 
 #check on bitstream
-if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$BIT_NAME" ]; then
+if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME" ]; then
     echo "You must build your project first! Please, use sgutil build coyote"
     echo ""
     exit
@@ -374,7 +404,7 @@ if lsmod | grep "coyote_drv" >/dev/null; then
 fi
 
 #program bitstream
-$CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$BIT_NAME -v $vivado_version
+$CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME -v $vivado_version
 
 #get IP address
 #IP_address_0=$($CLI_PATH/get/network -d $device_index | awk "\$1 == \"$device_index:\" {print \$2}")
@@ -386,7 +416,7 @@ $CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$
 
 #insert coyote driver
 #eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME -p ip_addr_q0=$IP_address_0_hex,mac_addr_q0=$MAC_address_0_hex"
-eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME -p config_fname=$CONFIG_FNAME"
+eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME -p config_fname=$CONFIG_FNAME"
 
 #enable vFPGA regions
 #$CLI_PATH/program/enable_N_REGIONS $device_index

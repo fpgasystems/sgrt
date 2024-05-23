@@ -12,6 +12,10 @@
 </p>
 
 ### Flags
+<code>-c, --commit <string></code>
+<p>
+  &nbsp; &nbsp; GitHub commit ID.
+</p>
 <code>-d, --device <string></code>
 <p>
   &nbsp; &nbsp; FPGA Device Index (see sgutil examine).

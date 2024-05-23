@@ -239,7 +239,7 @@ _sgutil_completions()
                 program)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote)
-                            COMPREPLY=($(compgen -W "--device --project --remote --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--commit --device --project --remote --help" -- ${cur}))
                             ;;
                         driver)
                             COMPREPLY=($(compgen -W "--module --params --help" -- ${cur}))
@@ -296,7 +296,7 @@ _sgutil_completions()
                 validate)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--commit --device --help" -- ${cur}))
                             ;;
                         docker)
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
@@ -336,7 +336,7 @@ _sgutil_completions()
             command_completion_5 "$cur" "$COMP_CWORD" "build" "vitis" "${other_flags[@]}"
 
             #program
-            other_flags=( "--device" "--project" "--remote" )
+            other_flags=( "--commit" "--device" "--project" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "coyote" "${other_flags[@]}"
             
             other_flags=( "--module" "--params" )
@@ -373,16 +373,16 @@ _sgutil_completions()
             #Example: sgutil program coyote --device 1 --project hello_world -- (there are seven words)
             
             #program coyote
-            other_flags=( "--project" "--remote" )
+            other_flags=( "--device" "--project" "--remote" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--commit" "${other_flags[@]}"
+            
+            other_flags=( "--commit" "--project" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "${other_flags[@]}"
 
-            other_flags=( "--device" "--remote" )
+            other_flags=( "--commit" "--device" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "${other_flags[@]}"
 
-            #other_flags=( "--device" "--project" "--remote" )
-            #command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--regions" "${other_flags[@]}"
-
-            other_flags=( "--device" "--project" )
+            other_flags=( "--commit" "--device" "--project" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "${other_flags[@]}"
 
             #program vitis    
@@ -430,39 +430,49 @@ _sgutil_completions()
             #COMP_WORDS[4]=1
             #COMP_WORDS[5]=--project
             #COMP_WORDS[6]=hello_world
-            #COMP_WORDS[7]=--regions / --remote
+            #COMP_WORDS[7]=--commit / --remote
             #COMP_WORDS[8]=0
-            #Example: sgutil program coyote --device 1 --project hello_world --regions 0 -- (there are nine words)
+            #Example: sgutil program coyote --device 1 --project hello_world --commit 0 -- (there are nine words)
 
+            #program coyote --commit
+            other_flags=( "--project" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--commit" "--device" "${other_flags[@]}"
+            
+            other_flags=( "--device" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--commit" "--project" "${other_flags[@]}"
+
+            other_flags=( "--device" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--commit" "--remote" "${other_flags[@]}"
+            
             #program coyote --device
-            #other_flags=( "--regions" "--remote" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--project" "${other_flags[@]}"
+            other_flags=( "--project" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--commit" "${other_flags[@]}"
+            
+            other_flags=( "--commit" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--project" "${other_flags[@]}"
 
-            #other_flags=( "--project" "--remote" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--regions" "${other_flags[@]}"
-
-            #other_flags=( "--project" "--regions" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--remote" "${other_flags[@]}"
+            other_flags=( "--commit" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--remote" "${other_flags[@]}"
 
             #program coyote --project
-            #other_flags=( "--regions" "--remote" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--device" "${other_flags[@]}"
+            other_flags=( "--device" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--commit" "${other_flags[@]}"
+            
+            other_flags=( "--commit" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--device" "${other_flags[@]}"
 
-            #other_flags=( "--device" "--remote" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--regions" "${other_flags[@]}"
-
-            #other_flags=( "--device" "--regions" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--remote" "${other_flags[@]}"
+            other_flags=( "--commit" "--device" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--remote" "${other_flags[@]}"
 
             #program coyote --remote
-            #other_flags=( "--project" "--regions" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--device" "${other_flags[@]}"
+            other_flags=( "--device" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--commit" "${other_flags[@]}"
+            
+            other_flags=( "--commit" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--device" "${other_flags[@]}"
 
-            #other_flags=( "--device" "--regions" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--project" "${other_flags[@]}"
-
-            #other_flags=( "--device" "--project" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--regions" "${other_flags[@]}"
+            other_flags=( "--commit" "--device" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--project" "${other_flags[@]}"
 
             #program vitis --device
             other_flags=( "--remote" "--xclbin" )

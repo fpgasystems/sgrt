@@ -85,21 +85,24 @@ sudo $CLI_PATH/common/get_devices_acap_fpga_coyote
 #inputs
 read -a flags <<< "$@"
 
-#create coyote directory (we do not know if sgutil new coyote has been run)
+#create my_projects directory
 if ! [ -d "$MY_PROJECTS_PATH" ]; then
     mkdir ${MY_PROJECTS_PATH}
 fi
 
+#create coyote directory
 DIR="$MY_PROJECTS_PATH/$WORKFLOW"
 if ! [ -d "$DIR" ]; then
     mkdir ${DIR}
 fi
 
 #header (1/1)
-echo ""
-echo "${bold}sgutil validate $WORKFLOW${normal}"
+#echo ""
+#echo "${bold}sgutil validate $WORKFLOW${normal}"
 
 #check on flags
+commit_found=""
+commit_name=""
 device_found=""
 device_index=""
 if [ "$flags" = "" ]; then
@@ -108,7 +111,14 @@ if [ "$flags" = "" ]; then
         device_found="1"
         device_index="1"
     else
+        #commit dialog
+        commit_found="1"
+        commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
+        #header (1/2)
         echo ""
+        echo "${bold}sgutil validate $WORKFLOW (commit: $commit_name)${normal}"
+        echo ""
+        #device dialog
         echo "${bold}Please, choose your device:${normal}"
         echo ""
         result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
@@ -132,6 +142,27 @@ if [ "$flags" = "" ]; then
         fi
     fi
 else
+    #commit_dialog_check
+    result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
+    commit_found=$(echo "$result" | sed -n '1p')
+    commit_name=$(echo "$result" | sed -n '2p')
+    #forbidden combinations
+    if [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+        $CLI_PATH/sgutil validate $WORKFLOW -h
+        exit
+    fi
+    #check if commit exists
+    exist=$(gh api repos/fpgasystems/Coyote/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    if [ "$exist" = "0" ]; then 
+        echo ""
+        echo "Sorry, the commit ${bold}$commit_name${normal} does not exist on the repository."
+        echo ""
+        exit
+    fi
+    #header (2/2)
+    echo ""
+    echo "${bold}sgutil validate $WORKFLOW (commit: $commit_name)${normal}"
+    echo ""
     #device_dialog_check
     result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
     device_found=$(echo "$result" | sed -n '1p')
@@ -189,6 +220,12 @@ else
     fi
 fi
 
+#create commit directory
+DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name"
+if ! [ -d "$DIR" ]; then
+    mkdir ${DIR}
+fi
+
 #echo ""
 #echo "${bold}Please, choose your configuration:${normal}" # this refers to a software (sw/examples) configuration
 #echo ""
@@ -238,7 +275,7 @@ config_sw="perf_local"
 project_name="validate_$config_sw.$FDEV_NAME.$vivado_version"
 
 #define directories (1)
-DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"
+DIR="$DIR/$project_name"
 SHELL_BUILD_DIR="$DIR/examples_hw/apps/build"           # 06.03.2024 ===> added /apps and does not work... something else is missing
 DRIVER_DIR="$DIR/driver"
 APP_BUILD_DIR="$DIR/examples_sw/apps/$config_sw/build"  # 05.03.2024 ===> added /apps and works
@@ -250,13 +287,13 @@ if ! [ -d "$DIR" ]; then
     mkdir ${DIR}
 
     #clone Coyote
-    $CLI_PATH/common/git_clone_coyote $DIR $COYOTE_COMMIT
+    $CLI_PATH/common/git_clone_coyote $DIR $commit_name
 
     #change to project directory
     cd $DIR
 
     #save COYOTE_COMMIT
-    echo "$COYOTE_COMMIT" > COYOTE_COMMIT
+    echo "$commit_name" > COYOTE_COMMIT
 
     #create configuration file (https://github.com/fpgasystems/Coyote/blob/dfx_v2/examples_hw/CMakeLists.txt)
     #touch config_shell_$config_hw
@@ -317,7 +354,7 @@ if ! [ -d "$DIR" ]; then
 fi
 
 #check on build_dir.FDEV_NAME
-if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then #if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version" ]; then 
+if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
     #bitstream compilation
     echo ""
     echo "${bold}Coyote $config_hw shell compilation:${normal}"
@@ -338,8 +375,8 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_versi
     make project && make bitgen
     
     #copy bitstream
-    cp $SHELL_BUILD_DIR/bitstreams/cyt_top.bit $MY_PROJECTS_PATH/$WORKFLOW/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit
-    cp $SHELL_BUILD_DIR/bitstreams/cyt_top.ltx $MY_PROJECTS_PATH/$WORKFLOW/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx
+    cp $SHELL_BUILD_DIR/bitstreams/cyt_top.bit $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit
+    cp $SHELL_BUILD_DIR/bitstreams/cyt_top.ltx $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx
         
     #remove all other build temporal folders
     rm -rf $SHELL_BUILD_DIR
@@ -348,12 +385,12 @@ else
     echo ""
     echo "${bold}Coyote $config_hw shell compilation:${normal}"
     echo ""
-    echo "$MY_PROJECTS_PATH/$WORKFLOW/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit shell already exists!"
+    echo "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit shell already exists!"
 fi
 
 #driver compilation happens everytime (delete first)
-if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME" ]; then
-    rm $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME
+if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME" ]; then
+    rm $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME
 fi
 
 #make driver
@@ -365,7 +402,7 @@ echo ""
 cd $DRIVER_DIR && make
 
 #copy driver
-cp $DRIVER_DIR/$DRIVER_NAME $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME
+cp $DRIVER_DIR/$DRIVER_NAME $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME
 
 #remove drivier files (generated while compilation)
 rm $DRIVER_DIR/coyote_drv*
@@ -402,6 +439,13 @@ if [ -d "$DIR/build_dir.$config_sw/" ]; then
     rm -rf $DIR/build_dir.$config_sw/
 fi
 mv $APP_BUILD_DIR $DIR/build_dir.$config_sw/
+
+echo "HEY"
+echo "PWD is $PWD"
+echo "project_name is $project_name"
+
+#change directory
+cd $MY_PROJECTS_PATH/$WORKFLOW/$commit_name
 
 #program coyote
 sgutil program coyote --project $project_name --device $device_index --remote 0

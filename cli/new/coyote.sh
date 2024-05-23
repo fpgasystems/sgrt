@@ -43,13 +43,13 @@ fi
 #echo ""
 #echo "${bold}sgutil new coyote${normal}"
 
-# create my_projects directory
+#create my_projects directory
 DIR="$MY_PROJECTS_PATH"
 if ! [ -d "$DIR" ]; then
     mkdir ${DIR}
 fi
 
-# create coyote directory
+#create coyote directory
 DIR="$MY_PROJECTS_PATH/$WORKFLOW"
 if ! [ -d "$DIR" ]; then
     mkdir ${DIR}
@@ -68,12 +68,12 @@ read -a flags <<< "$@"
 commit_found=""
 commit_name=""
 if [ "$flags" = "" ]; then
-    #commit is given
+    #commit dialog
     commit_found="1"
     commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
     #header (1/2)
     echo ""
-    echo "${bold}sgutil new $WORKFLOW (commit: $commit_name)${normal}"
+    echo "${bold}sgutil new $WORKFLOW${normal}"
     echo ""
     #project_dialog
     #echo ""
@@ -84,7 +84,7 @@ if [ "$flags" = "" ]; then
     #echo $commit_name
     #echo ""
 else
-    #project_dialog_check
+    #commit_dialog_check
     result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
     commit_found=$(echo "$result" | sed -n '1p')
     commit_name=$(echo "$result" | sed -n '2p')
@@ -97,14 +97,20 @@ else
     exist=$(gh api repos/fpgasystems/Coyote/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     if [ "$exist" = "0" ]; then 
         echo ""
-        echo "Sorry, the commit ${bold}$commit_name${normal} does not exist on the repository."
+        echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist on the repository."
         echo ""
         exit
     fi
     #header (2/2)
     echo ""
-    echo "${bold}sgutil new $WORKFLOW (commit: $commit_name)${normal}"
+    echo "${bold}sgutil new $WORKFLOW${normal}"
     echo ""
+fi
+
+#create commit directory
+DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name"
+if ! [ -d "$DIR" ]; then
+    mkdir ${DIR}
 fi
 
 # create project
@@ -117,7 +123,7 @@ while true; do
     if  [[ $project_name == validate_* ]]; then
         project_name=""
     fi
-    DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"
+    DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
     if ! [ -d "$DIR" ]; then
         break
     fi
@@ -204,5 +210,5 @@ if [ "$commit" = "1" ]; then
 fi
 
 echo ""
-echo "The project ${bold}$MY_PROJECTS_PATH/$WORKFLOW/$project_name${normal} has been created!"
+echo "The project ${bold}$DIR${normal} has been created!"
 echo ""

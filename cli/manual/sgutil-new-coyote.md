@@ -15,7 +15,7 @@
 ### Flags
 <code>-c, --commit <string></code>
 <p>
-  &nbsp; &nbsp; Identifies a valid commit string on Coyote’s repository.
+  &nbsp; &nbsp; GitHub commit ID.
 </p>
 
 <code>-h, --help <string></code>

@@ -6,6 +6,7 @@ normal=$(tput sgr0)
 #constants
 CLI_PATH=$(dirname "$0")
 SGRT_PATH=$(dirname "$CLI_PATH")
+COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
 
 #inputs
 command=$1
@@ -561,7 +562,7 @@ new_coyote_help() {
     echo "Creates a new project using Coyote Hello, world! template."
     echo ""
     echo "FLAGS"
-    echo "   -c, --commit    - Identifies a valid commit string on Coyote’s repository."
+    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -638,6 +639,7 @@ program_coyote_help() {
     echo "Programs Coyote to a given FPGA."
     echo ""
     echo "FLAGS:"
+    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
     echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
     echo "   -p, --project   - Specifies your Coyote project name." 
     #echo "       --regions   - Sets the number of independent regions (vFPGA)."
@@ -942,6 +944,7 @@ validate_coyote_help() {
       echo "Validates Coyote on the selected FPGA."
       echo ""
       echo "FLAGS:"
+      echo "   -c, --commit    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
       echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
       echo ""
       echo "   -h, --help      - Help to use Coyote validation."
@@ -1266,7 +1269,7 @@ case "$command" in
         program_help
         ;;
       coyote)
-        valid_flags="-d --device -p --project --remote -h --help" #--regions
+        valid_flags="-c --commit -d --device -p --project --remote -h --help" #--regions
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       driver)
@@ -1379,7 +1382,7 @@ case "$command" in
     #xilinx_build_check
     case "$arguments" in
       coyote)
-        valid_flags="-d --device -h --help"
+        valid_flags="-c --commit -d --device -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       docker)
