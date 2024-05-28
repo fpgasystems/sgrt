@@ -261,7 +261,7 @@ _sgutil_completions()
                 run)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote) # run 
-                            COMPREPLY=($(compgen -W "--device --project --help" -- ${cur})) 
+                            COMPREPLY=($(compgen -W "--commit --device --project --help" -- ${cur})) 
                             ;;
                         hip)
                             COMPREPLY=($(compgen -W "--device --project --help" -- ${cur}))
@@ -349,7 +349,7 @@ _sgutil_completions()
             command_completion_5 "$cur" "$COMP_CWORD" "program" "vivado" "${other_flags[@]}"
 
             #run
-            other_flags=( "--device" "--project" )
+            other_flags=( "--commit" "--device" "--project" )
             command_completion_5 "$cur" "$COMP_CWORD" "run" "coyote" "${other_flags[@]}"
 
             other_flags=( "--device" "--project" )
@@ -371,6 +371,16 @@ _sgutil_completions()
             #COMP_WORDS[5]=--project / --remote
             #COMP_WORDS[6]=hello_world
             #Example: sgutil program coyote --device 1 --project hello_world -- (there are seven words)
+            
+            #build coyote
+            other_flags=( "--platform" "--project" )
+            command_completion_7 "$cur" "$COMP_CWORD" "build" "coyote" "--commit" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--project" )
+            command_completion_7 "$cur" "$COMP_CWORD" "build" "coyote" "--platform" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--platform" )
+            command_completion_7 "$cur" "$COMP_CWORD" "build" "coyote" "--project" "${other_flags[@]}"
             
             #program coyote
             other_flags=( "--device" "--project" "--remote" )
@@ -397,6 +407,16 @@ _sgutil_completions()
 
             other_flags=( "--device" "--project" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "vitis" "--xclbin" "${other_flags[@]}"
+
+            #run coyote
+            other_flags=( "--device" "--project" )
+            command_completion_7 "$cur" "$COMP_CWORD" "run" "coyote" "--commit" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--project" )
+            command_completion_7 "$cur" "$COMP_CWORD" "run" "coyote" "--device" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--device" )
+            command_completion_7 "$cur" "$COMP_CWORD" "run" "coyote" "--project" "${other_flags[@]}"
 
             #run vitis    
             other_flags=( "--project" "--target" )
