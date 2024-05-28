@@ -11,7 +11,7 @@ COYOTE_COMMIT=$2
 #COYOTE_COMMIT="4629886"
 
 #print
-echo ""
+#echo "" Javi (28.05.2024): never before!
 echo "${bold}Checking out Coyote:${normal}"
 echo ""
 
