@@ -447,10 +447,6 @@ if [ -d "$DIR/build_dir.$config_sw/" ]; then
 fi
 mv $APP_BUILD_DIR $DIR/build_dir.$config_sw/
 
-echo "HEY"
-echo "PWD is $PWD"
-echo "project_name is $project_name"
-
 #change directory
 cd $MY_PROJECTS_PATH/$WORKFLOW/$commit_name
 
