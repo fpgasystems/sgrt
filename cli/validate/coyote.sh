@@ -106,34 +106,33 @@ commit_name=""
 device_found=""
 device_index=""
 if [ "$flags" = "" ]; then
-    #device_dialog
+    #commit dialog
+    #commit_found="1"
+    #commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
+    #check on PWD
+    project_path=$(dirname "$PWD")
+    commit_name=$(basename "$project_path")
+    project_found="0"
+    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+        commit_found="1"
+        project_found="1"
+        project_name=$(basename "$PWD")
+    elif [ "$commit_name" = "$WORKFLOW" ]; then
+        commit_found="1"
+        commit_name="${PWD##*/}"
+    else
+        commit_found="1"
+        commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
+    fi
+    #header (1/2)
+    echo ""
+    echo "${bold}sgutil validate $WORKFLOW (commit ID: $commit_name)${normal}"
+    echo ""
+    #device dialog
     if [[ $multiple_devices = "0" ]]; then
         device_found="1"
         device_index="1"
     else
-        #commit dialog
-        #commit_found="1"
-        #commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
-        #check on PWD
-        project_path=$(dirname "$PWD")
-        commit_name=$(basename "$project_path")
-        project_found="0"
-        if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
-            commit_found="1"
-            project_found="1"
-            project_name=$(basename "$PWD")
-        elif [ "$commit_name" = "$WORKFLOW" ]; then
-            commit_found="1"
-            commit_name="${PWD##*/}"
-        else
-            commit_found="1"
-            commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
-        fi
-        #header (1/2)
-        echo ""
-        echo "${bold}sgutil validate $WORKFLOW (commit ID: $commit_name)${normal}"
-        echo ""
-        #device dialog
         echo "${bold}Please, choose your device:${normal}"
         echo ""
         result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
