@@ -12,6 +12,11 @@
 </p>
 
 ### Flags
+<code>-c, --commit <string></code>
+<p>
+  &nbsp; &nbsp; GitHub commit ID.
+</p>
+
 <code>    --platform <string></code>
 <p>
   &nbsp; &nbsp; Xilinx platform (according to sgutil get platform).

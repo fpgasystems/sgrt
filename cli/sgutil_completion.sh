@@ -157,7 +157,7 @@ _sgutil_completions()
                 build)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote)
-                            COMPREPLY=($(compgen -W "--platform --project --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--commit --platform --project --help" -- ${cur}))
                             ;;
                         hip)
                             COMPREPLY=($(compgen -W "--project --help" -- ${cur}))
@@ -329,7 +329,7 @@ _sgutil_completions()
             #Example: sgutil program coyote --device 1 -- (there are five words)
 
             #build
-            other_flags=( "--platform" "--project" )
+            other_flags=( "--commit" "--platform" "--project" )
             command_completion_5 "$cur" "$COMP_CWORD" "build" "coyote" "${other_flags[@]}"
 
             other_flags=( "--project" "--target" )

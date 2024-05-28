@@ -165,6 +165,7 @@ build_coyote_help() {
     #echo "                         perf_rdma_host, perf_rdma_card, perf_tcp,"
     #echo "                         rdma_regex, service_aes, service_reconfiguration."
     #echo "   -n, --name      - FPGA's device name. See sgutil get name."
+    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
     echo "       --platform  - Xilinx platform (according to sgutil get platform)."
     echo "       --project   - Specifies your Coyote project name."
     echo ""
@@ -1088,7 +1089,7 @@ case "$command" in
         build_help
         ;;
       coyote) 
-        valid_flags="--platform --project -h --help" 
+        valid_flags="-c --commit --platform --project -h --help" 
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       hip) 
