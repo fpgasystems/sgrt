@@ -189,19 +189,15 @@ cd $DIR
 #save commit_name
 echo "$commit_name" > COYOTE_COMMIT
 
-#copy template from SGRT_PATH
-SGRT_PATH=$(dirname "$CLI_PATH")
-cp -rf $SGRT_PATH/templates/$WORKFLOW/hello_world/* $DIR
-#replace Makefile (main.cpp specific version) ------------- 2024.05.07: I need to see what we do with this
+#copy template from SGRT_PATH ------------- 2024.05.07: I need to see what we do with this
+#SGRT_PATH=$(dirname "$CLI_PATH")
+#cp -rf $SGRT_PATH/templates/$WORKFLOW/hello_world/* $DIR
+#replace Makefile (main.cpp specific version)
 #rm $DIR/sw/CMakeLists.txt
 #mv $DIR/CMakeLists.txt $DIR/sw
-
-cd $DIR/configs/
-rm "config_000.hpp"
-
 #compile create config
-cd $DIR/src
-g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
+#cd $DIR/src
+#g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
 
 #commit files
 if [ "$commit" = "1" ]; then 

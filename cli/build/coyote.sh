@@ -216,6 +216,9 @@ config_hw="static"
 config_sw="perf_local"
 
 #temporaly handle configs (like in sgutil validate coyote)
+if ! [ -d "$DIR/configs/" ]; then
+    mkdir $DIR/configs/
+fi
 cd $DIR/configs/
 touch config_$config_sw
 case "$config_hw" in
