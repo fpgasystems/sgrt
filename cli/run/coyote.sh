@@ -89,18 +89,29 @@ device_found=""
 device_index=""
 if [ "$flags" = "" ]; then
     #commit dialog
-    commit_found="1"
-    commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
+    #commit_found="1"
+    #commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
+    #header (1/2)
+    #echo ""
+    #echo "${bold}sgutil run coyote (commit ID: $commit_name)${normal}"
+    #check on PWD
+    project_path=$(dirname "$PWD")
+    commit_name=$(basename "$project_path")
+    project_found="0"
+    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+        commit_found="1"
+        project_found="1"
+        project_name=$(basename "$PWD")
+    elif [ "$commit_name" = "$WORKFLOW" ]; then
+        commit_found="1"
+        commit_name="${PWD##*/}"
+    else
+        commit_found="1"
+        commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
+    fi
     #header (1/2)
     echo ""
     echo "${bold}sgutil run coyote (commit ID: $commit_name)${normal}"
-    #check on PWD
-    project_path=$(dirname "$PWD")
-    project_found="0"
-    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
-        project_found="1"
-        project_name=$(basename "$PWD")
-    fi
     #project_dialog
     if [[ $project_found = "0" ]]; then
         echo ""
