@@ -771,6 +771,7 @@ run_coyote_help() {
     echo "Runs Coyote on a given FPGA."
     echo ""
     echo "FLAGS:"
+    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
     echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
     echo "   -p, --project   - Specifies your Coyote project name."
     echo ""
@@ -1319,7 +1320,7 @@ case "$command" in
         run_help
         ;;
       coyote) 
-        valid_flags="-d --device -p --project -h --help"
+        valid_flags="-c --commit -d --device -p --project -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       hip) 
