@@ -8,6 +8,7 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="coyote"
+COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
 
 #get hostname
 url="${HOSTNAME}"
@@ -80,24 +81,38 @@ multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 read -a flags <<< "$@"
 
 #check on flags
+commit_found=""
+commit_name=""
 project_found=""
 project_name=""
 device_found=""
 device_index=""
 if [ "$flags" = "" ]; then
+    #commit dialog
+    commit_found="1"
+    commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
     #header (1/2)
     echo ""
-    echo "${bold}sgutil run coyote${normal}"
+    echo "${bold}sgutil run coyote (commit ID: $commit_name)${normal}"
+    #check on PWD
+    project_path=$(dirname "$PWD")
+    project_found="0"
+    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+        project_found="1"
+        project_name=$(basename "$PWD")
+    fi
     #project_dialog
-    echo ""
-    echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-    echo ""
-    result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW)
-    project_found=$(echo "$result" | sed -n '1p')
-    project_name=$(echo "$result" | sed -n '2p')
-    multiple_projects=$(echo "$result" | sed -n '3p')
-    if [[ $multiple_projects = "0" ]]; then
-        echo $project_name
+    if [[ $project_found = "0" ]]; then
+        echo ""
+        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+        echo ""
+        result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
+        project_found=$(echo "$result" | sed -n '1p')
+        project_name=$(echo "$result" | sed -n '2p')
+        multiple_projects=$(echo "$result" | sed -n '3p')
+        if [[ $multiple_projects = "0" ]]; then
+            echo $project_name
+        fi
     fi
     #device_dialog
     if [[ $multiple_devices = "0" ]]; then
@@ -120,12 +135,36 @@ if [ "$flags" = "" ]; then
         fi
     fi
 else
+    #commit_dialog_check
+    result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
+    commit_found=$(echo "$result" | sed -n '1p')
+    commit_name=$(echo "$result" | sed -n '2p')
+    #forbidden combinations
+    if [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+        $CLI_PATH/sgutil new $WORKFLOW -h
+        exit
+    fi
+    #check if commit exists
+    exists=$(gh api repos/fpgasystems/Coyote/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    #forbidden combinations
+    if [ "$commit_found" = "0" ]; then 
+        commit_found="1"
+        commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
+    elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+        $CLI_PATH/sgutil program $WORKFLOW -h
+        exit
+    elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
+        echo ""
+        echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist on the repository."
+        echo ""
+        exit
+    fi
     #project_dialog_check
     result="$("$CLI_PATH/common/project_dialog_check" "${flags[@]}")"
     project_found=$(echo "$result" | sed -n '1p')
     project_name=$(echo "$result" | sed -n '2p')
     #forbidden combinations
-    if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name" ]); then 
+    if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then 
         $CLI_PATH/sgutil run coyote -h
         exit
     fi
@@ -148,14 +187,20 @@ else
     fi
     #header (2/2)
     echo ""
-    echo "${bold}sgutil run coyote${normal}"
+    echo "${bold}sgutil run coyote (commit ID: $commit_name)${normal}"
     echo ""
+    #check on PWD
+    project_path=$(dirname "$PWD")
+    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+        project_found="1"
+        project_name=$(basename "$PWD")
+    fi
     #project_dialog (forgotten mandatory 1)
     if [[ $project_found = "0" ]]; then
         #echo ""
         echo "${bold}Please, choose your $WORKFLOW project:${normal}"
         echo ""
-        result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW)
+        result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
         project_found=$(echo "$result" | sed -n '1p')
         project_name=$(echo "$result" | sed -n '2p')
         multiple_projects=$(echo "$result" | sed -n '3p')
@@ -186,8 +231,11 @@ else
     fi
 fi
 
+config_hw="static"
+config_sw="perf_local"
+
 #define directories (1)
-DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name"
+DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
 
 #check if project exists
 if ! [ -d "$DIR" ]; then
@@ -209,7 +257,8 @@ platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 
 #define directories (2)
-APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$project_name/build_dir.$FDEV_NAME.$vivado_version/" #$FDEV_NAME
+#APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/build_dir.$FDEV_NAME.$vivado_version/" #$FDEV_NAME
+APP_BUILD_DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/build_dir.$config_sw" #$FDEV_NAME
 
 #check for build directory
 if ! [ -d "$APP_BUILD_DIR" ]; then
@@ -228,20 +277,18 @@ echo ""
 cd $APP_BUILD_DIR
 
 #display configuration
-cd $DIR/configs/
-config_id=$(ls *.active)
-config_id="${config_id%%.*}"
+#cd $DIR/configs/
+#config_id=$(ls *.active)
+#config_id="${config_id%%.*}"
 
 echo "${bold}You are running $config_id:${normal}"
 echo ""
-cat $DIR/configs/config_000.hpp
-echo ""
-
-echo "We should be running Coyote on device=$device_index" #remove!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#cat $DIR/configs/config_000.hpp
+cat $DIR/configs/config_$config_sw
 echo ""
     
 #run application
-cd $APP_BUILD_DIR
-./main
+echo "${bold}Running perf_local host (./main -t 1 -d $device_index):${normal}"
+./main -t 1 -d $device_index #-b $bus -s $device
 
 echo ""
