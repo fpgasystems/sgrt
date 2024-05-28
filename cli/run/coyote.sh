@@ -292,7 +292,7 @@ cd $APP_BUILD_DIR
 #config_id=$(ls *.active)
 #config_id="${config_id%%.*}"
 
-echo "${bold}You are running $config_id:${normal}"
+echo "${bold}You are running $config_sw:${normal}"
 echo ""
 #cat $DIR/configs/config_000.hpp
 cat $DIR/configs/config_$config_sw
