@@ -78,16 +78,25 @@ if [ "$flags" = "" ]; then
     #header (1/2)
     echo ""
     echo "${bold}sgutil build $WORKFLOW (commit ID: $commit_name)${normal}"
+    #check on PWD
+    project_path=$(dirname "$PWD")
+    project_found="0"
+    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+        project_found="1"
+        project_name=$(basename "$PWD")
+    fi
     #project_dialog
-    echo ""
-    echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-    echo ""
-    result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
-    project_found=$(echo "$result" | sed -n '1p')
-    project_name=$(echo "$result" | sed -n '2p')
-    multiple_projects=$(echo "$result" | sed -n '3p')
-    if [[ $multiple_projects = "0" ]]; then
-        echo $project_name
+    if [[ $project_found = "0" ]]; then
+        echo ""
+        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+        echo ""
+        result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
+        project_found=$(echo "$result" | sed -n '1p')
+        project_name=$(echo "$result" | sed -n '2p')
+        multiple_projects=$(echo "$result" | sed -n '3p')
+        if [[ $multiple_projects = "0" ]]; then
+            echo $project_name
+        fi
     fi
     #platform_dialog
     echo ""
@@ -147,6 +156,12 @@ else
     echo ""
     echo "${bold}sgutil build $WORKFLOW (commit ID: $commit_name)${normal}"
     echo ""
+    #check on PWD
+    project_path=$(dirname "$PWD")
+    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+        project_found="1"
+        project_name=$(basename "$PWD")
+    fi
     #project_dialog (forgotten mandatory 1)
     if [[ $project_found = "0" ]]; then
         #echo ""
