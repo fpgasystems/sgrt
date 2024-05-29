@@ -359,6 +359,9 @@ _sgutil_completions()
             command_completion_5 "$cur" "$COMP_CWORD" "run" "vitis" "${other_flags[@]}"
 
             #validate
+            other_flags=( "--commit" "--device" )
+            command_completion_5 "$cur" "$COMP_CWORD" "validate" "coyote" "${other_flags[@]}"
+
             other_flags=( "--bandwidth" "--parallel" "--time" "--udp" )
             command_completion_5 "$cur" "$COMP_CWORD" "validate" "iperf" "${other_flags[@]}"
             ;;
