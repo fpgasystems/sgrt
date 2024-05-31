@@ -1,15 +1,15 @@
 ---
 
 - hosts: 
-    #- hacc-build
-    #- alveo-u250
-    #- alveo-u280
-    #- alveo-u50d
-    #- alveo-u55c
-    #- versal-vck5000
-    #- hacc-boxes
+    - hacc-build
+    - alveo-u250
+    - alveo-u280
+    - alveo-u50d
+    - alveo-u55c
+    - versal-vck5000
+    - hacc-boxes
     #- alveo-u55c-01.inf.ethz.ch
-    - hacc-box-01.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -24,7 +24,7 @@
     #installation control (all means we attempt to delete all directories, files, and scripts)
     all: false
     #api
-    api_host: true
+    api_host: false
     #cli
     cli_constants: false
     cli_common: false
@@ -56,9 +56,9 @@
       when: all or cli_constants
       loop:
         - HACC_PATH
-        - LOCAL_PATH #replaced by MY_DRIVERS_PATH
         - CLI_PATH
         - LM_LICENSE_FILE
+        - SHELLS_PATH
     - name: deleting CLI common scripts
       file:
         path: "{{ cli_path }}/common/{{ item }}"
