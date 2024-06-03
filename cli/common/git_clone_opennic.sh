@@ -54,5 +54,5 @@ cd open-nic-driver
 git checkout $COMMIT_DRIVER > /dev/null 2>&1
 
 echo ""
-echo "Checkout commit ID (shelldriver) ${bold}$COMMIT_SHELL${normal}/${bold}$COMMIT_DRIVER${normal} done!"
+echo "Checkout commit ID (shell/driver) ${bold}$COMMIT_SHELL${normal}/${bold}$COMMIT_DRIVER${normal} done!"
 echo ""
