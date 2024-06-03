@@ -133,7 +133,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "bdf clock bus name ifconfig memory network platform resource serial slr servers syslog workflow --help" -- ${cur}))
                     ;;
                 new)
-                    COMPREPLY=($(compgen -W "coyote hip mpi vitis --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote hip mpi opennic vitis --help" -- ${cur}))
                     ;;
                 program)
                     COMPREPLY=($(compgen -W "coyote driver reset revert vitis vivado --help" -- ${cur}))
@@ -232,6 +232,9 @@ _sgutil_completions()
                 new) 
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         coyote)
+                            COMPREPLY=($(compgen -W "--commit --help" -- ${cur}))
+                            ;;
+                        opennic)
                             COMPREPLY=($(compgen -W "--commit --help" -- ${cur}))
                             ;;
                     esac

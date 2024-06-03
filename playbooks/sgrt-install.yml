@@ -9,7 +9,7 @@
     #- versal-vck5000
     #- hacc-boxes
     - alveo-u55c-01.inf.ethz.ch
-    - hacc-box-01.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -38,13 +38,14 @@
     reboot: false
     run: false
     set: false
-    sgutil: false 
+    sgutil: true 
     templates: false #true-----------------------------------
     validate: false
     #workflows
-    coyote: true
+    coyote: false
     hip: false
     mpi: false
+    opennic: true
     vitis: false #true---------------------------------
   tasks:
 
@@ -331,6 +332,7 @@
         - get_xclbin_cfg
         - get_xilinx_version
         - git_clone_coyote
+        - git_clone_opennic
         - git_clone_vitis
         - is_acap
         - is_cpu
@@ -408,6 +410,7 @@
         - coyote
         - hip
         - mpi
+        - opennic
         - vitis
     #program
     - name: copying program scripts
@@ -604,6 +607,38 @@
             dest: "{{ cli_path }}/validate/mpi"
             mode: "0755"
       when: all or mpi
+    #opennic
+    - name: copying opennic workflow
+      block:
+        - name: copying opennic workflow
+          debug:
+            msg: ""
+        - name: new
+          copy:
+            src: "../cli/new/opennic.sh"
+            dest: "{{ cli_path }}/new/opennic"
+            mode: "0755"
+        #- name: build
+        #  copy:
+        #    src: "../cli/build/opennic.sh"
+        #    dest: "{{ cli_path }}/build/opennic"
+        #    mode: "0755"
+        #- name: program
+        #  copy:
+        #    src: "../cli/program/opennic.sh"
+        #    dest: "{{ cli_path }}/program/opennic"
+        #    mode: "0755"
+        #- name: run
+        #  copy:
+        #    src: "../cli/run/opennic.sh"
+        #    dest: "{{ cli_path }}/run/opennic"
+        #    mode: "0755"
+        #- name: validate
+        #  copy:
+        #    src: "../cli/validate/opennic.sh"
+        #    dest: "{{ cli_path }}/validate/opennic"
+        #    mode: "0755"
+      when: all or opennic
     #vitis
     - name: copying vitis workflow
       block:

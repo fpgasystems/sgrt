@@ -7,6 +7,7 @@ normal=$(tput sgr0)
 CLI_PATH=$(dirname "$0")
 SGRT_PATH=$(dirname "$CLI_PATH")
 COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
+ONIC_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_COMMIT)
 
 #inputs
 command=$1
@@ -141,9 +142,10 @@ build_help() {
     echo "Creates binaries, bitstreams, and drivers for your accelerated applications."
     echo ""
     echo "ARGUMENTS:"
-    echo "   coyote          - Generates Coyote's bitstreams and drivers." #Vitis .xo kernels and .xclbin binaries generation.
+    echo "   coyote          - Generates Coyote's bitstreams and drivers."
     echo "   hip             - Generates HIP binaries for your projects."
     echo "   mpi             - Generates MPI binaries for your projects."
+    echo "   opennic         - Generates OpenNIC's bitstreams and drivers."
     echo "   vitis           - Uses acap_fpga_xclbin to generate XCLBIN binaries for Vitis workflow." #Vitis .xo kernels and .xclbin binaries generation.
     #echo "   vivado (soon)   - Generates .bit bitstreams and .ko drivers for Vivado workflow." #Compiles a bitstream and a driver.
     echo ""
@@ -199,6 +201,22 @@ build_mpi_help() {
     echo "   -p, --project   - Specifies your MPI project name."
     echo ""
     echo "   -h, --help      - Help to use this command."
+    echo ""
+    exit 1
+}
+
+build_opennic_help() {
+    echo ""
+    echo "${bold}sgutil build opennic [flags] [--help]${normal}"
+    echo ""
+    echo "Generates OpenNIC's bitstreams and drivers."
+    echo ""
+    echo "FLAGS:"
+    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$ONIC_COMMIT${normal})."
+    echo "       --platform  - Xilinx platform (according to sgutil get platform)."
+    echo "       --project   - Specifies your Coyote project name."
+    echo ""
+    echo "   -h, --help      - Help to build Coyote."
     echo ""
     exit 1
 }
@@ -549,6 +567,7 @@ new_help() {
     echo "   coyote          - Creates a new project using Coyote Hello, world! template."
     echo "   hip             - Creates a new project using HIP Hello, world! template."
     echo "   mpi             - Creates a new project using MPI Hello, world! template."
+    echo "   opennic         - Creates a new project using OpenNIC Hello, world! template."
     echo "   vitis           - Creates a new project using Vitis Hello, world! template." 
     echo ""
     echo "   -h, --help      - Help to use this command."
@@ -592,6 +611,20 @@ new_mpi_help() {
     echo ""
     echo "FLAGS"
     echo "   This command has no flags."
+    echo ""
+    echo "   -h, --help      - Help to use this command."
+    echo ""
+    exit 1
+}
+
+new_opennic_help() {
+    echo ""
+    echo "${bold}sgutil new opennic [--help]${normal}"
+    echo ""
+    echo "Creates a new project using OpenNIC Hello, world! template."
+    echo ""
+    echo "FLAGS"
+    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$ONIC_COMMIT${normal})."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -1230,11 +1263,6 @@ case "$command" in
         new_help
         ;;
       coyote)
-        #if [ "$#" -ne 2 ]; then
-        #  new_coyote_help
-        #  exit 1
-        #fi
-        #$CLI_PATH/new/coyote
         valid_flags="-c --commit -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
@@ -1251,6 +1279,10 @@ case "$command" in
           exit 1
         fi
         $CLI_PATH/new/mpi
+        ;;
+      opennic)
+        valid_flags="-c --commit -h --help"
+        command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)
         if [ "$#" -ne 2 ]; then
