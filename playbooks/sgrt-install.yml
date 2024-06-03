@@ -29,7 +29,7 @@
     #cli installation
     #scripts
     build: false
-    common: true
+    common: false
     enable: false
     examine: false
     get: false
@@ -298,6 +298,7 @@
         - coyote
         - hip
         - mpi
+        - opennic
         - vitis
     #common
     - name: copying common scripts
@@ -618,11 +619,11 @@
             src: "../cli/new/opennic.sh"
             dest: "{{ cli_path }}/new/opennic"
             mode: "0755"
-        #- name: build
-        #  copy:
-        #    src: "../cli/build/opennic.sh"
-        #    dest: "{{ cli_path }}/build/opennic"
-        #    mode: "0755"
+        - name: build
+          copy:
+            src: "../cli/build/opennic.sh"
+            dest: "{{ cli_path }}/build/opennic"
+            mode: "0755"
         #- name: program
         #  copy:
         #    src: "../cli/program/opennic.sh"

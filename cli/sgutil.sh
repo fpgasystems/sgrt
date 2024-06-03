@@ -1134,6 +1134,10 @@ case "$command" in
         valid_flags="-p --project -h --help" 
         command_run $command_arguments_flags"@"$valid_flags
         ;;
+      opennic) 
+        valid_flags="-c --commit --platform --project -h --help" 
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
       vitis) 
         valid_flags="-p --project -t --target -h --help" #-x --xclbin 
         command_run $command_arguments_flags"@"$valid_flags

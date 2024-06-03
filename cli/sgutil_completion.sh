@@ -121,7 +121,7 @@ _sgutil_completions()
         2)
             case ${COMP_WORDS[COMP_CWORD-1]} in
                 build)
-                    COMPREPLY=($(compgen -W "coyote hip mpi vitis --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote hip mpi opennic vitis --help" -- ${cur}))
                     ;;
                 enable)
                     COMPREPLY=($(compgen -W "vitis vivado xrt --help" -- ${cur}))
@@ -164,6 +164,9 @@ _sgutil_completions()
                             ;;
                         mpi)
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            ;;
+                        opennic)
+                            COMPREPLY=($(compgen -W "--commit --platform --project --help" -- ${cur}))
                             ;;
                         vitis) 
                             COMPREPLY=($(compgen -W "--project --target --help" -- ${cur})) #--xclbin 
