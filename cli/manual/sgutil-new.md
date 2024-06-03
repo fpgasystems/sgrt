@@ -16,6 +16,7 @@
 * [coyote](./sgutil-new-coyote.md#sgutil-new-coyote)
 * [hip](./sgutil-new-hip.md#sgutil-new-hip)
 * [mpi](./sgutil-new-mpi.md#sgutil-new-mpi)
+* [opennic](./sgutil-new-opennic.md#sgutil-new-opennic)
 * [vitis](./sgutil-new-vitis.md#sgutil-new-vitis)
 
 <code>-h, --help</code>
