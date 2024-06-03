@@ -8,10 +8,11 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="opennic"
-ONIC_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_COMMIT)
+ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 BIT_NAME="open_nic_shell.bit"
 #DRIVER_NAME="coyote_drv.ko"
 BITSTREAMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH BITSTREAMS_PATH)
+NUM_JOBS="16"
 
 #get hostname
 url="${HOSTNAME}"
@@ -86,7 +87,7 @@ if [ "$flags" = "" ]; then
         commit_name="${PWD##*/}"
     else
         commit_found="1"
-        commit_name=$(cat $CLI_PATH/constants/ONIC_COMMIT)
+        commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     fi
     #header (1/2)
     echo ""
@@ -126,11 +127,11 @@ else
         exit
     fi
     #check if commit exists
-    exists=$(gh api repos/fpgasystems/Coyote/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    exists=$(gh api repos/Xilinx/open-nic-shell/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     #forbidden combinations
     if [ "$commit_found" = "0" ]; then 
         commit_found="1"
-        commit_name=$(cat $CLI_PATH/constants/ONIC_COMMIT)
+        commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
         $CLI_PATH/sgutil program $WORKFLOW -h
         exit
@@ -218,36 +219,12 @@ echo $FDEV_NAME
 exit
 
 
-
-config_hw="static"
-config_sw="perf_local"
-
-#temporaly handle configs (like in sgutil validate coyote)
-if ! [ -d "$DIR/configs/" ]; then
-    mkdir $DIR/configs/
-fi
-cd $DIR/configs/
-touch config_$config_sw
-case "$config_hw" in
-    static) 
-        echo "BUILD_STATIC = 1;" >> config_$config_sw
-        echo "BUILD_SHELL = 0;"  >> config_$config_sw
-        echo "COMP_CORES = 40;"  >> config_$config_sw
-        echo "N_REGIONS = 3;"    >> config_$config_sw
-        echo "EN_STRM = 1;"      >> config_$config_sw
-        echo "EN_MEM = 1;"       >> config_$config_sw
-        ;;
-    *)
-        echo ""
-        echo "Unknown configuration."
-        echo ""
-    ;;  
-esac
-
 #define directories (2)
-SHELL_BUILD_DIR="$DIR/examples_hw/apps/build"
+SHELL_BUILD_DIR="$DIR/script"
 DRIVER_DIR="$DIR/driver"
 APP_BUILD_DIR="$DIR/examples_sw/apps/$config_sw/build"
+
+
 
 #check on bitstream in MY_PROJECTS_PATH
 if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
@@ -262,18 +239,19 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.
 
         #shell compilation
         echo ""
-        echo "${bold}Coyote $config_hw shell compilation (commit ID: $commit_name):${normal}"
+        echo "${bold}OpenNIC shell compilation (commit ID: $commit_name):${normal}"
         echo ""
-        echo "/usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME"
+        echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs 16 -impl 1"
         echo ""
-        mkdir $SHELL_BUILD_DIR
+        #mkdir $SHELL_BUILD_DIR
         
         cd $SHELL_BUILD_DIR
-        /usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME 
+        vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
+        #/usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME 
 
         #generate bitstream
         echo ""
-        echo "${bold}Coyote shell bitstream generation:${normal}"
+        echo "${bold}OpenNIC shell bitstream generation:${normal}"
         echo ""
         echo "make project && make bitgen"
         echo ""
@@ -296,7 +274,7 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.
     fi
 else
     echo ""
-    echo "${bold}Coyote $config_hw shell compilation:${normal}"
+    echo "${bold}OpenNIC $config_hw shell compilation:${normal}"
     echo ""
     echo "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit shell already exists!"
 fi

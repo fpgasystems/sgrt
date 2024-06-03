@@ -7,7 +7,7 @@ normal=$(tput sgr0)
 CLI_PATH="$(dirname "$(dirname "$0")")"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="opennic"
-ONIC_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_COMMIT)
+ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 
 #get hostname
 url="${HOSTNAME}"
@@ -63,7 +63,7 @@ commit_name=""
 if [ "$flags" = "" ]; then
     #commit dialog
     commit_found="1"
-    commit_name=$(cat $CLI_PATH/constants/ONIC_COMMIT)
+    commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     #header (1/2)
     echo ""
     echo "${bold}sgutil new $WORKFLOW (commit ID: $commit_name)${normal}"
@@ -83,7 +83,7 @@ else
     #forbidden combinations
     if [ "$commit_found" = "0" ]; then 
         commit_found="1"
-        commit_name=$(cat $CLI_PATH/constants/ONIC_COMMIT)
+        commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
         $CLI_PATH/sgutil program $WORKFLOW -h
         exit
@@ -172,7 +172,7 @@ $CLI_PATH/common/git_clone_opennic $DIR $commit_name
 cd $DIR
 
 #save commit_name
-echo "$commit_name" > ONIC_COMMIT
+echo "$commit_name" > ONIC_SHELL_COMMIT
 
 #copy template from SGRT_PATH ------------- 2024.05.07: I need to see what we do with this
 #SGRT_PATH=$(dirname "$CLI_PATH")

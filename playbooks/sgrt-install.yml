@@ -158,6 +158,8 @@
         - MPICH_PATH
         - MY_DRIVERS_PATH
         - MY_PROJECTS_PATH
+        - ONIC_DRIVER_COMMIT
+        - ONIC_SHELL_COMMIT
         - ROCM_PATH  
         - VIRTUALIZED_SERVERS_LIST
         - VITIS_COMMIT
@@ -674,6 +676,13 @@
       when: all or vitis
     
     #deleting files
+    #constants
+    - name: deleting constants
+      file:
+        path: "{{ cli_path }}/constants/{{ item }}"
+        state: absent
+      loop:
+        - ONIC_COMMIT
     #api
     - name: deleting includes
       file:

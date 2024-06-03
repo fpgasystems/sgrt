@@ -7,7 +7,7 @@ normal=$(tput sgr0)
 CLI_PATH=$(dirname "$0")
 SGRT_PATH=$(dirname "$CLI_PATH")
 COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
-ONIC_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_COMMIT)
+ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 
 #inputs
 command=$1
@@ -212,7 +212,7 @@ build_opennic_help() {
     echo "Generates OpenNIC's bitstreams and drivers."
     echo ""
     echo "FLAGS:"
-    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$ONIC_COMMIT${normal})."
+    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$ONIC_SHELL_COMMIT${normal})."
     echo "       --platform  - Xilinx platform (according to sgutil get platform)."
     echo "       --project   - Specifies your Coyote project name."
     echo ""
@@ -624,7 +624,7 @@ new_opennic_help() {
     echo "Creates a new project using OpenNIC Hello, world! template."
     echo ""
     echo "FLAGS"
-    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$ONIC_COMMIT${normal})."
+    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$ONIC_SHELL_COMMIT${normal})."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
