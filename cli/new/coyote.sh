@@ -96,13 +96,14 @@ else
     #check if commit exists
     exists=$(gh api repos/fpgasystems/Coyote/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     #forbidden combinations
-    if [ "$commit_found" = "0" ]; then 
-        commit_found="1"
-        commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
-    elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/sgutil new $WORKFLOW -h
-        exit
-    elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
+    #if [ "$commit_found" = "0" ]; then 
+    #    commit_found="1"
+    #    commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
+    #elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+    #    $CLI_PATH/sgutil new $WORKFLOW -h
+    #    exit
+    #el
+    if [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         echo ""
         echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist on the repository."
         echo ""
