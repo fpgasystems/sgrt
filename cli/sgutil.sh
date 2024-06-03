@@ -217,7 +217,7 @@ build_opennic_help() {
     echo "       --platform  - Xilinx platform (according to sgutil get platform)."
     echo "       --project   - Specifies your Coyote project name."
     echo ""
-    echo "   -h, --help      - Help to build Coyote."
+    echo "   -h, --help      - Help to build OpenNIC."
     echo ""
     exit 1
 }
@@ -578,7 +578,7 @@ new_help() {
 
 new_coyote_help() {
     echo ""
-    echo "${bold}sgutil new coyote [--help]${normal}"
+    echo "${bold}sgutil new coyote [flags] [--help]${normal}"
     echo ""
     echo "Creates a new project using Coyote Hello, world! template."
     echo ""
@@ -620,7 +620,7 @@ new_mpi_help() {
 
 new_opennic_help() {
     echo ""
-    echo "${bold}sgutil new opennic [--help]${normal}"
+    echo "${bold}sgutil new opennic [flags] [--help]${normal}"
     echo ""
     echo "Creates a new project using OpenNIC Hello, world! template."
     echo ""
