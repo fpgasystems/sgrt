@@ -6,7 +6,7 @@
 
 ## sgutil new coyote
 
-<code>sgutil get coyote [--help]</code>
+<code>sgutil new coyote [flags] [--help]</code>
 <p>
   &nbsp; &nbsp; Creates a new project using Coyote Hello, world! template.
 </p>

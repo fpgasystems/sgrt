@@ -29,7 +29,7 @@
 
 <code>-h, --help <string></code>
 <p>
-  &nbsp; &nbsp; Help to program a binary.
+  &nbsp; &nbsp; Help to build Coyote.
 </p>
 
 ### Examples
