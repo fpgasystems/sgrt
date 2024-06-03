@@ -100,7 +100,7 @@ else
         commit_found="1"
         commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
     elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/sgutil program $WORKFLOW -h
+        $CLI_PATH/sgutil new $WORKFLOW -h
         exit
     elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         echo ""
