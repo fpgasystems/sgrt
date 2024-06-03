@@ -9,8 +9,9 @@ XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="opennic"
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
+ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 BIT_NAME="open_nic_shell.bit"
-#DRIVER_NAME="coyote_drv.ko"
+DRIVER_NAME="onic.ko"
 BITSTREAMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH BITSTREAMS_PATH)
 NUM_JOBS="16"
 
@@ -38,7 +39,6 @@ fi
 #check on valid Vivado and Vitis HLS version
 vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
 vitis_version=$($CLI_PATH/common/get_xilinx_version vitis)
-
 if [ -z "$(echo $vivado_version)" ] || [ -z "$(echo $vitis_version)" ] || ([ "$vivado_version" != "$vitis_version" ]); then
     echo ""
     echo "Please, source valid Vivado and Vitis HLS versions for ${bold}$hostname!${normal}"
@@ -129,13 +129,14 @@ else
     #check if commit exists
     exists=$(gh api repos/Xilinx/open-nic-shell/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     #forbidden combinations
-    if [ "$commit_found" = "0" ]; then 
-        commit_found="1"
-        commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
-    elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/sgutil program $WORKFLOW -h
-        exit
-    elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
+    #if [ "$commit_found" = "0" ]; then 
+    #    commit_found="1"
+    #    commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
+    #elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+    #    $CLI_PATH/sgutil program $WORKFLOW -h
+    #    exit
+    #el
+    if [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         echo ""
         echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist on the repository."
         echo ""
@@ -211,26 +212,17 @@ fi
 #platform_name to FDEV_NAME
 FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
 
-
-echo "HEYYYY"
-
-echo $FDEV_NAME
-
-exit
-
-
 #define directories (2)
 SHELL_BUILD_DIR="$DIR/script"
-DRIVER_DIR="$DIR/driver"
-APP_BUILD_DIR="$DIR/examples_sw/apps/$config_sw/build"
-
-
+DRIVER_DIR="$DIR/open-nic-driver"
+#APP_BUILD_DIR="$DIR/examples_sw/apps/$config_sw/build"
 
 #check on bitstream in MY_PROJECTS_PATH
 if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
     #check on bitstream in BITSTREAMS_PATH
     if [ -e "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
         cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+        cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
     else
         #create folder as root
         if ! [ -d "$BITSTREAMS_PATH/$WORKFLOW/$commit_name" ]; then
@@ -243,38 +235,29 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.
         echo ""
         echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs 16 -impl 1"
         echo ""
-        #mkdir $SHELL_BUILD_DIR
-        
         cd $SHELL_BUILD_DIR
         vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
-        #/usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME 
 
-        #generate bitstream
-        echo ""
-        echo "${bold}OpenNIC shell bitstream generation:${normal}"
-        echo ""
-        echo "make project && make bitgen"
-        echo ""
-        make project && make bitgen
+        #ls ../build/au55c/open_nic_shell/open_nic_shell.runs/impl_1/open_nic_shell.bit
         
         #copy to project
-        cp "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-        cp "$SHELL_BUILD_DIR/bitstreams/${BIT_NAME%.bit}.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
+        cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+        cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/${BIT_NAME%.bit}.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
 
-        #copy to BITSTREAM_PATH (as sudo)
-        sudo $CLI_PATH/common/cp "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-        sudo $CLI_PATH/common/cp "$SHELL_BUILD_DIR/bitstreams/${BIT_NAME%.bit}.ltx" "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
+        #copy to BITSTREAM_PATH (as root)
+        sudo $CLI_PATH/common/cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+        sudo $CLI_PATH/common/cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/${BIT_NAME%.bit}.ltx" "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
             
         #remove all other build temporal folders
-        rm -rf $SHELL_BUILD_DIR
+        rm -rf $DIR/build
 
         #send email at the end
         user_email=$USER@ethz.ch
-        echo "Subject: Good news! sgutil build coyote ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
+        echo "Subject: Good news! sgutil build opennic ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
     fi
 else
     echo ""
-    echo "${bold}OpenNIC $config_hw shell compilation:${normal}"
+    echo "${bold}OpenNIC shell compilation (commit ID: $commit_name):${normal}"
     echo ""
     echo "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit shell already exists!"
 fi
@@ -296,39 +279,41 @@ cd $DRIVER_DIR && make
 cp $DRIVER_DIR/$DRIVER_NAME $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME
 
 #remove drivier files (generated while compilation)
-rm $DRIVER_DIR/coyote_drv*
-rm $DRIVER_DIR/fpga_dev.o
-rm $DRIVER_DIR/fpga_drv.o
-rm $DRIVER_DIR/fpga_fops.o
-rm $DRIVER_DIR/fpga_mmu.o
-rm $DRIVER_DIR/fpga_sysfs.o
-rm $DRIVER_DIR/modules.order
-rm $DRIVER_DIR/fpga_gup.o
-rm $DRIVER_DIR/fpga_hmm.o
-rm $DRIVER_DIR/fpga_hw.o
-rm $DRIVER_DIR/fpga_pops.o
-rm $DRIVER_DIR/fpga_pr.o
-rm $DRIVER_DIR/fpga_uisr.o
 rm $DRIVER_DIR/Module.symvers
+rm $DRIVER_DIR/hwmon
+rm $DRIVER_DIR/modules.order
+rm $DRIVER_DIR/onic.ko 
+rm $DRIVER_DIR/onic.mod
+rm $DRIVER_DIR/onic.mod.c
+rm $DRIVER_DIR/onic.mod.o
+rm $DRIVER_DIR/onic.o
+rm $DRIVER_DIR/onic_common.o
+rm $DRIVER_DIR/onic_ethtool.o
+rm $DRIVER_DIR/onic_hardware.o
+rm $DRIVER_DIR/onic_lib.o
+rm $DRIVER_DIR/onic_main.o
+rm $DRIVER_DIR/onic_netdev.o
+rm $DRIVER_DIR/onic_sysfs.o
+rm -rf $DRIVER_DIR/qdma_access
 #rm -rf $DRIVER_DIR/eci
 #rm -rf $DRIVER_DIR/pci
     
-#compilation happens everytime
-echo ""
-echo "${bold}Application compilation:${normal}"
-echo ""
-echo "/usr/bin/cmake ../../../ -DEXAMPLE=$config_sw && make"
-echo ""
-if ! [ -d "$APP_BUILD_DIR" ]; then
-    mkdir $APP_BUILD_DIR
-fi
-cd $APP_BUILD_DIR
-/usr/bin/cmake ../../../ -DEXAMPLE=$config_sw && make
+#application compilation happens everytime
+#echo ""
+#echo "${bold}Application compilation:${normal}"
+#echo ""
+#echo "/usr/bin/cmake ../../../ -DEXAMPLE=$config_sw && make"
+#echo ""
+#if ! [ -d "$APP_BUILD_DIR" ]; then
+#    mkdir $APP_BUILD_DIR
+#fi
+#cd $APP_BUILD_DIR
+#/usr/bin/cmake ../../../ -DEXAMPLE=$config_sw && make
 
 #move compiled application (remove first)
-if [ -d "$DIR/build_dir.$config_sw/" ]; then
-    rm -rf $DIR/build_dir.$config_sw/
-fi
-mv $APP_BUILD_DIR $DIR/build_dir.$config_sw/
+#if [ -d "$DIR/build_dir.$config_sw/" ]; then
+#    rm -rf $DIR/build_dir.$config_sw/
+#fi
+#mv $APP_BUILD_DIR $DIR/build_dir.$config_sw/
 
 echo ""
