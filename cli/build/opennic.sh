@@ -12,7 +12,7 @@ ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 BIT_NAME="open_nic_shell.bit"
 DRIVER_NAME="onic.ko"
-BITSTREAMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH BITSTREAMS_PATH)
+BITSTREAMS_PATH="$CLI_PATH/bitstreams" #$($CLI_PATH/common/get_constant $CLI_PATH BITSTREAMS_PATH)
 NUM_JOBS="16"
 
 #get hostname
@@ -200,12 +200,17 @@ fi
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
 
-# check if project exists
+#check if project exists
 if ! [ -d "$DIR" ]; then
     echo ""
     echo "You must create your project first! Please, use sgutil new $WORKFLOW"
     echo ""
     exit
+fi
+
+#cleanup bitstreams folder
+if [ -e "$BITSTREAMS_PATH/foo" ]; then
+    sudo $CLI_PATH/common/rm "$BITSTREAMS_PATH/foo"
 fi
 
 #platform_name to FDEV_NAME
@@ -221,13 +226,7 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.
     #check on bitstream in BITSTREAMS_PATH
     if [ -e "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
         cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-        #cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
     else
-        #create folder as root
-        if ! [ -d "$BITSTREAMS_PATH/$WORKFLOW/$commit_name" ]; then
-            sudo $CLI_PATH/common/mkdir "$BITSTREAMS_PATH/$WORKFLOW/$commit_name"
-        fi
-
         #shell compilation
         echo ""
         echo "${bold}OpenNIC shell compilation (commit ID: $commit_name):${normal}"
@@ -237,19 +236,11 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.
         cd $SHELL_BUILD_DIR
         vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
 
-        #ls ../build/au55c/open_nic_shell/open_nic_shell.runs/impl_1/open_nic_shell.bit
-        
-        #copy to project
-        cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-
-        #copy to BITSTREAM_PATH (as root) ====================================================================================================================================================================== I need to solve this
-        #sudo $CLI_PATH/common/cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-            
-        #remove all other build temporal folders
-        #rm -rf $DIR/build
-
-        #send email at the end
-        if [ -f "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
+        #copy and send email
+        if [ -f "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" ]; then
+            #copy to project
+            cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+            #send email
             user_email=$USER@ethz.ch
             echo "Subject: Good news! sgutil build opennic ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
         fi
