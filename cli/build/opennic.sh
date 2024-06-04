@@ -129,14 +129,13 @@ else
     #check if commit exists
     exists=$(gh api repos/Xilinx/open-nic-shell/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     #forbidden combinations
-    #if [ "$commit_found" = "0" ]; then 
-    #    commit_found="1"
-    #    commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
-    #elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-    #    $CLI_PATH/sgutil program $WORKFLOW -h
-    #    exit
-    #el
-    if [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
+    if [ "$commit_found" = "0" ]; then 
+        commit_found="1"
+        commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
+    elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+        $CLI_PATH/sgutil program $WORKFLOW -h
+        exit
+    elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         echo ""
         echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist on the repository."
         echo ""
@@ -222,7 +221,7 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.
     #check on bitstream in BITSTREAMS_PATH
     if [ -e "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
         cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-        cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
+        #cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
     else
         #create folder as root
         if ! [ -d "$BITSTREAMS_PATH/$WORKFLOW/$commit_name" ]; then
@@ -242,14 +241,12 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.
         
         #copy to project
         cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-        cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/${BIT_NAME%.bit}.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
 
-        #copy to BITSTREAM_PATH (as root)
-        sudo $CLI_PATH/common/cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-        sudo $CLI_PATH/common/cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/${BIT_NAME%.bit}.ltx" "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
+        #copy to BITSTREAM_PATH (as root) ====================================================================================================================================================================== I need to solve this
+        #sudo $CLI_PATH/common/cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
             
         #remove all other build temporal folders
-        rm -rf $DIR/build
+        #rm -rf $DIR/build
 
         #send email at the end
         user_email=$USER@ethz.ch
@@ -263,9 +260,9 @@ else
 fi
 
 #driver compilation happens everytime (delete first)
-if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME" ]; then
-    rm $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME
-fi
+#if [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME" ]; then
+#    rm $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME
+#fi
 
 #make driver
 echo ""
@@ -276,11 +273,11 @@ echo ""
 cd $DRIVER_DIR && make
 
 #copy driver
-cp $DRIVER_DIR/$DRIVER_NAME $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME
+cp -f $DRIVER_DIR/$DRIVER_NAME $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME
 
 #remove drivier files (generated while compilation)
 rm $DRIVER_DIR/Module.symvers
-rm $DRIVER_DIR/hwmon
+rm -rf $DRIVER_DIR/hwmon
 rm $DRIVER_DIR/modules.order
 rm $DRIVER_DIR/onic.ko 
 rm $DRIVER_DIR/onic.mod
@@ -294,7 +291,6 @@ rm $DRIVER_DIR/onic_lib.o
 rm $DRIVER_DIR/onic_main.o
 rm $DRIVER_DIR/onic_netdev.o
 rm $DRIVER_DIR/onic_sysfs.o
-rm -rf $DRIVER_DIR/qdma_access
 #rm -rf $DRIVER_DIR/eci
 #rm -rf $DRIVER_DIR/pci
     
