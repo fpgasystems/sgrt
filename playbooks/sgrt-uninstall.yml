@@ -59,6 +59,7 @@
         - CLI_PATH
         - LM_LICENSE_FILE
         - SHELLS_PATH
+        - BITSTREAM_PATH
     - name: deleting CLI common scripts
       file:
         path: "{{ cli_path }}/common/{{ item }}"

@@ -9,7 +9,7 @@
     #- versal-vck5000
     #- hacc-boxes
     - alveo-u55c-01.inf.ethz.ch
-    #- hacc-box-01.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -29,7 +29,7 @@
     #cli installation
     #scripts
     build: false
-    common: false
+    common: true
     enable: false
     examine: false
     get: false
@@ -42,7 +42,7 @@
     templates: false #true-----------------------------------
     validate: false
     #workflows
-    coyote: false
+    coyote: true
     hip: false
     mpi: false
     opennic: true
@@ -683,6 +683,7 @@
         state: absent
       loop:
         - ONIC_COMMIT
+        - BITSTREAM_PATH
     #api
     - name: deleting includes
       file:
