@@ -219,7 +219,6 @@ FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
 #define directories (2)
 SHELL_BUILD_DIR="$DIR/script"
 DRIVER_DIR="$DIR/open-nic-driver"
-#APP_BUILD_DIR="$DIR/examples_sw/apps/$config_sw/build"
 
 #check on bitstream in MY_PROJECTS_PATH
 if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
@@ -252,11 +251,6 @@ else
     echo "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit shell already exists!"
 fi
 
-#driver compilation happens everytime (delete first)
-#if [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME" ]; then
-#    rm $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME
-#fi
-
 #make driver
 echo ""
 echo "${bold}Driver compilation:${normal}"
@@ -284,25 +278,5 @@ rm $DRIVER_DIR/onic_lib.o
 rm $DRIVER_DIR/onic_main.o
 rm $DRIVER_DIR/onic_netdev.o
 rm $DRIVER_DIR/onic_sysfs.o
-#rm -rf $DRIVER_DIR/eci
-#rm -rf $DRIVER_DIR/pci
-    
-#application compilation happens everytime
-#echo ""
-#echo "${bold}Application compilation:${normal}"
-#echo ""
-#echo "/usr/bin/cmake ../../../ -DEXAMPLE=$config_sw && make"
-#echo ""
-#if ! [ -d "$APP_BUILD_DIR" ]; then
-#    mkdir $APP_BUILD_DIR
-#fi
-#cd $APP_BUILD_DIR
-#/usr/bin/cmake ../../../ -DEXAMPLE=$config_sw && make
-
-#move compiled application (remove first)
-#if [ -d "$DIR/build_dir.$config_sw/" ]; then
-#    rm -rf $DIR/build_dir.$config_sw/
-#fi
-#mv $APP_BUILD_DIR $DIR/build_dir.$config_sw/
 
 echo ""
