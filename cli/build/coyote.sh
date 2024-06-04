@@ -11,6 +11,7 @@ WORKFLOW="coyote"
 COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
 BIT_NAME="cyt_top.bit"
 DRIVER_NAME="coyote_drv.ko"
+BITSTREAMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH BITSTREAMS_PATH)
 
 #get hostname
 url="${HOSTNAME}"
@@ -237,107 +238,57 @@ case "$config_hw" in
     ;;  
 esac
 
-#create or select a configuration
-#cd $DIR/configs/
-#if [[ $(ls -l | wc -l) = 2 ]]; then
-#    #only config_000 exists and we create config_shell and config_001
-#    #we compile create_config (in case there were changes)
-#    cd $DIR/src
-#    g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
-#    cd $DIR
-#    ./create_config
-#    cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
-#    config="config_001.hpp"
-#elif [[ $(ls -l | wc -l) = 5 ]]; then
-#    #config_000, config_shell and config_001 exist
-#    cp -fr $DIR/configs/config_001.hpp $DIR/configs/config_000.hpp
-#    config="config_001.hpp"
-#    echo ""
-#elif [[ $(ls -l | wc -l) > 5 ]]; then
-#    cd $DIR/configs/
-#    configs=( "config_"*.hpp )
-#    echo ""
-#    echo "${bold}Please, choose your configuration:${normal}"
-#    echo ""
-#    PS3=""
-#    select config in "${configs[@]:1:${#configs[@]}-2}"; do # with :1 we avoid config_000.hpp and then config_shell.hpp
-#        if [[ -z $config ]]; then
-#            echo "" >&/dev/null
-#        else
-#            break
-#        fi
-#    done
-#    # copy selected config as config_000.hpp
-#    cp -fr $DIR/configs/$config $DIR/configs/config_000.hpp
-#fi
-
-#save config id
-#cd $DIR/configs/
-#if [ -e config_*.active ]; then
-#    rm *.active
-#fi
-#config_id="${config%%.*}"
-#touch $config_id.active
-
-#compile Coyote shell (get config_shell parameters)
-#coyote_params=""
-#shopt -s lastpipe
-#cat $DIR/configs/config_shell.hpp | while read line 
-#do
-#    #find equal (=)
-#    idx=$(sed 's/ /\n/g' <<< "$line" | sed -n "/=/=")
-#    #get indexes
-#    name_idx=$(($idx-1))
-#    value_idx=$(($idx+1))  
-#    #get data
-#    name=$(echo $line | awk -v i=$name_idx '{ print $i }')
-#    value=$(echo $line | awk -v i=$value_idx '{ print $i }' | sed 's/;//' )
-#    #add to string
-#    coyote_params=$coyote_params"-D"$name"="$value" "
-#done
-
 #define directories (2)
-SHELL_BUILD_DIR="$DIR/examples_hw/apps/build"           # 06.03.2024 ===> added /apps and does not work... something else is missing
+SHELL_BUILD_DIR="$DIR/examples_hw/apps/build"
 DRIVER_DIR="$DIR/driver"
-APP_BUILD_DIR="$DIR/examples_sw/apps/$config_sw/build"  # 05.03.2024 ===> added /apps and works
+APP_BUILD_DIR="$DIR/examples_sw/apps/$config_sw/build"
 
-#echo "${bold}Changing directory:${normal}"
-#echo ""
-#echo "cd $DIR"
-#echo ""
-#cd $DIR
-
-#check on build_dir.FDEV_NAME
+#check on bitstream in MY_PROJECTS_PATH
 if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
-    #bitstream compilation
-    echo ""
-    echo "${bold}Coyote $config_hw shell compilation:${normal}"
-    echo ""
-    echo "/usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME"
-    echo ""
-    mkdir $SHELL_BUILD_DIR
-    
-    cd $SHELL_BUILD_DIR
-    /usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME 
+    #check on bitstream in BITSTREAMS_PATH
+    if [ -e "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
+        cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+        cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
+    else
+        #create folder as root
+        if ! [ -d "$BITSTREAMS_PATH/$WORKFLOW/$commit_name" ]; then
+            sudo $CLI_PATH/common/mkdir "$BITSTREAMS_PATH/$WORKFLOW/$commit_name"
+        fi
 
-    #generate bitstream
-    echo ""
-    echo "${bold}Coyote shell bitstream generation:${normal}"
-    echo ""
-    echo "make project && make bitgen"
-    echo ""
-    make project && make bitgen
-    
-    #copy bitstream
-    cp $SHELL_BUILD_DIR/bitstreams/cyt_top.bit $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit
-    cp $SHELL_BUILD_DIR/bitstreams/cyt_top.ltx $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx
+        #shell compilation
+        echo ""
+        echo "${bold}Coyote $config_hw shell compilation (commit ID: $commit_name):${normal}"
+        echo ""
+        echo "/usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME"
+        echo ""
+        mkdir $SHELL_BUILD_DIR
         
-    #remove all other build temporal folders
-    rm -rf $SHELL_BUILD_DIR
+        cd $SHELL_BUILD_DIR
+        /usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME 
 
-    #send email at the end
-    user_email=$USER@ethz.ch
-    echo "Subject: Good news! sgutil build coyote ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
+        #generate bitstream
+        echo ""
+        echo "${bold}Coyote shell bitstream generation:${normal}"
+        echo ""
+        echo "make project && make bitgen"
+        echo ""
+        make project && make bitgen
+        
+        #copy to project
+        cp "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+        cp "$SHELL_BUILD_DIR/bitstreams/${BIT_NAME%.bit}.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
+
+        #copy to BITSTREAM_PATH (as root) ====================================================================================================================================================================== I need to solve this
+        #sudo $CLI_PATH/common/cp "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+        #sudo $CLI_PATH/common/cp "$SHELL_BUILD_DIR/bitstreams/${BIT_NAME%.bit}.ltx" "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
+            
+        #remove all other build temporal folders
+        #rm -rf $SHELL_BUILD_DIR
+
+        #send email at the end
+        user_email=$USER@ethz.ch
+        echo "Subject: Good news! sgutil build coyote ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
+    fi
 else
     echo ""
     echo "${bold}Coyote $config_hw shell compilation:${normal}"
@@ -346,9 +297,9 @@ else
 fi
 
 #driver compilation happens everytime (delete first)
-if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME" ]; then
-    rm $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME
-fi
+#if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME" ]; then
+#    rm $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME
+#fi
 
 #make driver
 echo ""
@@ -359,7 +310,7 @@ echo ""
 cd $DRIVER_DIR && make
 
 #copy driver
-cp $DRIVER_DIR/$DRIVER_NAME $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME
+cp -f $DRIVER_DIR/$DRIVER_NAME $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME
 
 #remove drivier files (generated while compilation)
 rm $DRIVER_DIR/coyote_drv*
@@ -396,99 +347,5 @@ if [ -d "$DIR/build_dir.$config_sw/" ]; then
     rm -rf $DIR/build_dir.$config_sw/
 fi
 mv $APP_BUILD_DIR $DIR/build_dir.$config_sw/
-
-#shell compilation    
-#if ! [ -d "$APP_BUILD_DIR" ]; then
-#    echo "${bold}Coyote shell compilation:${normal}"
-#    echo ""
-#    echo "cmake .. -DFDEV_NAME=$FDEV_NAME $coyote_params"
-#    echo ""
-#    mkdir $SHELL_BUILD_DIR
-#    cd $SHELL_BUILD_DIR
-#    /usr/bin/cmake .. -DFDEV_NAME=$FDEV_NAME -DEXAMPLE=perf_host #$coyote_params
-#
-#    #generate bitstream
-#    echo ""
-#    echo "${bold}Coyote shell bitstream generation:${normal}"
-#    echo ""
-#    echo "make shell && make compile"
-#    echo ""
-#    make shell && make compile
-#
-#    #driver compilation
-#    echo ""
-#    echo "${bold}Driver compilation:${normal}"
-#    echo ""
-#    echo "cd $DRIVER_DIR && make"
-#    echo ""
-#    cd $DRIVER_DIR && make
-#
-#    #application compilation
-#    echo ""
-#    echo "${bold}Application compilation:${normal}"
-#    echo ""
-#    echo "cmake ../sw -DTARGET_DIR=../src/ && make"
-#    echo ""
-#    mkdir $APP_BUILD_DIR
-#    cd $APP_BUILD_DIR
-#    /usr/bin/cmake ../sw -DTARGET_DIR=../src/ && make # 1: path from APP_BUILD_DIR to /sw 2: path from APP_BUILD_DIR to main.cpp
-#
-#    #copy bitstream
-#    cp $SHELL_BUILD_DIR/bitstreams/cyt_top.bit $APP_BUILD_DIR
-#    #copy driver
-#    cp $DRIVER_DIR/coyote_drv.ko $APP_BUILD_DIR
-#    #remove all other build temporal folders
-#    rm -rf $SHELL_BUILD_DIR
-#    rm $DRIVER_DIR/coyote_drv*
-#    rm $DRIVER_DIR/fpga_dev.o
-#    rm $DRIVER_DIR/fpga_drv.o
-#    rm $DRIVER_DIR/fpga_fops.o
-#    rm $DRIVER_DIR/fpga_isr.o
-#    rm $DRIVER_DIR/fpga_mmu.o
-#    rm $DRIVER_DIR/fpga_sysfs.o
-#    rm $DRIVER_DIR/modules.order
-#
-#    #send email at the end
-#    user_email=$USER@ethz.ch
-#    echo "Subject: Good news! sgutil build coyote ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
-#
-#else
-#    echo "${bold}Coyote shell compilation:${normal}"
-#    echo ""
-#    echo "$project_name/build_dir.$FDEV_NAME.$vivado_version shell already exists!"
-#
-#    #driver compilation
-#    echo ""
-#    echo "${bold}Driver compilation:${normal}"
-#    echo ""
-#    echo "cd $DRIVER_DIR && make"
-#    echo ""
-#    cd $DRIVER_DIR && make
-#    
-#    #copy driver
-#    cp $DRIVER_DIR/coyote_drv.ko $APP_BUILD_DIR
-#
-#    #remove driver build temporal folders
-#    rm $DRIVER_DIR/coyote_drv*
-#    rm $DRIVER_DIR/fpga_dev.o
-#    rm $DRIVER_DIR/fpga_drv.o
-#    rm $DRIVER_DIR/fpga_fops.o
-#    rm $DRIVER_DIR/fpga_isr.o
-#    rm $DRIVER_DIR/fpga_mmu.o
-#    rm $DRIVER_DIR/fpga_sysfs.o
-#    rm $DRIVER_DIR/modules.order
-#
-#    #application compilation
-#    echo ""
-#    echo "${bold}Application compilation:${normal}"
-#    echo ""
-#    echo "cmake ../sw -DTARGET_DIR=../src/ && make"
-#    echo ""
-#    #mkdir $APP_BUILD_DIR
-#    cd $APP_BUILD_DIR
-#    #remove CMakeLists.txt to avoid recompiling errors
-#    rm CMakeCache.txt
-#    /usr/bin/cmake ../sw -DTARGET_DIR=../src/ && make # 1: path from APP_BUILD_DIR to /sw 2: path from APP_BUILD_DIR to main.cpp
-#fi
 
 echo ""
