@@ -11,7 +11,7 @@ WORKFLOW="coyote"
 COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
 BIT_NAME="cyt_top.bit"
 DRIVER_NAME="coyote_drv.ko"
-BITSTREAMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH BITSTREAMS_PATH)
+BITSTREAMS_PATH="$CLI_PATH/bitstreams" #$($CLI_PATH/common/get_constant $CLI_PATH BITSTREAMS_PATH)
 
 #get hostname
 url="${HOSTNAME}"
@@ -202,12 +202,17 @@ fi
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
 
-# check if project exists
+#check if project exists
 if ! [ -d "$DIR" ]; then
     echo ""
     echo "You must create your project first! Please, use sgutil new $WORKFLOW"
     echo ""
     exit
+fi
+
+#cleanup bitstreams folder
+if [ -e "$BITSTREAMS_PATH/foo" ]; then
+    sudo $CLI_PATH/common/rm "$BITSTREAMS_PATH/foo"
 fi
 
 #platform_name to FDEV_NAME
@@ -250,11 +255,6 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.
         cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
         cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
     else
-        #create folder as root
-        if ! [ -d "$BITSTREAMS_PATH/$WORKFLOW/$commit_name" ]; then
-            sudo $CLI_PATH/common/mkdir "$BITSTREAMS_PATH/$WORKFLOW/$commit_name"
-        fi
-
         #shell compilation
         echo ""
         echo "${bold}Coyote $config_hw shell compilation (commit ID: $commit_name):${normal}"
@@ -273,27 +273,20 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.
         echo "make project && make bitgen"
         echo ""
         make project && make bitgen
-        
-        #copy to project
-        cp "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-        cp "$SHELL_BUILD_DIR/bitstreams/${BIT_NAME%.bit}.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
 
-        #copy to BITSTREAM_PATH (as root) ====================================================================================================================================================================== I need to solve this
-        #sudo $CLI_PATH/common/cp "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-        #sudo $CLI_PATH/common/cp "$SHELL_BUILD_DIR/bitstreams/${BIT_NAME%.bit}.ltx" "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
-            
-        #remove all other build temporal folders
-        #rm -rf $SHELL_BUILD_DIR
-
-        #send email at the end
-        if [ -f "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
+        #copy and send email
+        if [ -f "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" ]; then
+            #copy to project
+            cp "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+            cp "$SHELL_BUILD_DIR/bitstreams/${BIT_NAME%.bit}.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
+            #send email
             user_email=$USER@ethz.ch
             echo "Subject: Good news! sgutil build coyote ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
         fi
     fi
 else
     echo ""
-    echo "${bold}Coyote $config_hw shell compilation:${normal}"
+    echo "${bold}Coyote $config_hw shell compilation (commit ID: $commit_name):${normal}"
     echo ""
     echo "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit shell already exists!"
 fi
