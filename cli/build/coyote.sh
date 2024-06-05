@@ -291,11 +291,6 @@ else
     echo "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit shell already exists!"
 fi
 
-#driver compilation happens everytime (delete first)
-#if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME" ]; then
-#    rm $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME
-#fi
-
 #make driver
 echo ""
 echo "${bold}Driver compilation:${normal}"
@@ -322,8 +317,6 @@ rm $DRIVER_DIR/fpga_pops.o
 rm $DRIVER_DIR/fpga_pr.o
 rm $DRIVER_DIR/fpga_uisr.o
 rm $DRIVER_DIR/Module.symvers
-#rm -rf $DRIVER_DIR/eci
-#rm -rf $DRIVER_DIR/pci
     
 #compilation happens everytime
 echo ""
