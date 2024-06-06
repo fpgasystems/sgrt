@@ -139,6 +139,11 @@ if [ "$flags" = "" ]; then
         commit_found="1"
         project_found="1"
         project_name=$(basename "$PWD")
+        echo ""
+        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+        echo ""
+        echo $project_name
+        echo ""
     elif [ "$commit_name" = "$WORKFLOW" ]; then
         commit_found="1"
         commit_name="${PWD##*/}"
@@ -285,6 +290,11 @@ else
     if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
         project_found="1"
         project_name=$(basename "$PWD")
+        echo ""
+        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+        echo ""
+        echo $project_name
+        echo ""
     fi
     #project_dialog (forgotten mandatory 1)
     if [[ $project_found = "0" ]]; then
