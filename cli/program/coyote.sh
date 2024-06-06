@@ -12,9 +12,7 @@ VIVADO_DEVICES_MAX=$(cat $CLI_PATH/constants/VIVADO_DEVICES_MAX)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="coyote"
-#BIT_NAME="cyt_top.bit"
 DRIVER_NAME="coyote_drv.ko"
-COYOTE_MAX_REGIONS=16
 CONFIG_FNAME="$CLI_PATH/devices_acap_fpga_coyote"
 
 #combine ACAP and FPGA lists removing duplicates
@@ -87,21 +85,6 @@ sudo $CLI_PATH/common/get_devices_acap_fpga_coyote
 
 #inputs
 read -a flags <<< "$@"
-
-#program regions (only two flags are detected and the first one is --regions)
-#if [[ ${#flags[@]} -eq 2 && ${flags[0]} = "--regions" ]]; then
-#    regions_number=${flags[1]}
-#    if [[ "$regions_number" -gt "$COYOTE_MAX_REGIONS" || "$regions_number" -lt 1 ]]; then
-#        $CLI_PATH/sgutil program coyote -h
-#    else
-#        echo ""
-#        echo "${bold}Enabling vFPGA regions:${normal}"
-#        echo ""
-#        $CLI_PATH/program/enable_regions $regions_number
-#        echo ""
-#    fi
-#    exit
-#fi
 
 #version_dialog_check
 result="$("$CLI_PATH/common/version_dialog_check" "${flags[@]}")"
@@ -399,14 +382,14 @@ fi
 echo "Programming ${bold}$hostname...${normal}"
 
 #remove driver if exists
-if lsmod | grep "coyote_drv" >/dev/null; then
+if lsmod | grep "${DRIVER_NAME%.ko}" >/dev/null; then
     echo ""
-    echo "${bold}Removing drivers:${normal}"
+    echo "${bold}Removing driver:${normal}"
     echo ""
-
     echo "sudo rmmod ${DRIVER_NAME%.ko}" 
     sudo rmmod ${DRIVER_NAME%.ko} 2>/dev/null # with 2>/dev/null we avoid printing a message if the module does not exist
 fi
+echo ""
 
 #program bitstream
 $CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME -v $vivado_version
