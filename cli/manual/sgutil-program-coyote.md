@@ -24,7 +24,7 @@
 
 <code>-p, --project <string></code>
 <p>
-  &nbsp; &nbsp; Specifies your Vitis project name.
+  &nbsp; &nbsp; Specifies your Coyote project name.
 </p>
 
 <code>-r, --remote <string></code>
