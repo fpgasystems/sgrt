@@ -107,8 +107,8 @@ if [ "$flags" = "" ]; then
             echo $project_name
         fi
     fi
-    #platform_dialog
     echo ""
+    #platform_dialog
     echo "${bold}Please, choose your platform:${normal}"
     echo ""
     result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
@@ -118,6 +118,7 @@ if [ "$flags" = "" ]; then
     if [[ $multiple_platforms = "0" ]]; then
         echo $platform_name
     fi
+    echo ""
 else
     #commit_dialog_check
     result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
@@ -248,50 +249,88 @@ SHELL_BUILD_DIR="$DIR/examples_hw/apps/build"
 DRIVER_DIR="$DIR/driver"
 APP_BUILD_DIR="$DIR/examples_sw/apps/$config_sw/build"
 
-#check on bitstream in MY_PROJECTS_PATH
-if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
-    #check on bitstream in BITSTREAMS_PATH
-    if [ -e "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
-        cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-        cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
-    else
-        #shell compilation
-        echo ""
-        echo "${bold}Coyote $config_hw shell compilation (commit ID: $commit_name):${normal}"
-        echo ""
-        echo "/usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME"
-        echo ""
-        mkdir $SHELL_BUILD_DIR
-        
-        cd $SHELL_BUILD_DIR
-        /usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME 
+#define shells
+library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+project_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 
-        #generate bitstream
-        echo ""
-        echo "${bold}Coyote shell bitstream generation:${normal}"
-        echo ""
-        echo "make project && make bitgen"
-        echo ""
-        make project && make bitgen
-
-        #copy and send email
-        if [ -f "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" ]; then
-            #copy to project
-            cp "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-            cp "$SHELL_BUILD_DIR/bitstreams/${BIT_NAME%.bit}.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
-            #send email
-            user_email=$USER@ethz.ch
-            echo "Subject: Good news! sgutil build coyote ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
-        fi
-    fi
-else
-    echo ""
+#compile shell
+if [ -e "$library_shell" ]; then
+    cp "$library_shell" "$project_shell"
+    cp "${library_shell/.bit/.ltx}" "${project_shell/.bit/.ltx}"
+elif ! [ -e "$project_shell" ]; then
+    #echo ""
     echo "${bold}Coyote $config_hw shell compilation (commit ID: $commit_name):${normal}"
     echo ""
-    echo "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit shell already exists!"
+    echo "/usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME"
+    echo ""
+    mkdir $SHELL_BUILD_DIR
+    
+    cd $SHELL_BUILD_DIR
+    /usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME 
+
+    #generate bitstream
+    echo ""
+    echo "${bold}Coyote shell bitstream generation:${normal}"
+    echo ""
+    echo "make project && make bitgen"
+    echo ""
+    make project && make bitgen
+
+    #copy and send email
+    if [ -f "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" ]; then
+        #copy to project
+        cp "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" "$project_shell"
+        cp "$SHELL_BUILD_DIR/bitstreams/${BIT_NAME%.bit}.ltx" "${project_shell/.bit/.ltx}" #"$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
+        #send email
+        user_email=$USER@ethz.ch
+        echo "Subject: Good news! sgutil build coyote ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
+    fi
 fi
 
-#make driver
+#shell compilation
+#if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
+#    #check on bitstream in BITSTREAMS_PATH
+#    if [ -e "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
+#        cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+#        cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
+#    else
+#        #shell compilation
+#        echo ""
+#        echo "${bold}Coyote $config_hw shell compilation (commit ID: $commit_name):${normal}"
+#        echo ""
+#        echo "/usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME"
+#        echo ""
+#        mkdir $SHELL_BUILD_DIR
+#        
+#        cd $SHELL_BUILD_DIR
+#        /usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME 
+#
+#        #generate bitstream
+#        echo ""
+#        echo "${bold}Coyote shell bitstream generation:${normal}"
+#        echo ""
+#        echo "make project && make bitgen"
+#        echo ""
+#        make project && make bitgen
+#
+#        #copy and send email
+#        if [ -f "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" ]; then
+#            #copy to project
+#            cp "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+#            cp "$SHELL_BUILD_DIR/bitstreams/${BIT_NAME%.bit}.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
+#            #send email
+#            user_email=$USER@ethz.ch
+#            echo "Subject: Good news! sgutil build coyote ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
+#        fi
+#    fi
+#else
+#    echo ""
+#    echo "${bold}Coyote $config_hw shell compilation (commit ID: $commit_name):${normal}"
+#    echo ""
+#    echo "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit shell already exists!"
+#fi
+
+#compile driver
 echo ""
 echo "${bold}Driver compilation:${normal}"
 echo ""
@@ -318,7 +357,7 @@ rm $DRIVER_DIR/fpga_pr.o
 rm $DRIVER_DIR/fpga_uisr.o
 rm $DRIVER_DIR/Module.symvers
     
-#compilation happens everytime
+#compile application
 echo ""
 echo "${bold}Application compilation:${normal}"
 echo ""

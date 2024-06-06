@@ -105,8 +105,8 @@ if [ "$flags" = "" ]; then
             echo $project_name
         fi
     fi
-    #platform_dialog
     echo ""
+    #platform_dialog
     echo "${bold}Please, choose your platform:${normal}"
     echo ""
     result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
@@ -116,6 +116,7 @@ if [ "$flags" = "" ]; then
     if [[ $multiple_platforms = "0" ]]; then
         echo $platform_name
     fi
+    echo ""
 else
     #commit_dialog_check
     result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
@@ -220,38 +221,64 @@ FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
 SHELL_BUILD_DIR="$DIR/script"
 DRIVER_DIR="$DIR/open-nic-driver"
 
-#check on bitstream in MY_PROJECTS_PATH
-if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
-    #check on bitstream in BITSTREAMS_PATH
-    if [ -e "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
-        cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-    else
-        #shell compilation
-        echo ""
-        echo "${bold}OpenNIC shell compilation (commit ID: $commit_name):${normal}"
-        echo ""
-        echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs 16 -impl 1"
-        echo ""
-        cd $SHELL_BUILD_DIR
-        vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
+#define shells
+library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+project_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 
-        #copy and send email
-        if [ -f "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" ]; then
-            #copy to project
-            cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-            #send email
-            user_email=$USER@ethz.ch
-            echo "Subject: Good news! sgutil build opennic ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
-        fi
-    fi
-else
-    echo ""
+#compile shell
+if [ -e "$library_shell" ]; then
+    cp "$library_shell" "$project_shell"
+elif ! [ -e "$project_shell" ]; then
+    #echo ""
     echo "${bold}OpenNIC shell compilation (commit ID: $commit_name):${normal}"
     echo ""
-    echo "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit shell already exists!"
+    echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs 16 -impl 1"
+    echo ""
+    cd $SHELL_BUILD_DIR
+    vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
+
+    #copy and send email
+    if [ -f "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" ]; then
+        #copy to project
+        cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$project_shell"
+        #send email
+        user_email=$USER@ethz.ch
+        echo "Subject: Good news! sgutil build opennic ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
+    fi
 fi
 
-#make driver
+#check on bitstream in MY_PROJECTS_PATH
+#if ! [ -e "$project_shell" ]; then
+#    #check on bitstream in BITSTREAMS_PATH
+#    if [ -e "$library_shell" ]; then
+#        cp "$library_shell" "$project_shell"
+#    else
+#        #shell compilation
+#        echo ""
+#        echo "${bold}OpenNIC shell compilation (commit ID: $commit_name):${normal}"
+#        echo ""
+#        echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs 16 -impl 1"
+#        echo ""
+#        cd $SHELL_BUILD_DIR
+#        vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
+#
+#        #copy and send email
+#        if [ -f "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" ]; then
+#            #copy to project
+#            cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$project_shell"
+#            #send email
+#            user_email=$USER@ethz.ch
+#            echo "Subject: Good news! sgutil build opennic ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
+#        fi
+#    fi
+#else
+#    echo ""
+#    echo "${bold}OpenNIC shell compilation (commit ID: $commit_name):${normal}"
+#    echo ""
+#    echo "$project_shell shell already exists!"
+#fi
+
+#compile driver
 echo ""
 echo "${bold}Driver compilation:${normal}"
 echo ""
