@@ -13,6 +13,7 @@ DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="opennic"
 DRIVER_NAME="onic.ko"
+ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 
 #combine ACAP and FPGA lists removing duplicates
 SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
@@ -127,9 +128,6 @@ project_name=""
 device_found=""
 device_index=""
 if [ "$flags" = "" ]; then
-    #commit dialog
-    #commit_found="1"
-    #commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
     #check on PWD
     project_path=$(dirname "$PWD")
     commit_name=$(basename "$project_path")
@@ -143,7 +141,7 @@ if [ "$flags" = "" ]; then
         commit_name="${PWD##*/}"
     else
         commit_found="1"
-        commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
+        commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     fi
     #header (1/2)
     echo ""
@@ -219,7 +217,7 @@ else
     #forbidden combinations
     if [ "$commit_found" = "0" ]; then 
         commit_found="1"
-        commit_name=$(cat $CLI_PATH/constants/COYOTE_COMMIT)
+        commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
         $CLI_PATH/sgutil program $WORKFLOW -h
         exit
@@ -368,7 +366,7 @@ platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 
 #set bitstream name
-BIT_NAME="cyt_top.$FDEV_NAME.$vivado_version.bit"
+BIT_NAME="open_nic_shell.$FDEV_NAME.$vivado_version.bit"
 
 #check on bitstream
 if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME" ]; then
@@ -433,4 +431,4 @@ if [ "$deploy_option" -eq 1 ]; then
     done
 fi
 
-echo ""
+#echo ""
