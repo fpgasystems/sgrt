@@ -247,37 +247,6 @@ elif ! [ -e "$project_shell" ]; then
     fi
 fi
 
-#check on bitstream in MY_PROJECTS_PATH
-#if ! [ -e "$project_shell" ]; then
-#    #check on bitstream in BITSTREAMS_PATH
-#    if [ -e "$library_shell" ]; then
-#        cp "$library_shell" "$project_shell"
-#    else
-#        #shell compilation
-#        echo ""
-#        echo "${bold}OpenNIC shell compilation (commit ID: $commit_name):${normal}"
-#        echo ""
-#        echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs 16 -impl 1"
-#        echo ""
-#        cd $SHELL_BUILD_DIR
-#        vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
-#
-#        #copy and send email
-#        if [ -f "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" ]; then
-#            #copy to project
-#            cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$project_shell"
-#            #send email
-#            user_email=$USER@ethz.ch
-#            echo "Subject: Good news! sgutil build opennic ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
-#        fi
-#    fi
-#else
-#    echo ""
-#    echo "${bold}OpenNIC shell compilation (commit ID: $commit_name):${normal}"
-#    echo ""
-#    echo "$project_shell shell already exists!"
-#fi
-
 #compile driver
 echo ""
 echo "${bold}Driver compilation:${normal}"

@@ -287,49 +287,6 @@ elif ! [ -e "$project_shell" ]; then
     fi
 fi
 
-#shell compilation
-#if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
-#    #check on bitstream in BITSTREAMS_PATH
-#    if [ -e "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" ]; then
-#        cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-#        cp "$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
-#    else
-#        #shell compilation
-#        echo ""
-#        echo "${bold}Coyote $config_hw shell compilation (commit ID: $commit_name):${normal}"
-#        echo ""
-#        echo "/usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME"
-#        echo ""
-#        mkdir $SHELL_BUILD_DIR
-#        
-#        cd $SHELL_BUILD_DIR
-#        /usr/bin/cmake ../../ -DEXAMPLE=$config_hw -DFDEV_NAME=$FDEV_NAME 
-#
-#        #generate bitstream
-#        echo ""
-#        echo "${bold}Coyote shell bitstream generation:${normal}"
-#        echo ""
-#        echo "make project && make bitgen"
-#        echo ""
-#        make project && make bitgen
-#
-#        #copy and send email
-#        if [ -f "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" ]; then
-#            #copy to project
-#            cp "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-#            cp "$SHELL_BUILD_DIR/bitstreams/${BIT_NAME%.bit}.ltx" "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
-#            #send email
-#            user_email=$USER@ethz.ch
-#            echo "Subject: Good news! sgutil build coyote ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
-#        fi
-#    fi
-#else
-#    echo ""
-#    echo "${bold}Coyote $config_hw shell compilation (commit ID: $commit_name):${normal}"
-#    echo ""
-#    echo "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit shell already exists!"
-#fi
-
 #compile driver
 echo ""
 echo "${bold}Driver compilation:${normal}"
