@@ -657,6 +657,7 @@ program_help() {
     echo "ARGUMENTS:"
     echo "   coyote          - Programs Coyote to a given FPGA."
     echo "   driver          - Inserts a driver or module into the Linux kernel."
+    echo "   opennic         - Programs OpenNIC to a given FPGA."
     echo "   reset           - Resets a given FPGA/ACAP."
     echo "   revert          - Returns the specified FPGA to the Vitis workflow."
     echo "   vitis           - Programs a Vitis binary to a given FPGA/ACAP."
@@ -694,6 +695,24 @@ program_driver_help() {
     echo "FLAGS:"
     echo "   -m, --module    - Full path to the .ko module to be inserted."
     echo "   -p, --params    - A comma separated list of module parameters." 
+    echo ""
+    echo "   -h, --help      - Help to use this command."
+    echo ""
+    exit 1
+}
+
+program_opennic_help() {
+    echo ""
+    echo "${bold}sgutil program opennic [flags] [--help]${normal}"
+    echo ""
+    echo "Programs OpenNIC to a given FPGA."
+    echo ""
+    echo "FLAGS:"
+    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$ONIC_SHELL_COMMIT${normal})."
+    echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
+    echo "   -p, --project   - Specifies your OpenNIC project name." 
+    #echo "       --regions   - Sets the number of independent regions (vFPGA)."
+    echo "       --remote    - Local or remote deployment."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -1313,6 +1332,10 @@ case "$command" in
         ;;
       driver)
         valid_flags="-m --module -p --params -h --help"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      opennic)
+        valid_flags="-c --commit -d --device -p --project --remote -h --help" #--regions
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       reset) 

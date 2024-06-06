@@ -1,7 +1,7 @@
 ---
 
 - hosts: 
-    #- hacc-build
+    - hacc-build
     #- alveo-u250
     #- alveo-u280
     #- alveo-u50d
@@ -27,10 +27,11 @@
     #api installation
     api: false #true----------------
     #cli installation
+    directories: false
+    templates: false #true-----------------------------------
     #scripts
     build: false
-    common: true
-    directories: true
+    common: false
     enable: false
     examine: false
     get: false
@@ -39,8 +40,7 @@
     reboot: false
     run: false
     set: false
-    sgutil: true 
-    templates: false #true-----------------------------------
+    sgutil: false 
     validate: false
     #workflows
     coyote: true
@@ -428,6 +428,7 @@
         - coyote
         - driver
         - fpga_chmod
+        - opennic
         - pci_hot_plug
         - reset
         - revert
@@ -628,11 +629,11 @@
             src: "../cli/build/opennic.sh"
             dest: "{{ cli_path }}/build/opennic"
             mode: "0755"
-        #- name: program
-        #  copy:
-        #    src: "../cli/program/opennic.sh"
-        #    dest: "{{ cli_path }}/program/opennic"
-        #    mode: "0755"
+        - name: program
+          copy:
+            src: "../cli/program/opennic.sh"
+            dest: "{{ cli_path }}/program/opennic"
+            mode: "0755"
         #- name: run
         #  copy:
         #    src: "../cli/run/opennic.sh"

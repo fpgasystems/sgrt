@@ -136,7 +136,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "coyote hip mpi opennic vitis --help" -- ${cur}))
                     ;;
                 program)
-                    COMPREPLY=($(compgen -W "coyote driver reset revert vitis vivado --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote driver opennic reset revert vitis vivado --help" -- ${cur}))
                     ;;
                 reboot)
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
@@ -250,6 +250,9 @@ _sgutil_completions()
                         driver)
                             COMPREPLY=($(compgen -W "--module --params --help" -- ${cur}))
                             ;;
+                        opennic)
+                            COMPREPLY=($(compgen -W "--commit --device --project --remote --help" -- ${cur}))
+                            ;;
                         reset)
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
@@ -348,6 +351,9 @@ _sgutil_completions()
             other_flags=( "--module" "--params" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "${other_flags[@]}"
 
+            other_flags=( "--commit" "--device" "--project" "--remote" )
+            command_completion_5 "$cur" "$COMP_CWORD" "program" "opennic" "${other_flags[@]}"
+
             other_flags=( "--device" "--project" "--remote" "--xclbin" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "vitis" "${other_flags[@]}"
 
@@ -403,6 +409,19 @@ _sgutil_completions()
 
             other_flags=( "--commit" "--device" "--project" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "${other_flags[@]}"
+
+            #program opennic
+            other_flags=( "--device" "--project" "--remote" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "opennic" "--commit" "${other_flags[@]}"
+            
+            other_flags=( "--commit" "--project" "--remote" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "opennic" "--device" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--device" "--remote" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "opennic" "--project" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--device" "--project" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "opennic" "--remote" "${other_flags[@]}"
 
             #program vitis    
             other_flags=( "--project" "--remote" "--xclbin" )
@@ -502,6 +521,46 @@ _sgutil_completions()
 
             other_flags=( "--commit" "--device" )
             command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--project" "${other_flags[@]}"
+
+            #program opennic --commit
+            other_flags=( "--project" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--commit" "--device" "${other_flags[@]}"
+            
+            other_flags=( "--device" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--commit" "--project" "${other_flags[@]}"
+
+            other_flags=( "--device" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--commit" "--remote" "${other_flags[@]}"
+            
+            #program opennic --device
+            other_flags=( "--project" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--device" "--commit" "${other_flags[@]}"
+            
+            other_flags=( "--commit" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--device" "--project" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--device" "--remote" "${other_flags[@]}"
+
+            #program opennic --project
+            other_flags=( "--device" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--project" "--commit" "${other_flags[@]}"
+            
+            other_flags=( "--commit" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--project" "--device" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--device" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--project" "--remote" "${other_flags[@]}"
+
+            #program opennic --remote
+            other_flags=( "--device" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--remote" "--commit" "${other_flags[@]}"
+            
+            other_flags=( "--commit" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--remote" "--device" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--device" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--remote" "--project" "${other_flags[@]}"
 
             #program vitis --device
             other_flags=( "--remote" "--xclbin" )
