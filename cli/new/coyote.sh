@@ -217,6 +217,6 @@ if [ "$commit" = "1" ]; then
     #echo ""
 fi
 
-echo ""
+#echo ""
 echo "The project ${bold}$DIR${normal} has been created!"
 echo ""
