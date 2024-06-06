@@ -3,6 +3,19 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+mask_to_cidr() {
+  local mask=$1
+  local cidr=0
+  local mask_segments=($(echo "$mask" | tr '.' ' '))
+  for segment in "${mask_segments[@]}"; do
+    while [ $segment -gt 0 ]; do
+      (( cidr++ ))
+      segment=$(( segment & (segment - 1) ))
+    done
+  done
+  echo "$cidr"
+}
+
 #constants
 CLI_PATH="$(dirname "$(dirname "$0")")"
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
@@ -14,6 +27,8 @@ MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="opennic"
 DRIVER_NAME="onic.ko"
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
+IFCONFIG_INTERFACE_BASE_NAME="eno"
+#ONIC_INTERFACE_NAME="enonic"
 
 #combine ACAP and FPGA lists removing duplicates
 SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
@@ -416,10 +431,38 @@ $CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$
 echo "${bold}Enable memory space access:${normal}"
 echo ""
 echo "sudo setpci -s $upstream_port COMMAND=0x02"
+echo ""
 sudo setpci -s $upstream_port COMMAND=0x02
 
 #insert driver
 eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME -p RS_FEC_ENABLED=0"
+
+#get system interfaces
+eno_last=$(ifconfig | grep "^$IFCONFIG_INTERFACE_BASE_NAME" | awk -F: '{print $1}' | tail -n 1)
+
+#get system mask
+mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
+netmask=$(ifconfig "$mellanox_name" | grep 'netmask' | awk '{print $4}')
+cidr=$(mask_to_cidr $netmask)
+
+#get device ip
+IPs=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
+IP0="${IPs%%/*}"
+
+#get device name
+index=${eno_last//[!0-9]/}
+new_index=$((index + 1))
+eno_onic="ens$new_index"
+
+#assign to opennic
+echo "${bold}Setting IP address:${normal}"
+echo ""
+sudo ifconfig $eno_onic $IP0/$cidr up
+#sudo ip link set $eno_onic down
+#sudo ip link set $eno_onic name $ONIC_INTERFACE_NAME
+#sudo ip link set $ONIC_INTERFACE_NAME up
+echo "$(ifconfig $eno_onic)"
+echo ""
 
 #programming remote servers (if applies)
 if [ "$deploy_option" -eq 1 ]; then 
