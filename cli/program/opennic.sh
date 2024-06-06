@@ -11,11 +11,8 @@ VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 VIVADO_DEVICES_MAX=$(cat $CLI_PATH/constants/VIVADO_DEVICES_MAX)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
-WORKFLOW="coyote"
-#BIT_NAME="cyt_top.bit"
-DRIVER_NAME="coyote_drv.ko"
-COYOTE_MAX_REGIONS=16
-CONFIG_FNAME="$CLI_PATH/devices_acap_fpga_coyote"
+WORKFLOW="opennic"
+DRIVER_NAME="onic.ko"
 
 #combine ACAP and FPGA lists removing duplicates
 SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
@@ -26,9 +23,6 @@ hostname="${url%%.*}"
 
 #get username
 username=$USER
-
-echo "HEYYYY I am here"
-exit
 
 #check on virtualized servers
 virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
@@ -91,21 +85,6 @@ sudo $CLI_PATH/common/get_devices_acap_fpga_coyote
 #inputs
 read -a flags <<< "$@"
 
-#program regions (only two flags are detected and the first one is --regions)
-#if [[ ${#flags[@]} -eq 2 && ${flags[0]} = "--regions" ]]; then
-#    regions_number=${flags[1]}
-#    if [[ "$regions_number" -gt "$COYOTE_MAX_REGIONS" || "$regions_number" -lt 1 ]]; then
-#        $CLI_PATH/sgutil program coyote -h
-#    else
-#        echo ""
-#        echo "${bold}Enabling vFPGA regions:${normal}"
-#        echo ""
-#        $CLI_PATH/program/enable_regions $regions_number
-#        echo ""
-#    fi
-#    exit
-#fi
-
 #version_dialog_check
 result="$("$CLI_PATH/common/version_dialog_check" "${flags[@]}")"
 vivado_version=$(echo "$result" | sed -n '2p')
@@ -135,7 +114,7 @@ fi
 #check if workflow exists
 if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
     echo ""
-    echo "You must build your project first! Please, use sgutil build coyote"
+    echo "You must build your project first! Please, use sgutil build $WORKFLOW"
     echo ""
     exit
 fi
@@ -266,7 +245,7 @@ else
     device_index=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-        $CLI_PATH/sgutil program coyote -h
+        $CLI_PATH/sgutil program $WORKFLOW -h
         exit
     fi
     #check on VIVADO_DEVICES_MAX
@@ -293,7 +272,7 @@ else
     deploy_option=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if [ "$deploy_option_found" = "1" ] && { [ "$deploy_option" -ne 0 ] && [ "$deploy_option" -ne 1 ]; }; then #if [ "$deploy_option_found" = "1" ] && [ -n "$deploy_option" ]; then 
-        $CLI_PATH/sgutil program coyote -h
+        $CLI_PATH/sgutil program $WORKFLOW -h
         exit
     fi
     #header (2/2)
@@ -393,7 +372,7 @@ BIT_NAME="cyt_top.$FDEV_NAME.$vivado_version.bit"
 
 #check on bitstream
 if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME" ]; then
-    echo "You must build your project first! Please, use sgutil build coyote"
+    echo "You must build your project first! Please, use sgutil build $WORKFLOW"
     echo ""
     exit
 fi
@@ -402,32 +381,37 @@ fi
 echo "Programming ${bold}$hostname...${normal}"
 
 #remove driver if exists
-if lsmod | grep "coyote_drv" >/dev/null; then
+if lsmod | grep "${DRIVER_NAME%.ko}" >/dev/null; then
     echo ""
-    echo "${bold}Removing drivers:${normal}"
+    echo "${bold}Removing driver:${normal}"
     echo ""
-
     echo "sudo rmmod ${DRIVER_NAME%.ko}" 
+    echo ""
     sudo rmmod ${DRIVER_NAME%.ko} 2>/dev/null # with 2>/dev/null we avoid printing a message if the module does not exist
 fi
+echo ""
+
+#specific OpenNIC commands (before hot plug, https://github.com/Xilinx/open-nic-shell/blob/main/script/setup_device.sh)
+upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
+echo "${bold}PCIe device $upstream_port setup:${normal}"
+echo ""
+echo "sudo setpci -s $upstream_port COMMAND=0000:0100"
+echo "sudo setpci -s $upstream_port CAP_EXP+8.w=0000:0004"
+sudo setpci -s $upstream_port COMMAND=0000:0100
+sudo setpci -s $upstream_port CAP_EXP+8.w=0000:0004
+echo ""
 
 #program bitstream
 $CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME -v $vivado_version
 
-#get IP address
-#IP_address_0=$($CLI_PATH/get/network -d $device_index | awk "\$1 == \"$device_index:\" {print \$2}")
-#IP_address_0_hex=$($CLI_PATH/common/address_to_hex IP $IP_address_0)
+#enable memory space access
+echo "${bold}Enable memory space access:${normal}"
+echo ""
+echo "sudo setpci -s $upstream_port COMMAND=0x02"
+sudo setpci -s $upstream_port COMMAND=0x02
 
-#get MAC address
-#MAC_address_0=$($CLI_PATH/get/network -d $device_index | awk "\$1 == \"$device_index:\" {print \$3}" | tr -d '()')
-#MAC_address_0_hex=$($CLI_PATH/common/address_to_hex MAC $MAC_address_0)
-
-#insert coyote driver
-#eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME -p ip_addr_q0=$IP_address_0_hex,mac_addr_q0=$MAC_address_0_hex"
-eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME -p config_fname=$CONFIG_FNAME"
-
-#enable vFPGA regions
-#$CLI_PATH/program/enable_N_REGIONS $device_index
+#insert driver
+eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME -p RS_FEC_ENABLED=0"
 
 #programming remote servers (if applies)
 if [ "$deploy_option" -eq 1 ]; then 
@@ -444,7 +428,7 @@ if [ "$deploy_option" -eq 1 ]; then
         #echo ""
         #remotely program bitstream, driver, and run enable_regions/enable_N_REGIONS
         #ssh -t $USER@$i "cd $APP_BUILD_DIR ; $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME -v $vivado_version ; $CLI_PATH/program/enable_N_REGIONS $DIR"
-        ssh -t $USER@$i "$CLI_PATH/program/coyote --device $device_index --project $project_name --remote 0"
+        ssh -t $USER@$i "$CLI_PATH/program/$WORKFLOW --device $device_index --project $project_name --remote 0"
 
     done
 fi
