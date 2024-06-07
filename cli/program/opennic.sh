@@ -443,10 +443,6 @@ eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIV
 #get system interfaces (after adding the OpenNIC interface)
 ifconfig | grep '^[a-zA-Z0-9]' | awk -F: '{print $1}' | sort > $DIR/ifconfig_interfaces_1
 
-#save the lists to temporary files
-#echo "$ifconfig_interfaces_0" | sort > /tmp/interfaces_0.txt
-#echo "$ifconfig_interfaces_1" | sort > /tmp/interfaces_1.txt
-
 #use comm to find the "extra" OpenNIC
 eno_onic=$(comm -13 $DIR/ifconfig_interfaces_0 $DIR/ifconfig_interfaces_1)
 
@@ -461,11 +457,6 @@ cidr=$(mask_to_cidr $netmask)
 #get device ip
 IPs=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
 IP0="${IPs%%/*}"
-
-#get device name
-#index=${eno_last//[!0-9]/}
-#new_index=$((index + 1))
-#eno_onic="ens$new_index"
 
 #assign to opennic
 echo "${bold}Setting IP address:${normal}"
