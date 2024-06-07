@@ -423,8 +423,14 @@ echo "${bold}PCIe device $upstream_port setup:${normal}"
 echo ""
 echo "sudo setpci -s $upstream_port COMMAND=0000:0100"
 echo "sudo setpci -s $upstream_port CAP_EXP+8.w=0000:0004"
-sudo setpci -s $upstream_port COMMAND=0000:0100
-sudo setpci -s $upstream_port CAP_EXP+8.w=0000:0004
+#sudo setpci -s $upstream_port COMMAND=0000:0100
+#sudo setpci -s $upstream_port CAP_EXP+8.w=0000:0004
+
+sudo $CLI_PATH/program/opennic_setpci $upstream_port "COMMAND=0000:0100"
+sudo $CLI_PATH/program/opennic_setpci $upstream_port "CAP_EXP+8.w=0000:0004"
+
+
+
 echo ""
 
 #program bitstream
@@ -435,7 +441,9 @@ echo "${bold}Enable memory space access:${normal}"
 echo ""
 echo "sudo setpci -s $upstream_port COMMAND=0x02"
 echo ""
-sudo setpci -s $upstream_port COMMAND=0x02
+#sudo setpci -s $upstream_port COMMAND=0x02
+
+sudo $CLI_PATH/program/opennic_setpci $upstream_port "COMMAND=0x02"
 
 #insert driver
 eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME -p RS_FEC_ENABLED=0"
