@@ -400,6 +400,9 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME" ]; then
     exit
 fi
 
+#get system interfaces (before adding the OpenNIC interface)
+ifconfig | grep '^[a-zA-Z0-9]' | awk -F: '{print $1}' | sort > $DIR/ifconfig_interfaces_0
+
 #prgramming local server
 echo "Programming ${bold}$hostname...${normal}"
 
@@ -437,8 +440,18 @@ sudo setpci -s $upstream_port COMMAND=0x02
 #insert driver
 eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME -p RS_FEC_ENABLED=0"
 
-#get system interfaces
-eno_last=$(ifconfig | grep "^$IFCONFIG_INTERFACE_BASE_NAME" | awk -F: '{print $1}' | tail -n 1)
+#get system interfaces (after adding the OpenNIC interface)
+ifconfig | grep '^[a-zA-Z0-9]' | awk -F: '{print $1}' | sort > $DIR/ifconfig_interfaces_1
+
+#save the lists to temporary files
+#echo "$ifconfig_interfaces_0" | sort > /tmp/interfaces_0.txt
+#echo "$ifconfig_interfaces_1" | sort > /tmp/interfaces_1.txt
+
+#use comm to find the "extra" OpenNIC
+eno_onic=$(comm -13 $DIR/ifconfig_interfaces_0 $DIR/ifconfig_interfaces_1)
+
+#cleanup files
+rm $DIR/ifconfig_interfaces_0 $DIR/ifconfig_interfaces_1
 
 #get system mask
 mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
@@ -450,12 +463,14 @@ IPs=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
 IP0="${IPs%%/*}"
 
 #get device name
-index=${eno_last//[!0-9]/}
-new_index=$((index + 1))
-eno_onic="ens$new_index"
+#index=${eno_last//[!0-9]/}
+#new_index=$((index + 1))
+#eno_onic="ens$new_index"
 
 #assign to opennic
 echo "${bold}Setting IP address:${normal}"
+echo ""
+echo "sudo ifconfig $eno_onic $IP0/$cidr up"
 echo ""
 sudo ifconfig $eno_onic $IP0/$cidr up
 #sudo ip link set $eno_onic down
