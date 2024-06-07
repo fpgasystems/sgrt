@@ -233,7 +233,7 @@ else
     commit_found=$(echo "$result" | sed -n '1p')
     commit_name=$(echo "$result" | sed -n '2p')
     #check if commit exists
-    exists=$(gh api repos/fpgasystems/Coyote/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    exists=$(gh api repos/Xilinx/open-nic-shell/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     #forbidden combinations
     if [ "$commit_found" = "0" ]; then 
         commit_found="1"
