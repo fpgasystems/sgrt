@@ -431,6 +431,7 @@
         - fpga_chmod
         - opennic
         - opennic_setpci
+        - opennic_ifconfig
         - pci_hot_plug
         - reset
         - revert

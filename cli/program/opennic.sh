@@ -471,7 +471,11 @@ echo "${bold}Setting IP address:${normal}"
 echo ""
 echo "sudo ifconfig $eno_onic $IP0/$cidr up"
 echo ""
-sudo ifconfig $eno_onic $IP0/$cidr up
+#sudo ifconfig $eno_onic $IP0/$cidr up
+
+sudo $CLI_PATH/program/opennic_ifconfig $eno_onic $IP0 $cidr
+
+
 #sudo ip link set $eno_onic down
 #sudo ip link set $eno_onic name $ONIC_INTERFACE_NAME
 #sudo ip link set $ONIC_INTERFACE_NAME up
