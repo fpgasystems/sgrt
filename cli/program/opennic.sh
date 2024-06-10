@@ -417,33 +417,36 @@ if lsmod | grep "${DRIVER_NAME%.ko}" >/dev/null; then
 fi
 echo ""
 
-#specific OpenNIC commands (before hot plug, https://github.com/Xilinx/open-nic-shell/blob/main/script/setup_device.sh)
+#get upstream port
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
-echo "${bold}PCIe device $upstream_port setup:${normal}"
-echo ""
-echo "sudo setpci -s $upstream_port COMMAND=0000:0100"
-echo "sudo setpci -s $upstream_port CAP_EXP+8.w=0000:0004"
-#sudo setpci -s $upstream_port COMMAND=0000:0100
-#sudo setpci -s $upstream_port CAP_EXP+8.w=0000:0004
 
-sudo $CLI_PATH/program/opennic_setpci $upstream_port "COMMAND=0000:0100"
-sudo $CLI_PATH/program/opennic_setpci $upstream_port "CAP_EXP+8.w=0000:0004"
-
-
-
+#specific OpenNIC commands (https://github.com/Xilinx/open-nic-shell/blob/main/script/setup_device.sh)
+device_bdf="0000:$upstream_port"
+bridge_bdf=""
+#if [ -e "/sys/bus/pci/devices/$device_bdf" ]; then
+    bridge_bdf=$(basename $(dirname $(readlink "/sys/bus/pci/devices/$device_bdf")))
+    echo "${bold}PCIe bridge $bridge_bdf setup:${normal}"
+    echo ""
+    echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf COMMAND=0000:0100"
+    echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf CAP_EXP+8.w=0000:0004"
+    # COMMAND register: clear SERR# enable
+    #sudo setpci -s $bridge_bdf COMMAND=0000:0100
+    sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "COMMAND=0000:0100"
+    # DevCtl register of CAP_EXP: clear ERR_FATAL (Fatal Error Reporting Enable)
+    #sudo setpci -s $bridge_bdf CAP_EXP+8.w=0000:0004
+    sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "CAP_EXP+8.w=0000:0004"
+#fi
 echo ""
 
 #program bitstream
 $CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME -v $vivado_version
 
 #enable memory space access
-echo "${bold}Enable memory space access:${normal}"
+echo "${bold}PCIe device $device_bdf setup:${normal}"
 echo ""
-echo "sudo setpci -s $upstream_port COMMAND=0x02"
+echo "sudo $CLI_PATH/program/opennic_setpci $device_bdf COMMAND=0x02"
 echo ""
-#sudo setpci -s $upstream_port COMMAND=0x02
-
-sudo $CLI_PATH/program/opennic_setpci $upstream_port "COMMAND=0x02"
+sudo $CLI_PATH/program/opennic_setpci $device_bdf "COMMAND=0x02"
 
 #insert driver
 eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME -p RS_FEC_ENABLED=0"
@@ -455,12 +458,14 @@ ifconfig | grep '^[a-zA-Z0-9]' | awk -F: '{print $1}' | sort > $DIR/ifconfig_int
 eno_onic=$(comm -13 $DIR/ifconfig_interfaces_0 $DIR/ifconfig_interfaces_1)
 
 #cleanup files
-rm $DIR/ifconfig_interfaces_0 $DIR/ifconfig_interfaces_1
+if [ -e "$DIR/ifconfig_interfaces_0" ]; then
+    rm $DIR/ifconfig_interfaces_0 $DIR/ifconfig_interfaces_1
+fi
 
 #get system mask
 mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
 netmask=$(ifconfig "$mellanox_name" | grep 'netmask' | awk '{print $4}')
-cidr=$(mask_to_cidr $netmask)
+#cidr=$(mask_to_cidr $netmask)
 
 #get device ip
 IPs=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
@@ -469,13 +474,9 @@ IP0="${IPs%%/*}"
 #assign to opennic
 echo "${bold}Setting IP address:${normal}"
 echo ""
-echo "sudo ifconfig $eno_onic $IP0/$cidr up"
+echo "sudo $CLI_PATH/program/opennic_ifconfig $eno_onic $IP0 $netmask"
 echo ""
-#sudo ifconfig $eno_onic $IP0/$cidr up
-
-sudo $CLI_PATH/program/opennic_ifconfig $eno_onic $IP0 $cidr
-
-
+sudo $CLI_PATH/program/opennic_ifconfig $eno_onic $IP0 $netmask
 #sudo ip link set $eno_onic down
 #sudo ip link set $eno_onic name $ONIC_INTERFACE_NAME
 #sudo ip link set $ONIC_INTERFACE_NAME up
