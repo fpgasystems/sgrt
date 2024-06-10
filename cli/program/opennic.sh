@@ -3,19 +3,6 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-mask_to_cidr() {
-  local mask=$1
-  local cidr=0
-  local mask_segments=($(echo "$mask" | tr '.' ' '))
-  for segment in "${mask_segments[@]}"; do
-    while [ $segment -gt 0 ]; do
-      (( cidr++ ))
-      segment=$(( segment & (segment - 1) ))
-    done
-  done
-  echo "$cidr"
-}
-
 #constants
 CLI_PATH="$(dirname "$(dirname "$0")")"
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
@@ -401,7 +388,6 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME" ]; then
 fi
 
 #get system interfaces (before adding the OpenNIC interface)
-#ifconfig | grep '^[a-zA-Z0-9]' | awk -F: '{print $1}' | sort > $DIR/opennic_interfaces_0
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 
 echo ""
@@ -428,23 +414,49 @@ upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 #specific OpenNIC commands (https://github.com/Xilinx/open-nic-shell/blob/main/script/setup_device.sh)
 device_bdf="0000:$upstream_port"
 bridge_bdf=""
-#if [ -e "/sys/bus/pci/devices/$device_bdf" ]; then
-    bridge_bdf=$(basename $(dirname $(readlink "/sys/bus/pci/devices/$device_bdf")))
-    echo "${bold}PCIe bridge $bridge_bdf setup:${normal}"
-    echo ""
-    echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf COMMAND=0000:0100"
-    echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf CAP_EXP+8.w=0000:0004"
-    # COMMAND register: clear SERR# enable
-    #sudo setpci -s $bridge_bdf COMMAND=0000:0100
-    sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "COMMAND=0000:0100"
-    # DevCtl register of CAP_EXP: clear ERR_FATAL (Fatal Error Reporting Enable)
-    #sudo setpci -s $bridge_bdf CAP_EXP+8.w=0000:0004
-    sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "CAP_EXP+8.w=0000:0004"
-#fi
+bridge_bdf=$(basename $(dirname $(readlink "/sys/bus/pci/devices/$device_bdf")))
+echo "${bold}PCIe bridge $bridge_bdf setup:${normal}"
+echo ""
+echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf COMMAND=0000:0100"
+echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf CAP_EXP+8.w=0000:0004"
+# COMMAND register: clear SERR# enable (sudo setpci -s $bridge_bdf COMMAND=0000:0100)
+sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "COMMAND=0000:0100"
+# DevCtl register of CAP_EXP: clear ERR_FATAL (Fatal Error Reporting Enable - sudo setpci -s $bridge_bdf CAP_EXP+8.w=0000:0004)
+sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "CAP_EXP+8.w=0000:0004"
 echo ""
 
-#program bitstream
+#program bitstream 
 $CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME -v $vivado_version
+
+#virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
+#if [ "$virtualized" = "0" ]; then
+#    $CLI_PATH/program/revert -d $device_index
+#fi
+
+#get serial number
+#serial_number=$($CLI_PATH/get/get_fpga_device_param $device_index serial_number)
+
+#get device name
+#device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
+
+#set bitstream_name
+#bitstream_name="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME"
+
+#SERVERADDR="localhost"
+
+#echo ""
+#echo "${bold}Programming bitstream:${normal}"
+#$VIVADO_PATH/$vivado_version/bin/vivado -nolog -nojournal -mode batch -source $CLI_PATH/program/flash_bitstream.tcl -tclargs $SERVERADDR $serial_number $device_name $bitstream_name
+
+#echo ""
+#echo "${bold}$WORKFLOW pci_hot_plug${normal}"
+#echo ""
+#if [ -e "/sys/bus/pci/devices/$device_bdf" ]; then
+#    echo 1 | sudo tee "/sys/bus/pci/devices/${bridge_bdf}/${device_bdf}/remove" > /dev/null
+#    echo 1 | sudo tee "/sys/bus/pci/devices/${bridge_bdf}/rescan" > /dev/null
+#else
+#    echo 1 | sudo tee "/sys/bus/pci/rescan" > /dev/null
+#fi
 
 #enable memory space access
 echo "${bold}PCIe device $device_bdf setup:${normal}"
@@ -457,7 +469,6 @@ sudo $CLI_PATH/program/opennic_setpci $device_bdf "COMMAND=0x02"
 eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME -p RS_FEC_ENABLED=0"
 
 #get system interfaces (after adding the OpenNIC interface)
-#ifconfig | grep '^[a-zA-Z0-9]' | awk -F: '{print $1}' | sort > $DIR/opennic_interfaces_1
 after=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 
 #remove the trailing colon if it exists
@@ -468,18 +479,11 @@ echo $after
 echo ""
 
 #use comm to find the "extra" OpenNIC
-#eno_onic=$(comm -13 $DIR/opennic_interfaces_0 $DIR/opennic_interfaces_1)
 eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
-
-#cleanup files
-#if [ -e "$DIR/ifconfig_interfaces_0" ]; then
-#    rm $DIR/ifconfig_interfaces_0 $DIR/ifconfig_interfaces_1
-#fi
 
 #get system mask
 mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
 netmask=$(ifconfig "$mellanox_name" | grep 'netmask' | awk '{print $4}')
-#cidr=$(mask_to_cidr $netmask)
 
 #get device ip
 IPs=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
