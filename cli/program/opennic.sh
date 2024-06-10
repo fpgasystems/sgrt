@@ -390,9 +390,9 @@ fi
 #get system interfaces (before adding the OpenNIC interface)
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 
-echo ""
-echo $before
-echo ""
+#echo ""
+#echo $before
+#echo ""
 
 #prgramming local server
 echo "Programming ${bold}$hostname...${normal}"
@@ -474,9 +474,9 @@ after=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 #remove the trailing colon if it exists
 after=${after%:}
 
-echo ""
-echo $after
-echo ""
+#echo ""
+#echo $after
+#echo ""
 
 #use comm to find the "extra" OpenNIC
 eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
@@ -490,35 +490,45 @@ IPs=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
 IP0="${IPs%%/*}"
 
 #assign to opennic
-echo "${bold}Setting IP address:${normal}"
-echo ""
-echo "sudo $CLI_PATH/program/opennic_ifconfig $eno_onic $IP0 $netmask"
-echo ""
-sudo $CLI_PATH/program/opennic_ifconfig $eno_onic $IP0 $netmask
-#sudo ip link set $eno_onic down
-#sudo ip link set $eno_onic name $ONIC_INTERFACE_NAME
-#sudo ip link set $ONIC_INTERFACE_NAME up
-echo "$(ifconfig $eno_onic)"
+if [ -n "$eno_onic" ]; then
+    echo "${bold}Setting IP address:${normal}"
+    echo ""
+    echo "sudo $CLI_PATH/program/opennic_ifconfig $eno_onic $IP0 $netmask"
+    echo ""
+    sudo $CLI_PATH/program/opennic_ifconfig $eno_onic $IP0 $netmask
+    #sudo ip link set $eno_onic down
+    #sudo ip link set $eno_onic name $ONIC_INTERFACE_NAME
+    #sudo ip link set $ONIC_INTERFACE_NAME up
+    echo "$(ifconfig $eno_onic)"
+    #check on IP
+    current_ip=$(ifconfig $eno_onic | grep 'inet ' | awk '{print $2}')
+    if [ "$current_ip" != "$IP0" ]; then
+        echo ""
+        echo "The OpenNIC interface was not properly setup."
+    fi
+else
+    echo "The OpenNIC interface was not properly setup."
+fi
 echo ""
 
 #programming remote servers (if applies)
-if [ "$deploy_option" -eq 1 ]; then 
-    #remote servers
-    echo ""
-    echo "${bold}Programming remote servers...${normal}"
-    echo ""
-    #convert string to array
-    IFS=" " read -ra servers_family_list_array <<< "$servers_family_list"
-    for i in "${servers_family_list_array[@]}"; do
-        #remote servers
-        #echo ""
-        #echo "Programming remote server ${bold}$i...${normal}"
-        #echo ""
-        #remotely program bitstream, driver, and run enable_regions/enable_N_REGIONS
-        #ssh -t $USER@$i "cd $APP_BUILD_DIR ; $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME -v $vivado_version ; $CLI_PATH/program/enable_N_REGIONS $DIR"
-        ssh -t $USER@$i "$CLI_PATH/program/$WORKFLOW --device $device_index --project $project_name --remote 0"
-
-    done
-fi
+#if [ "$deploy_option" -eq 1 ]; then 
+#    #remote servers
+#    echo ""
+#    echo "${bold}Programming remote servers...${normal}"
+#    echo ""
+#    #convert string to array
+#    IFS=" " read -ra servers_family_list_array <<< "$servers_family_list"
+#    for i in "${servers_family_list_array[@]}"; do
+#        #remote servers
+#        #echo ""
+#        #echo "Programming remote server ${bold}$i...${normal}"
+#        #echo ""
+#        #remotely program bitstream, driver, and run enable_regions/enable_N_REGIONS
+#        #ssh -t $USER@$i "cd $APP_BUILD_DIR ; $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME -v $vivado_version ; $CLI_PATH/program/enable_N_REGIONS $DIR"
+#        ssh -t $USER@$i "$CLI_PATH/program/$WORKFLOW --device $device_index --project $project_name --remote 0"
+#
+#    done
+#fi
 
 #echo ""

@@ -4,16 +4,31 @@ eno_onic=$1
 IP0=$2
 netmask=$3
 
+#constants
+NUM_ATTEMPTS=3
+
+# Define a function to check if the IP address is set correctly
+check_ip() {
+    current_ip=$(ifconfig $eno_onic | grep 'inet ' | awk '{print $2}')
+    [ "$current_ip" != "$IP0" ]
+}
+
 sudo ifconfig $eno_onic down
 sleep 2
 sudo ifconfig $eno_onic $IP0 netmask $netmask
 sudo ifconfig $eno_onic up
 sleep 2
 
-# Verify if the IP address is set correctly, reapply if necessary
-#current_ip=$(ifconfig $eno_onic | grep 'inet ' | awk '{print $2}')
-#if [ "$current_ip" != "$IP0" ]; then
-    echo "IP address was not set correctly, reapplying..."
-#    sudo ifconfig $eno_onic $IP0 netmask $netmask
-#    sudo ifconfig $eno_onic up
-#fi
+# Loop for NUM_ATTEMPTS
+for ((attempt=1; attempt<=NUM_ATTEMPTS; attempt++)); do
+    if check_ip; then
+        #if [ $attempt -eq 1 ]; then
+        #    echo "IP address was not set correctly, reapplying..."
+        #fi
+        sudo ifconfig $eno_onic $IP0 netmask $netmask
+        sudo ifconfig $eno_onic up
+        sleep 2  # Adding delay to ensure the interface comes up
+    else
+        break  # Exit the loop if the IP address is set correctly
+    fi
+done
