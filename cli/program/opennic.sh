@@ -27,7 +27,7 @@ MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="opennic"
 DRIVER_NAME="onic.ko"
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
-IFCONFIG_INTERFACE_BASE_NAME="eno"
+#IFCONFIG_INTERFACE_BASE_NAME="eno"
 #ONIC_INTERFACE_NAME="enonic"
 
 #combine ACAP and FPGA lists removing duplicates
@@ -401,7 +401,12 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME" ]; then
 fi
 
 #get system interfaces (before adding the OpenNIC interface)
-ifconfig | grep '^[a-zA-Z0-9]' | awk -F: '{print $1}' | sort > $DIR/ifconfig_interfaces_0
+#ifconfig | grep '^[a-zA-Z0-9]' | awk -F: '{print $1}' | sort > $DIR/opennic_interfaces_0
+before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
+
+echo ""
+echo $before
+echo ""
 
 #prgramming local server
 echo "Programming ${bold}$hostname...${normal}"
@@ -452,15 +457,24 @@ sudo $CLI_PATH/program/opennic_setpci $device_bdf "COMMAND=0x02"
 eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME -p RS_FEC_ENABLED=0"
 
 #get system interfaces (after adding the OpenNIC interface)
-ifconfig | grep '^[a-zA-Z0-9]' | awk -F: '{print $1}' | sort > $DIR/ifconfig_interfaces_1
+#ifconfig | grep '^[a-zA-Z0-9]' | awk -F: '{print $1}' | sort > $DIR/opennic_interfaces_1
+after=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
+
+#remove the trailing colon if it exists
+after=${after%:}
+
+echo ""
+echo $after
+echo ""
 
 #use comm to find the "extra" OpenNIC
-eno_onic=$(comm -13 $DIR/ifconfig_interfaces_0 $DIR/ifconfig_interfaces_1)
+#eno_onic=$(comm -13 $DIR/opennic_interfaces_0 $DIR/opennic_interfaces_1)
+eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
 
 #cleanup files
-if [ -e "$DIR/ifconfig_interfaces_0" ]; then
-    rm $DIR/ifconfig_interfaces_0 $DIR/ifconfig_interfaces_1
-fi
+#if [ -e "$DIR/ifconfig_interfaces_0" ]; then
+#    rm $DIR/ifconfig_interfaces_0 $DIR/ifconfig_interfaces_1
+#fi
 
 #get system mask
 mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
