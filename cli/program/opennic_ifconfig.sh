@@ -7,6 +7,7 @@ netmask=$4
 
 #constants
 NUM_ATTEMPTS=3
+UNMANAGED_DEVICES_FILE="/etc/NetworkManager/conf.d/99-unmanaged-devices.conf"
 
 # Define a function to check if the IP address is set correctly
 check_ip() {
@@ -14,6 +15,25 @@ check_ip() {
     [ "$current_ip" != "$IP0" ]
 }
 
+# Convert the MAC address to lowercase
+mac_address=$(echo "$mac_address" | tr '[:upper:]' '[:lower:]')
+
+#update NetworkManager (set interface as unmanaged)
+#device_to_add="unmanaged-devices=mac:$mac_address"
+device_to_add="unmanaged-devices=interface-name:$eno_onic"
+if [ ! -e "$UNMANAGED_DEVICES_FILE" ]; then
+    # Create the file and add the specified content
+    echo -e "[keyfile]\n$device_to_add" > "$UNMANAGED_DEVICES_FILE"
+    #reload NetworkManager
+    sudo systemctl reload NetworkManager
+elif ! grep -qF "$device_to_add" "$UNMANAGED_DEVICES_FILE"; then
+    #if the line does not existe in the file, append it at the end
+    echo "$device_to_add" >> "$UNMANAGED_DEVICES_FILE"
+    #reload NetworkManager
+    sudo systemctl reload NetworkManager
+fi
+
+#set IP with ifconfig (1/2)
 sudo ifconfig $eno_onic down
 sleep 3
 sudo ifconfig $eno_onic hw ether $mac_address
@@ -21,12 +41,9 @@ sudo ifconfig $eno_onic $IP0 netmask $netmask
 sudo ifconfig $eno_onic up
 sleep 3
 
-# Loop for NUM_ATTEMPTS
+#loop for NUM_ATTEMPTS
 for ((attempt=1; attempt<=NUM_ATTEMPTS; attempt++)); do
     if check_ip; then
-        #if [ $attempt -eq 1 ]; then
-        #    echo "IP address was not set correctly, reapplying..."
-        #fi
         sudo ifconfig $eno_onic hw ether $mac_address
         sudo ifconfig $eno_onic $IP0 netmask $netmask
         sudo ifconfig $eno_onic up
