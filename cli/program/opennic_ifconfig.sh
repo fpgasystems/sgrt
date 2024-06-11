@@ -27,6 +27,7 @@ for ((attempt=1; attempt<=NUM_ATTEMPTS; attempt++)); do
         #if [ $attempt -eq 1 ]; then
         #    echo "IP address was not set correctly, reapplying..."
         #fi
+        sudo ifconfig $eno_onic hw ether $mac_address
         sudo ifconfig $eno_onic $IP0 netmask $netmask
         sudo ifconfig $eno_onic up
         sleep 2  # Adding delay to ensure the interface comes up
