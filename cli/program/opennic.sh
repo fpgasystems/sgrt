@@ -485,6 +485,10 @@ eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
 mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
 netmask=$(ifconfig "$mellanox_name" | grep 'netmask' | awk '{print $4}')
 
+#get device mac address
+MACs=$($CLI_PATH/get/get_fpga_device_param $device_index MAC)
+MAC0="${MACs%%/*}"
+
 #get device ip
 IPs=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
 IP0="${IPs%%/*}"
@@ -493,9 +497,9 @@ IP0="${IPs%%/*}"
 if [ -n "$eno_onic" ]; then
     echo "${bold}Setting IP address:${normal}"
     echo ""
-    echo "sudo $CLI_PATH/program/opennic_ifconfig $eno_onic $IP0 $netmask"
+    echo "sudo $CLI_PATH/program/opennic_ifconfig $eno_onic $MAC0 $IP0 $netmask"
     echo ""
-    sudo $CLI_PATH/program/opennic_ifconfig $eno_onic $IP0 $netmask
+    sudo $CLI_PATH/program/opennic_ifconfig $eno_onic $MAC0 $IP0 $netmask
     #sudo ip link set $eno_onic down
     #sudo ip link set $eno_onic name $ONIC_INTERFACE_NAME
     #sudo ip link set $ONIC_INTERFACE_NAME up

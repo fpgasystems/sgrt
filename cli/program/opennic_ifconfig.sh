@@ -1,8 +1,9 @@
 #!/bin/bash
 
 eno_onic=$1
-IP0=$2
-netmask=$3
+mac_address=$2
+IP0=$3
+netmask=$4
 
 #constants
 NUM_ATTEMPTS=3
@@ -14,10 +15,11 @@ check_ip() {
 }
 
 sudo ifconfig $eno_onic down
-sleep 2
+sleep 3
+sudo ifconfig $eno_onic hw ether $mac_address
 sudo ifconfig $eno_onic $IP0 netmask $netmask
 sudo ifconfig $eno_onic up
-sleep 2
+sleep 3
 
 # Loop for NUM_ATTEMPTS
 for ((attempt=1; attempt<=NUM_ATTEMPTS; attempt++)); do
