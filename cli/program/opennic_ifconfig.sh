@@ -34,11 +34,11 @@ fi
 
 #set IP with ifconfig (1/2)
 sudo ifconfig $eno_onic down
-sleep 3
+sleep 2
 sudo ifconfig $eno_onic hw ether $mac_address
 sudo ifconfig $eno_onic $IP0 netmask $netmask
 sudo ifconfig $eno_onic up
-sleep 3
+sleep 2
 
 #loop for NUM_ATTEMPTS
 #for ((attempt=1; attempt<=NUM_ATTEMPTS; attempt++)); do
