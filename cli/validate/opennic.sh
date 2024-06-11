@@ -1,0 +1,235 @@
+#!/bin/bash
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+#constants
+CLI_PATH="$(dirname "$(dirname "$0")")"
+XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS_PATH)
+MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
+WORKFLOW="opennic"
+ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
+ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
+BIT_NAME="open_nic_shell.bit"
+DRIVER_NAME="onic.ko"
+BITSTREAMS_PATH="$CLI_PATH/bitstreams" #$($CLI_PATH/common/get_constant $CLI_PATH BITSTREAMS_PATH)
+NUM_JOBS="16"
+DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
+
+#get hostname
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+
+#check on virtualized servers
+virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
+if [ "$virtualized" = "1" ]; then
+    echo ""
+    echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
+    echo ""
+    exit
+fi
+
+#check on valid Vivado and Vitis version
+#if [ -z "$(echo $XILINX_VIVADO)" ] || [ -z "$(echo $XILINX_VITIS)" ]; then
+#    echo ""
+#    echo "Please, source a valid Vivado and Vitis version for ${bold}$hostname!${normal}"
+#    echo ""
+#    exit 1
+#fi
+
+#check on valid Vivado and Vitis HLS version
+vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+vitis_version=$($CLI_PATH/common/get_xilinx_version vitis)
+if [ -z "$(echo $vivado_version)" ] || [ -z "$(echo $vitis_version)" ] || ([ "$vivado_version" != "$vitis_version" ]); then
+    echo ""
+    echo "Please, source valid Vivado and Vitis HLS versions for ${bold}$hostname!${normal}"
+    echo ""
+    exit 1
+fi
+
+#check for vivado_developers
+member=$($CLI_PATH/common/is_member $USER vivado_developers)
+if [ "$member" = "false" ]; then
+    echo ""
+    echo "Sorry, ${bold}$USER!${normal} You are not granted to use this command."
+    echo ""
+    exit
+fi
+
+#check on DEVICES_LIST
+source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+
+#get number of fpga and acap devices present
+MAX_DEVICES=$(grep -E "fpga|acap" $DEVICES_LIST | wc -l)
+
+#check on multiple devices
+multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+
+#check if workflow exists
+if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
+    echo ""
+    echo "You must create your project first! Please, use sgutil new $WORKFLOW"
+    echo ""
+    exit
+fi
+
+#inputs
+read -a flags <<< "$@"
+
+#check on flags
+commit_found_shell=""
+commit_name_shell=""
+commit_found_driver=""
+commit_name_driver=""
+device_found=""
+device_index=""
+if [ "$flags" = "" ]; then
+    #commit dialog
+    commit_found_shell="1"
+    commit_found_driver="1"
+    commit_name_shell=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
+    commit_name_driver=$(cat $CLI_PATH/constants/ONIC_DRIVER_COMMIT)
+    #header (1/2)
+    echo ""
+    echo "${bold}sgutil validate $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
+    echo ""
+    #device_dialog
+    if [[ $multiple_devices = "0" ]]; then
+        device_found="1"
+        device_index="1"
+    else
+        echo ""
+        echo "${bold}Please, choose your device:${normal}"
+        echo ""
+        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+        device_found=$(echo "$result" | sed -n '1p')
+        device_index=$(echo "$result" | sed -n '2p')
+        #check on VIVADO_DEVICES_MAX
+        vivado_devices=$($CLI_PATH/common/get_vivado_devices $CLI_PATH $MAX_DEVICES $device_index)
+        if [ $vivado_devices -ge $((VIVADO_DEVICES_MAX)) ]; then
+            echo ""
+            echo "Sorry, you have reached the maximum number of devices in ${bold}Vivado workflow!${normal}"
+            echo ""
+            exit
+        fi
+        #check on acap (temporal until Coyote works on Versal)
+        device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+        if [[ $device_type = "acap" ]]; then
+            echo ""
+            echo "Sorry, this command is not available on ${bold}$device_type!${normal}"
+            echo ""
+            exit
+        fi
+    fi
+else
+    #commit_dialog_check
+    result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
+    commit_found=$(echo "$result" | sed -n '1p')
+    commit_name=$(echo "$result" | sed -n '2p')
+    # Check if commit_name contains exactly one comma
+    if ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
+        $CLI_PATH/sgutil new $WORKFLOW -h
+        exit
+    fi
+    #get shell and driver commits (shell_commit,driver_commit)
+    commit_name_shell=${commit_name%%,*}
+    commit_name_driver=${commit_name#*,}
+    #forbidden combinations
+    if [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
+        $CLI_PATH/sgutil new $WORKFLOW -h
+        exit
+    fi
+    #check if commits exist
+    exists_shell=$(gh api repos/Xilinx/open-nic-shell/commits/$commit_name_shell 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    exists_driver=$(gh api repos/Xilinx/open-nic-driver/commits/$commit_name_driver 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    #forbidden combinations
+    if [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
+        echo ""
+        echo "Sorry, the commit IDs (shell and driver) ${bold}$commit_name_shell,$commit_name_driver${normal} do not exist on the repository."
+        echo ""
+        exit
+    fi
+    #header (2/2)
+    echo ""
+    echo "${bold}sgutil new $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
+    echo ""
+fi
+
+#define directories (1)
+DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$project_name"
+
+#check if project exists
+if ! [ -d "$DIR" ]; then
+    echo ""
+    echo "You must create your project first! Please, use sgutil new $WORKFLOW"
+    echo ""
+    exit
+fi
+
+#cleanup bitstreams folder
+if [ -e "$BITSTREAMS_PATH/foo" ]; then
+    sudo $CLI_PATH/common/rm "$BITSTREAMS_PATH/foo"
+fi
+
+#platform_name to FDEV_NAME
+FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
+
+#define directories (2)
+SHELL_BUILD_DIR="$DIR/script"
+DRIVER_DIR="$DIR/open-nic-driver"
+
+#define shells
+library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name_shell/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+commit_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+
+#compile shell
+if [ -e "$library_shell" ]; then
+    cp "$library_shell" "$commit_shell"
+elif ! [ -e "$commit_shell" ]; then
+    #echo ""
+    echo "${bold}OpenNIC shell compilation (commit ID: $commit_name_shell):${normal}"
+    echo ""
+    echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs 16 -impl 1"
+    echo ""
+    cd $SHELL_BUILD_DIR
+    vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
+
+    #copy and send email
+    if [ -f "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" ]; then
+        #copy to project
+        cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$commit_shell"
+        #send email
+        user_email=$USER@ethz.ch
+        echo "Subject: Good news! sgutil build opennic ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
+    fi
+fi
+
+#compile driver
+echo ""
+echo "${bold}Driver compilation:${normal}"
+echo ""
+echo "cd $DRIVER_DIR && make"
+echo ""
+cd $DRIVER_DIR && make
+
+#copy driver
+cp -f $DRIVER_DIR/$DRIVER_NAME $MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$DRIVER_NAME
+
+#remove drivier files (generated while compilation)
+rm $DRIVER_DIR/Module.symvers
+rm -rf $DRIVER_DIR/hwmon
+rm $DRIVER_DIR/modules.order
+rm $DRIVER_DIR/onic.ko 
+rm $DRIVER_DIR/onic.mod
+rm $DRIVER_DIR/onic.mod.c
+rm $DRIVER_DIR/onic.mod.o
+rm $DRIVER_DIR/onic.o
+rm $DRIVER_DIR/onic_common.o
+rm $DRIVER_DIR/onic_ethtool.o
+rm $DRIVER_DIR/onic_hardware.o
+rm $DRIVER_DIR/onic_lib.o
+rm $DRIVER_DIR/onic_main.o
+rm $DRIVER_DIR/onic_netdev.o
+rm $DRIVER_DIR/onic_sysfs.o
+
+echo ""
