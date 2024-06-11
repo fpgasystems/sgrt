@@ -415,7 +415,7 @@ upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 device_bdf="0000:$upstream_port"
 bridge_bdf=""
 bridge_bdf=$(basename $(dirname $(readlink "/sys/bus/pci/devices/$device_bdf")))
-echo "${bold}PCIe bridge $bridge_bdf setup:${normal}"
+echo "${bold}PCIe bridge setup:${normal}"
 echo ""
 echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf COMMAND=0000:0100"
 echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf CAP_EXP+8.w=0000:0004"
@@ -459,7 +459,7 @@ $CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$
 #fi
 
 #enable memory space access
-echo "${bold}PCIe device $device_bdf setup:${normal}"
+echo "${bold}PCIe device setup:${normal}"
 echo ""
 echo "sudo $CLI_PATH/program/opennic_setpci $device_bdf COMMAND=0x02"
 echo ""
