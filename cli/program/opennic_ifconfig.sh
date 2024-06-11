@@ -41,13 +41,13 @@ sudo ifconfig $eno_onic up
 sleep 3
 
 #loop for NUM_ATTEMPTS
-for ((attempt=1; attempt<=NUM_ATTEMPTS; attempt++)); do
-    if check_ip; then
-        sudo ifconfig $eno_onic hw ether $mac_address
-        sudo ifconfig $eno_onic $IP0 netmask $netmask
-        sudo ifconfig $eno_onic up
-        sleep 2  # Adding delay to ensure the interface comes up
-    else
-        break  # Exit the loop if the IP address is set correctly
-    fi
-done
+#for ((attempt=1; attempt<=NUM_ATTEMPTS; attempt++)); do
+#    if check_ip; then
+#        sudo ifconfig $eno_onic hw ether $mac_address
+#        sudo ifconfig $eno_onic $IP0 netmask $netmask
+#        sudo ifconfig $eno_onic up
+#        sleep 2  # Adding delay to ensure the interface comes up
+#    else
+#        break  # Exit the loop if the IP address is set correctly
+#    fi
+#done
