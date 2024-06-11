@@ -138,11 +138,11 @@ if [ "$flags" = "" ]; then
         commit_found="1"
         project_found="1"
         project_name=$(basename "$PWD")
-        echo ""
-        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-        echo ""
-        echo $project_name
-        echo ""
+        #echo ""
+        #echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+        #echo ""
+        #echo $project_name
+        #echo ""
     elif [ "$commit_name" = "$WORKFLOW" ]; then
         commit_found="1"
         commit_name="${PWD##*/}"
@@ -289,11 +289,11 @@ else
     if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
         project_found="1"
         project_name=$(basename "$PWD")
-        echo ""
-        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-        echo ""
-        echo $project_name
-        echo ""
+        #echo ""
+        #echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+        #echo ""
+        #echo $project_name
+        #echo ""
     fi
     #project_dialog (forgotten mandatory 1)
     if [[ $project_found = "0" ]]; then
@@ -368,7 +368,7 @@ DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
 #check if project exists
 if ! [ -d "$DIR" ]; then
     echo ""
-    echo "$DIR is not a valid --project name!"
+    echo "$DIR is not a valid project name!"
     echo ""
     exit
 fi
@@ -381,7 +381,7 @@ FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 BIT_NAME="open_nic_shell.$FDEV_NAME.$vivado_version.bit"
 
 #check on bitstream
-if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME" ]; then
+if ! [ -e "$DIR/$BIT_NAME" ]; then
     echo "You must build your project first! Please, use sgutil build $WORKFLOW"
     echo ""
     exit
@@ -426,7 +426,7 @@ sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "CAP_EXP+8.w=0000:0004"
 echo ""
 
 #program bitstream 
-$CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME -v $vivado_version
+$CLI_PATH/program/vivado --device $device_index -b $DIR/$BIT_NAME -v $vivado_version
 
 #virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
 #if [ "$virtualized" = "0" ]; then
@@ -466,7 +466,7 @@ echo ""
 sudo $CLI_PATH/program/opennic_setpci $device_bdf "COMMAND=0x02"
 
 #insert driver
-eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME -p RS_FEC_ENABLED=0"
+eval "$CLI_PATH/program/driver -m $DIR/$DRIVER_NAME -p RS_FEC_ENABLED=0"
 
 #get system interfaces (after adding the OpenNIC interface)
 after=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')

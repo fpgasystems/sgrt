@@ -82,11 +82,11 @@ if [ "$flags" = "" ]; then
         commit_found="1"
         project_found="1"
         project_name=$(basename "$PWD")
-        echo ""
-        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-        echo ""
-        echo $project_name
-        echo ""
+        #echo ""
+        #echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+        #echo ""
+        #echo $project_name
+        #echo ""
     elif [ "$commit_name" = "$WORKFLOW" ]; then
         commit_found="1"
         commit_name="${PWD##*/}"
@@ -174,11 +174,11 @@ else
     if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
         project_found="1"
         project_name=$(basename "$PWD")
-        echo ""
-        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-        echo ""
-        echo $project_name
-        echo ""
+        #echo ""
+        #echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+        #echo ""
+        #echo $project_name
+        #echo ""
     fi
     #project_dialog (forgotten mandatory 1)
     if [[ $project_found = "0" ]]; then
@@ -204,6 +204,7 @@ else
         multiple_platforms=$(echo "$result" | sed -n '3p')
         if [[ $multiple_platforms = "0" ]]; then
             echo $platform_name
+            echo ""
         fi
     fi
 fi
@@ -234,31 +235,54 @@ DRIVER_DIR="$DIR/open-nic-driver"
 #define shells
 library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 commit_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+project_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+
+#check on shell
+compile="1"
+if [ -e "$project_shell" ]; then
+    echo ""
+    echo "${bold}The shell ${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit already exists. Do you want to remove it and compile it again (y/n)?${normal}"
+    while true; do
+        read -p "" yn
+        case $yn in
+            "y")
+                rm -f $project_shell 
+                #compile="1"
+                ;;
+            "n") 
+                compile="0"
+                break
+                ;;
+        esac
+    done
+    echo ""
+fi
 
 #compile shell
-if [ -e "$library_shell" ]; then
-    cp "$library_shell" "$commit_shell"
-elif ! [ -e "$commit_shell" ]; then
+if [ "$compile" = "1" ]; then 
     #echo ""
     echo "${bold}OpenNIC shell compilation (commit ID: $commit_name):${normal}"
     echo ""
     echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs 16 -impl 1"
-    echo ""
     cd $SHELL_BUILD_DIR
     vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
+    echo ""
 
     #copy and send email
     if [ -f "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" ]; then
         #copy to project
-        cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$commit_shell"
+        cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$project_shell"
+        #print message
+        echo "${bold}${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit is done!${normal}"
+        echo ""
         #send email
         user_email=$USER@ethz.ch
-        echo "Subject: Good news! sgutil build opennic ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
+        echo "Subject: Good news! sgutil build opennic (${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit) is done!" | sendmail $user_email
     fi
 fi
 
 #compile driver
-echo ""
+#echo ""
 echo "${bold}Driver compilation:${normal}"
 echo ""
 echo "cd $DRIVER_DIR && make"
@@ -266,7 +290,7 @@ echo ""
 cd $DRIVER_DIR && make
 
 #copy driver
-cp -f $DRIVER_DIR/$DRIVER_NAME $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME
+cp -f $DRIVER_DIR/$DRIVER_NAME $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/$DRIVER_NAME
 
 #remove drivier files (generated while compilation)
 rm $DRIVER_DIR/Module.symvers
