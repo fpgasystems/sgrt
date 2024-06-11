@@ -124,9 +124,6 @@ else
     commit_name=$(echo "$result" | sed -n '2p')
     # Check if commit_name contains exactly one comma
     if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
-        
-        echo "Number 1"
-
         $CLI_PATH/sgutil validate $WORKFLOW -h
         exit
     fi
@@ -149,9 +146,6 @@ else
         commit_name_shell=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
         commit_name_driver=$(cat $CLI_PATH/constants/ONIC_DRIVER_COMMIT)
     elif [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
-        
-        echo "Number 2"
-
         $CLI_PATH/sgutil validate $WORKFLOW -h
         exit
     elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
@@ -170,17 +164,10 @@ else
     device_index=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-        
-        echo "Number 3"
-        
         $CLI_PATH/sgutil validate $WORKFLOW -h
         exit
     fi
     #check on VIVADO_DEVICES_MAX
-
-    echo "MAX_DEVICES: $MAX_DEVICES"
-    echo "device_index: $device_index"
-
     if [ "$device_found" = "1" ]; then
         vivado_devices=$($CLI_PATH/common/get_vivado_devices $CLI_PATH $MAX_DEVICES $device_index)
         if [ $vivado_devices -ge $((VIVADO_DEVICES_MAX)) ]; then
@@ -228,47 +215,66 @@ else
     fi
 fi
 
-echo "Hasta aquí llegó la nieve"
-exit
-
-#define directories (1)
-DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$project_name"
-
 #cleanup bitstreams folder
 if [ -e "$BITSTREAMS_PATH/foo" ]; then
     sudo $CLI_PATH/common/rm "$BITSTREAMS_PATH/foo"
 fi
 
-#platform_name to FDEV_NAME
-FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
+#get device_name
+device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 
-#define directories (2)
+#platform to FDEV_NAME
+platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
+FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
+
+#set project name
+project_name="validate_opennic.$FDEV_NAME.$vivado_version"
+
+#define directories (1)
+DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$project_name"
 SHELL_BUILD_DIR="$DIR/script"
 DRIVER_DIR="$DIR/open-nic-driver"
 
-#define shells
-library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name_shell/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-commit_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+#check on project folder
+if ! [ -d "$DIR" ]; then
+    #create project folder
+    mkdir -p $DIR
 
-#compile shell
-if [ -e "$library_shell" ]; then
-    cp "$library_shell" "$commit_shell"
-elif ! [ -e "$commit_shell" ]; then
-    #echo ""
-    echo "${bold}OpenNIC shell compilation (commit ID: $commit_name_shell):${normal}"
-    echo ""
-    echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs 16 -impl 1"
-    echo ""
-    cd $SHELL_BUILD_DIR
-    vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
+    #clone repository
+    $CLI_PATH/common/git_clone_opennic $DIR $commit_name_shell $commit_name_driver
 
-    #copy and send email
-    if [ -f "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" ]; then
-        #copy to project
-        cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$commit_shell"
-        #send email
-        user_email=$USER@ethz.ch
-        echo "Subject: Good news! sgutil build opennic ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
+    #change to project directory
+    cd $DIR
+
+    #save commit_name_shell
+    echo "$commit_name_shell" > ONIC_SHELL_COMMIT
+    echo "$commit_name_driver" > ONIC_DRIVER_COMMIT
+
+    #define shells
+    library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+    #commit_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+    project_shell="$DIR/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+
+    #compile shell
+    if [ -e "$library_shell" ]; then
+        cp "$library_shell" "$project_shell"
+    elif ! [ -e "$project_shell" ]; then
+        #echo ""
+        echo "${bold}OpenNIC shell compilation (commit ID: $commit_name_shell):${normal}"
+        echo ""
+        echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1"
+        echo ""
+        cd $SHELL_BUILD_DIR
+        vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
+
+        #copy and send email
+        if [ -f "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" ]; then
+            #copy to project
+            cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$project_shell"
+            #send email
+            #user_email=$USER@ethz.ch
+            #echo "Subject: Good news! sgutil build opennic ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
+        fi
     fi
 fi
 
@@ -281,7 +287,7 @@ echo ""
 cd $DRIVER_DIR && make
 
 #copy driver
-cp -f $DRIVER_DIR/$DRIVER_NAME $MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$DRIVER_NAME
+cp -f $DRIVER_DIR/$DRIVER_NAME $DIR/$DRIVER_NAME
 
 #remove drivier files (generated while compilation)
 rm $DRIVER_DIR/Module.symvers
@@ -299,5 +305,25 @@ rm $DRIVER_DIR/onic_lib.o
 rm $DRIVER_DIR/onic_main.o
 rm $DRIVER_DIR/onic_netdev.o
 rm $DRIVER_DIR/onic_sysfs.o
+
+#get system interfaces (before adding the OpenNIC interface)
+before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
+
+#program opennic
+$CLI_PATH/program/opennic --project $DIR --device $device_index --commit $commit_name_shell,$commit_name_driver --remote 0
+
+#get system interfaces (after adding the OpenNIC interface)
+after=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
+
+#remove the trailing colon if it exists
+after=${after%:}
+
+#use comm to find the "extra" OpenNIC
+eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
+
+#validate
+echo "sudo arping -I $eno_onic $hostname-mellanox-0"
+sudo arping -I $eno_onic $hostname-mellanox-0
+
 
 echo ""
