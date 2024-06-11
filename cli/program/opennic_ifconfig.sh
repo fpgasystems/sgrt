@@ -9,20 +9,19 @@ netmask=$4
 NUM_ATTEMPTS=3
 UNMANAGED_DEVICES_FILE="/etc/NetworkManager/conf.d/99-unmanaged-devices.conf"
 
-# Define a function to check if the IP address is set correctly
+#define a function to check if the IP address is set correctly
 check_ip() {
     current_ip=$(ifconfig $eno_onic | grep 'inet ' | awk '{print $2}')
     [ "$current_ip" != "$IP0" ]
 }
 
-# Convert the MAC address to lowercase
+#convert the MAC address to lowercase
 mac_address=$(echo "$mac_address" | tr '[:upper:]' '[:lower:]')
 
 #update NetworkManager (set interface as unmanaged)
-#device_to_add="unmanaged-devices=mac:$mac_address"
 device_to_add="unmanaged-devices=interface-name:$eno_onic"
 if [ ! -e "$UNMANAGED_DEVICES_FILE" ]; then
-    # Create the file and add the specified content
+    #create the file and add the device
     echo -e "[keyfile]\n$device_to_add" > "$UNMANAGED_DEVICES_FILE"
     #reload NetworkManager
     sudo systemctl reload NetworkManager
