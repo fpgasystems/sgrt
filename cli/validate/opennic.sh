@@ -6,6 +6,7 @@ normal=$(tput sgr0)
 #constants
 CLI_PATH="$(dirname "$(dirname "$0")")"
 XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS_PATH)
+VIVADO_DEVICES_MAX=$(cat $CLI_PATH/constants/VIVADO_DEVICES_MAX)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="opennic"
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
@@ -65,13 +66,8 @@ MAX_DEVICES=$(grep -E "fpga|acap" $DEVICES_LIST | wc -l)
 #check on multiple devices
 multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 
-#check if workflow exists
-if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
-    echo ""
-    echo "You must create your project first! Please, use sgutil new $WORKFLOW"
-    echo ""
-    exit
-fi
+#create directory
+mkdir -p "$MY_PROJECTS_PATH/$WORKFLOW"
 
 #inputs
 read -a flags <<< "$@"
@@ -112,7 +108,7 @@ if [ "$flags" = "" ]; then
             echo ""
             exit
         fi
-        #check on acap (temporal until Coyote works on Versal)
+        #check on acap (temporal until OpenNIC works on Versal)
         device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
         if [[ $device_type = "acap" ]]; then
             echo ""
@@ -127,23 +123,38 @@ else
     commit_found=$(echo "$result" | sed -n '1p')
     commit_name=$(echo "$result" | sed -n '2p')
     # Check if commit_name contains exactly one comma
-    if ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
-        $CLI_PATH/sgutil new $WORKFLOW -h
+    if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
+        
+        echo "Number 1"
+
+        $CLI_PATH/sgutil validate $WORKFLOW -h
         exit
     fi
     #get shell and driver commits (shell_commit,driver_commit)
     commit_name_shell=${commit_name%%,*}
     commit_name_driver=${commit_name#*,}
     #forbidden combinations
-    if [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
-        $CLI_PATH/sgutil new $WORKFLOW -h
-        exit
-    fi
+    #if [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
+    #    
+    #    echo "Number 2"
+    #
+    #    $CLI_PATH/sgutil validate $WORKFLOW -h
+    #    exit
+    #fi
     #check if commits exist
     exists_shell=$(gh api repos/Xilinx/open-nic-shell/commits/$commit_name_shell 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     exists_driver=$(gh api repos/Xilinx/open-nic-driver/commits/$commit_name_driver 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     #forbidden combinations
-    if [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
+    if [ "$commit_found" = "0" ]; then 
+        commit_name_shell=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
+        commit_name_driver=$(cat $CLI_PATH/constants/ONIC_DRIVER_COMMIT)
+    elif [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
+        
+        echo "Number 2"
+
+        $CLI_PATH/sgutil validate $WORKFLOW -h
+        exit
+    elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
         echo ""
         echo "Sorry, the commit IDs (shell and driver) ${bold}$commit_name_shell,$commit_name_driver${normal} do not exist on the repository."
         echo ""
@@ -151,20 +162,77 @@ else
     fi
     #header (2/2)
     echo ""
-    echo "${bold}sgutil new $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
+    echo "${bold}sgutil validate $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
     echo ""
+    #device_dialog_check
+    result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
+    device_found=$(echo "$result" | sed -n '1p')
+    device_index=$(echo "$result" | sed -n '2p')
+    #forbidden combinations
+    if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
+        
+        echo "Number 3"
+        
+        $CLI_PATH/sgutil validate $WORKFLOW -h
+        exit
+    fi
+    #check on VIVADO_DEVICES_MAX
+
+    echo "MAX_DEVICES: $MAX_DEVICES"
+    echo "device_index: $device_index"
+
+    if [ "$device_found" = "1" ]; then
+        vivado_devices=$($CLI_PATH/common/get_vivado_devices $CLI_PATH $MAX_DEVICES $device_index)
+        if [ $vivado_devices -ge $((VIVADO_DEVICES_MAX)) ]; then
+            echo ""
+            echo "Sorry, you have reached the maximum number of devices in ${bold}Vivado workflow!${normal}"
+            echo ""
+            exit
+        fi
+    fi
+    #check on acap (temporal until OpenNIC works on Versal)
+    device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+    if ([ "$device_found" = "1" ] && [[ $device_type = "acap" ]]); then
+        echo ""
+        echo "Sorry, this command is not available on ${bold}$device_type!${normal}"
+        echo ""
+        exit
+    fi
+    #device_dialog (forgotten mandatory 1)
+    if [[ $multiple_devices = "0" ]]; then
+        device_found="1"
+        device_index="1"
+    elif [[ $device_found = "0" ]]; then
+        echo "${bold}Please, choose your device:${normal}"
+        echo ""
+        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+        device_found=$(echo "$result" | sed -n '1p')
+        device_index=$(echo "$result" | sed -n '2p')
+        #check on VIVADO_DEVICES_MAX
+        vivado_devices=$($CLI_PATH/common/get_vivado_devices $CLI_PATH $MAX_DEVICES $device_index)
+        if [ $vivado_devices -ge $((VIVADO_DEVICES_MAX)) ]; then
+            echo ""
+            echo "Sorry, you have reached the maximum number of devices in ${bold}Vivado workflow!${normal}"
+            echo ""
+            exit
+        fi
+        #check on acap (temporal until OpenNIC works on Versal)
+        device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+        if [[ $device_type = "acap" ]]; then
+            echo ""
+            echo "Sorry, this command is not available on ${bold}$device_type!${normal}"
+            echo ""
+            exit
+        fi
+        echo ""
+    fi
 fi
+
+echo "Hasta aquí llegó la nieve"
+exit
 
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$project_name"
-
-#check if project exists
-if ! [ -d "$DIR" ]; then
-    echo ""
-    echo "You must create your project first! Please, use sgutil new $WORKFLOW"
-    echo ""
-    exit
-fi
 
 #cleanup bitstreams folder
 if [ -e "$BITSTREAMS_PATH/foo" ]; then
