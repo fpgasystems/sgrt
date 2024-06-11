@@ -79,7 +79,7 @@ else
     commit_found=$(echo "$result" | sed -n '1p')
     commit_name=$(echo "$result" | sed -n '2p')
     # Check if commit_name contains exactly one comma
-    if ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
+    if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
         $CLI_PATH/sgutil new $WORKFLOW -h
         exit
     fi
@@ -87,15 +87,18 @@ else
     commit_name_shell=${commit_name%%,*}
     commit_name_driver=${commit_name#*,}
     #forbidden combinations
-    if [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
-        $CLI_PATH/sgutil new $WORKFLOW -h
-        exit
-    fi
+    #if [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
+    #    $CLI_PATH/sgutil new $WORKFLOW -h
+    #    exit
+    #fi
     #check if commits exist
     exists_shell=$(gh api repos/Xilinx/open-nic-shell/commits/$commit_name_shell 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     exists_driver=$(gh api repos/Xilinx/open-nic-driver/commits/$commit_name_driver 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     #forbidden combinations
-    if [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
+    if [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
+        $CLI_PATH/sgutil new $WORKFLOW -h
+        exit
+    elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
         echo ""
         echo "Sorry, the commit IDs (shell and driver) ${bold}$commit_name_shell,$commit_name_driver${normal} do not exist on the repository."
         echo ""
