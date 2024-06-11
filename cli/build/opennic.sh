@@ -233,12 +233,12 @@ DRIVER_DIR="$DIR/open-nic-driver"
 
 #define shells
 library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-project_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+commit_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 
 #compile shell
 if [ -e "$library_shell" ]; then
-    cp "$library_shell" "$project_shell"
-elif ! [ -e "$project_shell" ]; then
+    cp "$library_shell" "$commit_shell"
+elif ! [ -e "$commit_shell" ]; then
     #echo ""
     echo "${bold}OpenNIC shell compilation (commit ID: $commit_name):${normal}"
     echo ""
@@ -250,7 +250,7 @@ elif ! [ -e "$project_shell" ]; then
     #copy and send email
     if [ -f "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" ]; then
         #copy to project
-        cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$project_shell"
+        cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$commit_shell"
         #send email
         user_email=$USER@ethz.ch
         echo "Subject: Good news! sgutil build opennic ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email

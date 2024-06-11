@@ -261,13 +261,13 @@ APP_BUILD_DIR="$DIR/examples_sw/apps/$config_sw/build"
 
 #define shells
 library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-project_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+commit_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 
 #compile shell
 if [ -e "$library_shell" ]; then
-    cp "$library_shell" "$project_shell"
-    cp "${library_shell/.bit/.ltx}" "${project_shell/.bit/.ltx}"
-elif ! [ -e "$project_shell" ]; then
+    cp "$library_shell" "$commit_shell"
+    cp "${library_shell/.bit/.ltx}" "${commit_shell/.bit/.ltx}"
+elif ! [ -e "$commit_shell" ]; then
     #echo ""
     echo "${bold}Coyote $config_hw shell compilation (commit ID: $commit_name):${normal}"
     echo ""
@@ -289,8 +289,8 @@ elif ! [ -e "$project_shell" ]; then
     #copy and send email
     if [ -f "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" ]; then
         #copy to project
-        cp "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" "$project_shell"
-        cp "$SHELL_BUILD_DIR/bitstreams/${BIT_NAME%.bit}.ltx" "${project_shell/.bit/.ltx}" #"$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
+        cp "$SHELL_BUILD_DIR/bitstreams/$BIT_NAME" "$commit_shell"
+        cp "$SHELL_BUILD_DIR/bitstreams/${BIT_NAME%.bit}.ltx" "${commit_shell/.bit/.ltx}" #"$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.ltx"
         #send email
         user_email=$USER@ethz.ch
         echo "Subject: Good news! sgutil build coyote ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
