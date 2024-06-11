@@ -8,8 +8,10 @@
     #- alveo-u55c
     #- versal-vck5000
     #- hacc-boxes
-    #- alveo-u55c-01.inf.ethz.ch
-    - hacc-box-01.inf.ethz.ch
+    - alveo-u55c-01.inf.ethz.ch
+    - alveo-u55c-02.inf.ethz.ch
+    #- alveo-u55c-03.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
@@ -526,6 +528,7 @@
         - hip
         - iperf
         - mpi
+        - opennic
         - vitis
         - vitis-ai
 
@@ -642,11 +645,11 @@
         #    src: "../cli/run/opennic.sh"
         #    dest: "{{ cli_path }}/run/opennic"
         #    mode: "0755"
-        #- name: validate
-        #  copy:
-        #    src: "../cli/validate/opennic.sh"
-        #    dest: "{{ cli_path }}/validate/opennic"
-        #    mode: "0755"
+        - name: validate
+          copy:
+            src: "../cli/validate/opennic.sh"
+            dest: "{{ cli_path }}/validate/opennic"
+            mode: "0755"
       when: all or opennic
     #vitis
     - name: copying vitis workflow
