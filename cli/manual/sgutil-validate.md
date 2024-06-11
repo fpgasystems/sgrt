@@ -20,6 +20,7 @@
 <!-- Extra line -->
 
 * [coyote](./sgutil-validate-coyote.md#sgutil-validate-coyote)
+* [opennic](./sgutil-validate-opennic.md#sgutil-validate-opennic)
 * [vitis](./sgutil-validate-vitis.md#sgutil-validate-vitis)
 
 <!-- Extra line -->

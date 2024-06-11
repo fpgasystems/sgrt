@@ -148,7 +148,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "gh keys license mtu --help" -- ${cur})) #write
                     ;;
                 validate)
-                    COMPREPLY=($(compgen -W "coyote docker hip iperf mpi vitis vitis-ai --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote docker hip iperf mpi opennic vitis vitis-ai --help" -- ${cur}))
                     ;;
             esac
             ;;
@@ -319,6 +319,9 @@ _sgutil_completions()
                         mpi) 
                             COMPREPLY=($(compgen -W "--processes --help" -- ${cur}))
                             ;;
+                        opennic)
+                            COMPREPLY=($(compgen -W "--commit --device --help" -- ${cur}))
+                            ;;
                         vitis) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
@@ -376,6 +379,9 @@ _sgutil_completions()
 
             other_flags=( "--bandwidth" "--parallel" "--time" "--udp" )
             command_completion_5 "$cur" "$COMP_CWORD" "validate" "iperf" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--device" )
+            command_completion_5 "$cur" "$COMP_CWORD" "validate" "opennic" "${other_flags[@]}"
             ;;
         7)
             #COMP_WORDS[0]=sgutil

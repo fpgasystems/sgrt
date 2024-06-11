@@ -982,6 +982,7 @@ validate_help() {
     echo "   mpi             - Validates MPI."
     echo ""
     echo "   coyote          - Validates Coyote on the selected FPGA/ACAP."
+    echo "   opennic         - Validates OpenNIC on the selected FPGA/ACAP."
     echo "   vitis           - Validates Vitis workflow on the selected FPGA/ACAP." 
     echo "   vitis-ai        - Validates Vitis AI workflow on the selected FPGA????????/ACAP." 
     echo ""
@@ -1062,6 +1063,21 @@ validate_mpi_help() {
       echo "   -p, --processes - Specify the number of processes to use."
       echo ""
       echo "   -h, --help      - Help to use MPI validation."
+      echo ""
+      exit 1
+}
+
+validate_opennic_help() {
+      echo ""
+      echo "${bold}sgutil validate opennic [flags] [--help]${normal}"
+      echo ""
+      echo "Validates OpenNIC on the selected FPGA."
+      echo ""
+      echo "FLAGS:"
+      echo "   -c, --commit    - GitHub commit IDs for shell and driver (default: ${bold}$ONIC_SHELL_COMMIT,$ONIC_DRIVER_COMMIT${normal})."
+      echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
+      echo ""
+      echo "   -h, --help      - Help to use this command."
       echo ""
       exit 1
 }
@@ -1476,6 +1492,10 @@ case "$command" in
         ;;
       mpi)
         valid_flags="-h --help -p --processes"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      opennic)
+        valid_flags="-c --commit -d --device -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)
