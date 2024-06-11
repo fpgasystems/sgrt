@@ -209,8 +209,15 @@ else
     fi
 fi
 
+#cleanup bitstreams folder
+if [ -e "$BITSTREAMS_PATH/foo" ]; then
+    sudo $CLI_PATH/common/rm "$BITSTREAMS_PATH/foo"
+fi
+
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
+SHELL_BUILD_DIR="$DIR/script"
+DRIVER_DIR="$DIR/open-nic-driver"
 
 #check if project exists
 if ! [ -d "$DIR" ]; then
@@ -228,14 +235,10 @@ fi
 #platform_name to FDEV_NAME
 FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
 
-#define directories (2)
-SHELL_BUILD_DIR="$DIR/script"
-DRIVER_DIR="$DIR/open-nic-driver"
-
 #define shells
 library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-commit_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-project_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+#commit_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+project_shell="$DIR/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 
 #check on shell
 compile="1"
@@ -263,7 +266,7 @@ if [ "$compile" = "1" ]; then
     #echo ""
     echo "${bold}OpenNIC shell compilation (commit ID: $commit_name):${normal}"
     echo ""
-    echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs 16 -impl 1"
+    echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1"
     cd $SHELL_BUILD_DIR
     vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
     echo ""
@@ -290,7 +293,7 @@ echo ""
 cd $DRIVER_DIR && make
 
 #copy driver
-cp -f $DRIVER_DIR/$DRIVER_NAME $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/$DRIVER_NAME
+cp -f $DRIVER_DIR/$DRIVER_NAME $DIR/$DRIVER_NAME
 
 #remove drivier files (generated while compilation)
 rm $DRIVER_DIR/Module.symvers
