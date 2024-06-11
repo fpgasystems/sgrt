@@ -152,7 +152,7 @@ else
     fi
 fi
 
-echo ""
+#echo ""
 echo "${bold}sgutil program vivado${normal}"
 
 #program bitstream
@@ -169,7 +169,7 @@ if [[ $bitstream_found = "1" ]]; then
     #get device name
     device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 
-    echo ""
+    #echo ""
 	echo "${bold}Programming bitstream:${normal}"
     $VIVADO_PATH/$vivado_version/bin/vivado -nolog -nojournal -mode batch -source $CLI_PATH/program/flash_bitstream.tcl -tclargs $SERVERADDR $serial_number $device_name $bitstream_name
 
