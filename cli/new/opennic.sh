@@ -115,7 +115,7 @@ fi
 
 # create project
 #echo ""
-echo "${bold}Please, insert a non-existing name for your Coyote project:${normal}"
+echo "${bold}Please, insert a non-existing name for your OpenNIC project:${normal}"
 echo ""
 while true; do
     read -p "" project_name
@@ -163,15 +163,6 @@ if ! [ -d "$DIR" ]; then
     echo ""
     exit
 fi
-
-# clone repository
-#echo ""
-#echo "${bold}Checking out Coyote:${normal}"
-#echo ""
-#cd ${DIR}
-#git clone https://github.com/fpgasystems/Coyote.git
-#mv Coyote/* .
-#rm -rf Coyote
 
 #clone repository
 $CLI_PATH/common/git_clone_opennic $DIR $commit_name_shell $commit_name_driver
