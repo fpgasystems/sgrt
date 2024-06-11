@@ -279,7 +279,7 @@ if ! [ -d "$DIR" ]; then
 fi
 
 #compile driver
-echo ""
+#echo ""
 echo "${bold}Driver compilation:${normal}"
 echo ""
 echo "cd $DRIVER_DIR && make"
@@ -310,7 +310,7 @@ rm $DRIVER_DIR/onic_sysfs.o
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 
 #program opennic
-$CLI_PATH/program/opennic --project $DIR --device $device_index --commit $commit_name_shell,$commit_name_driver --remote 0
+$CLI_PATH/program/opennic --project $DIR --device $device_index --commit $commit_name_shell --remote 0
 
 #get system interfaces (after adding the OpenNIC interface)
 after=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
@@ -322,8 +322,10 @@ after=${after%:}
 eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
 
 #validate
-echo "sudo arping -I $eno_onic $hostname-mellanox-0"
-sudo arping -I $eno_onic $hostname-mellanox-0
-
+#echo "sudo arping -I $eno_onic $hostname-mellanox-0"
+#sudo arping -I $eno_onic $hostname-mellanox-0
+echo ""
+echo "ping -I $eno_onic -c 5 alveo-u55c-01"
+ping -I $eno_onic -c 5 alveo-u55c-01
 
 echo ""
