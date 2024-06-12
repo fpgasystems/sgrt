@@ -154,6 +154,7 @@ fi
 
 #echo ""
 echo "${bold}sgutil program vivado${normal}"
+echo ""
 
 #program bitstream
 if [[ $bitstream_found = "1" ]]; then
