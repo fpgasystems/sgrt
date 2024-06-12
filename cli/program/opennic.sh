@@ -409,7 +409,7 @@ echo ""
 
 #revert device (it removes driver as well)
 $CLI_PATH/program/revert -d $device_index
-sleep 2
+sleep 1
 
 #get upstream port
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
@@ -469,6 +469,7 @@ echo ""
 echo "sudo $CLI_PATH/program/opennic_setpci $device_bdf COMMAND=0x02"
 echo ""
 sudo $CLI_PATH/program/opennic_setpci $device_bdf "COMMAND=0x02"
+sleep 1
 
 #insert driver
 eval "$CLI_PATH/program/driver -m $DIR/$DRIVER_NAME -p RS_FEC_ENABLED=0"
