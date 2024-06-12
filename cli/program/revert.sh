@@ -138,9 +138,9 @@ bdf="${upstream_port%??}" #i.e., we transform 81:00.0 into 81:00
 
 #check on number of pci functions
 if [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 2 ]]; then
-    echo ""
-    lspci | grep Xilinx | grep $bdf
-    echo ""
+    #echo ""
+    #lspci | grep Xilinx | grep $bdf
+    #echo ""
     exit
 fi
 
