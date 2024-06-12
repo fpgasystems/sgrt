@@ -14,11 +14,11 @@ declare -g multiple_projects="0"
 cd $MY_PROJECTS_WORKFLOW_PATH #/home/$username/my_projects/$workflow/
 projects=( *"/" )
 
-# delete "common" from projects
+# delete "common" (Vitis workflow) or "validate" from projects
 j=0
 for i in "${projects[@]}"
 do
-    if [[ $i =~ "common/" ]]; then
+    if [[ $i =~ "common/" || $i =~ ^validate_.* ]]; then
         echo "" >&/dev/null
     else
         aux[j]=$i
