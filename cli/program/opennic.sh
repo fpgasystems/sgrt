@@ -151,7 +151,7 @@ if [ "$flags" = "" ]; then
         commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     fi
     #header (1/2)
-    echo ""
+    #echo ""
     echo "${bold}sgutil program $WORKFLOW (commit ID: $commit_name)${normal}"
     #project_dialog
     if [[ $project_found = "0" ]]; then
@@ -281,7 +281,7 @@ else
         exit
     fi
     #header (2/2)
-    echo ""
+    #echo ""
     echo "${bold}sgutil program $WORKFLOW (commit ID: $commit_name)${normal}"
     echo ""
     #check on PWD
