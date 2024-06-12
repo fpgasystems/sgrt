@@ -234,7 +234,7 @@ project_name="validate_opennic.$commit_name_driver.$FDEV_NAME.$vivado_version"
 
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$project_name"
-SHELL_BUILD_DIR="$DIR/script"
+SHELL_BUILD_DIR="$DIR/open-nic-shell/script"
 DRIVER_DIR="$DIR/open-nic-driver"
 
 #check on project folder
