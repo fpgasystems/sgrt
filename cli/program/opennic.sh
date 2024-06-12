@@ -399,13 +399,16 @@ echo "Programming ${bold}$hostname...${normal}"
 echo ""
 
 #remove driver if exists
-if lsmod | grep "${DRIVER_NAME%.ko}" >/dev/null; then
-    echo "${bold}Removing driver:${normal}"
-    echo ""
-    echo "sudo rmmod ${DRIVER_NAME%.ko}" 
-    echo ""
-    sudo rmmod ${DRIVER_NAME%.ko} 2>/dev/null # with 2>/dev/null we avoid printing a message if the module does not exist
-fi
+#if lsmod | grep "${DRIVER_NAME%.ko}" >/dev/null; then
+#    echo "${bold}Removing driver:${normal}"
+#    echo ""
+#    echo "sudo rmmod ${DRIVER_NAME%.ko}" 
+#    echo ""
+#    sudo rmmod ${DRIVER_NAME%.ko} 2>/dev/null # with 2>/dev/null we avoid printing a message if the module does not exist
+#fi
+
+#revert device (it removes driver as well)
+$CLI_PATH/program/revert -d $device_index
 
 #get upstream port
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
