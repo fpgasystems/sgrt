@@ -57,7 +57,7 @@ else
 
 fi
 
-echo ""
+#echo ""
 echo "${bold}sgutil program driver${normal}"
 
 #create folder
