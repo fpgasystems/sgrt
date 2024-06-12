@@ -16,6 +16,8 @@ DRIVER_NAME="onic.ko"
 BITSTREAMS_PATH="$CLI_PATH/bitstreams" #$($CLI_PATH/common/get_constant $CLI_PATH BITSTREAMS_PATH)
 NUM_JOBS="16"
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
+FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
+NUM_PINGS="5"
 
 #get hostname
 url="${HOSTNAME}"
@@ -321,11 +323,19 @@ after=${after%:}
 #use comm to find the "extra" OpenNIC
 eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
 
-#validate
+#read FPGA_SERVERS_LIST excluding the current hostname
+IFS=$'\n' read -r -d '' -a remote_servers < <(grep -v "^$hostname$" "$FPGA_SERVERS_LIST" && printf '\0')
+
+#get target remote host
+if [[ ${#remote_servers[@]} -gt 0 ]]; then
+    target_host=${remote_servers[0]}
+    #ping
+    echo ""
+    echo "ping -I $eno_onic -c $NUM_PINGS $target_host"
+    ping -I $eno_onic -c $NUM_PINGS $target_host
+fi
+
 #echo "sudo arping -I $eno_onic $hostname-mellanox-0"
 #sudo arping -I $eno_onic $hostname-mellanox-0
-echo ""
-echo "ping -I $eno_onic -c 5 alveo-u55c-01"
-ping -I $eno_onic -c 5 alveo-u55c-01
 
 echo ""
