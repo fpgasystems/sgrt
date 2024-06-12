@@ -330,8 +330,8 @@ IFS=$'\n' read -r -d '' -a remote_servers < <(grep -v "^$hostname$" "$FPGA_SERVE
 if [[ ${#remote_servers[@]} -gt 0 ]]; then
     target_host=${remote_servers[0]}
     #ping
+    echo "${bold}ping -I $eno_onic -c $NUM_PINGS $target_host${normal}"
     echo ""
-    echo "ping -I $eno_onic -c $NUM_PINGS $target_host"
     ping -I $eno_onic -c $NUM_PINGS $target_host
 fi
 
