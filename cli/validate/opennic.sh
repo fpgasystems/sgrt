@@ -230,7 +230,7 @@ platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 
 #set project name
-project_name="validate_opennic.$FDEV_NAME.$vivado_version"
+project_name="validate_opennic.$commit_name_driver.$FDEV_NAME.$vivado_version"
 
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$project_name"
@@ -307,6 +307,9 @@ rm $DRIVER_DIR/onic_lib.o
 rm $DRIVER_DIR/onic_main.o
 rm $DRIVER_DIR/onic_netdev.o
 rm $DRIVER_DIR/onic_sysfs.o
+
+#revert device
+$CLI_PATH/program/revert -d $device_index
 
 #get system interfaces (before adding the OpenNIC interface)
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
