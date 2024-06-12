@@ -216,7 +216,7 @@ fi
 
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
-SHELL_BUILD_DIR="$DIR/script"
+SHELL_BUILD_DIR="$DIR/open-nic-shell/script"
 DRIVER_DIR="$DIR/open-nic-driver"
 
 #check if project exists
@@ -272,9 +272,9 @@ if [ "$compile" = "1" ]; then
     echo ""
 
     #copy and send email
-    if [ -f "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" ]; then
+    if [ -f "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" ]; then
         #copy to project
-        cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$project_shell"
+        cp "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$project_shell"
         #print message
         echo "${bold}${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit is done!${normal}"
         echo ""

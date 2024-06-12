@@ -37,8 +37,8 @@ git checkout $COMMIT_SHELL > /dev/null 2>&1
 cd $DIR
 
 #move
-mv open-nic-shell/* .
-rm -rf open-nic-shell
+#mv open-nic-shell/* .
+#rm -rf open-nic-shell
 
 echo ""
 echo "${bold}Checking out OpenNIC driver:${normal}"
