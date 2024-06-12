@@ -1352,7 +1352,7 @@ case "$command" in
         ;;
       opennic)
         valid_flags="-c --commit -d --device -p --project --remote -h --help" #--regions
-        echo ""
+        #echo ""
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       reset) 
@@ -1361,7 +1361,7 @@ case "$command" in
         ;;
       revert)
         valid_flags="-d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
-        echo ""
+        #echo ""
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vivado)

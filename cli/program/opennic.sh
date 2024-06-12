@@ -151,7 +151,7 @@ if [ "$flags" = "" ]; then
         commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     fi
     #header (1/2)
-    #echo ""
+    echo ""
     echo "${bold}sgutil program $WORKFLOW (commit ID: $commit_name)${normal}"
     #project_dialog
     if [[ $project_found = "0" ]]; then
@@ -281,7 +281,7 @@ else
         exit
     fi
     #header (2/2)
-    #echo ""
+    echo ""
     echo "${bold}sgutil program $WORKFLOW (commit ID: $commit_name)${normal}"
     echo ""
     #check on PWD
@@ -409,6 +409,7 @@ echo ""
 
 #revert device (it removes driver as well)
 $CLI_PATH/program/revert -d $device_index
+sleep 2
 
 #get upstream port
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
@@ -423,8 +424,10 @@ echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf COMMAND=0000:0100"
 echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf CAP_EXP+8.w=0000:0004"
 # COMMAND register: clear SERR# enable (sudo setpci -s $bridge_bdf COMMAND=0000:0100)
 sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "COMMAND=0000:0100"
+sleep 1
 # DevCtl register of CAP_EXP: clear ERR_FATAL (Fatal Error Reporting Enable - sudo setpci -s $bridge_bdf CAP_EXP+8.w=0000:0004)
 sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "CAP_EXP+8.w=0000:0004"
+sleep 1
 echo ""
 
 #program bitstream 

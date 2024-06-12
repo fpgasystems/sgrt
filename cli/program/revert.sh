@@ -144,7 +144,7 @@ if [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 2 ]]; then
     exit
 fi
 
-#echo ""
+echo ""
 echo "${bold}sgutil program revert${normal}"
 
 #get loaded drivers
