@@ -8,9 +8,10 @@
     #- alveo-u55c
     #- versal-vck5000
     #- hacc-boxes
-    - alveo-u55c-01.inf.ethz.ch
-    - alveo-u55c-02.inf.ethz.ch
-    #- alveo-u55c-03.inf.ethz.ch
+    #- alveo-u55c-01.inf.ethz.ch
+    #- alveo-u55c-02.inf.ethz.ch
+    #- alveo-u55c-07.inf.ethz.ch
+    - alveo-u55c-03.inf.ethz.ch
     #- hacc-box-01.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
   become: true
@@ -43,7 +44,7 @@
     reboot: false
     run: false
     set: false
-    sgutil: true 
+    sgutil: false 
     validate: false
     #workflows
     coyote: false
@@ -432,7 +433,6 @@
         - driver
         - fpga_chmod
         - opennic
-        - opennic_setpci
         - opennic_ifconfig
         - pci_hot_plug
         - reset
