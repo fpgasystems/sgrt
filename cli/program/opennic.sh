@@ -401,32 +401,32 @@ before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
 #specific OpenNIC commands (https://github.com/Xilinx/open-nic-shell/blob/main/script/setup_device.sh)
-device_bdf="0000:$upstream_port"
-bridge_bdf=""
-bridge_bdf=$(basename $(dirname $(readlink "/sys/bus/pci/devices/$device_bdf")))
-if [ -e "/sys/bus/pci/devices/$device_bdf" ]; then
-    echo "${bold}PCIe bridge setup:${normal}"
-    echo ""
-    # COMMAND register: clear SERR# enable (sudo setpci -s $bridge_bdf COMMAND=0000:0100)
-    echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf COMMAND=0000:0100"
-    sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "COMMAND=0000:0100"
-    sleep 1
-    # DevCtl register of CAP_EXP: clear ERR_FATAL (Fatal Error Reporting Enable - sudo setpci -s $bridge_bdf CAP_EXP+8.w=0000:0004)
-    echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf CAP_EXP+8.w=0000:0004"
-    sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "CAP_EXP+8.w=0000:0004"
-    sleep 1
-    echo ""
-fi
+#device_bdf="0000:$upstream_port"
+#bridge_bdf=""
+#bridge_bdf=$(basename $(dirname $(readlink "/sys/bus/pci/devices/$device_bdf")))
+#if [ -e "/sys/bus/pci/devices/$device_bdf" ]; then
+#    echo "${bold}PCIe bridge setup:${normal}"
+#    echo ""
+#    # COMMAND register: clear SERR# enable (sudo setpci -s $bridge_bdf COMMAND=0000:0100)
+#    echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf COMMAND=0000:0100"
+#    sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "COMMAND=0000:0100"
+#    sleep 1
+#    # DevCtl register of CAP_EXP: clear ERR_FATAL (Fatal Error Reporting Enable - sudo setpci -s $bridge_bdf CAP_EXP+8.w=0000:0004)
+#    echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf CAP_EXP+8.w=0000:0004"
+#    sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "CAP_EXP+8.w=0000:0004"
+#    sleep 1
+#    echo ""
+#fi
 
 #program bitstream 
 $CLI_PATH/program/vivado --device $device_index -b $DIR/$BIT_NAME -v $vivado_version
 
 #enable memory space access
-echo "${bold}PCIe device setup:${normal}"
-echo ""
-echo "sudo $CLI_PATH/program/opennic_setpci $device_bdf COMMAND=0x02"
-sudo $CLI_PATH/program/opennic_setpci $device_bdf "COMMAND=0x02"
-sleep 1
+#echo "${bold}PCIe device setup:${normal}"
+#echo ""
+#echo "sudo $CLI_PATH/program/opennic_setpci $device_bdf COMMAND=0x02"
+#sudo $CLI_PATH/program/opennic_setpci $device_bdf "COMMAND=0x02"
+#sleep 1
 
 #insert driver
 eval "$CLI_PATH/program/driver -m $DIR/$DRIVER_NAME -p RS_FEC_ENABLED=0"
