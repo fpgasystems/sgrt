@@ -387,26 +387,12 @@ if ! [ -e "$DIR/$BIT_NAME" ]; then
     exit
 fi
 
-#echo ""
-#echo $before
-#echo ""
-
 #prgramming local server
 #echo "Programming ${bold}$hostname...${normal}"
 #echo ""
 
-#remove driver if exists
-#if lsmod | grep "${DRIVER_NAME%.ko}" >/dev/null; then
-#    echo "${bold}Removing driver:${normal}"
-#    echo ""
-#    echo "sudo rmmod ${DRIVER_NAME%.ko}" 
-#    echo ""
-#    sudo rmmod ${DRIVER_NAME%.ko} 2>/dev/null # with 2>/dev/null we avoid printing a message if the module does not exist
-#fi
-
 #revert device (it removes driver as well)
 eval "$CLI_PATH/program/revert -d $device_index"
-#sleep 1
 
 #get system interfaces (before adding the OpenNIC interface)
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
@@ -435,36 +421,6 @@ fi
 #program bitstream 
 $CLI_PATH/program/vivado --device $device_index -b $DIR/$BIT_NAME -v $vivado_version
 
-#virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
-#if [ "$virtualized" = "0" ]; then
-#    $CLI_PATH/program/revert -d $device_index
-#fi
-
-#get serial number
-#serial_number=$($CLI_PATH/get/get_fpga_device_param $device_index serial_number)
-
-#get device name
-#device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
-
-#set bitstream_name
-#bitstream_name="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME"
-
-#SERVERADDR="localhost"
-
-#echo ""
-#echo "${bold}Programming bitstream:${normal}"
-#$VIVADO_PATH/$vivado_version/bin/vivado -nolog -nojournal -mode batch -source $CLI_PATH/program/flash_bitstream.tcl -tclargs $SERVERADDR $serial_number $device_name $bitstream_name
-
-#echo ""
-#echo "${bold}$WORKFLOW pci_hot_plug${normal}"
-#echo ""
-#if [ -e "/sys/bus/pci/devices/$device_bdf" ]; then
-#    echo 1 | sudo tee "/sys/bus/pci/devices/${bridge_bdf}/${device_bdf}/remove" > /dev/null
-#    echo 1 | sudo tee "/sys/bus/pci/devices/${bridge_bdf}/rescan" > /dev/null
-#else
-#    echo 1 | sudo tee "/sys/bus/pci/rescan" > /dev/null
-#fi
-
 #enable memory space access
 echo "${bold}PCIe device setup:${normal}"
 echo ""
@@ -481,16 +437,8 @@ after=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 #remove the trailing colon if it exists
 after=${after%:}
 
-#echo ""
-#echo $after
-#echo ""
-
 #use comm to find the "extra" OpenNIC
 eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
-
-echo "Before: $before"
-echo "After: $after"
-ifconfig
 
 #get system mask
 mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
@@ -504,9 +452,6 @@ MAC0="${MACs%%/*}"
 IPs=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
 IP0="${IPs%%/*}"
 
-echo "I am here"
-echo $eno_onic
-
 #assign to opennic
 if [ -n "$eno_onic" ]; then
     echo "${bold}Setting IP address:${normal}"
@@ -514,23 +459,14 @@ if [ -n "$eno_onic" ]; then
     echo "sudo $CLI_PATH/program/opennic_ifconfig $eno_onic $MAC0 $IP0 $netmask"
     echo ""
     sudo $CLI_PATH/program/opennic_ifconfig $eno_onic $MAC0 $IP0 $netmask
-    #sudo ip link set $eno_onic down
-    #sudo ip link set $eno_onic name $ONIC_INTERFACE_NAME
-    #sudo ip link set $ONIC_INTERFACE_NAME up
     echo "$(ifconfig $eno_onic)"
     #check on IP
     current_ip=$(ifconfig $eno_onic | grep 'inet ' | awk '{print $2}')
     if [ "$current_ip" != "$IP0" ]; then
-
-        echo "Error (1)"
-
         echo ""
         echo "The OpenNIC interface was not properly setup."
     fi
 else
-
-    echo "Error (2)"
-
     echo "The OpenNIC interface was not properly setup."
 fi
 echo ""
