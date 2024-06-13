@@ -3,4 +3,4 @@
 upstream_port=$1
 command=$2
 
-sudo setpci -s $upstream_port $command
+eval "setpci -s $upstream_port $command"
