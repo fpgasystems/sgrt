@@ -392,7 +392,7 @@ fi
 #echo ""
 
 #revert device (it removes driver as well)
-eval "$CLI_PATH/program/revert -d $device_index"
+$CLI_PATH/program/revert -d $device_index
 
 #get system interfaces (before adding the OpenNIC interface)
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
