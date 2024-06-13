@@ -6,7 +6,7 @@ IP0=$3
 netmask=$4
 
 #constants
-NUM_ATTEMPTS=3
+#NUM_ATTEMPTS=3
 UNMANAGED_DEVICES_FILE="/etc/NetworkManager/conf.d/99-unmanaged-devices.conf"
 
 #define a function to check if the IP address is set correctly
@@ -34,20 +34,22 @@ fi
 
 #set IP and MAC with ifconfig
 sudo ifconfig $eno_onic down
-sleep 2
-#sudo ifconfig $eno_onic hw ether $mac_address
-#sudo ifconfig $eno_onic $IP0 netmask $netmask
-#sudo ifconfig $eno_onic up
-#sleep 2
+sleep 1
+sudo ifconfig $eno_onic hw ether $mac_address
+sleep 1
+sudo ifconfig $eno_onic $IP0 netmask $netmask
+sleep 1
+sudo ifconfig $eno_onic up
+sleep 1
 
 #loop for NUM_ATTEMPTS
-for ((attempt=1; attempt<=NUM_ATTEMPTS; attempt++)); do
-    if check_ip; then
-        sudo ifconfig $eno_onic hw ether $mac_address
-        sudo ifconfig $eno_onic $IP0 netmask $netmask
-        sudo ifconfig $eno_onic up
-        sleep 2  # Adding delay to ensure the interface comes up
-    else
-        break  # Exit the loop if the IP address is set correctly
-    fi
-done
+#for ((attempt=1; attempt<=NUM_ATTEMPTS; attempt++)); do
+#    if check_ip; then
+#        sudo ifconfig $eno_onic hw ether $mac_address
+#        sudo ifconfig $eno_onic $IP0 netmask $netmask
+#        sudo ifconfig $eno_onic up
+#        sleep 2  # Adding delay to ensure the interface comes up
+#    else
+#        break  # Exit the loop if the IP address is set correctly
+#    fi
+#done
