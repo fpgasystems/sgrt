@@ -152,7 +152,7 @@ else
     fi
 fi
 
-#echo ""
+echo ""
 echo "${bold}sgutil program vivado${normal}"
 echo ""
 
@@ -160,9 +160,9 @@ echo ""
 if [[ $bitstream_found = "1" ]]; then
     #revert to xrt first if FPGA is already in baremetal (it is proven to be needed on non-virtualized environments)
     virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
-    if [ "$virtualized" = "0" ]; then
-        $CLI_PATH/program/revert -d $device_index
-    fi
+    #if [ "$virtualized" = "0" ]; then
+    #    $CLI_PATH/program/revert -d $device_index
+    #fi
 
     #get serial number
     serial_number=$($CLI_PATH/get/get_fpga_device_param $device_index serial_number)
