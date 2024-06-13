@@ -389,7 +389,7 @@ if ! [ -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$BIT_NAME" ]; then
 fi
 
 #prgramming local server
-echo "Programming ${bold}$hostname...${normal}"
+#echo "Programming ${bold}$hostname...${normal}"
 
 #remove driver if exists
 if lsmod | grep "${DRIVER_NAME%.ko}" >/dev/null; then

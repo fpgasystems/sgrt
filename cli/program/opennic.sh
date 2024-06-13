@@ -395,8 +395,8 @@ before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 #echo ""
 
 #prgramming local server
-echo "Programming ${bold}$hostname...${normal}"
-echo ""
+#echo "Programming ${bold}$hostname...${normal}"
+#echo ""
 
 #remove driver if exists
 #if lsmod | grep "${DRIVER_NAME%.ko}" >/dev/null; then
