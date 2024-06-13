@@ -421,12 +421,12 @@ bridge_bdf=$(basename $(dirname $(readlink "/sys/bus/pci/devices/$device_bdf")))
 if [ -e "/sys/bus/pci/devices/$device_bdf" ]; then
     echo "${bold}PCIe bridge setup:${normal}"
     echo ""
-    echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf COMMAND=0000:0100"
-    echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf CAP_EXP+8.w=0000:0004"
     # COMMAND register: clear SERR# enable (sudo setpci -s $bridge_bdf COMMAND=0000:0100)
+    echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf COMMAND=0000:0100"
     sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "COMMAND=0000:0100"
     sleep 1
     # DevCtl register of CAP_EXP: clear ERR_FATAL (Fatal Error Reporting Enable - sudo setpci -s $bridge_bdf CAP_EXP+8.w=0000:0004)
+    echo "sudo $CLI_PATH/program/opennic_setpci $bridge_bdf CAP_EXP+8.w=0000:0004"
     sudo $CLI_PATH/program/opennic_setpci $bridge_bdf "CAP_EXP+8.w=0000:0004"
     sleep 1
     echo ""
@@ -469,7 +469,6 @@ $CLI_PATH/program/vivado --device $device_index -b $DIR/$BIT_NAME -v $vivado_ver
 echo "${bold}PCIe device setup:${normal}"
 echo ""
 echo "sudo $CLI_PATH/program/opennic_setpci $device_bdf COMMAND=0x02"
-echo ""
 sudo $CLI_PATH/program/opennic_setpci $device_bdf "COMMAND=0x02"
 sleep 1
 
