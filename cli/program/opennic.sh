@@ -409,7 +409,7 @@ echo ""
 
 #revert device (it removes driver as well)
 $CLI_PATH/program/revert -d $device_index
-sleep 1
+#sleep 1
 
 #get upstream port
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)

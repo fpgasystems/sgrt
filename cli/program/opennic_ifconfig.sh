@@ -32,22 +32,22 @@ elif ! grep -qF "$device_to_add" "$UNMANAGED_DEVICES_FILE"; then
     sudo systemctl reload NetworkManager
 fi
 
-#set IP with ifconfig (1/2)
+#set IP and MAC with ifconfig
 sudo ifconfig $eno_onic down
 sleep 2
-sudo ifconfig $eno_onic hw ether $mac_address
-sudo ifconfig $eno_onic $IP0 netmask $netmask
-sudo ifconfig $eno_onic up
-sleep 2
+#sudo ifconfig $eno_onic hw ether $mac_address
+#sudo ifconfig $eno_onic $IP0 netmask $netmask
+#sudo ifconfig $eno_onic up
+#sleep 2
 
 #loop for NUM_ATTEMPTS
-#for ((attempt=1; attempt<=NUM_ATTEMPTS; attempt++)); do
-#    if check_ip; then
-#        sudo ifconfig $eno_onic hw ether $mac_address
-#        sudo ifconfig $eno_onic $IP0 netmask $netmask
-#        sudo ifconfig $eno_onic up
-#        sleep 2  # Adding delay to ensure the interface comes up
-#    else
-#        break  # Exit the loop if the IP address is set correctly
-#    fi
-#done
+for ((attempt=1; attempt<=NUM_ATTEMPTS; attempt++)); do
+    if check_ip; then
+        sudo ifconfig $eno_onic hw ether $mac_address
+        sudo ifconfig $eno_onic $IP0 netmask $netmask
+        sudo ifconfig $eno_onic up
+        sleep 2  # Adding delay to ensure the interface comes up
+    else
+        break  # Exit the loop if the IP address is set correctly
+    fi
+done
