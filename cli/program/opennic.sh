@@ -387,9 +387,6 @@ if ! [ -e "$DIR/$BIT_NAME" ]; then
     exit
 fi
 
-#get system interfaces (before adding the OpenNIC interface)
-before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
-
 #echo ""
 #echo $before
 #echo ""
@@ -408,8 +405,11 @@ before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 #fi
 
 #revert device (it removes driver as well)
-$CLI_PATH/program/revert -d $device_index
+eval "$CLI_PATH/program/revert -d $device_index"
 #sleep 1
+
+#get system interfaces (before adding the OpenNIC interface)
+before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 
 #get upstream port
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
@@ -488,6 +488,10 @@ after=${after%:}
 #use comm to find the "extra" OpenNIC
 eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
 
+echo "Before: $before"
+echo "After: $after"
+ifconfig
+
 #get system mask
 mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
 netmask=$(ifconfig "$mellanox_name" | grep 'netmask' | awk '{print $4}')
@@ -499,6 +503,9 @@ MAC0="${MACs%%/*}"
 #get device ip
 IPs=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
 IP0="${IPs%%/*}"
+
+echo "I am here"
+echo $eno_onic
 
 #assign to opennic
 if [ -n "$eno_onic" ]; then
@@ -514,10 +521,16 @@ if [ -n "$eno_onic" ]; then
     #check on IP
     current_ip=$(ifconfig $eno_onic | grep 'inet ' | awk '{print $2}')
     if [ "$current_ip" != "$IP0" ]; then
+
+        echo "Error (1)"
+
         echo ""
         echo "The OpenNIC interface was not properly setup."
     fi
 else
+
+    echo "Error (2)"
+
     echo "The OpenNIC interface was not properly setup."
 fi
 echo ""
