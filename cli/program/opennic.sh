@@ -203,7 +203,7 @@ if [ "$flags" = "" ]; then
     num_remote_servers=$(echo "$servers_family_list" | wc -w)
     echo ""
     echo "Done!"
-    echo ""
+    #echo ""
     #deployment_dialog
     deploy_option="0"
     if [ "$num_remote_servers" -ge 1 ]; then
@@ -346,7 +346,7 @@ else
     num_remote_servers=$(echo "$servers_family_list" | wc -w)
     echo ""
     echo "Done!"
-    echo ""
+    #echo ""
     if [ "$deploy_option_found" = "0" ]; then
         
         #deployment_dialog
