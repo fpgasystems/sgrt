@@ -311,6 +311,9 @@ rm $DRIVER_DIR/onic_main.o
 rm $DRIVER_DIR/onic_netdev.o
 rm $DRIVER_DIR/onic_sysfs.o
 
+#get workflow (print echo)
+workflow=$($CLI_PATH/get/workflow $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
+
 #revert device
 $CLI_PATH/program/revert -d $device_index
 
@@ -318,6 +321,9 @@ $CLI_PATH/program/revert -d $device_index
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 
 #program opennic
+if [[ $workflow = "vitis" ]]; then
+    echo ""
+fi
 $CLI_PATH/program/opennic --project $DIR --device $device_index --commit $commit_name_shell --remote 0
 
 #get system interfaces (after adding the OpenNIC interface)
