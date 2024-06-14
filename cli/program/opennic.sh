@@ -391,6 +391,9 @@ fi
 #echo "Programming ${bold}$hostname...${normal}"
 #echo ""
 
+#get workflow (print echo)
+workflow=$($CLI_PATH/get/workflow $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
+
 #revert device (it removes driver as well)
 $CLI_PATH/program/revert -d $device_index
 
@@ -401,6 +404,9 @@ before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
 #program bitstream 
+if [[ $workflow = "vitis" ]]; then
+    echo ""
+fi
 $CLI_PATH/program/vivado --device $device_index -b $DIR/$BIT_NAME -v $vivado_version
 
 #insert driver
