@@ -8,10 +8,10 @@
     #- alveo-u55c
     #- versal-vck5000
     #- hacc-boxes
-    #- alveo-u55c-01.inf.ethz.ch
+    - alveo-u55c-01.inf.ethz.ch
     #- alveo-u55c-02.inf.ethz.ch
     #- alveo-u55c-07.inf.ethz.ch
-    - alveo-u55c-03.inf.ethz.ch
+    #- alveo-u55c-03.inf.ethz.ch
     #- hacc-box-01.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
   become: true
@@ -35,7 +35,7 @@
     templates: false #true-----------------------------------
     #scripts
     build: false
-    common: false
+    common: true
     enable: false
     examine: false
     get: false
@@ -44,7 +44,7 @@
     reboot: false
     run: false
     set: false
-    sgutil: false 
+    sgutil: true 
     validate: false
     #workflows
     coyote: false
@@ -711,3 +711,4 @@
         - enable_N_REGIONS
         - enable_regions
         - get_bus_device
+        - opennic_setpci
