@@ -243,7 +243,7 @@ project_shell="$DIR/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 #check on shell
 compile="1"
 if [ -e "$project_shell" ]; then
-    echo ""
+    #echo ""
     echo "${bold}The shell ${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit already exists. Do you want to remove it and compile it again (y/n)?${normal}"
     while true; do
         read -p "" yn
