@@ -1348,11 +1348,12 @@ case "$command" in
         ;;
       driver)
         valid_flags="-m --module -p --params -h --help"
+        echo ""
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
         valid_flags="-c --commit -d --device -p --project --remote -h --help" #--regions
-        #echo ""
+        echo ""
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       reset) 
@@ -1366,6 +1367,7 @@ case "$command" in
         ;;
       vivado)
         valid_flags="-b --bitstream -d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion (Javier: 04.12.2023 --driver)  
+        echo ""
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)

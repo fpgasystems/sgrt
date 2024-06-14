@@ -152,7 +152,7 @@ else
     fi
 fi
 
-echo ""
+#echo ""
 echo "${bold}sgutil program vivado${normal}"
 echo ""
 
@@ -194,8 +194,18 @@ if [[ $bitstream_found = "1" ]]; then
         sudo $CLI_PATH/program/pci_hot_plug 1 $upstream_port $root_port $LinkCtl
         #print
         bdf="${upstream_port%??}" #i.e., we transform 81:00.0 into 81:00
-        lspci | grep Xilinx | grep $bdf
-        echo ""
+        #lspci | grep Xilinx | grep $bdf
+        #echo ""
+
+        #for i in "${!BASH_SOURCE[@]}"; do
+        #    echo "BASH_SOURCE[$i]: ${BASH_SOURCE[$i]}"
+        #done
+
+        #print echo if called by sgutil
+        #if [[ "${BASH_SOURCE[*]}" == *"sgutil.sh"* ]]; then
+        #    echo "hey"
+        #    echo ""
+        #fi
     fi
 fi
 
