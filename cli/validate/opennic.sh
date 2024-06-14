@@ -74,6 +74,9 @@ mkdir -p "$MY_PROJECTS_PATH/$WORKFLOW"
 #inputs
 read -a flags <<< "$@"
 
+#initial echo
+echo ""
+
 #check on flags
 commit_found_shell=""
 commit_name_shell=""
@@ -88,7 +91,7 @@ if [ "$flags" = "" ]; then
     commit_name_shell=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     commit_name_driver=$(cat $CLI_PATH/constants/ONIC_DRIVER_COMMIT)
     #header (1/2)
-    echo ""
+    #echo ""
     echo "${bold}sgutil validate $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
     echo ""
     #device_dialog
@@ -96,7 +99,7 @@ if [ "$flags" = "" ]; then
         device_found="1"
         device_index="1"
     else
-        echo ""
+        #echo ""
         echo "${bold}Please, choose your device:${normal}"
         echo ""
         result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
@@ -105,7 +108,7 @@ if [ "$flags" = "" ]; then
         #check on VIVADO_DEVICES_MAX
         vivado_devices=$($CLI_PATH/common/get_vivado_devices $CLI_PATH $MAX_DEVICES $device_index)
         if [ $vivado_devices -ge $((VIVADO_DEVICES_MAX)) ]; then
-            echo ""
+            #echo ""
             echo "Sorry, you have reached the maximum number of devices in ${bold}Vivado workflow!${normal}"
             echo ""
             exit
@@ -113,7 +116,7 @@ if [ "$flags" = "" ]; then
         #check on acap (temporal until OpenNIC works on Versal)
         device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
         if [[ $device_type = "acap" ]]; then
-            echo ""
+            #echo ""
             echo "Sorry, this command is not available on ${bold}$device_type!${normal}"
             echo ""
             exit
@@ -157,7 +160,7 @@ else
         exit
     fi
     #header (2/2)
-    echo ""
+    #echo ""
     echo "${bold}sgutil validate $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
     echo ""
     #device_dialog_check
@@ -173,7 +176,7 @@ else
     if [ "$device_found" = "1" ]; then
         vivado_devices=$($CLI_PATH/common/get_vivado_devices $CLI_PATH $MAX_DEVICES $device_index)
         if [ $vivado_devices -ge $((VIVADO_DEVICES_MAX)) ]; then
-            echo ""
+            #echo ""
             echo "Sorry, you have reached the maximum number of devices in ${bold}Vivado workflow!${normal}"
             echo ""
             exit
@@ -182,7 +185,7 @@ else
     #check on acap (temporal until OpenNIC works on Versal)
     device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
     if ([ "$device_found" = "1" ] && [[ $device_type = "acap" ]]); then
-        echo ""
+        #echo ""
         echo "Sorry, this command is not available on ${bold}$device_type!${normal}"
         echo ""
         exit
@@ -200,7 +203,7 @@ else
         #check on VIVADO_DEVICES_MAX
         vivado_devices=$($CLI_PATH/common/get_vivado_devices $CLI_PATH $MAX_DEVICES $device_index)
         if [ $vivado_devices -ge $((VIVADO_DEVICES_MAX)) ]; then
-            echo ""
+            #echo ""
             echo "Sorry, you have reached the maximum number of devices in ${bold}Vivado workflow!${normal}"
             echo ""
             exit
@@ -208,12 +211,12 @@ else
         #check on acap (temporal until OpenNIC works on Versal)
         device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
         if [[ $device_type = "acap" ]]; then
-            echo ""
+            #echo ""
             echo "Sorry, this command is not available on ${bold}$device_type!${normal}"
             echo ""
             exit
         fi
-        echo ""
+        #echo ""
     fi
 fi
 
