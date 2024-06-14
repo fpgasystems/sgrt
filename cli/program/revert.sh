@@ -211,5 +211,5 @@ if [[ $(lsmod | grep xclmgmt | wc -l) -gt 0 ]]; then
     sleep 1
 fi
 echo ""
-lspci | grep Xilinx | grep $bdf
-echo ""
+#lspci | grep Xilinx | grep $bdf
+#echo ""
