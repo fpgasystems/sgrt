@@ -26,7 +26,7 @@ hostname="${url%%.*}"
 #check on virtualized servers
 virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
 if [ "$virtualized" = "1" ]; then
-    echo ""
+    #echo ""
     echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
     echo ""
     exit
@@ -44,7 +44,7 @@ fi
 vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
 vitis_version=$($CLI_PATH/common/get_xilinx_version vitis)
 if [ -z "$(echo $vivado_version)" ] || [ -z "$(echo $vitis_version)" ] || ([ "$vivado_version" != "$vitis_version" ]); then
-    echo ""
+    #echo ""
     echo "Please, source valid Vivado and Vitis HLS versions for ${bold}$hostname!${normal}"
     echo ""
     exit 1
@@ -53,7 +53,7 @@ fi
 #check for vivado_developers
 member=$($CLI_PATH/common/is_member $USER vivado_developers)
 if [ "$member" = "false" ]; then
-    echo ""
+    #echo ""
     echo "Sorry, ${bold}$USER!${normal} You are not granted to use this command."
     echo ""
     exit
@@ -75,7 +75,7 @@ mkdir -p "$MY_PROJECTS_PATH/$WORKFLOW"
 read -a flags <<< "$@"
 
 #initial echo
-echo ""
+#echo ""
 
 #check on flags
 commit_found_shell=""
@@ -91,7 +91,7 @@ if [ "$flags" = "" ]; then
     commit_name_shell=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     commit_name_driver=$(cat $CLI_PATH/constants/ONIC_DRIVER_COMMIT)
     #header (1/2)
-    #echo ""
+    echo ""
     echo "${bold}sgutil validate $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
     echo ""
     #device_dialog
@@ -146,7 +146,6 @@ else
     #check if commits exist
     exists_shell=$(gh api repos/Xilinx/open-nic-shell/commits/$commit_name_shell 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     exists_driver=$(gh api repos/Xilinx/open-nic-driver/commits/$commit_name_driver 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
-    #forbidden combinations
     if [ "$commit_found" = "0" ]; then 
         commit_name_shell=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
         commit_name_driver=$(cat $CLI_PATH/constants/ONIC_DRIVER_COMMIT)
@@ -154,21 +153,22 @@ else
         $CLI_PATH/sgutil validate $WORKFLOW -h
         exit
     elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
-        echo ""
+        #echo ""
         echo "Sorry, the commit IDs (shell and driver) ${bold}$commit_name_shell,$commit_name_driver${normal} do not exist on the repository."
         echo ""
         exit
     fi
-    #header (2/2)
+    #header (2/2) =====> moved to forgotten mandatory 1
     #echo ""
-    echo "${bold}sgutil validate $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
-    echo ""
+    #echo "${bold}sgutil validate $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
+    #echo ""
     #device_dialog_check
     result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
     device_found=$(echo "$result" | sed -n '1p')
     device_index=$(echo "$result" | sed -n '2p')
-    #forbidden combinations
-    if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
+    if ([ "$device_found" = "1" ] && [ -z "$device_index" ]) || 
+       ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && [ "$device_index" -ne 1 ]) || 
+       ([ "$device_found" = "1" ] && { [ "$device_index" -gt "$MAX_DEVICES" ] || [ "$device_index" -lt 1 ]; }); then
         $CLI_PATH/sgutil validate $WORKFLOW -h
         exit
     fi
@@ -190,6 +190,10 @@ else
         echo ""
         exit
     fi
+    #header (2/2)
+    echo ""
+    echo "${bold}sgutil validate $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
+    echo ""
     #device_dialog (forgotten mandatory 1)
     if [[ $multiple_devices = "0" ]]; then
         device_found="1"

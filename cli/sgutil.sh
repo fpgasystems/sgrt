@@ -1500,6 +1500,7 @@ case "$command" in
         ;;
       opennic)
         valid_flags="-c --commit -d --device -h --help"
+        #echo ""
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)
