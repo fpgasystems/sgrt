@@ -348,7 +348,6 @@ else
     echo "Done!"
     #echo ""
     if [ "$deploy_option_found" = "0" ]; then
-        
         #deployment_dialog
         deploy_option="0"
         if [ "$num_remote_servers" -ge 1 ]; then
@@ -382,6 +381,7 @@ BIT_NAME="open_nic_shell.$FDEV_NAME.$vivado_version.bit"
 
 #check on bitstream
 if ! [ -e "$DIR/$BIT_NAME" ]; then
+    echo ""
     echo "You must build your project first! Please, use sgutil build $WORKFLOW"
     echo ""
     exit
