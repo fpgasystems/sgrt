@@ -418,6 +418,7 @@
         mode: "0755"
       when: all or help
       loop:
+        - program_revert
         - validate_opennic
     #new
     - name: copying new scripts
