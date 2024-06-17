@@ -193,6 +193,7 @@ else
         if [[ $multiple_projects = "0" ]]; then
             echo $project_name
         fi
+        echo ""
     fi
     #platform_dialog (forgotten mandatory 2)
     if [[ $platform_found = "0" ]]; then
@@ -205,8 +206,9 @@ else
         multiple_platforms=$(echo "$result" | sed -n '3p')
         if [[ $multiple_platforms = "0" ]]; then
             echo $platform_name
-            echo ""
+            #echo ""
         fi
+        echo ""
     fi
 fi
 
