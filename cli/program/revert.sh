@@ -141,6 +141,10 @@ if [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 2 ]]; then
     #echo ""
     #lspci | grep Xilinx | grep $bdf
     #echo ""
+    #print additional echo
+    if [ "$flags" = "" ]; then
+        echo ""
+    fi
     exit
 fi
 
