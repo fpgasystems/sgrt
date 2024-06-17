@@ -31,14 +31,15 @@
     #api installation
     api: false #true----------------
     #cli installation
-    directories: false
+    directories: true
     templates: false #true-----------------------------------
     #scripts
     build: false
-    common: true
+    common: false
     enable: false
     examine: false
     get: false
+    help: true
     new: false
     program: true
     reboot: false
@@ -77,6 +78,7 @@
         - "{{ cli_path }}/constants"
         - "{{ cli_path }}/enable"
         - "{{ cli_path }}/get"
+        - "{{ cli_path }}/help"
         - "{{ cli_path }}/new"
         - "{{ cli_path }}/program"
         - "{{ cli_path }}/run"
@@ -408,6 +410,15 @@
         - servers
         - syslog
         - workflow
+    #help
+    - name: copying help scripts
+      copy:
+        src: "../cli/help/{{ item }}.sh"
+        dest: "{{ cli_path }}/help/{{ item }}"
+        mode: "0755"
+      when: all or help
+      loop:
+        - opennic_validate
     #new
     - name: copying new scripts
       copy:
