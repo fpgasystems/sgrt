@@ -105,6 +105,7 @@ if [ "$flags" = "" ]; then
         result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
         device_found=$(echo "$result" | sed -n '1p')
         device_index=$(echo "$result" | sed -n '2p')
+        echo ""
         #check on VIVADO_DEVICES_MAX
         vivado_devices=$($CLI_PATH/common/get_vivado_devices $CLI_PATH $MAX_DEVICES $device_index)
         if [ $vivado_devices -ge $((VIVADO_DEVICES_MAX)) ]; then
@@ -316,7 +317,7 @@ rm $DRIVER_DIR/onic_netdev.o
 rm $DRIVER_DIR/onic_sysfs.o
 
 #get workflow (print echo)
-workflow=$($CLI_PATH/get/workflow $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
+workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
 
 #revert device
 $CLI_PATH/program/revert -d $device_index
