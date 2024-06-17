@@ -12,7 +12,7 @@
     #- alveo-u55c-02.inf.ethz.ch
     #- alveo-u55c-07.inf.ethz.ch
     #- alveo-u55c-03.inf.ethz.ch
-    #- hacc-box-01.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
@@ -35,7 +35,7 @@
     templates: false #true-----------------------------------
     #scripts
     build: false
-    common: false
+    common: true
     enable: false
     examine: false
     get: false
@@ -418,7 +418,7 @@
         mode: "0755"
       when: all or help
       loop:
-        - opennic_validate
+        - validate_opennic
     #new
     - name: copying new scripts
       copy:
@@ -696,14 +696,6 @@
       when: all or vitis
     
     #deleting files
-    #constants
-    - name: deleting constants
-      file:
-        path: "{{ cli_path }}/constants/{{ item }}"
-        state: absent
-      loop:
-        - ONIC_COMMIT
-        - BITSTREAM_PATH
     #api
     - name: deleting includes
       file:
@@ -713,6 +705,21 @@
         - device.hpp
         - host.hpp
         - host.cpp # I believe that was an error
+    #constants
+    - name: deleting constants
+      file:
+        path: "{{ cli_path }}/constants/{{ item }}"
+        state: absent
+      loop:
+        - ONIC_COMMIT
+        - BITSTREAM_PATH
+    #help
+    - name: deleting help scripts
+      file:
+        path: "{{ cli_path }}/help/{{ item }}"
+        state: absent
+      loop:
+        - opennic_validate
     #program
     - name: deleting program scripts
       file:
