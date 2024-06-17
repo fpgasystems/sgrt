@@ -22,7 +22,7 @@ hostname="${url%%.*}"
 #check on virtualized servers
 virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
 if [ "$virtualized" = "1" ]; then
-    echo ""
+    #echo ""
     echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
     echo ""
     exit
@@ -40,7 +40,7 @@ fi
 vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
 vitis_version=$($CLI_PATH/common/get_xilinx_version vitis)
 if [ -z "$(echo $vivado_version)" ] || [ -z "$(echo $vitis_version)" ] || ([ "$vivado_version" != "$vitis_version" ]); then
-    echo ""
+    #echo ""
     echo "Please, source valid Vivado and Vitis HLS versions for ${bold}$hostname!${normal}"
     echo ""
     exit 1
@@ -49,7 +49,7 @@ fi
 #check for vivado_developers
 member=$($CLI_PATH/common/is_member $USER vivado_developers)
 if [ "$member" = "false" ]; then
-    echo ""
+    #echo ""
     echo "Sorry, ${bold}$USER!${normal} You are not granted to use this command."
     echo ""
     exit
@@ -57,7 +57,7 @@ fi
 
 #check if workflow exists
 if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
-    echo ""
+    #echo ""
     echo "You must create your project first! Please, use sgutil new $WORKFLOW"
     echo ""
     exit
@@ -95,7 +95,7 @@ if [ "$flags" = "" ]; then
         commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     fi
     #header (1/2)
-    echo ""
+    #echo ""
     echo "${bold}sgutil build $WORKFLOW (commit ID: $commit_name)${normal}"
     #project_dialog
     if [[ $project_found = "0" ]]; then
@@ -153,7 +153,7 @@ else
     project_name=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then 
-        $CLI_PATH/sgutil build $WORKFLOW -h
+        $CLI_PATH/help/build_opennic $ONIC_SHELL_COMMIT
         exit
     fi
     #platform_dialog_check
@@ -162,11 +162,11 @@ else
     platform_name=$(echo "$result" | sed -n '2p')    
     #forbidden combinations
     if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
-        $CLI_PATH/sgutil build $WORKFLOW -h
+        $CLI_PATH/help/build_opennic $ONIC_SHELL_COMMIT
         exit
     fi
     #header (2/2)
-    echo ""
+    #echo ""
     echo "${bold}sgutil build $WORKFLOW (commit ID: $commit_name)${normal}"
     echo ""
     #check on PWD
@@ -221,7 +221,7 @@ DRIVER_DIR="$DIR/open-nic-driver"
 
 #check if project exists
 if ! [ -d "$DIR" ]; then
-    echo ""
+    #echo ""
     echo "You must create your project first! Please, use sgutil new $WORKFLOW"
     echo ""
     exit

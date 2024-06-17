@@ -207,19 +207,8 @@ build_mpi_help() {
 }
 
 build_opennic_help() {
-    echo ""
-    echo "${bold}sgutil build opennic [flags] [--help]${normal}"
-    echo ""
-    echo "Generates OpenNIC's bitstreams and drivers."
-    echo ""
-    echo "FLAGS:"
-    echo "   -c, --commit    - GitHub shell commit ID (default: ${bold}$ONIC_SHELL_COMMIT${normal})."
-    echo "       --platform  - Xilinx platform (according to sgutil get platform)."
-    echo "       --project   - Specifies your Coyote project name."
-    echo ""
-    echo "   -h, --help      - Help to build OpenNIC."
-    echo ""
-    exit 1
+    $CLI_PATH/help/build_opennic $ONIC_SHELL_COMMIT
+    exit
 }
 
 build_vitis_help() {
@@ -1153,6 +1142,7 @@ case "$command" in
         ;;
       opennic) 
         valid_flags="-c --commit --platform --project -h --help" 
+        echo ""
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis) 
