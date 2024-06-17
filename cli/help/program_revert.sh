@@ -3,7 +3,7 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#echo ""
+echo "" #this one is needed
 echo "${bold}sgutil program revert [flags] [--help]${normal}"
 echo ""
 echo "Returns the specified FPGA to the Vitis workflow."
