@@ -129,7 +129,7 @@ else
     commit_name=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/sgutil new $WORKFLOW -h
+        $CLI_PATH/help/build_opennic $ONIC_SHELL_COMMIT
         exit
     fi
     #check if commit exists
@@ -139,10 +139,10 @@ else
         commit_found="1"
         commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/sgutil program $WORKFLOW -h
+        $CLI_PATH/help/build_opennic $ONIC_SHELL_COMMIT
         exit
     elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
-        echo ""
+        #echo ""
         echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist on the repository."
         echo ""
         exit
@@ -150,9 +150,10 @@ else
     #project_dialog_check
     result="$("$CLI_PATH/common/project_dialog_check" "${flags[@]}")"
     project_found=$(echo "$result" | sed -n '1p')
-    project_name=$(echo "$result" | sed -n '2p')
+    project_path=$(echo "$result" | sed -n '2p')
+    project_name=$(echo "$result" | sed -n '3p')
     #forbidden combinations
-    if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then 
+    if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then 
         $CLI_PATH/help/build_opennic $ONIC_SHELL_COMMIT
         exit
     fi
