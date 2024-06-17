@@ -1068,18 +1068,8 @@ validate_mpi_help() {
 }
 
 validate_opennic_help() {
-      echo ""
-      echo "${bold}sgutil validate opennic [flags] [--help]${normal}"
-      echo ""
-      echo "Validates OpenNIC on the selected FPGA."
-      echo ""
-      echo "FLAGS:"
-      echo "   -c, --commit    - GitHub commit IDs for shell and driver (default: ${bold}$ONIC_SHELL_COMMIT,$ONIC_DRIVER_COMMIT${normal})."
-      echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
-      echo ""
-      echo "   -h, --help      - Help to use this command."
-      echo ""
-      exit 1
+    $CLI_PATH/help/opennic_validate $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
+    exit
 }
 
 validate_vitis_help() {
@@ -1500,7 +1490,7 @@ case "$command" in
         ;;
       opennic)
         valid_flags="-c --commit -d --device -h --help"
-        #echo ""
+        echo ""
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)

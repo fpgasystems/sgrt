@@ -17,4 +17,4 @@ echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
 echo ""
 echo "   -h, --help      - Help to use this command."
 echo ""
-exit 1
+#exit 1

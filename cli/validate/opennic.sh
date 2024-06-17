@@ -91,7 +91,7 @@ if [ "$flags" = "" ]; then
     commit_name_shell=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     commit_name_driver=$(cat $CLI_PATH/constants/ONIC_DRIVER_COMMIT)
     #header (1/2)
-    echo ""
+    #echo ""
     echo "${bold}sgutil validate $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
     echo ""
     #device_dialog
@@ -129,7 +129,7 @@ else
     commit_name=$(echo "$result" | sed -n '2p')
     # Check if commit_name contains exactly one comma
     if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
-        $CLI_PATH/sgutil validate $WORKFLOW -h
+        $CLI_PATH/help/opennic_validate $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
         exit
     fi
     #get shell and driver commits (shell_commit,driver_commit)
@@ -150,7 +150,7 @@ else
         commit_name_shell=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
         commit_name_driver=$(cat $CLI_PATH/constants/ONIC_DRIVER_COMMIT)
     elif [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
-        $CLI_PATH/sgutil validate $WORKFLOW -h
+        $CLI_PATH/help/opennic_validate $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
         exit
     elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
         #echo ""
@@ -169,7 +169,7 @@ else
     if ([ "$device_found" = "1" ] && [ -z "$device_index" ]) || 
        ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && [ "$device_index" -ne 1 ]) || 
        ([ "$device_found" = "1" ] && { [ "$device_index" -gt "$MAX_DEVICES" ] || [ "$device_index" -lt 1 ]; }); then
-        $CLI_PATH/sgutil validate $WORKFLOW -h
+        $CLI_PATH/help/opennic_validate $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
         exit
     fi
     #check on VIVADO_DEVICES_MAX
@@ -191,7 +191,7 @@ else
         exit
     fi
     #header (2/2)
-    echo ""
+    #echo ""
     echo "${bold}sgutil validate $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
     echo ""
     #device_dialog (forgotten mandatory 1)
