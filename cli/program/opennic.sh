@@ -392,7 +392,7 @@ fi
 #echo ""
 
 #get workflow (print echo)
-workflow=$($CLI_PATH/get/workflow $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
+workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
 
 #revert device (it removes driver as well)
 $CLI_PATH/program/revert -d $device_index
