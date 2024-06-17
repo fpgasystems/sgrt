@@ -734,17 +734,8 @@ program_reset_help() {
 }
 
 program_revert_help() {
-    echo ""
-    echo "${bold}sgutil program revert [flags] [--help]${normal}"
-    echo ""
-    echo "Returns the specified FPGA to the Vitis workflow."
-    echo ""
-    echo "FLAGS:"
-    echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
-    echo ""
-    echo "   -h, --help      - Help to revert a device."
-    echo ""
-    exit 1
+    $CLI_PATH/help/program_revert
+    exit 
 }
 
 program_vivado_help() {
@@ -1068,7 +1059,7 @@ validate_mpi_help() {
 }
 
 validate_opennic_help() {
-    $CLI_PATH/help/opennic_validate $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
+    $CLI_PATH/help/validate_opennic $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
     exit
 }
 
