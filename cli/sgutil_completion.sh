@@ -344,6 +344,9 @@ _sgutil_completions()
             other_flags=( "--commit" "--platform" "--project" )
             command_completion_5 "$cur" "$COMP_CWORD" "build" "coyote" "${other_flags[@]}"
 
+            other_flags=( "--commit" "--platform" "--project" )
+            command_completion_5 "$cur" "$COMP_CWORD" "build" "opennic" "${other_flags[@]}"
+
             other_flags=( "--project" "--target" )
             command_completion_5 "$cur" "$COMP_CWORD" "build" "vitis" "${other_flags[@]}"
 
@@ -402,6 +405,16 @@ _sgutil_completions()
 
             other_flags=( "--commit" "--platform" )
             command_completion_7 "$cur" "$COMP_CWORD" "build" "coyote" "--project" "${other_flags[@]}"
+
+            #build opennic
+            other_flags=( "--platform" "--project" )
+            command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--commit" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--project" )
+            command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--platform" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--platform" )
+            command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--project" "${other_flags[@]}"
             
             #program coyote
             other_flags=( "--device" "--project" "--remote" )
