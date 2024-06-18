@@ -28,7 +28,6 @@ else
         case $yn in
             "y") 
                 gh auth logout
-                echo ""
                 break
                 ;;
             "n") 
