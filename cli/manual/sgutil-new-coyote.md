@@ -18,6 +18,16 @@
   &nbsp; &nbsp; GitHub commit ID.
 </p>
 
+<code>    --project <string></code>
+<p>
+  &nbsp; &nbsp; Specifies your Coyote project name.
+</p>
+
+<code>    --push <string></code>
+<p>
+  &nbsp; &nbsp; Pushes your Coyote project to your GitHub account (see sgutil set gh).
+</p>
+
 <code>-h, --help <string></code>
 <p>
   &nbsp; &nbsp; Help to use this command.
