@@ -566,17 +566,8 @@ new_help() {
 }
 
 new_coyote_help() {
-    echo ""
-    echo "${bold}sgutil new coyote [flags] [--help]${normal}"
-    echo ""
-    echo "Creates a new project using Coyote Hello, world! template."
-    echo ""
-    echo "FLAGS"
-    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
+    $CLI_PATH/help/new_coyote $COYOTE_COMMIT
+    exit
 }
 
 new_hpi_help() {
@@ -1265,7 +1256,8 @@ case "$command" in
         new_help
         ;;
       coyote)
-        valid_flags="-c --commit -h --help"
+        valid_flags="-c --commit --project --push -h --help"
+        echo ""
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       hip)
