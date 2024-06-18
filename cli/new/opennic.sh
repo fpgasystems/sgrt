@@ -161,87 +161,26 @@ else
     fi
 fi
 
-#create commit directory (shell is the reference)
-#DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell"
-
-echo "new_found: $new_found"
-echo "new_name: $new_name"
-echo "push_option: $push_option"
-
-exit
-
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$new_name"
-
-#if ! [ -d "$DIR" ]; then
-    #mkdir -p $DIR
-#fi
-
-# create project
-#if [ "$project_found" = "0" ]; then 
-#    #echo ""
-#    echo "${bold}Please, insert a non-existing name for your OpenNIC project:${normal}"
-#    echo ""
-#    while true; do
-#        read -p "" project_name
-#        #project_name cannot start with validate_
-#        if  [[ $project_name == validate_* ]]; then
-#            project_name=""
-#        fi
-#        DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$project_name"
-#        if ! [ -d "$DIR" ]; then
-#            break
-#        fi
-#    done
-#else
-#    DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$project_name"
-#fi
 
 #change directory
 cd $MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell
 
-#add to GitHub if gh is installed
-#commit="0"
-#if [[ $(which gh) ]]; then
-#    echo ""
-#    echo "${bold}Would you like to add the repository to your GitHub account (y/n)?${normal}"
-#    while true; do
-#        read -p "" yn
-#        case $yn in
-#            "y") 
-#                echo ""
-#                #create GitHub repository and clone directory
-#                gh repo create $project_name --public --clone
-#                commit="1"
-#                break
-#                ;;
-#            "n") 
-#                #create plain directory
-#                mkdir $DIR
-#                break
-#                ;;
-#        esac
-#    done
-#    echo ""
-#fi
-
 #create repository
 if [ "$push_option" = "1" ]; then 
-
     gh repo create $new_name --public --clone
-
+    echo ""
 else
-
     mkdir -p $DIR
-
 fi
 
 #catch gh repo create error (DIR has not been created)
-#if ! [ -d "$DIR" ]; then
-#    echo "Please, start GitHub CLI first using sgutil set gh"
-#    echo ""
-#    exit
-#fi
+if ! [ -d "$DIR" ]; then
+    echo "Please, start GitHub CLI first (see sgutil set gh)"
+    echo ""
+    exit
+fi
 
 #clone repository
 $CLI_PATH/common/git_clone_opennic $DIR $commit_name_shell $commit_name_driver
@@ -252,16 +191,6 @@ cd $DIR
 #save commit_name_shell
 echo "$commit_name_shell" > ONIC_SHELL_COMMIT
 echo "$commit_name_driver" > ONIC_DRIVER_COMMIT
-
-#copy template from SGRT_PATH ------------- 2024.05.07: I need to see what we do with this
-#SGRT_PATH=$(dirname "$CLI_PATH")
-#cp -rf $SGRT_PATH/templates/$WORKFLOW/hello_world/* $DIR
-#replace Makefile (main.cpp specific version)
-#rm $DIR/sw/CMakeLists.txt
-#mv $DIR/CMakeLists.txt $DIR/sw
-#compile create config
-#cd $DIR/src
-#g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
 
 #push files
 if [ "$push_option" = "1" ]; then 
@@ -277,9 +206,9 @@ if [ "$push_option" = "1" ]; then
     git add .
     git commit -m "First commit"
     git push --set-upstream origin master
-    #echo ""
+    echo ""
 fi
 
-#echo ""
+#print message
 echo "The project ${bold}$DIR${normal} has been created!"
 echo ""
