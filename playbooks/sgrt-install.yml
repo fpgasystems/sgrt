@@ -424,6 +424,7 @@
       when: all or help
       loop:
         - build_opennic
+        - new_coyote
         - new_opennic
         - program_revert
         - validate_opennic
