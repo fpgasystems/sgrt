@@ -55,11 +55,11 @@ if ! [ -d "$DIR" ]; then
     mkdir ${DIR}
 fi
 
-#inputs
-read -a flags <<< "$@"
-
 #capture gh auth status
 logged_in=$($CLI_PATH/common/gh_auth_status)
+
+#inputs
+read -a flags <<< "$@"
 
 #check on flags
 commit_found_shell=""
@@ -98,7 +98,7 @@ else
     result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
     commit_found=$(echo "$result" | sed -n '1p')
     commit_name=$(echo "$result" | sed -n '2p')
-    # Check if commit_name contains exactly one comma
+    #check if commit_name contains exactly one comma
     if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
         $CLI_PATH/help/new_opennic $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
         exit
@@ -123,7 +123,7 @@ else
         echo ""
         exit
     fi
-    #project_dialog_check
+    #new_dialog_check
     result="$("$CLI_PATH/common/new_dialog_check" "${flags[@]}")"
     new_found=$(echo "$result" | sed -n '1p')
     new_name=$(echo "$result" | sed -n '2p')
