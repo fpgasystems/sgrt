@@ -11,15 +11,6 @@ normal=$(tput sgr0)
 CLI_PATH="$(dirname "$(dirname "$0")")"
 
 #capture gh auth status
-#auth_status=$(gh auth status)
-
-#check if the output indicates that you are logged in
-#logged_in="0"
-#if grep -q "✓ Logged in to github.com" <<< "$auth_status"; then
-#    logged_in="1"  # You are logged in
-#fi
-
-#capture gh auth status
 logged_in=$($CLI_PATH/common/gh_auth_status)
 
 #check on logged_in
