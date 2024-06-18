@@ -238,7 +238,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--commit --help" -- ${cur}))
                             ;;
                         opennic)
-                            COMPREPLY=($(compgen -W "--commit --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--commit --project --help" -- ${cur}))
                             ;;
                     esac
                     ;;
@@ -350,6 +350,10 @@ _sgutil_completions()
             other_flags=( "--project" "--target" )
             command_completion_5 "$cur" "$COMP_CWORD" "build" "vitis" "${other_flags[@]}"
 
+            #new
+            other_flags=( "--commit" "--project" "--push")
+            command_completion_5 "$cur" "$COMP_CWORD" "new" "opennic" "${other_flags[@]}"
+
             #program
             other_flags=( "--commit" "--device" "--project" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "coyote" "${other_flags[@]}"
@@ -415,6 +419,16 @@ _sgutil_completions()
 
             other_flags=( "--commit" "--platform" )
             command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--project" "${other_flags[@]}"
+
+            #new opennic
+            other_flags=( "--project" "--push" )
+            command_completion_7 "$cur" "$COMP_CWORD" "new" "opennic" "--commit" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--push" )
+            command_completion_7 "$cur" "$COMP_CWORD" "new" "opennic" "--project" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--project" )
+            command_completion_7 "$cur" "$COMP_CWORD" "new" "opennic" "--push" "${other_flags[@]}"
             
             #program coyote
             other_flags=( "--device" "--project" "--remote" )

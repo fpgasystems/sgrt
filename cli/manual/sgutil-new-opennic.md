@@ -17,6 +17,16 @@
   &nbsp; &nbsp; GitHub commit IDs for shell and driver.
 </p>
 
+<code>    --project <string></code>
+<p>
+  &nbsp; &nbsp; Specifies your OpenNIC project name.
+</p>
+
+<code>    --push <string></code>
+<p>
+  &nbsp; &nbsp; Pushes your OpenNIC project to your GitHub account (see sgutil set gh).
+</p>
+
 <code>-h, --help <string></code>
 <p>
   &nbsp; &nbsp; Help to use this command.

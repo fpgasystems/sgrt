@@ -63,6 +63,10 @@ commit_found_shell=""
 commit_name_shell=""
 commit_found_driver=""
 commit_name_driver=""
+new_found=""
+new_name=""
+push_found=""
+push_option=""
 if [ "$flags" = "" ]; then
     #commit dialog
     commit_found_shell="1"
@@ -70,9 +74,22 @@ if [ "$flags" = "" ]; then
     commit_name_shell=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     commit_name_driver=$(cat $CLI_PATH/constants/ONIC_DRIVER_COMMIT)
     #header (1/2)
-    echo ""
     echo "${bold}sgutil new $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
     echo ""
+    #new_dialog
+    echo "${bold}Please, insert a non-existing name for your project:${normal}"
+    echo ""
+    result=$($CLI_PATH/common/new_dialog $MY_PROJECTS_PATH $WORKFLOW $commit_name_shell)
+    new_found=$(echo "$result" | sed -n '1p')
+    new_name=$(echo "$result" | sed -n '2p')
+    echo ""
+    #push_dialog
+    push_option="0"
+    if [[ $(which gh) ]]; then
+        echo "${bold}Would you like to add the repository to your GitHub account (y/n)?${normal}"
+        push_option=$($CLI_PATH/common/push_dialog)
+        echo ""
+    fi
 else
     #commit_dialog_check
     result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
@@ -80,92 +97,151 @@ else
     commit_name=$(echo "$result" | sed -n '2p')
     # Check if commit_name contains exactly one comma
     if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
-        $CLI_PATH/sgutil new $WORKFLOW -h
+        $CLI_PATH/help/new_opennic $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
         exit
     fi
     #get shell and driver commits (shell_commit,driver_commit)
     commit_name_shell=${commit_name%%,*}
     commit_name_driver=${commit_name#*,}
-    #forbidden combinations
-    #if [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
-    #    $CLI_PATH/sgutil new $WORKFLOW -h
-    #    exit
-    #fi
     #check if commits exist
     exists_shell=$(gh api repos/Xilinx/open-nic-shell/commits/$commit_name_shell 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     exists_driver=$(gh api repos/Xilinx/open-nic-driver/commits/$commit_name_driver 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     #forbidden combinations
-    if [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
-        $CLI_PATH/sgutil new $WORKFLOW -h
+    if [ "$commit_found" = "0" ]; then 
+        commit_found="1"
+        commit_name_shell=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
+        commit_name_driver=$(cat $CLI_PATH/constants/ONIC_DRIVER_COMMIT)
+    elif [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
+        $CLI_PATH/help/new_opennic $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
         exit
     elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
-        echo ""
+        #echo ""
         echo "Sorry, the commit IDs (shell and driver) ${bold}$commit_name_shell,$commit_name_driver${normal} do not exist on the repository."
         echo ""
         exit
     fi
+    #project_dialog_check
+    result="$("$CLI_PATH/common/new_dialog_check" "${flags[@]}")"
+    new_found=$(echo "$result" | sed -n '1p')
+    new_name=$(echo "$result" | sed -n '2p')
+    #forbidden combinations
+    if [ "$new_found" = "1" ] && ([ "$new_name" = "" ] || [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$new_name" ]); then 
+        $CLI_PATH/help/new_opennic $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
+        exit
+    fi
+    #push_dialog_check
+    result="$("$CLI_PATH/common/push_dialog_check" "${flags[@]}")"
+    push_found=$(echo "$result" | sed -n '1p')
+    push_option=$(echo "$result" | sed -n '2p')
+    #forbidden combinations
+    if [[ "$push_found" = "1" && "$push_option" != "0" && "$push_option" != "1" ]]; then 
+        $CLI_PATH/help/new_opennic $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
+        exit
+    fi
     #header (2/2)
-    echo ""
+    #echo ""
     echo "${bold}sgutil new $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
     echo ""
+    #new_found (forgotten mandatory 1)
+    if [[ $new_found = "0" ]]; then
+        echo "${bold}Please, insert a non-existing name for your project:${normal}"
+        result=$($CLI_PATH/common/new_dialog $MY_PROJECTS_PATH $WORKFLOW $commit_name_shell)
+        new_found=$(echo "$result" | sed -n '1p')
+        new_name=$(echo "$result" | sed -n '2p')
+        echo ""
+    fi
+    #push_dialog  (forgotten mandatory 1)
+    if [[ $push_found = "0" ]]; then
+        push_option="0"
+        if [[ $(which gh) ]]; then
+            echo "${bold}Would you like to add the repository to your GitHub account (y/n)?${normal}"
+            push_option=$($CLI_PATH/common/push_dialog)
+            echo ""
+        fi
+    fi
 fi
 
 #create commit directory (shell is the reference)
-DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell"
-if ! [ -d "$DIR" ]; then
-    mkdir ${DIR}
-fi
+#DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell"
+
+echo "new_found: $new_found"
+echo "new_name: $new_name"
+echo "push_option: $push_option"
+
+exit
+
+#define directories
+DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$new_name"
+
+#if ! [ -d "$DIR" ]; then
+    #mkdir -p $DIR
+#fi
 
 # create project
-#echo ""
-echo "${bold}Please, insert a non-existing name for your OpenNIC project:${normal}"
-echo ""
-while true; do
-    read -p "" project_name
-    #project_name cannot start with validate_
-    if  [[ $project_name == validate_* ]]; then
-        project_name=""
-    fi
-    DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$project_name"
-    if ! [ -d "$DIR" ]; then
-        break
-    fi
-done
+#if [ "$project_found" = "0" ]; then 
+#    #echo ""
+#    echo "${bold}Please, insert a non-existing name for your OpenNIC project:${normal}"
+#    echo ""
+#    while true; do
+#        read -p "" project_name
+#        #project_name cannot start with validate_
+#        if  [[ $project_name == validate_* ]]; then
+#            project_name=""
+#        fi
+#        DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$project_name"
+#        if ! [ -d "$DIR" ]; then
+#            break
+#        fi
+#    done
+#else
+#    DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$project_name"
+#fi
 
 #change directory
-cd $MY_PROJECTS_PATH/$WORKFLOW
+cd $MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell
 
 #add to GitHub if gh is installed
-commit="0"
-if [[ $(which gh) ]]; then
-    echo ""
-    echo "${bold}Would you like to add the repository to your GitHub account (y/n)?${normal}"
-    while true; do
-        read -p "" yn
-        case $yn in
-            "y") 
-                echo ""
-                #create GitHub repository and clone directory
-                gh repo create $project_name --public --clone
-                commit="1"
-                break
-                ;;
-            "n") 
-                #create plain directory
-                mkdir $DIR
-                break
-                ;;
-        esac
-    done
-    echo ""
+#commit="0"
+#if [[ $(which gh) ]]; then
+#    echo ""
+#    echo "${bold}Would you like to add the repository to your GitHub account (y/n)?${normal}"
+#    while true; do
+#        read -p "" yn
+#        case $yn in
+#            "y") 
+#                echo ""
+#                #create GitHub repository and clone directory
+#                gh repo create $project_name --public --clone
+#                commit="1"
+#                break
+#                ;;
+#            "n") 
+#                #create plain directory
+#                mkdir $DIR
+#                break
+#                ;;
+#        esac
+#    done
+#    echo ""
+#fi
+
+#create repository
+if [ "$push_option" = "1" ]; then 
+
+    gh repo create $new_name --public --clone
+
+else
+
+    mkdir -p $DIR
+
 fi
 
 #catch gh repo create error (DIR has not been created)
-if ! [ -d "$DIR" ]; then
-    echo "Please, start GitHub CLI first using sgutil set gh"
-    echo ""
-    exit
-fi
+#if ! [ -d "$DIR" ]; then
+#    echo "Please, start GitHub CLI first using sgutil set gh"
+#    echo ""
+#    exit
+#fi
 
 #clone repository
 $CLI_PATH/common/git_clone_opennic $DIR $commit_name_shell $commit_name_driver
@@ -187,14 +263,14 @@ echo "$commit_name_driver" > ONIC_DRIVER_COMMIT
 #cd $DIR/src
 #g++ -std=c++17 create_config.cpp -o ../create_config >&/dev/null
 
-#commit files
-if [ "$commit" = "1" ]; then 
+#push files
+if [ "$push_option" = "1" ]; then 
     cd $DIR
     #update README.md 
     if [ -e README.md ]; then
         rm README.md
     fi
-    echo "# "$project_name >> README.md
+    echo "# "$new_name >> README.md
     #add gitignore
     echo ".DS_Store" >> .gitignore
     #add, commit, push

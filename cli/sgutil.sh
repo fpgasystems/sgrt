@@ -608,17 +608,8 @@ new_mpi_help() {
 }
 
 new_opennic_help() {
-    echo ""
-    echo "${bold}sgutil new opennic [flags] [--help]${normal}"
-    echo ""
-    echo "Creates a new project using OpenNIC Hello, world! template."
-    echo ""
-    echo "FLAGS"
-    echo "   -c, --commit    - GitHub commit IDs for shell and driver (default: ${bold}$ONIC_SHELL_COMMIT,$ONIC_DRIVER_COMMIT${normal})."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
+    $CLI_PATH/help/new_opennic $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
+    exit
 }
 
 new_vitis_help() {
@@ -1292,7 +1283,8 @@ case "$command" in
         $CLI_PATH/new/mpi
         ;;
       opennic)
-        valid_flags="-c --commit -h --help"
+        valid_flags="-c --commit --project --push -h --help"
+        echo ""
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)

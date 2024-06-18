@@ -352,11 +352,15 @@
         - is_member
         - is_virtualized
         - mkdir
+        - new_dialog
+        - new_dialog_check
         - params_dialog_check
         - platform_dialog
         - platform_dialog_check
         - project_dialog
         - project_dialog_check
+        - push_dialog
+        - push_dialog_check
         - rm
         - ssh_key_add
         - target_dialog
@@ -419,6 +423,7 @@
       when: all or help
       loop:
         - build_opennic
+        - new_opennic
         - program_revert
         - validate_opennic
     #new
