@@ -31,7 +31,7 @@
     #api installation
     api: false #true----------------
     #cli installation
-    directories: true
+    directories: false
     templates: false #true-----------------------------------
     #scripts
     build: false
@@ -39,13 +39,13 @@
     enable: false
     examine: false
     get: false
-    help: true
+    help: false
     new: false
-    program: true
+    program: false
     reboot: false
     run: false
-    set: false
-    sgutil: true 
+    set: true
+    sgutil: false 
     validate: false
     #workflows
     coyote: false
@@ -342,6 +342,7 @@
         - get_vivado_devices
         - get_xclbin_cfg
         - get_xilinx_version
+        - gh_auth_status
         - git_clone_coyote
         - git_clone_opennic
         - git_clone_vitis

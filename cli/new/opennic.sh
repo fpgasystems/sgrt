@@ -58,6 +58,9 @@ fi
 #inputs
 read -a flags <<< "$@"
 
+#capture gh auth status
+logged_in=$($CLI_PATH/common/gh_auth_status)
+
 #check on flags
 commit_found_shell=""
 commit_name_shell=""
@@ -85,7 +88,7 @@ if [ "$flags" = "" ]; then
     echo ""
     #push_dialog
     push_option="0"
-    if [[ $(which gh) ]]; then
+    if [ "$logged_in" = "1" ]; then  #if [[ $(which gh) ]]; then
         echo "${bold}Would you like to add the repository to your GitHub account (y/n)?${normal}"
         push_option=$($CLI_PATH/common/push_dialog)
         echo ""
@@ -153,7 +156,7 @@ else
     #push_dialog  (forgotten mandatory 1)
     if [[ $push_found = "0" ]]; then
         push_option="0"
-        if [[ $(which gh) ]]; then
+        if [ "$logged_in" = "1" ]; then  #if [[ $(which gh) ]]; then
             echo "${bold}Would you like to add the repository to your GitHub account (y/n)?${normal}"
             push_option=$($CLI_PATH/common/push_dialog)
             echo ""
@@ -176,11 +179,11 @@ else
 fi
 
 #catch gh repo create error (DIR has not been created)
-if ! [ -d "$DIR" ]; then
-    echo "Please, start GitHub CLI first (see sgutil set gh)"
-    echo ""
-    exit
-fi
+#if ! [ -d "$DIR" ]; then
+#    echo "Please, start GitHub CLI first (see sgutil set gh)"
+#    echo ""
+#    exit
+#fi
 
 #clone repository
 $CLI_PATH/common/git_clone_opennic $DIR $commit_name_shell $commit_name_driver
