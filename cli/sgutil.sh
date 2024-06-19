@@ -112,32 +112,6 @@ flags_check() {
     fi
 }
 
-xilinx_build_check() {
-
-    EMAIL=$($CLI_PATH/common/get_email) #"jmoyapaya@ethz.ch"
-    username=$USER
-    url="${HOSTNAME}"
-    hostname="${url%%.*}"
-
-    #check for Xilinx device and build server
-    if [[ $(lspci | grep Xilinx | wc -l) = 0 ]]; then
-        if [ "$hostname" = "alveo-build-01" ]; then
-            echo ""
-            echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
-            echo ""
-        else
-            echo ""
-            echo "The server needs special care to operate with XRT normally."
-	          echo ""
-	          echo "${bold}An email has been sent to the person in charge;${normal} we will let you know when XRT is ready to use again."
-            echo ""
-            #send email
-            echo "Subject: $hostname requires special attention ($username)" | sendmail $EMAIL
-        fi
-        exit
-    fi
-}
-
 # build ------------------------------------------------------------------------------------------------------------------------
 
 build_help() {
@@ -1179,7 +1153,6 @@ case "$command" in
     esac
     ;;
   examine)
-    #xilinx_build_check
     case "$arguments" in
       -h|--help)
         examine_help
@@ -1215,7 +1188,6 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       name)
-        #xilinx_build_check
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
@@ -1236,7 +1208,6 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       serial)
-        #xilinx_build_check
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
@@ -1451,7 +1422,6 @@ case "$command" in
     esac
     ;;
   run)
-    #xilinx_build_check
     case "$arguments" in
       -h|--help)
         run_help
@@ -1478,7 +1448,6 @@ case "$command" in
     esac
     ;;
   set)
-    #xilinx_build_check
     case "$arguments" in
       -h|--help)
         set_help
@@ -1518,7 +1487,6 @@ case "$command" in
     esac
     ;;
   validate)
-    #xilinx_build_check
     case "$arguments" in
       coyote)
         valid_flags="-c --commit -d --device -h --help"
