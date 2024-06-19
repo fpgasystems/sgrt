@@ -9,6 +9,7 @@ SGRT_PATH=$(dirname "$CLI_PATH")
 COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
+DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 
 #inputs
 command=$1
@@ -1317,7 +1318,80 @@ case "$command" in
         ;;
       revert)
         valid_flags="-d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
-        #echo ""
+        #insert echo
+
+        #check on DEVICES_LIST
+        source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+
+        #get number of fpga and acap devices present
+        MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
+        
+        #check on multiple devices
+        multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+
+        #echo "multiple_devices: $multiple_devices"
+
+        #echo $command_arguments_flags
+        #echo $valid_flags
+
+        #flags=$(echo "$command_arguments_flags" | cut -d' ' -f3-)
+
+        #inputs
+        read -a flags <<< "$command_arguments_flags"
+
+        #device_dialog_check
+        result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
+        device_found=$(echo "$result" | sed -n '1p')
+        device_index=$(echo "$result" | sed -n '2p')
+
+
+        #echo "device_found: $device_found"
+        #echo "device_index: $device_index"
+
+        #exit
+        
+
+        #echo "device_found: $device_found"
+        #echo "device_index: $device_index"
+
+        #forbidden combinations
+        if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
+            $CLI_PATH/help/program_revert
+            exit
+        fi
+        #device_dialog (forgotten mandatory)
+        if [[ $multiple_devices = "0" ]]; then
+            device_found="1"
+            device_index="1"
+        elif [[ $device_found = "0" ]]; then
+            $CLI_PATH/help/program_revert
+            exit
+        fi
+
+        if [ "$device_found" = "1" ] && [ -n "$device_index" ]; then
+            #check on multiple devices
+            #if [[ $multiple_devices = "0" ]]; then
+            #  device_found="1"
+            #  device_index="1"
+            #fi
+            
+            
+            workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)          
+
+            #echo "workflow: $workflow"
+
+            if [[ $workflow = "vitis" ]]; then
+                exit
+            elif [[ $workflow = "vivado" ]]; then
+                
+                #echo "I am here"
+                echo ""
+
+            fi
+        fi
+
+        #exit
+
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       vivado)

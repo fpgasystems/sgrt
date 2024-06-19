@@ -62,7 +62,13 @@ fi
 source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
 
 #get number of fpga and acap devices present
-MAX_DEVICES=$(grep -E "fpga|acap" $DEVICES_LIST | wc -l)
+#MAX_DEVICES=$(grep -E "fpga|acap" $DEVICES_LIST | wc -l)
+
+#echo $MAX_DEVICES
+
+MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
+
+#echo $MAX_DEVICES
 
 #check on multiple devices
 multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
@@ -134,21 +140,30 @@ fi
 
 #get BDF (i.e., Bus:Device.Function) 
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
-bdf="${upstream_port%??}" #i.e., we transform 81:00.0 into 81:00
+#bdf="${upstream_port%??}" #i.e., we transform 81:00.0 into 81:00
 
 #check on number of pci functions
-if [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 2 ]]; then
+#if [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 2 ]]; then
     #echo ""
     #lspci | grep Xilinx | grep $bdf
     #echo ""
     #print additional echo
-    if [ "$flags" = "" ]; then
-        echo ""
-    fi
+    #if [ "$flags" = "" ]; then
+    #    echo ""
+    #fi
+#    exit
+#fi
+
+workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+if [[ $workflow = "vitis" ]]; then
     exit
+#elif [[ $workflow = "vivado" ]]; then
+#    echo ""
 fi
 
-echo ""
+#ho tinc que moure a sgutil... i llevar el echo :-)
+
+#echo ""
 echo "${bold}sgutil program revert${normal}"
 
 #get loaded drivers
