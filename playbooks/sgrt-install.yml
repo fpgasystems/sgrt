@@ -337,6 +337,7 @@
         - get_constant
         - get_email
         - get_files
+        - get_max_devices
         - get_multiple_devices
         - get_servers
         - get_vivado_devices
