@@ -11,6 +11,9 @@ ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 
+XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
+VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
+
 #inputs
 command=$1
 arguments=$2
@@ -1098,7 +1101,14 @@ if [[ $(echo "$command_arguments_flags" | grep "\-\-help\b" | wc -l) = 1 ]]; the
   #echo "fifth: $command_arguments_flags"
 fi
 
-# sgutil
+#get username
+username=$USER
+
+#get hostname
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+
+#sgutil
 case "$command" in
   -h|--help)
     cli_help
@@ -1293,7 +1303,48 @@ case "$command" in
     esac
     ;;
   program)
-    #xilinx_build_check
+    #check on ACAP or FPGA servers (server must have at least one ACAP or one FPGA)
+    acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+    fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+    if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
+        echo ""
+        echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
+        echo ""
+        exit
+    fi
+    
+    #check on valid Vivado version
+    vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+    if [ -n "$vivado_version" ]; then
+        #vivado_version is not empty and we check if the Vivado directory exists
+        if [ ! -d $VIVADO_PATH/$vivado_version ]; then
+            echo ""
+            echo "Please, choose a valid Vivado version for ${bold}$hostname!${normal}"
+            echo ""
+            exit 1
+        fi
+    else
+        #vivado_version is empty and we set the more recent Vivado version by default
+        vivado_version=$(find "$VIVADO_PATH" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort -V | tail -n 1)
+
+        #vivado_version and VIVADO_PATH are empty
+        if [ -z "$vivado_version" ]; then
+            echo ""
+            echo "Please, source a valid Vivado version for ${bold}$hostname!${normal}"
+            echo ""
+            exit 1
+        fi
+    fi
+    
+    #check on DEVICES_LIST
+    source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+
+    #get number of fpga and acap devices present
+    MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
+    
+    #get multiple devices
+    multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+
     case "$arguments" in
       -h|--help)
         program_help
@@ -1317,53 +1368,69 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       revert)
-        #check on DEVICES_LIST
-        source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+        #check on flags
+        valid_flags="-d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
+        flags_check $command_arguments_flags"@"$valid_flags
 
-        #get number of fpga and acap devices present
-        MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
-        
-        #check on multiple devices
-        multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
-
-        #inputs
-        read -a flags <<< "$command_arguments_flags"
-
-        #device_dialog_check
-        result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
-        device_found=$(echo "$result" | sed -n '1p')
-        device_index=$(echo "$result" | sed -n '2p')
-
-        #forbidden combinations
-        if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-            $CLI_PATH/help/program_revert
+        #check on virtualized
+        virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
+        if [ "$virtualized" = "1" ]; then
+            echo ""
+            echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
+            echo ""
             exit
         fi
 
-        #device_dialog (forgotten mandatory)
-        if [[ $multiple_devices = "0" ]]; then
-            device_found="1"
-            device_index="1"
-        elif [[ $device_found = "0" ]]; then
-            $CLI_PATH/help/program_revert
-            exit
-        fi
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
 
-        #insert echo
-        if [ "$device_found" = "1" ] && [ -n "$device_index" ]; then
-            
-            #check on workflow
-            workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)          
-
-            if [[ $workflow = "vitis" ]]; then
-                exit
-            elif [[ $workflow = "vivado" ]]; then
+        #check on flags
+        device_found=""
+        device_index=""
+        if [ "$flags" = "" ]; then
+            #device_dialog
+            if [[ $multiple_devices = "0" ]]; then
+                device_found="1"
+                device_index="1"
+            else
                 echo ""
+                echo "${bold}Please, choose your device:${normal}"
+                echo ""
+                result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+                device_found=$(echo "$result" | sed -n '1p')
+                device_index=$(echo "$result" | sed -n '2p')
+            fi
+        else
+            #device_dialog_check
+            result="$("$CLI_PATH/common/device_dialog_check" "${flags_array[@]}")"
+            device_found=$(echo "$result" | sed -n '1p')
+            device_index=$(echo "$result" | sed -n '2p')
+            #forbidden combinations
+            if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
+                $CLI_PATH/help/program_revert
+                exit
+            fi
+            #device_dialog (forgotten mandatory)
+            if [[ $multiple_devices = "0" ]]; then
+                device_found="1"
+                device_index="1"
+            elif [[ $device_found = "0" ]]; then
+                $CLI_PATH/help/program_revert
+                exit
             fi
         fi
 
-        valid_flags="-d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
-        command_run $command_arguments_flags"@"$valid_flags
+        #check on workflow
+        workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+        if [[ $workflow = "vitis" ]]; then
+            exit
+        fi
+
+        echo ""
+        $CLI_PATH/program/revert --device $device_index --version $vivado_version
+
+        #valid_flags="-d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
+        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       vivado)
         valid_flags="-b --bitstream -d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion (Javier: 04.12.2023 --driver)  
