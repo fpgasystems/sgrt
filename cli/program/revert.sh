@@ -138,30 +138,14 @@ else
     fi
 fi
 
-#get BDF (i.e., Bus:Device.Function) 
-upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
-#bdf="${upstream_port%??}" #i.e., we transform 81:00.0 into 81:00
-
-#check on number of pci functions
-#if [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 2 ]]; then
-    #echo ""
-    #lspci | grep Xilinx | grep $bdf
-    #echo ""
-    #print additional echo
-    #if [ "$flags" = "" ]; then
-    #    echo ""
-    #fi
-#    exit
-#fi
-
+#check on workflow
 workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
 if [[ $workflow = "vitis" ]]; then
     exit
-#elif [[ $workflow = "vivado" ]]; then
-#    echo ""
 fi
 
-#ho tinc que moure a sgutil... i llevar el echo :-)
+#get upstream_port
+upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
 #echo ""
 echo "${bold}sgutil program revert${normal}"
