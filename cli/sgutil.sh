@@ -112,6 +112,19 @@ flags_check() {
     fi
 }
 
+check_on_vivado() {
+  local VIVADO_PATH=$1
+  local hostname=$2
+  local vivado_version=$3
+
+  if [ ! -d $VIVADO_PATH/$vivado_version ]; then
+    echo ""
+    echo "Please, choose a valid Vivado version for ${bold}$hostname!${normal}"
+    echo ""
+    exit 1
+  fi
+}
+
 # build ------------------------------------------------------------------------------------------------------------------------
 
 build_help() {
@@ -1288,7 +1301,8 @@ case "$command" in
     vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
     
     #check on valid Vivado version
-    $CLI_PATH/common/check_on_vivado $VIVADO_PATH $hostname $vivado_version
+    #$CLI_PATH/common/check_on_vivado $VIVADO_PATH $hostname $vivado_version
+    check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
     
     #check on DEVICES_LIST
     source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"

@@ -35,7 +35,7 @@
     templates: false #true-----------------------------------
     #scripts
     build: false
-    common: false
+    common: true
     enable: false
     examine: false
     get: false
@@ -320,7 +320,6 @@
       loop:
         - address_to_hex
         - bitstream_dialog_check
-        - check_on_vivado
         - chown
         - compare_files
         - commit_dialog_check
@@ -717,6 +716,13 @@
         - device.hpp
         - host.hpp
         - host.cpp # I believe that was an error
+    #common
+    - name: deleting common scripts
+      file:
+        path: "{{ cli_path }}/common/{{ item }}"
+        state: absent
+      loop:
+        - check_on_vivado
     #constants
     - name: deleting constants
       file:
