@@ -92,7 +92,7 @@ else
 fi
 
 #revert
-$CLI_PATH/program/revert -d $device_index
+$CLI_PATH/program/revert -d $device_index --version $vivado_version
 
 #get BDF (i.e., Bus:Device.Function) 
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)

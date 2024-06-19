@@ -333,7 +333,7 @@ $CLI_PATH/build/opennic --commit $commit_name_shell --platform $platform --proje
 #workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
 
 #revert device
-$CLI_PATH/program/revert -d $device_index
+$CLI_PATH/program/revert -d $device_index --version $vivado_version
 
 #get system interfaces (before adding the OpenNIC interface)
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
