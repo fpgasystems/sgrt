@@ -18,28 +18,33 @@ XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 
 #derived
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
+#url="${HOSTNAME}"
+#hostname="${url%%.*}"
 
 #check on Vivado version
-if [ -n "$vivado_version" ]; then
-    #vivado_version is not empty and we check if the Vivado directory exists
-    if [ ! -d $VIVADO_PATH/$vivado_version ]; then
-        echo ""
-        echo "Please, choose a valid Vivado version for ${bold}$hostname!${normal}"
-        echo ""
-        exit 1
-    fi
-else
-    #vivado_version is empty and we set the more recent Vivado version by default
-    vivado_version=$(find "$VIVADO_PATH" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort -V | tail -n 1)
+#if [ -n "$vivado_version" ]; then
+#    #vivado_version is not empty and we check if the Vivado directory exists
+#    if [ ! -d $VIVADO_PATH/$vivado_version ]; then
+#        echo ""
+#        echo "Please, choose a valid Vivado version for ${bold}$hostname!${normal}"
+#        echo ""
+#        exit 1
+#    fi
+#else
+#    #vivado_version is empty and we set the more recent Vivado version by default
+#    vivado_version=$(find "$VIVADO_PATH" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort -V | tail -n 1)
+#
+#    #vivado_version and VIVADO_PATH are empty
+#    if [ -z "$vivado_version" ]; then
+#        echo ""
+#        echo "Please, source a valid Vivado version for ${bold}$hostname!${normal}"
+#        echo ""
+#        exit 1
+#    fi
+#fi
 
-    #vivado_version and VIVADO_PATH are empty
-    if [ -z "$vivado_version" ]; then
-        echo ""
-        echo "Please, source a valid Vivado version for ${bold}$hostname!${normal}"
-        echo ""
-        exit 1
-    fi
-fi
+#check on valid Vivado version
+#$CLI_PATH/common/check_on_vivado $VIVADO_PATH $hostname $vivado_version
 
 #check on workflow
 workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
