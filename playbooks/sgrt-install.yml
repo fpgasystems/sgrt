@@ -39,16 +39,16 @@
     enable: false
     examine: false
     get: false
-    help: false
+    help: true
     new: false
-    program: false
+    program: true
     reboot: false
     run: false
     set: true
-    sgutil: false 
+    sgutil: true 
     validate: false
     #workflows
-    coyote: false
+    coyote: true
     hip: false
     mpi: false
     opennic: true
@@ -342,6 +342,7 @@
         - get_vivado_devices
         - get_xclbin_cfg
         - get_xilinx_version
+        - get_workflow
         - gh_auth_status
         - git_clone_coyote
         - git_clone_opennic
