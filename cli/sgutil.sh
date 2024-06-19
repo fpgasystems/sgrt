@@ -1301,7 +1301,6 @@ case "$command" in
     vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
     
     #check on valid Vivado version
-    #$CLI_PATH/common/check_on_vivado $VIVADO_PATH $hostname $vivado_version
     check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
     
     #check on DEVICES_LIST
