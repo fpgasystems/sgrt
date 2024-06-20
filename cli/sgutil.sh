@@ -16,6 +16,8 @@ XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 
+GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
+
 #inputs
 command=$1
 arguments=$2
@@ -88,9 +90,10 @@ check_on_commit() {
   local MY_PROJECTS_PATH=$2
   local command=$3 #program
   local WORKFLOW=$4 #arguments and workflow are the same (i.e. opennic)
-  local REPO_ADDRESS=$5
-  local REPO_COMMIT=$6
-  shift 6
+  local GITHUB_CLI_PATH=$5
+  local REPO_ADDRESS=$6
+  local REPO_COMMIT=$7
+  shift 7
   local flags_array=("$@")
   
   commit_found=""
@@ -109,11 +112,11 @@ check_on_commit() {
         commit_name="${PWD##*/}"
     else
         commit_found="1"
-        commit_name=$(cat $CLI_PATH/constants/$REPO_COMMIT)
+        commit_name=$REPO_COMMIT
     fi
   else
     #commit_dialog_check
-    result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
+    result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
     commit_found=$(echo "$result" | sed -n '1p')
     commit_name=$(echo "$result" | sed -n '2p')
     #check if commit exists
@@ -121,9 +124,9 @@ check_on_commit() {
     #forbidden combinations
     if [ "$commit_found" = "0" ]; then 
         commit_found="1"
-        commit_name=$(cat $CLI_PATH/constants/$REPO_COMMIT)
+        commit_name=$REPO_COMMIT
     elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/help/${command}"_"${WORKFLOW} #help/program_opennic must exist ($CLI_PATH/sgutil $command $WORKFLOW -h)
+        $CLI_PATH/help/${command}"_"${WORKFLOW} $REPO_COMMIT #help/program_opennic must exist ($CLI_PATH/sgutil $command $WORKFLOW -h)
         exit
     elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         echo ""
@@ -960,7 +963,7 @@ set_help() {
     echo "Devices and host configuration."
     echo ""
     echo "ARGUMENTS:"
-    echo "   gh              - Enables GitHub CLI on your host."
+    echo "   gh              - Enables GitHub CLI on your host (default path: ${bold}$GITHUB_CLI_PATH${normal})."
     echo "   keys            - Creates your RSA key pairs and adds to authorized_keys and known_hosts."
     echo "   license         - Configures a set of verified license servers for Xilinx tools."
     echo "   mtu             - Sets a valid MTU value to your host networking interface."
@@ -975,7 +978,7 @@ set_gh_help() {
     echo ""
     echo "${bold}sgutil set gh [--help]${normal}"
     echo ""
-    echo "Enables GitHub CLI on your host."
+    echo "Enables GitHub CLI on your host (default path: ${bold}$GITHUB_CLI_PATH${normal})."
     echo ""
     echo "FLAGS:"
     echo "   This command has no flags."
@@ -1441,6 +1444,9 @@ case "$command" in
         #check on flags
         valid_flags="-c --commit -d --device -p --project --remote -h --help"
         check_on_flags $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
         
         #check on vivado_developers
         check_on_vivado_developers "$USER"
@@ -1449,12 +1455,13 @@ case "$command" in
         echo "$MY_PROJECTS_PATH" 
         echo "$command" 
         echo "$arguments" 
+        echo "$GITHUB_CLI_PATH"
         echo "$ONIC_SHELL_REPO" 
         echo "$ONIC_SHELL_COMMIT" 
         echo "$flags_array"
 
         #check_on_commit
-        check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "$flags_array"
+        check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
 
         echo "hola"
 
@@ -1473,11 +1480,11 @@ case "$command" in
         valid_flags="-d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
         check_on_flags $command_arguments_flags"@"$valid_flags
 
-        #check on virtualized
-        check_on_virtualized "$CLI_PATH" "$hostname"
-
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
+
+        #check on virtualized
+        check_on_virtualized "$CLI_PATH" "$hostname"
 
         #print header
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
