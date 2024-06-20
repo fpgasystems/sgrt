@@ -1362,6 +1362,13 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
+        #print header
+        if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
+            echo ""
+            echo "${bold}sgutil program revert${normal}"
+            echo ""
+        fi
+
         #check on flags
         device_found=""
         device_index=""
@@ -1371,19 +1378,19 @@ case "$command" in
                 device_found="1"
                 device_index="1"
             else
-                echo ""
-                echo "${bold}sgutil program revert${normal}"
-                echo ""
+                #echo ""
+                #echo "${bold}sgutil program revert${normal}"
+                #echo ""
                 echo "${bold}Please, choose your device:${normal}"
                 echo ""
                 result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
                 device_found=$(echo "$result" | sed -n '1p')
                 device_index=$(echo "$result" | sed -n '2p')
                 #check on workflow (add additional echo)
-                workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-                if [[ $workflow = "vitis" ]]; then
-                    echo ""
-                fi
+                #workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+                #if [[ $workflow = "vitis" ]]; then
+                #    echo ""
+                #fi
             fi
         else
             #device_dialog_check
@@ -1402,6 +1409,14 @@ case "$command" in
             elif [[ $device_found = "0" ]]; then
                 $CLI_PATH/help/program_revert
                 exit
+            fi
+        fi
+
+        #add additional echo
+        if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
+            workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+            if [[ $workflow = "vitis" ]]; then
+                echo ""
             fi
         fi
 
