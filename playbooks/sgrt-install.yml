@@ -171,7 +171,6 @@
         - ROCM_PATH  
         - VIRTUALIZED_SERVERS_LIST
         - VITIS_COMMIT
-        - VIVADO_DEVICES_MAX
         - XILINX_PLATFORMS_PATH
         - XILINX_TOOLS_PATH
         - XILINXD_LICENSE_FILE
@@ -731,6 +730,7 @@
       loop:
         - ONIC_COMMIT
         - BITSTREAM_PATH
+        - VIVADO_DEVICES_MAX
     #help
     - name: deleting help scripts
       file:
