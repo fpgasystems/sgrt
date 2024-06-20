@@ -185,14 +185,6 @@ if [ "$flags" = "" ]; then
             echo ""
             exit
         fi
-        #check on acap (temporal until Coyote works on Versal)
-        device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-        if [[ $device_type = "acap" ]]; then
-            echo ""
-            echo "Sorry, this command is not available on ${bold}$device_type!${normal}"
-            echo ""
-            exit
-        fi
     fi
     #get_servers
     echo ""
@@ -263,14 +255,6 @@ else
             exit
         fi
     fi
-    #check on acap (temporal until Coyote works on Versal)
-    device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-    if ([ "$device_found" = "1" ] && [[ $device_type = "acap" ]]); then
-        echo ""
-        echo "Sorry, this command is not available on ${bold}$device_type!${normal}"
-        echo ""
-        exit
-    fi
     #deployment_dialog_check
     result="$("$CLI_PATH/common/deployment_dialog_check" "${flags[@]}")"
     deploy_option_found=$(echo "$result" | sed -n '1p')
@@ -324,14 +308,6 @@ else
         if [ $vivado_devices -ge $((VIVADO_DEVICES_MAX)) ]; then
             echo ""
             echo "Sorry, you have reached the maximum number of devices in ${bold}Vivado workflow!${normal}"
-            echo ""
-            exit
-        fi
-        #check on acap (temporal until Coyote works on Versal)
-        device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-        if [[ $device_type = "acap" ]]; then
-            echo ""
-            echo "Sorry, this command is not available on ${bold}$device_type!${normal}"
             echo ""
             exit
         fi
