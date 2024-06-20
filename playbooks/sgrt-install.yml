@@ -161,6 +161,7 @@
         - COYOTE_COMMIT
         - CPU_SERVERS_LIST
         - FPGA_SERVERS_LIST
+        - GITHUB_CLI_PATH
         - GPU_SERVERS_LIST
         - LOCAL_PATH
         - MPICH_PATH
