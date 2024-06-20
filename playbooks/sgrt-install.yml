@@ -168,6 +168,7 @@
         - MY_PROJECTS_PATH
         - ONIC_DRIVER_COMMIT
         - ONIC_SHELL_COMMIT
+        - ONIC_SHELL_REPO
         - ROCM_PATH  
         - VIRTUALIZED_SERVERS_LIST
         - VITIS_COMMIT
