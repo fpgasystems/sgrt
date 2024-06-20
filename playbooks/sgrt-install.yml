@@ -157,7 +157,6 @@
       when: all and constants_contents.matched == 0
       loop:
         - ACAP_SERVERS_LIST
-        - BITSTREAMS_PATH
         - COYOTE_COMMIT
         - CPU_SERVERS_LIST
         - FPGA_SERVERS_LIST
