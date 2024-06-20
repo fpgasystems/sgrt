@@ -9,10 +9,12 @@ SGRT_PATH=$(dirname "$CLI_PATH")
 COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
+ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
+MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 
 #inputs
 command=$1
@@ -81,6 +83,57 @@ command_run() {
     fi
 }
 
+check_on_commit() {
+  local CLI_PATH=$1
+  local MY_PROJECTS_PATH=$2
+  local command=$3 #program
+  local WORKFLOW=$4 #arguments and workflow are the same (i.e. opennic)
+  local REPO_ADDRESS=$5
+  local REPO_COMMIT=$6
+  shift 6
+  local flags_array=("$@")
+  
+  commit_found=""
+  commit_name=""
+  if [ "$flags_array" = "" ]; then
+    #check on PWD
+    project_path=$(dirname "$PWD")
+    commit_name=$(basename "$project_path")
+    project_found="0"
+    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+        commit_found="1"
+        project_found="1"
+        project_name=$(basename "$PWD")
+    elif [ "$commit_name" = "$WORKFLOW" ]; then
+        commit_found="1"
+        commit_name="${PWD##*/}"
+    else
+        commit_found="1"
+        commit_name=$(cat $CLI_PATH/constants/$REPO_COMMIT)
+    fi
+  else
+    #commit_dialog_check
+    result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
+    commit_found=$(echo "$result" | sed -n '1p')
+    commit_name=$(echo "$result" | sed -n '2p')
+    #check if commit exists
+    exists=$(gh api repos/$REPO_ADDRESS/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    #forbidden combinations
+    if [ "$commit_found" = "0" ]; then 
+        commit_found="1"
+        commit_name=$(cat $CLI_PATH/constants/$REPO_COMMIT)
+    elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+        $CLI_PATH/help/${command}"_"${WORKFLOW} #help/program_opennic must exist ($CLI_PATH/sgutil $command $WORKFLOW -h)
+        exit
+    elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
+        echo ""
+        echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist on the repository."
+        echo ""
+        exit
+    fi
+  fi
+}
+
 check_on_device() {
   local CLI_PATH=$1
   local command=$2
@@ -90,7 +143,6 @@ check_on_device() {
   shift 5
   local flags_array=("$@")
   
-  #check on flags
   device_found=""
   device_index=""
   if [ "$flags_array" = "" ]; then
@@ -115,7 +167,7 @@ check_on_device() {
           $CLI_PATH/help/${command}"_"${arguments}
           exit
       fi
-      #device_dialog (forgotten mandatory)
+      #forgotten mandatory
       if [[ $multiple_devices = "0" ]]; then
           device_found="1"
           device_index="1"
@@ -1406,8 +1458,20 @@ case "$command" in
         #check on vivado_developers
         check_on_vivado_developers "$USER"
 
-        #check_on_commit
+        echo "$CLI_PATH" 
+        echo "$MY_PROJECTS_PATH" 
+        echo "$command" 
+        echo "$arguments" 
+        echo "$ONIC_SHELL_REPO" 
+        echo "$ONIC_SHELL_COMMIT" 
+        echo "$flags_array"
 
+        #check_on_commit
+        check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "$flags_array"
+
+        echo "hola"
+
+        exit
         
         valid_flags="-c --commit -d --device -p --project --remote -h --help"
         echo ""
