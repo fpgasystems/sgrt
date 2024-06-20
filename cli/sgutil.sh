@@ -1417,41 +1417,6 @@ case "$command" in
         #check on device
         check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
 
-        #check on flags
-        #device_found=""
-        #device_index=""
-        #if [ "$flags_array" = "" ]; then
-        #    #device_dialog
-        #    if [[ $multiple_devices = "0" ]]; then
-        #        device_found="1"
-        #        device_index="1"
-        #    else
-        #        echo "${bold}Please, choose your device:${normal}"
-        #        echo ""
-        #        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
-        #        device_found=$(echo "$result" | sed -n '1p')
-        #        device_index=$(echo "$result" | sed -n '2p')
-        #    fi
-        #else
-        #    #device_dialog_check
-        #    result="$("$CLI_PATH/common/device_dialog_check" "${flags_array[@]}")"
-        #    device_found=$(echo "$result" | sed -n '1p')
-        #    device_index=$(echo "$result" | sed -n '2p')
-        #    #forbidden combinations
-        #    if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-        #        $CLI_PATH/help/program_revert
-        #        exit
-        #    fi
-        #    #device_dialog (forgotten mandatory)
-        #    if [[ $multiple_devices = "0" ]]; then
-        #        device_found="1"
-        #        device_index="1"
-        #    elif [[ $device_found = "0" ]]; then
-        #        $CLI_PATH/help/program_revert
-        #        exit
-        #    fi
-        #fi
-
         #add additional echo
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
             workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
@@ -1468,9 +1433,6 @@ case "$command" in
 
         echo ""
         $CLI_PATH/program/revert --device $device_index --version $vivado_version
-
-        #valid_flags="-d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
-        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       vivado)
         valid_flags="-b --bitstream -d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion (Javier: 04.12.2023 --driver)  
