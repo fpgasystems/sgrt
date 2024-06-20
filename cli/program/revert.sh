@@ -94,3 +94,5 @@ if [[ $(lsmod | grep xclmgmt | wc -l) -gt 0 ]]; then
     sleep 1
 fi
 echo ""
+
+#author: https://github.com/jmoya82
