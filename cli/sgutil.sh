@@ -1451,21 +1451,8 @@ case "$command" in
         #check on vivado_developers
         check_on_vivado_developers "$USER"
 
-        echo "$CLI_PATH" 
-        echo "$MY_PROJECTS_PATH" 
-        echo "$command" 
-        echo "$arguments" 
-        echo "$GITHUB_CLI_PATH"
-        echo "$ONIC_SHELL_REPO" 
-        echo "$ONIC_SHELL_COMMIT" 
-        echo "$flags_array"
-
         #check_on_commit
         check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-
-        echo "hola"
-
-        exit
         
         valid_flags="-c --commit -d --device -p --project --remote -h --help"
         echo ""
