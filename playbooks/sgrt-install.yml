@@ -428,6 +428,7 @@
         - build_opennic
         - new_coyote
         - new_opennic
+        - program_opennic
         - program_revert
         - validate_opennic
     #new
