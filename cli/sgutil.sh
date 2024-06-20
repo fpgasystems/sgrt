@@ -1,27 +1,30 @@
 #!/bin/bash
 
+CLI_PATH=$(dirname "$0")
+SGRT_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#constants
-CLI_PATH=$(dirname "$0")
-SGRT_PATH=$(dirname "$CLI_PATH")
-COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
-ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
-ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
-ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
-DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
-
-XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
-VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
-MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
-
-GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
+#example: sgutil program opennic --device 1
 
 #inputs
 command=$1
 arguments=$2
 
+#constants
+COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
+GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
+MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
+ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
+ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
+ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
+XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
+
+#derived
+DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
+VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
+
+#help
 cli_help() {
   cli_name=${0##*/}
   echo "
@@ -182,7 +185,6 @@ check_on_device() {
 }
 
 check_on_flags() {
-    
     # we use an @ to separate between command_arguments_flags and the valid_flags
     read input <<< $@
     aux_1="${input%%@*}"
