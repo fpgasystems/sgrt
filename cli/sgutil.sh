@@ -1365,7 +1365,7 @@ case "$command" in
         #check on flags
         device_found=""
         device_index=""
-        if [ "$flags" = "" ]; then
+        if [ "$flags_array" = "" ]; then
             #device_dialog
             if [[ $multiple_devices = "0" ]]; then
                 device_found="1"
