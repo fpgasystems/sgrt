@@ -796,21 +796,8 @@ program_driver_help() {
 }
 
 program_opennic_help() {
-    echo ""
-    echo "${bold}sgutil program opennic [flags] [--help]${normal}"
-    echo ""
-    echo "Programs OpenNIC to a given FPGA."
-    echo ""
-    echo "FLAGS:"
-    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$ONIC_SHELL_COMMIT${normal})."
-    echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
-    echo "   -p, --project   - Specifies your OpenNIC project name." 
-    #echo "       --regions   - Sets the number of independent regions (vFPGA)."
-    echo "       --remote    - Local or remote deployment."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
+    $CLI_PATH/help/program_opennic $ONIC_SHELL_COMMIT
+    exit
 }
 
 program_reset_help() {
