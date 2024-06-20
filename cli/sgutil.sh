@@ -137,6 +137,18 @@ check_on_fpga() {
   fi
 }
 
+check_on_virtualized() {
+  local CLI_PATH=$1
+  local hostname=$2
+  virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
+  if [ "$virtualized" = "1" ]; then
+      echo ""
+      echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
+      echo ""
+      exit
+  fi
+}
+
 # build ------------------------------------------------------------------------------------------------------------------------
 
 build_help() {
@@ -1345,13 +1357,7 @@ case "$command" in
         check_on_flags $command_arguments_flags"@"$valid_flags
 
         #check on virtualized
-        virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
-        if [ "$virtualized" = "1" ]; then
-            echo ""
-            echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
-            echo ""
-            exit
-        fi
+        check_on_virtualized "$CLI_PATH" "$hostname"
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
