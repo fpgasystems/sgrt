@@ -81,74 +81,6 @@ command_run() {
     fi
 }
 
-check_on_flags() {
-    
-    # we use an @ to separate between command_arguments_flags and the valid_flags
-    read input <<< $@
-    aux_1="${input%%@*}"
-    aux_2="${input##$aux_1@}"
-
-    read -a command_arguments_flags <<< "$aux_1"
-    read -a valid_flags <<< "$aux_2"
-
-    START=2
-    if [ "${command_arguments_flags[$START]}" = "-h" ] || [ "${command_arguments_flags[$START]}" = "--help" ]; then
-      ${command_arguments_flags[0]}_${command_arguments_flags[1]}_help # i.e., validate_iperf_help
-    else
-      flags=""
-      j=0
-      for (( i=$START; i<${#command_arguments_flags[@]}; i++ ))
-      do
-	      if [[ " ${valid_flags[*]} " =~ " ${command_arguments_flags[$i]} " ]]; then
-	        flags+="${command_arguments_flags[$i]} "
-	        i=$(($i+1))
-	        flags+="${command_arguments_flags[$i]} "
-	      else
-          ${command_arguments_flags[0]}_${command_arguments_flags[1]}_help # i.e., validate_iperf_help
-          #echo "-1"
-          #break
-	      fi
-      done
-    fi
-}
-
-check_on_vivado() {
-  local VIVADO_PATH=$1
-  local hostname=$2
-  local vivado_version=$3
-  if [ ! -d $VIVADO_PATH/$vivado_version ]; then
-    echo ""
-    echo "Please, choose a valid Vivado version for ${bold}$hostname!${normal}"
-    echo ""
-    exit 1
-  fi
-}
-
-check_on_fpga() {
-  local CLI_PATH=$1
-  local hostname=$2
-  acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
-      echo ""
-      echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
-      echo ""
-      exit 1
-  fi
-}
-
-check_on_virtualized() {
-  local CLI_PATH=$1
-  local hostname=$2
-  virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
-  if [ "$virtualized" = "1" ]; then
-      echo ""
-      echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
-      echo ""
-      exit
-  fi
-}
-
 check_on_device() {
   local CLI_PATH=$1
   local command=$2
@@ -191,6 +123,85 @@ check_on_device() {
           $CLI_PATH/help/${command}"_"${arguments}
           exit
       fi
+  fi
+}
+
+check_on_flags() {
+    
+    # we use an @ to separate between command_arguments_flags and the valid_flags
+    read input <<< $@
+    aux_1="${input%%@*}"
+    aux_2="${input##$aux_1@}"
+
+    read -a command_arguments_flags <<< "$aux_1"
+    read -a valid_flags <<< "$aux_2"
+
+    START=2
+    if [ "${command_arguments_flags[$START]}" = "-h" ] || [ "${command_arguments_flags[$START]}" = "--help" ]; then
+      ${command_arguments_flags[0]}_${command_arguments_flags[1]}_help # i.e., validate_iperf_help
+    else
+      flags=""
+      j=0
+      for (( i=$START; i<${#command_arguments_flags[@]}; i++ ))
+      do
+	      if [[ " ${valid_flags[*]} " =~ " ${command_arguments_flags[$i]} " ]]; then
+	        flags+="${command_arguments_flags[$i]} "
+	        i=$(($i+1))
+	        flags+="${command_arguments_flags[$i]} "
+	      else
+          ${command_arguments_flags[0]}_${command_arguments_flags[1]}_help # i.e., validate_iperf_help
+          #echo "-1"
+          #break
+	      fi
+      done
+    fi
+}
+
+check_on_fpga() {
+  local CLI_PATH=$1
+  local hostname=$2
+  acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
+      echo ""
+      echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
+      echo ""
+      exit 1
+  fi
+}
+
+check_on_virtualized() {
+  local CLI_PATH=$1
+  local hostname=$2
+  virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
+  if [ "$virtualized" = "1" ]; then
+      echo ""
+      echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
+      echo ""
+      exit
+  fi
+}
+
+check_on_vivado() {
+  local VIVADO_PATH=$1
+  local hostname=$2
+  local vivado_version=$3
+  if [ ! -d $VIVADO_PATH/$vivado_version ]; then
+    echo ""
+    echo "Please, choose a valid Vivado version for ${bold}$hostname!${normal}"
+    echo ""
+    exit 1
+  fi
+}
+
+check_on_vivado_developers() {
+  local username=$1
+  member=$($CLI_PATH/common/is_member $username vivado_developers)
+  if [ "$member" = "false" ]; then
+      echo ""
+      echo "Sorry, ${bold}$username!${normal} You are not granted to use this command."
+      echo ""
+      exit
   fi
 }
 
@@ -1158,7 +1169,7 @@ if [[ $(echo "$command_arguments_flags" | grep "\-\-help\b" | wc -l) = 1 ]]; the
 fi
 
 #get username
-username=$USER
+#username=$USER
 
 #get hostname
 url="${HOSTNAME}"
@@ -1359,10 +1370,10 @@ case "$command" in
     #check on ACAP or FPGA servers (server must have at least one configurable device)
     check_on_fpga "$CLI_PATH" "$hostname"
     
-    #get vivado_version
+    #get Vivado version
     vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
     
-    #check on valid Vivado version
+    #check on Vivado version
     check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
     
     #check on DEVICES_LIST
@@ -1388,7 +1399,17 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
-        valid_flags="-c --commit -d --device -p --project --remote -h --help" #--regions
+        #check on flags
+        valid_flags="-c --commit -d --device -p --project --remote -h --help"
+        check_on_flags $command_arguments_flags"@"$valid_flags
+        
+        #check on vivado_developers
+        check_on_vivado_developers "$USER"
+
+        #check_on_commit
+
+        
+        valid_flags="-c --commit -d --device -p --project --remote -h --help"
         echo ""
         command_run $command_arguments_flags"@"$valid_flags
         ;;
