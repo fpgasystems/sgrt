@@ -116,12 +116,24 @@ check_on_vivado() {
   local VIVADO_PATH=$1
   local hostname=$2
   local vivado_version=$3
-
   if [ ! -d $VIVADO_PATH/$vivado_version ]; then
     echo ""
     echo "Please, choose a valid Vivado version for ${bold}$hostname!${normal}"
     echo ""
     exit 1
+  fi
+}
+
+check_on_fpga() {
+  local CLI_PATH=$1
+  local hostname=$2
+  acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
+      echo ""
+      echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
+      echo ""
+      exit 1
   fi
 }
 
@@ -1287,15 +1299,8 @@ case "$command" in
     esac
     ;;
   program)
-    #check on ACAP or FPGA servers (server must have at least one ACAP or one FPGA)
-    acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-    fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-    if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
-        echo ""
-        echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
-        echo ""
-        exit
-    fi
+    #check on ACAP or FPGA servers (server must have at least one configurable device)
+    check_on_fpga "$CLI_PATH" "$hostname"
     
     #get vivado_version
     vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
