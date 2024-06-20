@@ -81,7 +81,7 @@ command_run() {
     fi
 }
 
-flags_check() {
+check_on_flags() {
     
     # we use an @ to separate between command_arguments_flags and the valid_flags
     read input <<< $@
@@ -1342,7 +1342,7 @@ case "$command" in
       revert)
         #check on flags
         valid_flags="-d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
-        flags_check $command_arguments_flags"@"$valid_flags
+        check_on_flags $command_arguments_flags"@"$valid_flags
 
         #check on virtualized
         virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
