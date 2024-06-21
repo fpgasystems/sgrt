@@ -1450,6 +1450,9 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
         
+        #check on virtualized
+        check_on_virtualized "$CLI_PATH" "$hostname"
+        
         #check on vivado_developers
         check_on_vivado_developers "$USER"
 
