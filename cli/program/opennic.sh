@@ -10,7 +10,8 @@ normal=$(tput sgr0)
 #inputs
 commit_name=$2
 device_index=$4
-vivado_version=$6
+project_name=$6
+vivado_version=$8
 
 #constants
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
@@ -88,15 +89,15 @@ fi
 #check on flags
 #commit_found=""
 #commit_name=""
-project_found=""
-project_name=""
+#project_found=""
+#project_name=""
 #device_found=""
 #device_index=""
 if [ "$flags" = "" ]; then
     #check on PWD
     #project_path=$(dirname "$PWD")
     #commit_name=$(basename "$project_path")
-    project_found="0"
+    #project_found="0"
     #if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
     #    commit_found="1"
     #    project_found="1"
@@ -117,18 +118,18 @@ if [ "$flags" = "" ]; then
     #echo ""
     #echo "${bold}sgutil program $WORKFLOW (commit ID: $commit_name)${normal}"
     #project_dialog
-    if [[ $project_found = "0" ]]; then
-        echo ""
-        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-        echo ""
-        result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
-        project_found=$(echo "$result" | sed -n '1p')
-        project_name=$(echo "$result" | sed -n '2p')
-        multiple_projects=$(echo "$result" | sed -n '3p')
-        if [[ $multiple_projects = "0" ]]; then
-            echo $project_name
-        fi
-    fi
+    #if [[ $project_found = "0" ]]; then
+    #    echo ""
+    #    echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+    #    echo ""
+    #    result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
+    #    project_found=$(echo "$result" | sed -n '1p')
+    #    project_name=$(echo "$result" | sed -n '2p')
+    #    multiple_projects=$(echo "$result" | sed -n '3p')
+    #    if [[ $multiple_projects = "0" ]]; then
+    #        echo $project_name
+    #    fi
+    #fi
     #device_dialog
     #if [[ $multiple_devices = "0" ]]; then
     #    device_found="1"
@@ -182,15 +183,15 @@ else
     #    exit
     #fi
     #project_dialog_check
-    result="$("$CLI_PATH/common/project_dialog_check" "${flags[@]}")"
-    project_found=$(echo "$result" | sed -n '1p')
-    project_path=$(echo "$result" | sed -n '2p')
-    project_name=$(echo "$result" | sed -n '3p')
+    #result="$("$CLI_PATH/common/project_dialog_check" "${flags[@]}")"
+    #project_found=$(echo "$result" | sed -n '1p')
+    #project_path=$(echo "$result" | sed -n '2p')
+    #project_name=$(echo "$result" | sed -n '3p')
     #forbidden combinations
-    if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
-        $CLI_PATH/sgutil program $WORKFLOW -h
-        exit
-    fi
+    #if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
+    #    $CLI_PATH/sgutil program $WORKFLOW -h
+    #    exit
+    #fi
     #device_dialog_check
     #result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
     #device_found=$(echo "$result" | sed -n '1p')
@@ -214,30 +215,30 @@ else
     #echo "${bold}sgutil program $WORKFLOW (commit ID: $commit_name)${normal}"
     #echo ""
     #check on PWD
-    project_path=$(dirname "$PWD")
-    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
-        project_found="1"
-        project_name=$(basename "$PWD")
-        #echo ""
-        #echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-        #echo ""
-        #echo $project_name
-        #echo ""
-    fi
+    #project_path=$(dirname "$PWD")
+    #if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+    #    project_found="1"
+    #    project_name=$(basename "$PWD")
+    #    #echo ""
+    #    #echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+    #    #echo ""
+    #    #echo $project_name
+    #    #echo ""
+    #fi
     #project_dialog (forgotten mandatory 1)
-    if [[ $project_found = "0" ]]; then
-        #echo ""
-        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-        echo ""
-        result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
-        project_found=$(echo "$result" | sed -n '1p')
-        project_name=$(echo "$result" | sed -n '2p')
-        multiple_projects=$(echo "$result" | sed -n '3p')
-        if [[ $multiple_projects = "0" ]]; then
-            echo $project_name
-        fi
-        echo ""
-    fi
+    #if [[ $project_found = "0" ]]; then
+    #    #echo ""
+    #    echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+    #    echo ""
+    #    result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
+    #    project_found=$(echo "$result" | sed -n '1p')
+    #    project_name=$(echo "$result" | sed -n '2p')
+    #    multiple_projects=$(echo "$result" | sed -n '3p')
+    #    if [[ $multiple_projects = "0" ]]; then
+    #        echo $project_name
+    #    fi
+    #    echo ""
+    #fi
     #device_dialog (forgotten mandatory 2)
     #if [[ $multiple_devices = "0" ]]; then
     #    device_found="1"

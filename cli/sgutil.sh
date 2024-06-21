@@ -227,6 +227,75 @@ check_on_fpga() {
   fi
 }
 
+check_on_project() {
+  local CLI_PATH=$1
+  local MY_PROJECTS_PATH=$2
+  local command=$3
+  local WORKFLOW=$4 #arguments and workflow are the same (i.e. opennic)
+  local commit_name=$5
+  shift 5
+  local flags_array=("$@")
+  
+  project_found=""
+  project_name=""
+  if [ "$flags_array" = "" ]; then
+    #check on PWD
+    project_path=$(dirname "$PWD")
+    commit_name=$(basename "$project_path")
+    project_found="0"
+    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+        commit_found="1"
+        project_found="1"
+        project_name=$(basename "$PWD")
+    fi
+    #project_dialog
+    if [[ $project_found = "0" ]]; then
+      echo "${bold}Please, choose your project:${normal}"
+      echo ""
+      result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
+      project_found=$(echo "$result" | sed -n '1p')
+      project_name=$(echo "$result" | sed -n '2p')
+      multiple_projects=$(echo "$result" | sed -n '3p')
+      if [[ $multiple_projects = "0" ]]; then
+          echo $project_name
+      fi
+      echo ""
+    fi
+  else
+    #project_dialog_check
+    result="$("$CLI_PATH/common/project_dialog_check" "${flags_array[@]}")"
+    project_found=$(echo "$result" | sed -n '1p')
+    project_path=$(echo "$result" | sed -n '2p')
+    project_name=$(echo "$result" | sed -n '3p')
+    #forbidden combinations
+    if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
+        #$CLI_PATH/sgutil program $WORKFLOW -h
+        $CLI_PATH/help/${command}"_"${WORKFLOW}
+        exit
+    fi
+    #check on PWD
+    project_path=$(dirname "$PWD")
+    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+        project_found="1"
+        project_name=$(basename "$PWD")
+    fi
+    #forgotten mandatory
+    if [[ $project_found = "0" ]]; then
+        #echo ""
+        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+        echo ""
+        result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
+        project_found=$(echo "$result" | sed -n '1p')
+        project_name=$(echo "$result" | sed -n '2p')
+        multiple_projects=$(echo "$result" | sed -n '3p')
+        if [[ $multiple_projects = "0" ]]; then
+            echo $project_name
+        fi
+        echo ""
+    fi
+  fi
+}
+
 check_on_virtualized() {
   local CLI_PATH=$1
   local hostname=$2
@@ -1465,18 +1534,22 @@ case "$command" in
         
         #check on device
         check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        echo ""
+
+        #check on project
+        check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
 
         #add additional echo
-        if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
-          echo ""
-        fi
+        #if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
+        #  echo ""
+        #fi
         
         #echo $commit_name
         #echo $vivado_version
         #echo $device_index
 
         #probar per aci
-        $CLI_PATH/program/opennic --commit $commit_name --device $device_index --version $vivado_version
+        $CLI_PATH/program/opennic --commit $commit_name --device $device_index ---project $project_name -version $vivado_version
 
         #valid_flags="-c --commit -d --device -p --project --remote -h --help"
         #echo ""
@@ -1520,8 +1593,8 @@ case "$command" in
         if [[ $workflow = "vitis" ]]; then
             exit
         fi
-
         echo ""
+
         $CLI_PATH/program/revert --device $device_index --version $vivado_version
         ;;
       vivado)
