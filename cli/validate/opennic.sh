@@ -231,80 +231,6 @@ if [ -e "$library_shell" ]; then
 fi
 $CLI_PATH/build/opennic --commit $commit_name_shell --platform $platform --project $DIR
 
-#check on project folder
-#if ! [ -d "$DIR" ]; then
-#    #create project folder
-#    mkdir -p $DIR
-#
-#    #clone repository
-#    $CLI_PATH/common/git_clone_opennic $DIR $commit_name_shell $commit_name_driver
-#
-#    #change to project directory
-#    cd $DIR
-#
-#    #save commit_name_shell
-#    echo "$commit_name_shell" > ONIC_SHELL_COMMIT
-#    echo "$commit_name_driver" > ONIC_DRIVER_COMMIT
-#
-#    #define shells
-#    library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name_shell/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-#    #commit_shell="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-#    project_shell="$DIR/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-#
-#    #compile shell
-#    if [ -e "$library_shell" ]; then
-#        cp "$library_shell" "$project_shell"
-#    elif ! [ -e "$project_shell" ]; then
-#        #echo ""
-#        echo "${bold}OpenNIC shell compilation (commit ID: $commit_name_shell):${normal}"
-#        echo ""
-#        echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1"
-#        echo ""
-#        cd $SHELL_BUILD_DIR
-#        vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
-#
-#        #copy and send email
-#        if [ -f "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" ]; then
-#            #copy to project
-#            cp "$DIR/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$project_shell"
-#            #send email
-#            #user_email=$USER@ethz.ch
-#            #echo "Subject: Good news! sgutil build opennic ($project_name / -DFDEV_NAME=$FDEV_NAME) is done!" | sendmail $user_email
-#        fi
-#    fi
-#fi
-
-#compile driver
-#echo ""
-#echo "${bold}Driver compilation:${normal}"
-#echo ""
-#echo "cd $DRIVER_DIR && make"
-#echo ""
-#cd $DRIVER_DIR && make
-
-#copy driver
-#cp -f $DRIVER_DIR/$DRIVER_NAME $DIR/$DRIVER_NAME
-
-#remove drivier files (generated while compilation)
-#rm $DRIVER_DIR/Module.symvers
-#rm -rf $DRIVER_DIR/hwmon
-#rm $DRIVER_DIR/modules.order
-#rm $DRIVER_DIR/onic.ko 
-#rm $DRIVER_DIR/onic.mod
-#rm $DRIVER_DIR/onic.mod.c
-#rm $DRIVER_DIR/onic.mod.o
-#rm $DRIVER_DIR/onic.o
-#rm $DRIVER_DIR/onic_common.o
-#rm $DRIVER_DIR/onic_ethtool.o
-#rm $DRIVER_DIR/onic_hardware.o
-#rm $DRIVER_DIR/onic_lib.o
-#rm $DRIVER_DIR/onic_main.o
-#rm $DRIVER_DIR/onic_netdev.o
-#rm $DRIVER_DIR/onic_sysfs.o
-
-#get workflow (print echo)
-#workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
-
 #revert device
 $CLI_PATH/program/revert -d $device_index --version $vivado_version
 
@@ -312,9 +238,6 @@ $CLI_PATH/program/revert -d $device_index --version $vivado_version
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 
 #program opennic
-#if [[ $workflow = "vitis" ]]; then
-#    echo ""
-#fi
 $CLI_PATH/program/opennic --project $DIR --device $device_index --commit $commit_name_shell --remote 0
 
 #get system interfaces (after adding the OpenNIC interface)
@@ -337,11 +260,5 @@ if [[ ${#remote_servers[@]} -gt 0 ]]; then
     echo ""
     ping -I $eno_onic -c $NUM_PINGS $target_host
 fi
-
-#echo "sudo arping -I $eno_onic $hostname-mellanox-0"
-#sudo arping -I $eno_onic $hostname-mellanox-0
-
-#remove at the end (avoids dialog)
-#rm $project_shell
 
 echo ""
