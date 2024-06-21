@@ -240,17 +240,19 @@ check_on_project() {
   shift 5
   local flags_array=("$@")
 
-  #check on PWD
-  project_path=$(dirname "$PWD")
   project_found="0"
+  project_name=""
+
+  #check on PWD
+  project_path=$(dirname "$PWD")  
   if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
       project_found="1"
       project_name=$(basename "$PWD")
       return 1
   fi
   
-  project_found=""
-  project_name=""
+  #project_found=""
+  #project_name=""
   if [ "$flags_array" = "" ]; then
     #check on PWD
     #project_path=$(dirname "$PWD")
