@@ -129,7 +129,7 @@ check_on_commit() {
         commit_found="1"
         commit_name=$DEFAULT_COMMIT
     elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/help/${command}"_"${WORKFLOW} $DEFAULT_COMMIT #help/program_opennic must exist ($CLI_PATH/sgutil $command $WORKFLOW -h)
+        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH #help/program_opennic must exist ($CLI_PATH/sgutil $command $WORKFLOW -h)
         exit
     elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         echo ""
@@ -288,7 +288,7 @@ check_on_project() {
     #forbidden combinations
     if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
         #$CLI_PATH/sgutil program $WORKFLOW -h
-        $CLI_PATH/help/${command}"_"${WORKFLOW}
+        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH
         exit
     fi
     #forgotten mandatory
