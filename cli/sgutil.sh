@@ -1537,12 +1537,12 @@ case "$command" in
         
         #check on device
         check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        echo ""
+        #echo ""
 
         #add additional echo
-        #if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
-        #  echo ""
-        #fi
+        if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
+          echo ""
+        fi
         
         #echo $commit_name
         #echo $vivado_version
