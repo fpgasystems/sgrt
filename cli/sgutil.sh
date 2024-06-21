@@ -251,16 +251,7 @@ check_on_project() {
       return 1
   fi
   
-  #project_found=""
-  #project_name=""
   if [ "$flags_array" = "" ]; then
-    #check on PWD
-    #project_path=$(dirname "$PWD")
-    #project_found="0"
-    #if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
-    #    project_found="1"
-    #    project_name=$(basename "$PWD")
-    #fi
     #project_dialog
     if [[ $project_found = "0" ]]; then
       echo "${bold}Please, choose your project:${normal}"
@@ -275,13 +266,6 @@ check_on_project() {
       echo ""
     fi
   else
-    #check on PWD
-    #project_path=$(dirname "$PWD")
-    #project_found="0"
-    #if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
-    #    project_found="1"
-    #    project_name=$(basename "$PWD")
-    #fi
     #project_dialog_check
     result="$("$CLI_PATH/common/project_dialog_check" "${flags_array[@]}")"
     project_found=$(echo "$result" | sed -n '1p')
