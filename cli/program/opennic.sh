@@ -1,10 +1,17 @@
 #!/bin/bash
 
+CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+#usage:       $CLI_PATH/program/opennic --commit $comit_id --device $device_index --project $project_name --remote $remote_option --version $vivado_version
+#example: /opt/sgrt/cli/program/opennic --commit   8077751 --device             1 --project   hello_world --remote              0
+
+#inputs
+commit_name=$2
+vivado_version=$4
+
 #constants
-CLI_PATH="$(dirname "$(dirname "$0")")"
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
@@ -88,30 +95,30 @@ sudo $CLI_PATH/common/get_devices_acap_fpga_coyote
 read -a flags <<< "$@"
 
 #version_dialog_check
-result="$("$CLI_PATH/common/version_dialog_check" "${flags[@]}")"
-vivado_version=$(echo "$result" | sed -n '2p')
+#result="$("$CLI_PATH/common/version_dialog_check" "${flags[@]}")"
+#vivado_version=$(echo "$result" | sed -n '2p')
 
 #check on Vivado version
-if [ -n "$vivado_version" ]; then
-    #vivado_version is not empty and we check if the Vivado directory exists
-    if [ ! -d $VIVADO_PATH/$vivado_version ]; then
-        echo ""
-        echo "Please, choose a valid Vivado version for ${bold}$hostname!${normal}"
-        echo ""
-        exit 1
-    fi
-else
-    #vivado_version is empty and we set the more recent Vivado version by default
-    vivado_version=$(find "$VIVADO_PATH" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort -V | tail -n 1)
-
-    #vivado_version and VIVADO_PATH are empty
-    if [ -z "$vivado_version" ]; then
-        echo ""
-        echo "Please, source a valid Vivado version for ${bold}$hostname!${normal}"
-        echo ""
-        exit 1
-    fi
-fi
+#if [ -n "$vivado_version" ]; then
+#    #vivado_version is not empty and we check if the Vivado directory exists
+#    if [ ! -d $VIVADO_PATH/$vivado_version ]; then
+#        echo ""
+#        echo "Please, choose a valid Vivado version for ${bold}$hostname!${normal}"
+#        echo ""
+#        exit 1
+#    fi
+#else
+#    #vivado_version is empty and we set the more recent Vivado version by default
+#    vivado_version=$(find "$VIVADO_PATH" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort -V | tail -n 1)
+#
+#    #vivado_version and VIVADO_PATH are empty
+#    if [ -z "$vivado_version" ]; then
+#        echo ""
+#        echo "Please, source a valid Vivado version for ${bold}$hostname!${normal}"
+#        echo ""
+#        exit 1
+#    fi
+#fi
 
 #check if workflow exists
 if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
