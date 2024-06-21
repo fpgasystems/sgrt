@@ -1547,13 +1547,6 @@ case "$command" in
         #check on project
         check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
 
-        echo "Torne aci?"
-
-        echo "project_found: $project_found"
-        echo "project_path: $project_path"
-        echo "project_name: $project_name"
-        echo "commit_name: $commit_name"
-        
         #check on device
         check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         #echo ""
