@@ -1455,12 +1455,20 @@ case "$command" in
 
         #check_on_commit
         check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+
+        echo ""
+        echo "${bold}sgutil $command $arguments (commit ID: $commit_name)${normal}"
+        echo ""
+        
+        #check on device
+        check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         
         echo $commit_name
         echo $vivado_version
+        echo $device_index
 
         #probar per aci
-        $CLI_PATH/program/opennic --commit $commit_name --version $vivado_version
+        $CLI_PATH/program/opennic --commit $commit_name --device $device_index --version $vivado_version
 
         #valid_flags="-c --commit -d --device -p --project --remote -h --help"
         #echo ""

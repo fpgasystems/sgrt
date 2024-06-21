@@ -9,7 +9,8 @@ normal=$(tput sgr0)
 
 #inputs
 commit_name=$2
-vivado_version=$4
+device_index=$4
+vivado_version=$6
 
 #constants
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
@@ -43,41 +44,44 @@ if [ "$virtualized" = "1" ]; then
 fi
 
 #check on ACAP or FPGA servers (server must have at least one ACAP or one FPGA)
-acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
-    echo ""
-    echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
-    echo ""
-    exit
-fi
+#acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+#fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+#if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
+#    echo ""
+#    echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
+#    echo ""
+#    exit
+#fi
 
 #check for vivado_developers
-member=$($CLI_PATH/common/is_member $USER vivado_developers)
-if [ "$member" = "false" ]; then
-    echo ""
-    echo "Sorry, ${bold}$USER!${normal} You are not granted to use this command."
-    echo ""
-    exit
-fi
+#member=$($CLI_PATH/common/is_member $USER vivado_developers)
+#if [ "$member" = "false" ]; then
+#    echo ""
+#    echo "Sorry, ${bold}$USER!${normal} You are not granted to use this command."
+#    echo ""
+#    exit
+#fi
 
 #check on DEVICES_LIST
-source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+#source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
 
 #get number of fpga and acap devices present
-MAX_DEVICES=$(grep -E "fpga|acap" $DEVICES_LIST | wc -l)
+#MAX_DEVICES=$(grep -E "fpga|acap" $DEVICES_LIST | wc -l)
 
 #check on multiple devices
-multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+#multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 
 #create devices_acap_fpga_coyote
-sudo $CLI_PATH/common/get_devices_acap_fpga_coyote
+#sudo $CLI_PATH/common/get_devices_acap_fpga_coyote
 
 #inputs
 read -a flags <<< "$@"
 
 #check if workflow exists
 if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
+    
+    echo "Hola 1"
+    
     echo ""
     echo "You must build your project first! Please, use sgutil build $WORKFLOW"
     echo ""
@@ -89,13 +93,13 @@ fi
 #commit_name=""
 project_found=""
 project_name=""
-device_found=""
-device_index=""
+#device_found=""
+#device_index=""
 if [ "$flags" = "" ]; then
     #check on PWD
     #project_path=$(dirname "$PWD")
     #commit_name=$(basename "$project_path")
-    #project_found="0"
+    project_found="0"
     #if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
     #    commit_found="1"
     #    project_found="1"
@@ -114,7 +118,7 @@ if [ "$flags" = "" ]; then
     #fi
     #header (1/2)
     #echo ""
-    echo "${bold}sgutil program $WORKFLOW (commit ID: $commit_name)${normal}"
+    #echo "${bold}sgutil program $WORKFLOW (commit ID: $commit_name)${normal}"
     #project_dialog
     if [[ $project_found = "0" ]]; then
         echo ""
@@ -129,17 +133,17 @@ if [ "$flags" = "" ]; then
         fi
     fi
     #device_dialog
-    if [[ $multiple_devices = "0" ]]; then
-        device_found="1"
-        device_index="1"
-    else
-        echo ""
-        echo "${bold}Please, choose your device:${normal}"
-        echo ""
-        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
-        device_found=$(echo "$result" | sed -n '1p')
-        device_index=$(echo "$result" | sed -n '2p')
-    fi
+    #if [[ $multiple_devices = "0" ]]; then
+    #    device_found="1"
+    #    device_index="1"
+    #else
+    #    echo ""
+    #    echo "${bold}Please, choose your device:${normal}"
+    #    echo ""
+    #    result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+    #    device_found=$(echo "$result" | sed -n '1p')
+    #    device_index=$(echo "$result" | sed -n '2p')
+    #fi
     #get_servers
     echo ""
     echo "${bold}Quering remote servers with ssh:${normal}"
@@ -191,14 +195,14 @@ else
         exit
     fi
     #device_dialog_check
-    result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
-    device_found=$(echo "$result" | sed -n '1p')
-    device_index=$(echo "$result" | sed -n '2p')
+    #result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
+    #device_found=$(echo "$result" | sed -n '1p')
+    #device_index=$(echo "$result" | sed -n '2p')
     #forbidden combinations
-    if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-        $CLI_PATH/sgutil program $WORKFLOW -h
-        exit
-    fi
+    #if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
+    #    $CLI_PATH/sgutil program $WORKFLOW -h
+    #    exit
+    #fi
     #deployment_dialog_check
     result="$("$CLI_PATH/common/deployment_dialog_check" "${flags[@]}")"
     deploy_option_found=$(echo "$result" | sed -n '1p')
@@ -238,17 +242,17 @@ else
         echo ""
     fi
     #device_dialog (forgotten mandatory 2)
-    if [[ $multiple_devices = "0" ]]; then
-        device_found="1"
-        device_index="1"
-    elif [[ $device_found = "0" ]]; then
-        echo "${bold}Please, choose your device:${normal}"
-        echo ""
-        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
-        device_found=$(echo "$result" | sed -n '1p')
-        device_index=$(echo "$result" | sed -n '2p')
-        echo ""
-    fi
+    #if [[ $multiple_devices = "0" ]]; then
+    #    device_found="1"
+    #    device_index="1"
+    #elif [[ $device_found = "0" ]]; then
+    #    echo "${bold}Please, choose your device:${normal}"
+    #    echo ""
+    #    result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+    #    device_found=$(echo "$result" | sed -n '1p')
+    #    device_index=$(echo "$result" | sed -n '2p')
+    #    echo ""
+    #fi
     #deployment_dialog (forgotten mandatory 3)
     #get_servers
     echo "${bold}Quering remote servers with ssh:${normal}"
@@ -291,8 +295,14 @@ FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 #set bitstream name
 BIT_NAME="open_nic_shell.$FDEV_NAME.$vivado_version.bit"
 
+echo "DIR: $DIR"
+echo "BIT_NAME: $BIT_NAME"
+
 #check on bitstream
 if ! [ -e "$DIR/$BIT_NAME" ]; then
+
+    echo "Hola 2"
+
     echo ""
     echo "You must build your project first! Please, use sgutil build $WORKFLOW"
     echo ""
