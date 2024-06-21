@@ -1456,9 +1456,15 @@ case "$command" in
         #check_on_commit
         check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         
-        valid_flags="-c --commit -d --device -p --project --remote -h --help"
-        echo ""
-        command_run $command_arguments_flags"@"$valid_flags
+        echo $commit_name
+        echo $vivado_version
+
+        #probar per aci
+        $CLI_PATH/program/opennic --commit $commit_name --version $vivado_version
+
+        #valid_flags="-c --commit -d --device -p --project --remote -h --help"
+        #echo ""
+        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       reset) 
         valid_flags="-d --device -h --help"
