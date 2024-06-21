@@ -95,7 +95,7 @@ check_on_commit() {
   local WORKFLOW=$4 #arguments and workflow are the same (i.e. opennic)
   local GITHUB_CLI_PATH=$5
   local REPO_ADDRESS=$6
-  local REPO_COMMIT=$7
+  local DEFAULT_COMMIT=$7
   shift 7
   local flags_array=("$@")
   
@@ -115,7 +115,7 @@ check_on_commit() {
         commit_name="${PWD##*/}"
     else
         commit_found="1"
-        commit_name=$REPO_COMMIT
+        commit_name=$DEFAULT_COMMIT
     fi
   else
     #commit_dialog_check
@@ -127,9 +127,9 @@ check_on_commit() {
     #forbidden combinations
     if [ "$commit_found" = "0" ]; then 
         commit_found="1"
-        commit_name=$REPO_COMMIT
+        commit_name=$DEFAULT_COMMIT
     elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/help/${command}"_"${WORKFLOW} $REPO_COMMIT #help/program_opennic must exist ($CLI_PATH/sgutil $command $WORKFLOW -h)
+        $CLI_PATH/help/${command}"_"${WORKFLOW} $DEFAULT_COMMIT #help/program_opennic must exist ($CLI_PATH/sgutil $command $WORKFLOW -h)
         exit
     elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         echo ""
@@ -178,8 +178,12 @@ check_on_device() {
           device_found="1"
           device_index="1"
       elif [[ $device_found = "0" ]]; then
-          $CLI_PATH/help/${command}"_"${arguments}
-          exit
+          echo "${bold}Please, choose your device:${normal}"
+          echo ""
+          result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+          device_found=$(echo "$result" | sed -n '1p')
+          device_index=$(echo "$result" | sed -n '2p')
+          echo ""
       fi
   fi
 }
@@ -235,19 +239,26 @@ check_on_project() {
   local commit_name=$5
   shift 5
   local flags_array=("$@")
+
+  #check on PWD
+  project_path=$(dirname "$PWD")
+  project_found="0"
+  if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+      project_found="1"
+      project_name=$(basename "$PWD")
+      return 1
+  fi
   
   project_found=""
   project_name=""
   if [ "$flags_array" = "" ]; then
     #check on PWD
-    project_path=$(dirname "$PWD")
-    #commit_name=$(basename "$project_path")
-    project_found="0"
-    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
-        commit_found="1"
-        project_found="1"
-        project_name=$(basename "$PWD")
-    fi
+    #project_path=$(dirname "$PWD")
+    #project_found="0"
+    #if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+    #    project_found="1"
+    #    project_name=$(basename "$PWD")
+    #fi
     #project_dialog
     if [[ $project_found = "0" ]]; then
       echo "${bold}Please, choose your project:${normal}"
@@ -262,6 +273,13 @@ check_on_project() {
       echo ""
     fi
   else
+    #check on PWD
+    #project_path=$(dirname "$PWD")
+    #project_found="0"
+    #if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+    #    project_found="1"
+    #    project_name=$(basename "$PWD")
+    #fi
     #project_dialog_check
     result="$("$CLI_PATH/common/project_dialog_check" "${flags_array[@]}")"
     project_found=$(echo "$result" | sed -n '1p')
@@ -272,12 +290,6 @@ check_on_project() {
         #$CLI_PATH/sgutil program $WORKFLOW -h
         $CLI_PATH/help/${command}"_"${WORKFLOW}
         exit
-    fi
-    #check on PWD
-    project_path=$(dirname "$PWD")
-    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
-        project_found="1"
-        project_name=$(basename "$PWD")
     fi
     #forgotten mandatory
     if [[ $project_found = "0" ]]; then
@@ -1534,6 +1546,13 @@ case "$command" in
         
         #check on project
         check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
+
+        echo "Torne aci?"
+
+        echo "project_found: $project_found"
+        echo "project_path: $project_path"
+        echo "project_name: $project_name"
+        echo "commit_name: $commit_name"
         
         #check on device
         check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
