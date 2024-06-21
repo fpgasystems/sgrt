@@ -3,7 +3,8 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-COYOTE_COMMIT=$1
+CLI_PATH=$1
+COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
 
 #echo ""
 echo "${bold}sgutil new coyote [flags] [--help]${normal}"
