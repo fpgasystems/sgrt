@@ -342,6 +342,6 @@ fi
 #sudo arping -I $eno_onic $hostname-mellanox-0
 
 #remove at the end (avoids dialog)
-rm $project_shell
+#rm $project_shell
 
 echo ""
