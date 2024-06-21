@@ -79,9 +79,6 @@ read -a flags <<< "$@"
 
 #check if workflow exists
 if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
-    
-    echo "Hola 1"
-    
     echo ""
     echo "You must build your project first! Please, use sgutil build $WORKFLOW"
     echo ""
@@ -297,9 +294,6 @@ BIT_NAME="open_nic_shell.$FDEV_NAME.$vivado_version.bit"
 
 #check on bitstream
 if ! [ -e "$DIR/$BIT_NAME" ]; then
-
-    echo "Hola 2"
-
     echo ""
     echo "You must build your project first! Please, use sgutil build $WORKFLOW"
     echo ""
