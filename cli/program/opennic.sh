@@ -295,9 +295,6 @@ FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 #set bitstream name
 BIT_NAME="open_nic_shell.$FDEV_NAME.$vivado_version.bit"
 
-echo "DIR: $DIR"
-echo "BIT_NAME: $BIT_NAME"
-
 #check on bitstream
 if ! [ -e "$DIR/$BIT_NAME" ]; then
 
