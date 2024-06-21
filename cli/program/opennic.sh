@@ -14,14 +14,14 @@ vivado_version=$4
 #constants
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
-VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="opennic"
 DRIVER_NAME="onic.ko"
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
-#IFCONFIG_INTERFACE_BASE_NAME="eno"
-#ONIC_INTERFACE_NAME="enonic"
+
+#derived
+VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
 #combine ACAP and FPGA lists removing duplicates
 SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
@@ -85,33 +85,33 @@ if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
 fi
 
 #check on flags
-commit_found=""
-commit_name=""
+#commit_found=""
+#commit_name=""
 project_found=""
 project_name=""
 device_found=""
 device_index=""
 if [ "$flags" = "" ]; then
     #check on PWD
-    project_path=$(dirname "$PWD")
-    commit_name=$(basename "$project_path")
-    project_found="0"
-    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
-        commit_found="1"
-        project_found="1"
-        project_name=$(basename "$PWD")
-        #echo ""
-        #echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-        #echo ""
-        #echo $project_name
-        #echo ""
-    elif [ "$commit_name" = "$WORKFLOW" ]; then
-        commit_found="1"
-        commit_name="${PWD##*/}"
-    else
-        commit_found="1"
-        commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
-    fi
+    #project_path=$(dirname "$PWD")
+    #commit_name=$(basename "$project_path")
+    #project_found="0"
+    #if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+    #    commit_found="1"
+    #    project_found="1"
+    #    project_name=$(basename "$PWD")
+    #    #echo ""
+    #    #echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+    #    #echo ""
+    #    #echo $project_name
+    #    #echo ""
+    #elif [ "$commit_name" = "$WORKFLOW" ]; then
+    #    commit_found="1"
+    #    commit_name="${PWD##*/}"
+    #else
+    #    commit_found="1"
+    #    commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
+    #fi
     #header (1/2)
     #echo ""
     echo "${bold}sgutil program $WORKFLOW (commit ID: $commit_name)${normal}"
@@ -162,24 +162,24 @@ if [ "$flags" = "" ]; then
     fi
 else
     #commit_dialog_check
-    result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
-    commit_found=$(echo "$result" | sed -n '1p')
-    commit_name=$(echo "$result" | sed -n '2p')
+    #result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
+    #commit_found=$(echo "$result" | sed -n '1p')
+    #commit_name=$(echo "$result" | sed -n '2p')
     #check if commit exists
-    exists=$(gh api repos/Xilinx/open-nic-shell/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    #exists=$(gh api repos/Xilinx/open-nic-shell/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     #forbidden combinations
-    if [ "$commit_found" = "0" ]; then 
-        commit_found="1"
-        commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
-    elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/sgutil program $WORKFLOW -h
-        exit
-    elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
-        echo ""
-        echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist on the repository."
-        echo ""
-        exit
-    fi
+    #if [ "$commit_found" = "0" ]; then 
+    #    commit_found="1"
+    #    commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
+    #elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+    #    $CLI_PATH/sgutil program $WORKFLOW -h
+    #    exit
+    #elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
+    #    echo ""
+    #    echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist on the repository."
+    #    echo ""
+    #    exit
+    #fi
     #project_dialog_check
     result="$("$CLI_PATH/common/project_dialog_check" "${flags[@]}")"
     project_found=$(echo "$result" | sed -n '1p')
