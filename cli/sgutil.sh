@@ -241,7 +241,7 @@ check_on_project() {
   if [ "$flags_array" = "" ]; then
     #check on PWD
     project_path=$(dirname "$PWD")
-    commit_name=$(basename "$project_path")
+    #commit_name=$(basename "$project_path")
     project_found="0"
     if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
         commit_found="1"
@@ -1527,17 +1527,17 @@ case "$command" in
 
         #check_on_commit
         check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-
         echo ""
+
         echo "${bold}sgutil $command $arguments (commit ID: $commit_name)${normal}"
         echo ""
+        
+        #check on project
+        check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
         
         #check on device
         check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         echo ""
-
-        #check on project
-        check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
 
         #add additional echo
         #if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
