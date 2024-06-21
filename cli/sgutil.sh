@@ -1462,10 +1462,15 @@ case "$command" in
         
         #check on device
         check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+
+        #add additional echo
+        if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
+          echo ""
+        fi
         
-        echo $commit_name
-        echo $vivado_version
-        echo $device_index
+        #echo $commit_name
+        #echo $vivado_version
+        #echo $device_index
 
         #probar per aci
         $CLI_PATH/program/opennic --commit $commit_name --device $device_index --version $vivado_version
