@@ -214,8 +214,8 @@ else
     fi
     #header (2/2)
     #echo ""
-    echo "${bold}sgutil program $WORKFLOW (commit ID: $commit_name)${normal}"
-    echo ""
+    #echo "${bold}sgutil program $WORKFLOW (commit ID: $commit_name)${normal}"
+    #echo ""
     #check on PWD
     project_path=$(dirname "$PWD")
     if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
