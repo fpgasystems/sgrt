@@ -294,6 +294,69 @@ check_on_project() {
   fi
 }
 
+check_on_remote() {
+  local CLI_PATH=$1
+  local command=$2
+  local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
+  local hostname=$4
+  local username=$5
+  shift 5
+  local flags_array=("$@")
+
+  #combine ACAP and FPGA lists removing duplicates
+  SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
+
+  if [ "$flags_array" = "" ]; then
+    echo "${bold}Quering remote servers with ssh:${normal}"
+    result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
+    servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
+    servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
+    num_remote_servers=$(echo "$servers_family_list" | wc -w)
+    echo ""
+    echo "Done!"
+    #deployment_dialog
+    deploy_option="0"
+    if [ "$num_remote_servers" -ge 1 ]; then
+        echo "${bold}Please, choose your deployment servers:${normal}"
+        echo ""
+        echo "0) $hostname"
+        echo "1) $hostname, $servers_family_list_string"
+        deploy_option=$($CLI_PATH/common/deployment_dialog $servers_family_list_string)
+        echo ""
+    fi
+  else
+    #deployment_dialog_check
+    result="$("$CLI_PATH/common/deployment_dialog_check" "${flags[@]}")"
+    deploy_option_found=$(echo "$result" | sed -n '1p')
+    deploy_option=$(echo "$result" | sed -n '2p')
+    #forbidden combinations
+    if [ "$deploy_option_found" = "1" ] && { [ "$deploy_option" -ne 0 ] && [ "$deploy_option" -ne 1 ]; }; then
+        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH
+        exit
+    fi
+    #forgotten mandatory
+    echo "${bold}Quering remote servers with ssh:${normal}"
+    result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
+    servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
+    servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
+    num_remote_servers=$(echo "$servers_family_list" | wc -w)
+    echo ""
+    echo "Done!"
+    if [ "$deploy_option_found" = "0" ]; then
+        #deployment_dialog
+        deploy_option="0"
+        if [ "$num_remote_servers" -ge 1 ]; then
+            echo "${bold}Please, choose your deployment servers:${normal}"
+            echo ""
+            echo "0) $hostname"
+            echo "1) $hostname, $servers_family_list_string"
+            deploy_option=$($CLI_PATH/common/deployment_dialog $servers_family_list_string)
+            echo ""
+        fi
+    fi
+  fi
+}
+
 check_on_virtualized() {
   local CLI_PATH=$1
   local hostname=$2
@@ -1542,12 +1605,16 @@ case "$command" in
           echo ""
         fi
         
-        #echo $commit_name
-        #echo $vivado_version
-        #echo $device_index
+        check_on_remote "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
-        #probar per aci
-        $CLI_PATH/program/opennic --commit $commit_name --device $device_index ---project $project_name -version $vivado_version
+        echo $commit_name
+        echo $device_index
+        echo $project_name
+        echo $deploy_option
+        echo $vivado_version
+
+        #run
+        $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --remote $deploy_option --version $vivado_version
 
         #valid_flags="-c --commit -d --device -p --project --remote -h --help"
         #echo ""

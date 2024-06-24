@@ -11,7 +11,16 @@ normal=$(tput sgr0)
 commit_name=$2
 device_index=$4
 project_name=$6
-vivado_version=$8
+deploy_option=$8
+vivado_version=${10}
+
+echo "Inside"
+
+echo $commit_name
+echo $device_index
+echo $project_name
+echo $deploy_option
+echo $vivado_version
 
 #constants
 DRIVER_NAME="onic.ko"
@@ -23,7 +32,7 @@ XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
 #combine ACAP and FPGA lists removing duplicates
-SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
+#SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
 
 #get hostname
 url="${HOSTNAME}"
@@ -37,66 +46,69 @@ read -a flags <<< "$@"
 
 #check if workflow exists
 if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
+
+    echo "I am here (1)"
+
     echo ""
     echo "You must build your project first! Please, use sgutil build $WORKFLOW"
     echo ""
     exit
 fi
 
-if [ "$flags" = "" ]; then
-    #get_servers
-    echo ""
-    echo "${bold}Quering remote servers with ssh:${normal}"
-    result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
-    servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
-    servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
-    num_remote_servers=$(echo "$servers_family_list" | wc -w)
-    echo ""
-    echo "Done!"
-    #echo ""
-    #deployment_dialog
-    deploy_option="0"
-    if [ "$num_remote_servers" -ge 1 ]; then
-        echo "${bold}Please, choose your deployment servers:${normal}"
-        echo ""
-        echo "0) $hostname"
-        echo "1) $hostname, $servers_family_list_string"
-        deploy_option=$($CLI_PATH/common/deployment_dialog $servers_family_list_string)
-        echo ""
-    fi
-else
-    #deployment_dialog_check
-    result="$("$CLI_PATH/common/deployment_dialog_check" "${flags[@]}")"
-    deploy_option_found=$(echo "$result" | sed -n '1p')
-    deploy_option=$(echo "$result" | sed -n '2p')
-    #forbidden combinations
-    if [ "$deploy_option_found" = "1" ] && { [ "$deploy_option" -ne 0 ] && [ "$deploy_option" -ne 1 ]; }; then #if [ "$deploy_option_found" = "1" ] && [ -n "$deploy_option" ]; then 
-        $CLI_PATH/sgutil program $WORKFLOW -h
-        exit
-    fi
-    #deployment_dialog (forgotten mandatory 3)
-    #get_servers
-    echo "${bold}Quering remote servers with ssh:${normal}"
-    result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
-    servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
-    servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
-    num_remote_servers=$(echo "$servers_family_list" | wc -w)
-    echo ""
-    echo "Done!"
-    #echo ""
-    if [ "$deploy_option_found" = "0" ]; then
-        #deployment_dialog
-        deploy_option="0"
-        if [ "$num_remote_servers" -ge 1 ]; then
-            echo "${bold}Please, choose your deployment servers:${normal}"
-            echo ""
-            echo "0) $hostname"
-            echo "1) $hostname, $servers_family_list_string"
-            deploy_option=$($CLI_PATH/common/deployment_dialog $servers_family_list_string)
-            echo ""
-        fi
-    fi
-fi
+#if [ "$flags" = "" ]; then
+#    #get_servers
+#    echo ""
+#    echo "${bold}Quering remote servers with ssh:${normal}"
+#    result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
+#    servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
+#    servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
+#    num_remote_servers=$(echo "$servers_family_list" | wc -w)
+#    echo ""
+#    echo "Done!"
+#    #echo ""
+#    #deployment_dialog
+#    deploy_option="0"
+#    if [ "$num_remote_servers" -ge 1 ]; then
+#        echo "${bold}Please, choose your deployment servers:${normal}"
+#        echo ""
+#        echo "0) $hostname"
+#        echo "1) $hostname, $servers_family_list_string"
+#        deploy_option=$($CLI_PATH/common/deployment_dialog $servers_family_list_string)
+#        echo ""
+#    fi
+#else
+#    #deployment_dialog_check
+#    result="$("$CLI_PATH/common/deployment_dialog_check" "${flags[@]}")"
+#    deploy_option_found=$(echo "$result" | sed -n '1p')
+#    deploy_option=$(echo "$result" | sed -n '2p')
+#    #forbidden combinations
+#    if [ "$deploy_option_found" = "1" ] && { [ "$deploy_option" -ne 0 ] && [ "$deploy_option" -ne 1 ]; }; then #if [ "$deploy_option_found" = "1" ] && [ -n "$deploy_option" ]; then 
+#        $CLI_PATH/sgutil program $WORKFLOW -h
+#        exit
+#    fi
+#    #deployment_dialog (forgotten mandatory 3)
+#    #get_servers
+#    echo "${bold}Quering remote servers with ssh:${normal}"
+#    result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
+#    servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
+#    servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
+#    num_remote_servers=$(echo "$servers_family_list" | wc -w)
+#    echo ""
+#    echo "Done!"
+#    #echo ""
+#    if [ "$deploy_option_found" = "0" ]; then
+#        #deployment_dialog
+#        deploy_option="0"
+#        if [ "$num_remote_servers" -ge 1 ]; then
+#            echo "${bold}Please, choose your deployment servers:${normal}"
+#            echo ""
+#            echo "0) $hostname"
+#            echo "1) $hostname, $servers_family_list_string"
+#            deploy_option=$($CLI_PATH/common/deployment_dialog $servers_family_list_string)
+#            echo ""
+#        fi
+#    fi
+#fi
 
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
@@ -116,8 +128,13 @@ FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 #set bitstream name
 BIT_NAME="open_nic_shell.$FDEV_NAME.$vivado_version.bit"
 
+echo "$DIR/$BIT_NAME"
+
 #check on bitstream
 if ! [ -e "$DIR/$BIT_NAME" ]; then
+
+    echo "I am here (2)"
+
     echo ""
     echo "You must build your project first! Please, use sgutil build $WORKFLOW"
     echo ""
