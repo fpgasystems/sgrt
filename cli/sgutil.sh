@@ -1607,12 +1607,6 @@ case "$command" in
         
         check_on_remote "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
-        echo $commit_name
-        echo $device_index
-        echo $project_name
-        echo $deploy_option
-        echo $vivado_version
-
         #run
         $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --remote $deploy_option --version $vivado_version
 
