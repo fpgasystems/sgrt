@@ -1609,8 +1609,11 @@ case "$command" in
         
         check_on_remote "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
-        #run
-        $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --remote $deploy_option --version $vivado_version
+        echo $servers_family_list
+        echo $servers_family_list_string
+
+        #run (the flags --version and --remote are not exposed)
+        $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}"$ 
 
         #valid_flags="-c --commit -d --device -p --project --remote -h --help"
         #echo ""

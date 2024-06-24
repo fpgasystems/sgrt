@@ -11,8 +11,9 @@ normal=$(tput sgr0)
 commit_name=$2
 device_index=$4
 project_name=$6
-deploy_option=$8
-vivado_version=${10}
+vivado_version=$8
+deploy_option=${10}
+servers_family_list=${11}
 
 #constants
 DRIVER_NAME="onic.ko"
@@ -132,23 +133,30 @@ fi
 echo ""
 
 #programming remote servers (if applies)
-if [ "$deploy_option" -eq 1 ]; then 
+if [ "$deploy_option" -eq 1 ] && [ -n "$servers_family_list" ]; then 
+
+    #define remote programming string
+    programming_string="$CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --remote 0 --version $vivado_version"
+
+
+    #$CLI_PATH/program/remote $CLI_PATH $USER
+
     #remote servers
     #echo ""
-    echo "${bold}Programming remote servers...${normal}"
-    echo ""
-#    #convert string to array
-#    IFS=" " read -ra servers_family_list_array <<< "$servers_family_list"
-#    for i in "${servers_family_list_array[@]}"; do
+    #echo "${bold}Programming remote servers...${normal}"
+    #echo ""
+    #convert string to array
+    IFS=" " read -ra servers_family_list_array <<< "$servers_family_list"
+    for i in "${servers_family_list_array[@]}"; do
 #        #remote servers
 #        #echo ""
-#        #echo "Programming remote server ${bold}$i...${normal}"
+        echo "Programming remote server ${bold}$i...${normal}"
 #        #echo ""
 #        #remotely program bitstream, driver, and run enable_regions/enable_N_REGIONS
 #        #ssh -t $USER@$i "cd $APP_BUILD_DIR ; $CLI_PATH/program/vivado --device $device_index -b $BIT_NAME --driver $DRIVER_NAME -v $vivado_version ; $CLI_PATH/program/enable_N_REGIONS $DIR"
 #        ssh -t $USER@$i "$CLI_PATH/program/$WORKFLOW --device $device_index --project $project_name --remote 0"
 #
-#    done
+    done
 fi
 
 #echo ""
