@@ -327,7 +327,7 @@ check_on_remote() {
     fi
   else
     #deployment_dialog_check
-    result="$("$CLI_PATH/common/deployment_dialog_check" "${flags[@]}")"
+    result="$("$CLI_PATH/common/deployment_dialog_check" "${flags_array[@]}")"
     deploy_option_found=$(echo "$result" | sed -n '1p')
     deploy_option=$(echo "$result" | sed -n '2p')
     #forbidden combinations
