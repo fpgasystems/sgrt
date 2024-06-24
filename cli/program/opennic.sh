@@ -126,15 +126,17 @@ if [ -n "$eno_onic" ]; then
     fi
 else
     echo "The OpenNIC interface was not properly setup."
+    echo ""
+    exit
 fi
 echo ""
 
 #programming remote servers (if applies)
-#if [ "$deploy_option" -eq 1 ]; then 
-#    #remote servers
-#    echo ""
-#    echo "${bold}Programming remote servers...${normal}"
-#    echo ""
+if [ "$deploy_option" -eq 1 ]; then 
+    #remote servers
+    #echo ""
+    echo "${bold}Programming remote servers...${normal}"
+    echo ""
 #    #convert string to array
 #    IFS=" " read -ra servers_family_list_array <<< "$servers_family_list"
 #    for i in "${servers_family_list_array[@]}"; do
@@ -147,7 +149,7 @@ echo ""
 #        ssh -t $USER@$i "$CLI_PATH/program/$WORKFLOW --device $device_index --project $project_name --remote 0"
 #
 #    done
-#fi
+fi
 
 #echo ""
 
