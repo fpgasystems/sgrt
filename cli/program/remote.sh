@@ -22,5 +22,5 @@ if [ "$deploy_option" -eq 1 ] && [ -n "$servers_family_list" ]; then
         echo ""
         ssh -t $username@$i "$programming_string"
     done
+    echo ""
 fi
-echo ""

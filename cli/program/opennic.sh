@@ -132,13 +132,9 @@ else
 fi
 echo ""
 
-
-echo "HEY: $servers_family_list"
-
 #programming remote servers (if applies)
 programming_string="$CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote 0"
 $CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list" #"${servers_family_list[@]}" 
-
 
 #if [ "$deploy_option" -eq 1 ] && [ -n "$servers_family_list" ]; then 
 #
