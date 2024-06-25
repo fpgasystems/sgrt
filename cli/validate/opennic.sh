@@ -69,7 +69,6 @@ $CLI_PATH/program/revert -d $device_index --version $vivado_version
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 
 #program opennic
-#$CLI_PATH/program/opennic --project $DIR --device $device_index --commit $commit_name_shell --remote 0
 $CLI_PATH/program/opennic --commit $commit_name_shell --device $device_index --project $project_name --version $vivado_version --remote $DEPLOY_OPTION
 
 #get system interfaces (after adding the OpenNIC interface)
