@@ -12,7 +12,7 @@ echo ""
 FILE="/home/$USER/.ssh/id_rsa.pub"
 if ! [ -f "$FILE" ]; then
     #create key
-	echo ""
+	#echo ""
     eval "ssh-keygen"
 
     #remove from known hosts
