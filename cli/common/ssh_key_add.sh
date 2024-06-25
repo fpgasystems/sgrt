@@ -33,8 +33,8 @@ echo "${bold}Adding fingerprints to known_hosts:${normal}"
 echo ""
 
 #alveo-build-01
-ssh-keygen -R alveo-build-01-mellanox-0
-ssh-keyscan -H alveo-build-01-mellanox-0 >> ~/.ssh/known_hosts #> /dev/null
+#ssh-keygen -R alveo-build-01-mellanox-0
+#ssh-keyscan -H alveo-build-01-mellanox-0 >> ~/.ssh/known_hosts #> /dev/null
 
 #booked servers
 for i in "${servers[@]}"
@@ -42,6 +42,6 @@ do
     echo ""
     ssh-keygen -R $i-mellanox-0
     ssh-keyscan -H $i-mellanox-0 >> ~/.ssh/known_hosts #> /dev/null
-    sleep 2  
+    sleep 1
 done
 echo ""
