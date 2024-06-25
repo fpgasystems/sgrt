@@ -78,9 +78,6 @@ project_name=""
 platform_found=""
 platform_name=""
 if [ "$flags" = "" ]; then
-
-    echo "I am here 1"
-
     #check on PWD
     project_path=$(dirname "$PWD")
     commit_name=$(basename "$project_path")
@@ -130,9 +127,6 @@ if [ "$flags" = "" ]; then
     fi
     echo ""
 else
-
-    echo "I am here 2"
-
     #commit_dialog_check
     result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
     commit_found=$(echo "$result" | sed -n '1p')
@@ -149,9 +143,6 @@ else
         commit_found="1"
         commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-
-        echo "Hola 1"
-
         $CLI_PATH/help/build_opennic $CLI_PATH
         exit
     elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
@@ -166,15 +157,8 @@ else
     project_path=$(echo "$result" | sed -n '2p')
     project_name=$(echo "$result" | sed -n '3p')
 
-    echo "project_found: $project_found"
-    echo "project_path: $project_path"
-    echo "project_name: $project_name"
-
     #forbidden combinations
     if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then 
-        
-        echo "Hola 2"
-        
         $CLI_PATH/help/build_opennic $CLI_PATH
         exit
     fi
@@ -184,9 +168,6 @@ else
     platform_name=$(echo "$result" | sed -n '2p')    
     #forbidden combinations
     if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
-        
-        echo "Hola 3"
-
         $CLI_PATH/help/build_opennic $CLI_PATH
         exit
     fi
@@ -235,8 +216,6 @@ else
         echo ""
     fi
 fi
-
-echo "I am here 3"
 
 #cleanup bitstreams folder
 if [ -e "$BITSTREAMS_PATH/foo" ]; then
