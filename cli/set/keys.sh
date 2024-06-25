@@ -11,7 +11,6 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 # Read the sorted and unique list of servers into an array
 mapfile -t SERVER_LIST < <(sort -u "$CLI_PATH/constants/CPU_SERVERS_LIST" "$CLI_PATH/constants/ACAP_SERVERS_LIST" "$CLI_PATH/constants/FPGA_SERVERS_LIST")
 
-
 #get hostname
 url="${HOSTNAME}"
 hostname="${url%%.*}"
@@ -19,8 +18,9 @@ hostname="${url%%.*}"
 #get username
 username=$USER
 
-echo ""
+#echo ""
 echo "${bold}sgutil set keys${normal}"
+echo "" 
 
 #get booked servers accessible with ssh
 #echo ""
