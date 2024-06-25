@@ -129,7 +129,7 @@ else
     commit_name=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/help/build_opennic $ONIC_SHELL_COMMIT
+        $CLI_PATH/help/build_opennic $CLI_PATH
         exit
     fi
     #check if commit exists
@@ -139,7 +139,7 @@ else
         commit_found="1"
         commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/help/build_opennic $ONIC_SHELL_COMMIT
+        $CLI_PATH/help/build_opennic $CLI_PATH
         exit
     elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         #echo ""
@@ -154,7 +154,7 @@ else
     project_name=$(echo "$result" | sed -n '3p')
     #forbidden combinations
     if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then 
-        $CLI_PATH/help/build_opennic $ONIC_SHELL_COMMIT
+        $CLI_PATH/help/build_opennic $CLI_PATH
         exit
     fi
     #platform_dialog_check
@@ -163,7 +163,7 @@ else
     platform_name=$(echo "$result" | sed -n '2p')    
     #forbidden combinations
     if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
-        $CLI_PATH/help/build_opennic $ONIC_SHELL_COMMIT
+        $CLI_PATH/help/build_opennic $CLI_PATH
         exit
     fi
     #header (2/2)
