@@ -5,7 +5,7 @@ normal=$(tput sgr0)
 
 CLI_PATH=$1
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
-ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
+ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 
 #echo ""
 echo "${bold}sgutil validate opennic [flags] [--help]${normal}"
