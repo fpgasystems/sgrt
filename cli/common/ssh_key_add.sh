@@ -1,9 +1,10 @@
 #!/bin/bash
 
+CLI_PATH=$1
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-CLI_PATH=$1
+#inputs
 servers=("${@:2}")
 
 # create key
@@ -12,15 +13,10 @@ echo ""
 FILE="/home/$USER/.ssh/id_rsa.pub"
 if ! [ -f "$FILE" ]; then
     #create key
-	#echo ""
     eval "ssh-keygen"
-
-    #remove from known hosts
-    #ssh-keygen -R $hostname
 
     #add id_rsa.pub to authorized_keys 
     cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-
     echo ""
     echo "Done!"
     echo ""
@@ -33,10 +29,6 @@ if [ ${#servers[@]} -ne 0 ]; then
     ## add SSH (mellanox-0) fingerprints to local known_hosts
     echo "${bold}Adding fingerprints to known_hosts:${normal}"
     
-    #alveo-build-01
-    #ssh-keygen -R alveo-build-01-mellanox-0
-    #ssh-keyscan -H alveo-build-01-mellanox-0 >> ~/.ssh/known_hosts #> /dev/null
-
     #booked servers
     for i in "${servers[@]}"
     do
@@ -47,3 +39,5 @@ if [ ${#servers[@]} -ne 0 ]; then
     done
     echo ""
 fi
+
+#author: https://github.com/jmoya82

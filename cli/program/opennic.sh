@@ -62,10 +62,6 @@ if ! [ -e "$DIR/$BIT_NAME" ]; then
     exit
 fi
 
-#prgramming local server
-#echo "Programming ${bold}$hostname...${normal}"
-#echo ""
-
 #get workflow (print echo)
 workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
 
@@ -134,25 +130,6 @@ echo ""
 
 #programming remote servers (if applies)
 programming_string="$CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote 0"
-$CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list" #"${servers_family_list[@]}" 
-
-#if [ "$deploy_option" -eq 1 ] && [ -n "$servers_family_list" ]; then 
-#
-#    #define remote programming string
-#    programming_string="$CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote 0"
-#
-#    echo "${bold}Programming remote servers:${normal}"
-#    #echo ""
-#    #convert string to array
-#    IFS=" " read -ra servers_family_list_array <<< "$servers_family_list"
-#    for i in "${servers_family_list_array[@]}"; do
-#        echo ""
-#        echo "${bold}$i...${normal}"
-#        echo ""
-#        ssh -t $USER@$i "$programming_string"
-#    done
-#fi
-
-#echo ""
+$CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list"
 
 #author: https://github.com/jmoya82
