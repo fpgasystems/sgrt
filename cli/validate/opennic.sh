@@ -13,11 +13,6 @@ commit_name_driver=$3
 device_index=$5
 vivado_version=$7
 
-echo $commit_name_shell
-echo $commit_name_driver
-echo $device_index
-echo $vivado_version
-
 #constants
 BIT_NAME="open_nic_shell.bit"
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
@@ -67,9 +62,6 @@ if [ -e "$library_shell" ]; then
 fi
 $CLI_PATH/build/opennic --commit $commit_name_shell --platform $platform --project $DIR --version $vivado_version
 
-
-exit
-
 #revert device
 $CLI_PATH/program/revert -d $device_index --version $vivado_version
 
@@ -78,7 +70,7 @@ before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 
 #program opennic
 #$CLI_PATH/program/opennic --project $DIR --device $device_index --commit $commit_name_shell --remote 0
-$CLI_PATH/program/opennic --commit $commit_name_shell --device $device_index --project $project_name --remote $DEPLOY_OPTION --version $vivado_version
+$CLI_PATH/program/opennic --commit $commit_name_shell --device $device_index --project $project_name --version $vivado_version --remote $DEPLOY_OPTION
 
 #get system interfaces (after adding the OpenNIC interface)
 after=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
