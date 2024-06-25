@@ -8,12 +8,13 @@
     #- alveo-u55c
     #- versal-vck5000
     #- hacc-boxes
-    - alveo-u55c-01.inf.ethz.ch
-    - alveo-u55c-02.inf.ethz.ch
+    #- alveo-u55c-01.inf.ethz.ch
+    #- alveo-u55c-02.inf.ethz.ch
     - alveo-u55c-07.inf.ethz.ch
     - alveo-u55c-08.inf.ethz.ch
+    #- alveo-u55c-09.inf.ethz.ch
     #- alveo-u55c-03.inf.ethz.ch
-    - hacc-box-01.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
@@ -36,23 +37,23 @@
     templates: false #true-----------------------------------
     #scripts
     build: false
-    common: false
+    common: true
     enable: false
     examine: false
     get: false
-    help: false
+    help: yes
     new: false
-    program: true
+    program: false
     reboot: false
     run: false
-    set: false
+    set: true
     sgutil: true 
     validate: false
     #workflows
     coyote: false
     hip: false
     mpi: false
-    opennic: true
+    opennic: false
     vitis: false #true---------------------------------
   tasks:
 
@@ -431,6 +432,7 @@
         - new_opennic
         - program_opennic
         - program_revert
+        - set_keys
         - validate_opennic
     #new
     - name: copying new scripts

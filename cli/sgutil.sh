@@ -1123,17 +1123,8 @@ set_gh_help() {
 }
 
 set_keys_help() {
-    echo ""
-    echo "${bold}sgutil set keys [--help]${normal}"
-    echo ""
-    echo "Creates your RSA key pairs and adds to authorized_keys and known_hosts."
-    echo ""
-    echo "FLAGS:"
-    echo "   This command has no flags."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
+  $CLI_PATH/help/set_keys
+  exit
 }
 
 set_license_help() {
@@ -1725,6 +1716,7 @@ case "$command" in
         eval "$CLI_PATH/set/gh"
         ;;
       keys)
+        echo ""
         if [ "$#" -ne 2 ]; then
           set_keys_help
           exit 1
