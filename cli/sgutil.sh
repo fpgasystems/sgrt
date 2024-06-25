@@ -16,6 +16,7 @@ COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
+ONIC_DRIVER_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_REPO)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
@@ -134,6 +135,78 @@ check_on_commit() {
     elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         echo ""
         echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist on the repository."
+        echo ""
+        exit
+    fi
+  fi
+
+  # Output the commit_name as the function result
+  echo "$commit_name"
+}
+
+check_on_two_commits() {
+  local CLI_PATH=$1
+  local MY_PROJECTS_PATH=$2
+  local command=$3 #program
+  local WORKFLOW=$4 #arguments and workflow are the same (i.e. opennic)
+  local GITHUB_CLI_PATH=$5
+  local REPO_ADDRESS_1=$6
+  local DEFAULT_COMMIT_1=$7
+  local REPO_ADDRESS_2=$8
+  local DEFAULT_COMMIT_2=$9
+  shift 9
+  local flags_array=("$@")
+  
+  commit_found_1=""
+  commit_name_1=""
+  commit_found_2=""
+  commit_name_2=""
+  if [ "$flags_array" = "" ]; then
+    #commit dialog
+    commit_found_shell="1"
+    commit_found_driver="1"
+    commit_name_shell=$ONIC_SHELL_COMMIT
+    commit_name_driver=$ONIC_DRIVER_COMMIT #$(cat $CLI_PATH/constants/ONIC_DRIVER_COMMIT)
+    #header (1/2)
+    echo "${bold}sgutil $command $WORKFLOW (commit IDs: $commit_name_shell,$commit_name_driver)${normal}"
+    echo ""
+    #device_dialog
+    if [[ $multiple_devices = "0" ]]; then
+        device_found="1"
+        device_index="1"
+    else
+        echo "${bold}Please, choose your device:${normal}"
+        echo ""
+        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+        device_found=$(echo "$result" | sed -n '1p')
+        device_index=$(echo "$result" | sed -n '2p')
+        echo ""
+    fi
+  else
+    #commit_dialog_check
+    result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
+    commit_found=$(echo "$result" | sed -n '1p')
+    commit_name=$(echo "$result" | sed -n '2p')
+    # Check if commit_name contains exactly one comma
+    if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
+        $CLI_PATH/help/validate_opennic $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
+        exit
+    fi
+    #get shell and driver commits (shell_commit,driver_commit)
+    commit_name_shell=${commit_name%%,*}
+    commit_name_driver=${commit_name#*,}
+    #check if commits exist
+    exists_shell=$(gh api repos/$ONIC_SHELL_REPO/commits/$commit_name_shell 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    exists_driver=$(gh api repos/$ONIC_DRIVER_REPO/commits/$commit_name_driver 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    if [ "$commit_found" = "0" ]; then 
+        commit_name_shell=$ONIC_SHELL_COMMIT
+        commit_name_driver=$ONIC_DRIVER_COMMIT
+    elif [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
+        $CLI_PATH/help/validate_opennic $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
+        exit
+    elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
+        #echo ""
+        echo "Sorry, the commit IDs ${bold}$commit_name_shell,$commit_name_driver${normal} do not exist on the repository."
         echo ""
         exit
     fi
@@ -1534,7 +1607,7 @@ case "$command" in
     esac
     ;;
   program)
-    #check on ACAP or FPGA servers (server must have at least one configurable device)
+    #check on ACAP or FPGA servers (server must have at least one reconfigurable device)
     check_on_fpga "$CLI_PATH" "$hostname"
     
     #get Vivado version
@@ -1580,7 +1653,7 @@ case "$command" in
         check_on_vivado_developers "$USER"
 
         #check_on_commit
-        check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        commit_name=$(check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}")
         echo ""
 
         echo "${bold}sgutil $command $arguments (commit ID: $commit_name)${normal}"
@@ -1602,10 +1675,6 @@ case "$command" in
 
         #run
         $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
-
-        #valid_flags="-c --commit -d --device -p --project --remote -h --help"
-        #echo ""
-        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       reset) 
         valid_flags="-d --device -h --help"
@@ -1781,9 +1850,72 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
-        valid_flags="-c --commit -d --device -h --help"
+        #check on ACAP or FPGA servers (server must have at least one reconfigurable device)
+        check_on_fpga "$CLI_PATH" "$hostname"
+        
+        #get Vivado version
+        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        
+        #check on Vivado version
+        check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
+        
+        #check on DEVICES_LIST
+        source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+
+        #get number of fpga and acap devices present
+        MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
+        
+        #get multiple devices
+        multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+        
+        #check on flags
+        valid_flags="-c --commit -d --device -p --project --remote -h --help"
+        check_on_flags $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+        
+        #check on virtualized
+        check_on_virtualized "$CLI_PATH" "$hostname"
+        
+        #check on vivado_developers
+        check_on_vivado_developers "$USER"
+
+        #check_on_commit
+        check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         echo ""
-        command_run $command_arguments_flags"@"$valid_flags
+        
+
+        exit
+
+
+
+        echo "${bold}sgutil $command $arguments (commit ID: $commit_name)${normal}"
+        echo ""
+        
+        #check on project
+        check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
+
+        #check on device
+        check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        #echo ""
+
+        #add additional echo
+        if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
+          echo ""
+        fi
+        
+        check_on_remote "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
+
+        #run
+        #$CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
+
+
+
+
+        #valid_flags="-c --commit -d --device -h --help"
+        #echo ""
+        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)
         valid_flags="-d --device -h --help"
