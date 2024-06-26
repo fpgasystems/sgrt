@@ -1879,24 +1879,6 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
-        #check on ACAP or FPGA servers (server must have at least one reconfigurable device)
-        #check_on_fpga "$CLI_PATH" "$hostname"
-        
-        #get Vivado version
-        #vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-        
-        #check on Vivado version
-        #check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
-        
-        #check on DEVICES_LIST
-        #source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
-
-        #get number of fpga and acap devices present
-        #MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
-        
-        #get multiple devices
-        #multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
-        
         #check on flags
         valid_flags="-c --commit -d --device -h --help"
         check_on_flags $command_arguments_flags"@"$valid_flags
@@ -1904,12 +1886,6 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
         
-        #check on virtualized
-        #check_on_virtualized "$CLI_PATH" "$hostname"
-        
-        #check on vivado_developers
-        #check_on_vivado_developers "$USER"
-
         #check_on_commits
         commit_found_shell=""
         commit_name_shell=""
