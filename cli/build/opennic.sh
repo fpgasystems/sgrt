@@ -324,4 +324,4 @@ rm $DRIVER_DIR/onic_main.o
 rm $DRIVER_DIR/onic_netdev.o
 rm $DRIVER_DIR/onic_sysfs.o
 
-echo ""
+#echo ""
