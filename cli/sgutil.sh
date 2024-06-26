@@ -131,7 +131,7 @@ check_on_commit() {
         commit_found="1"
         commit_name=$DEFAULT_COMMIT
     elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH 
+        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
         exit 1
     elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         echo ""
@@ -142,7 +142,7 @@ check_on_commit() {
   fi
 
   # Output the commit_name as the function result
-  echo "$commit_name"
+  #echo "$commit_name"
 }
 
 check_on_device() {
@@ -175,7 +175,7 @@ check_on_device() {
       device_index=$(echo "$result" | sed -n '2p')
       #forbidden combinations
       if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-          $CLI_PATH/help/${command}"_"${arguments}
+          $CLI_PATH/help/${command}"_"${arguments} $CLI_PATH $CLI_NAME
           exit 1
       fi
       #forgotten mandatory
@@ -275,7 +275,7 @@ check_on_platform() {
     platform_name=$(echo "$result" | sed -n '2p')    
     #forbidden combinations
     if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
-        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH
+        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
         exit 1
     fi
     #forgotten mandatory
@@ -336,7 +336,7 @@ check_on_project() {
     project_name=$(echo "$result" | sed -n '3p')
     #forbidden combinations
     if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
-        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH
+        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
         exit 1
     fi
     #forgotten mandatory
@@ -394,7 +394,7 @@ check_on_remote() {
     deploy_option=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if [ "$deploy_option_found" = "1" ] && { [ "$deploy_option" -ne 0 ] && [ "$deploy_option" -ne 1 ]; }; then
-        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH
+        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
         exit 1
     fi
     #forgotten mandatory
@@ -1437,20 +1437,23 @@ case "$command" in
           #forbidden combinations
           if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
               $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME
-              exit
+              exit 1
           fi
         fi
         
         #check on...
-        commit_name_shell=$(check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}")
+        #commit_name_shell=$(check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}")
+
+        check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+
         echo ""
-        echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name_shell)${normal}"
+        echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $$commit_name)${normal}"
         echo ""
-        check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name_shell" "${flags_array[@]}"
-        commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name_shell/$project_name/ONIC_DRIVER_COMMIT)
+        check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$$commit_name" "${flags_array[@]}"
+        commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$$commit_name/$project_name/ONIC_DRIVER_COMMIT)
         check_on_platform "$CLI_PATH" "$command" "$arguments" "${flags_array[@]}"
 
-        echo $commit_name_shell
+        echo $$commit_name
         echo $commit_name_driver
         echo $platform_name
 
@@ -1459,7 +1462,7 @@ case "$command" in
         exit
         
         #run
-        $CLI_PATH/build/opennic --commit $commit_name_shell --platform $platform_name --project $project_name --version $vivado_version
+        $CLI_PATH/build/opennic --commit $$commit_name --platform $platform_name --project $project_name --version $vivado_version
         echo ""
         
         
@@ -1665,7 +1668,8 @@ case "$command" in
         #check on...
         check_on_vivado_developers "$USER"
         check_on_gh "$CLI_PATH"
-        commit_name=$(check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}")
+        #commit_name=$(check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}")
+        check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
         echo ""
@@ -1895,7 +1899,7 @@ case "$command" in
 
             # Check if commit_name contains exactly one comma
             if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
-                $CLI_PATH/help/validate_opennic $CLI_PATH
+                $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
                 exit
             fi
             
@@ -1911,7 +1915,7 @@ case "$command" in
                 commit_name_shell=$ONIC_SHELL_COMMIT
                 commit_name_driver=$ONIC_DRIVER_COMMIT
             elif [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
-                $CLI_PATH/help/validate_opennic $CLI_PATH
+                $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
                 exit
             elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
                 echo ""
