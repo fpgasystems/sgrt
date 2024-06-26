@@ -93,6 +93,6 @@ if [[ $(lsmod | grep xclmgmt | wc -l) -gt 0 ]]; then
     sudo modprobe xclmgmt
     sleep 1
 fi
-echo ""
+#echo ""
 
 #author: https://github.com/jmoya82

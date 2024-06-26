@@ -62,6 +62,12 @@ if [ -e "$library_shell" ]; then
 fi
 $CLI_PATH/build/opennic --commit $commit_name_shell --platform $platform --project $DIR --version $vivado_version
 
+#add additional echo
+workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+if [[ $workflow = "vivado" ]]; then
+    echo ""
+fi
+
 #revert device
 $CLI_PATH/program/revert -d $device_index --version $vivado_version
 

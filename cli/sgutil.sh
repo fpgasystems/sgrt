@@ -1747,6 +1747,7 @@ case "$command" in
 
         #run
         $CLI_PATH/program/revert --device $device_index --version $vivado_version
+        echo ""
         ;;
       vivado)
         valid_flags="-b --bitstream -d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion (Javier: 04.12.2023 --driver)  
