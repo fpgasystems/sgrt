@@ -14,7 +14,7 @@
 ### Flags
 <code>-c, --commit <string></code>
 <p>
-  &nbsp; &nbsp; GitHub commit IDs for shell and driver.
+  &nbsp; &nbsp; GitHub shell and driver commit IDs.
 </p>
 
 <code>    --project <string></code>

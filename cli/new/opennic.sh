@@ -77,7 +77,7 @@ if [ "$flags" = "" ]; then
     commit_name_shell=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
     commit_name_driver=$(cat $CLI_PATH/constants/ONIC_DRIVER_COMMIT)
     #header (1/2)
-    echo "${bold}sgutil new $WORKFLOW (commit ID shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
+    echo "${bold}sgutil new $WORKFLOW (shell and driver commit IDs: $commit_name_shell,$commit_name_driver)${normal}"
     echo ""
     #new_dialog
     echo "${bold}Please, insert a non-existing name for your project:${normal}"
