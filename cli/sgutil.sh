@@ -90,6 +90,10 @@ command_run() {
     fi
 }
 
+#messages
+CHECK_ON_COMMIT_MSG_1="Please, choose a valid commit ID."
+CHECK_ON_DEVICE_MSG_1="Please, choose a valid device index."
+
 check_on_commit() {
   local CLI_PATH=$1
   local MY_PROJECTS_PATH=$2
@@ -135,15 +139,11 @@ check_on_commit() {
         exit 1
     elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         echo ""
-        #echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist in the repository."
-        echo "Please, choose a valid commit ID."
+        echo $CHECK_ON_COMMIT_MSG_1
         echo ""
         exit 1
     fi
   fi
-
-  # Output the commit_name as the function result
-  #echo "$commit_name"
 }
 
 check_on_device() {
@@ -175,9 +175,14 @@ check_on_device() {
       device_found=$(echo "$result" | sed -n '1p')
       device_index=$(echo "$result" | sed -n '2p')
       #forbidden combinations
-      if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
+      if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]); then
           $CLI_PATH/help/${command}"_"${arguments} $CLI_PATH $CLI_NAME
           exit 1
+      elif ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
+        echo ""
+        echo $CHECK_ON_DEVICE_MSG_1
+        echo ""
+        exit
       fi
       #forgotten mandatory
       if [[ $multiple_devices = "0" ]]; then
@@ -1942,13 +1947,14 @@ case "$command" in
                 #exit
             fi
         fi
+        #echo ""
+
+        #check on device
+        check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         echo ""
 
         echo "${bold}$CLI_NAME $command $arguments (commit IDs for shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
         echo ""
-
-        #check on device
-        check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         
         #run
         $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --version $vivado_version
