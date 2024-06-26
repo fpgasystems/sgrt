@@ -412,18 +412,19 @@ check_on_project() {
     fi
   else
     #project_dialog_check
-    result="$("$CLI_PATH/common/project_dialog_check" "${flags_array[@]}")"
-    project_found=$(echo "$result" | sed -n '1p')
-    project_path=$(echo "$result" | sed -n '2p')
-    project_name=$(echo "$result" | sed -n '3p')
+    #result="$("$CLI_PATH/common/project_dialog_check" "${flags_array[@]}")"
+    #project_found=$(echo "$result" | sed -n '1p')
+    #project_path=$(echo "$result" | sed -n '2p')
+    #project_name=$(echo "$result" | sed -n '3p')
     #forbidden combinations
-    if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
-        #$CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
-        echo ""
-        echo $CHECK_ON_PROJECT_ERR_MSG
-        echo ""
-        exit 1
-    fi
+    #if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
+    #    #$CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
+    #    echo ""
+    #    echo $CHECK_ON_PROJECT_ERR_MSG
+    #    echo ""
+    #    exit 1
+    #fi
+    project_dialog_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$WORKFLOW" "$commit_name" "${flags_array[@]}"
     #forgotten mandatory
     if [[ $project_found = "0" ]]; then
         #echo ""
@@ -438,6 +439,27 @@ check_on_project() {
         fi
         echo ""
     fi
+  fi
+}
+
+project_dialog_check() {
+  local CLI_PATH=$1
+  local MY_PROJECTS_PATH=$2
+  local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
+  local commit_name=$4
+  shift 4
+  local flags_array=("$@")
+  result="$("$CLI_PATH/common/project_dialog_check" "${flags_array[@]}")"
+  project_found=$(echo "$result" | sed -n '1p')
+  project_path=$(echo "$result" | sed -n '2p')
+  project_name=$(echo "$result" | sed -n '3p')
+  #forbidden combinations
+  if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
+      #$CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
+      echo ""
+      echo $CHECK_ON_PROJECT_ERR_MSG
+      echo ""
+      exit 1
   fi
 }
 
