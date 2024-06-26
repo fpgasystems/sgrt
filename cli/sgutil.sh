@@ -132,12 +132,12 @@ check_on_commit() {
         commit_name=$DEFAULT_COMMIT
     elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
         $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH 
-        exit
+        exit 1
     elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         echo ""
         echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist in the repository."
         echo ""
-        exit
+        exit 1
     fi
   fi
 
@@ -176,7 +176,7 @@ check_on_device() {
       #forbidden combinations
       if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
           $CLI_PATH/help/${command}"_"${arguments}
-          exit
+          exit 1
       fi
       #forgotten mandatory
       if [[ $multiple_devices = "0" ]]; then
@@ -276,7 +276,7 @@ check_on_platform() {
     #forbidden combinations
     if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
         $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH
-        exit
+        exit 1
     fi
     #forgotten mandatory
     if [[ $platform_found = "0" ]]; then
@@ -337,7 +337,7 @@ check_on_project() {
     #forbidden combinations
     if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
         $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH
-        exit
+        exit 1
     fi
     #forgotten mandatory
     if [[ $project_found = "0" ]]; then
@@ -395,7 +395,7 @@ check_on_remote() {
     #forbidden combinations
     if [ "$deploy_option_found" = "1" ] && { [ "$deploy_option" -ne 0 ] && [ "$deploy_option" -ne 1 ]; }; then
         $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH
-        exit
+        exit 1
     fi
     #forgotten mandatory
     echo "${bold}Quering remote servers with ssh:${normal}"
@@ -429,7 +429,7 @@ check_on_virtualized() {
       echo ""
       echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
       echo ""
-      exit
+      exit 1
   fi
 }
 
@@ -452,7 +452,7 @@ check_on_vivado_developers() {
       echo ""
       echo "Sorry, ${bold}$username!${normal} You are not granted to use this command."
       echo ""
-      exit
+      exit 1
   fi
 }
 
@@ -1399,12 +1399,10 @@ case "$command" in
   build)
     #vivado projects
     if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
-
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
       check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
       check_on_vivado_developers "$USER"
       check_on_gh "$CLI_PATH"
-
     fi
 
     case "$arguments" in
@@ -1430,6 +1428,18 @@ case "$command" in
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
+
+        #early platform check
+        if [ ! "$flags_array" = "" ]; then
+          result="$("$CLI_PATH/common/platform_dialog_check" "${flags_array[@]}")"
+          platform_found=$(echo "$result" | sed -n '1p')
+          platform_name=$(echo "$result" | sed -n '2p')    
+          #forbidden combinations
+          if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
+              $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME
+              exit
+          fi
+        fi
         
         #check on...
         commit_name_shell=$(check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}")
@@ -1443,6 +1453,8 @@ case "$command" in
         echo $commit_name_shell
         echo $commit_name_driver
         echo $platform_name
+
+        
 
         exit
         
