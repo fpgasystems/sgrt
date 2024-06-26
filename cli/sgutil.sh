@@ -94,6 +94,13 @@ command_run() {
     fi
 }
 
+#dialog messages
+CHECK_ON_DEVICE_MSG="${bold}Please, choose your device:${normal}"
+CHECK_ON_PLATFORM_MSG="${bold}Please, choose your platform:${normal}"
+CHECK_ON_PROJECT_MSG="${bold}Please, choose your project:${normal}"
+CHECK_ON_REMOTE_MSG_1="${bold}Quering remote servers with ssh:${normal}"
+CHECK_ON_REMOTE_MSG_2="${bold}Please, choose your deployment servers:${normal}"
+
 #error messages
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
 CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
@@ -175,7 +182,7 @@ check_on_device() {
           device_found="1"
           device_index="1"
       else
-          echo "${bold}Please, choose your device:${normal}"
+          echo $CHECK_ON_DEVICE_MSG
           echo ""
           result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
           device_found=$(echo "$result" | sed -n '1p')
@@ -201,7 +208,7 @@ check_on_device() {
           device_found="1"
           device_index="1"
       elif [[ $device_found = "0" ]]; then
-          echo "${bold}Please, choose your device:${normal}"
+          echo $CHECK_ON_DEVICE_MSG
           echo ""
           result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
           device_found=$(echo "$result" | sed -n '1p')
@@ -276,7 +283,7 @@ check_on_platform() {
   platform_name=""
 
   if [ "$flags_array" = "" ]; then
-    echo "${bold}Please, choose your platform:${normal}"
+    echo $CHECK_ON_PLATFORM_MSG
     echo ""
     result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
     platform_found=$(echo "$result" | sed -n '1p')
@@ -300,7 +307,7 @@ check_on_platform() {
     fi
     #forgotten mandatory
     if [[ $platform_found = "0" ]]; then
-        echo "${bold}Please, choose your platform:${normal}"
+        echo $CHECK_ON_PLATFORM_MSG
         echo ""
         result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
         platform_found=$(echo "$result" | sed -n '1p')
@@ -337,7 +344,7 @@ check_on_project() {
   if [ "$flags_array" = "" ]; then
     #project_dialog
     if [[ $project_found = "0" ]]; then
-      echo "${bold}Please, choose your project:${normal}"
+      echo $CHECK_ON_PROJECT_MSG
       echo ""
       result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
       project_found=$(echo "$result" | sed -n '1p')
@@ -365,7 +372,7 @@ check_on_project() {
     #forgotten mandatory
     if [[ $project_found = "0" ]]; then
         #echo ""
-        echo "${bold}Please, choose your project:${normal}"
+        echo $CHECK_ON_PROJECT_MSG
         echo ""
         result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
         project_found=$(echo "$result" | sed -n '1p')
@@ -392,7 +399,7 @@ check_on_remote() {
   SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
 
   if [ "$flags_array" = "" ]; then
-    echo "${bold}Quering remote servers with ssh:${normal}"
+    echo $CHECK_ON_REMOTE_MSG_1
     result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
     servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
     servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
@@ -403,7 +410,7 @@ check_on_remote() {
     deploy_option="0"
     if [ "$num_remote_servers" -ge 1 ]; then
         echo ""
-        echo "${bold}Please, choose your deployment servers:${normal}"
+        echo $CHECK_ON_REMOTE_MSG_2
         echo ""
         echo "0) $hostname"
         echo "1) $hostname, $servers_family_list_string"
@@ -423,7 +430,7 @@ check_on_remote() {
         exit 1
     fi
     #forgotten mandatory
-    echo "${bold}Quering remote servers with ssh:${normal}"
+    echo $CHECK_ON_REMOTE_MSG_1
     result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
     servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
     servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
@@ -435,7 +442,7 @@ check_on_remote() {
         deploy_option="0"
         if [ "$num_remote_servers" -ge 1 ]; then
             echo ""
-            echo "${bold}Please, choose your deployment servers:${normal}"
+            echo $CHECK_ON_REMOTE_MSG_2
             echo ""
             echo "0) $hostname"
             echo "1) $hostname, $servers_family_list_string"
