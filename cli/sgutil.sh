@@ -1538,24 +1538,17 @@ case "$command" in
     esac
     ;;
   program)
-    #check on ACAP or FPGA servers (server must have at least one reconfigurable device)
-    check_on_fpga "$CLI_PATH" "$hostname"
+    #require hot-plug
+    if [ "$arguments" = "opennic" ] || [ "$arguments" = "revert" ]; then
+      check_on_fpga "$CLI_PATH" "$hostname"
+      vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+      check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
+      source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+      MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
+      multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+      check_on_virtualized "$CLI_PATH" "$hostname"
+    fi
     
-    #get Vivado version
-    vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-    
-    #check on Vivado version
-    check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
-    
-    #check on DEVICES_LIST
-    source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
-
-    #get number of fpga and acap devices present
-    MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
-    
-    #get multiple devices
-    multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
-
     case "$arguments" in
       -h|--help)
         program_help
@@ -1577,33 +1570,18 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
         
-        #check on virtualized
-        check_on_virtualized "$CLI_PATH" "$hostname"
-        
-        #check on vivado_developers
+        #check on...
         check_on_vivado_developers "$USER"
-
-        #check_on_commit
         commit_name=$(check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}")
         echo ""
-
         echo "${bold}sgutil $command $arguments (commit ID: $commit_name)${normal}"
         echo ""
-        
-        #check on project
         check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
-
-        #check on device
         check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        #echo ""
-
-        #add additional echo
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
           echo ""
         fi
-        
         check_on_remote "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
-
         #run
         $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
         ;;
@@ -1619,9 +1597,6 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
-        #check on virtualized
-        check_on_virtualized "$CLI_PATH" "$hostname"
-
         #print header
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
             echo ""
@@ -1629,24 +1604,21 @@ case "$command" in
             echo ""
         fi
 
-        #check on device
+        #check on...
         check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-
-        #add additional echo
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
             workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
             if [[ $workflow = "vitis" ]]; then
                 echo ""
             fi
         fi
-
-        #check on workflow
         workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
         if [[ $workflow = "vitis" ]]; then
             exit
         fi
         echo ""
 
+        #run
         $CLI_PATH/program/revert --device $device_index --version $vivado_version
         ;;
       vivado)
@@ -1744,6 +1716,18 @@ case "$command" in
     esac
     ;;
   validate)
+    #require hot-plug
+    if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
+      check_on_fpga "$CLI_PATH" "$hostname"
+      vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+      check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
+      source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+      MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
+      multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+      check_on_virtualized "$CLI_PATH" "$hostname"
+      check_on_vivado_developers "$USER"
+    fi
+
     case "$arguments" in
       coyote)
         valid_flags="-c --commit -d --device -h --help"
@@ -1760,20 +1744,6 @@ case "$command" in
       iperf)
         #valid flags
         valid_flags="-b --bandwidth -h --help -p --parallel -t --time -u --udp"
-        
-        # ensure -u or --udp are going at the end
-        #if [[ $(echo "$command_arguments_flags" | grep "\-u\b" | wc -l) = 1 ]]; then
-        #  #remove -u
-        #  command_arguments_flags=${command_arguments_flags/-u/""}
-        #  #add it at the end
-        #  command_arguments_flags=$command_arguments_flags" -u"
-        #fi
-        #if [[ $(echo "$command_arguments_flags" | grep "\-\-udp\b" | wc -l) = 1 ]]; then
-        #  #remove --udp
-        #  command_arguments_flags=${command_arguments_flags/--udp/""}
-        #  #add it at the end
-        #  command_arguments_flags=$command_arguments_flags" -u" # this is done on purpose (see iperf.sh)
-        #fi
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       mpi)
@@ -1782,22 +1752,22 @@ case "$command" in
         ;;
       opennic)
         #check on ACAP or FPGA servers (server must have at least one reconfigurable device)
-        check_on_fpga "$CLI_PATH" "$hostname"
+        #check_on_fpga "$CLI_PATH" "$hostname"
         
         #get Vivado version
-        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        #vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
         
         #check on Vivado version
-        check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
+        #check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
         
         #check on DEVICES_LIST
-        source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+        #source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
 
         #get number of fpga and acap devices present
-        MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
+        #MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
         
         #get multiple devices
-        multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+        #multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
         
         #check on flags
         valid_flags="-c --commit -d --device -h --help"
@@ -1807,10 +1777,10 @@ case "$command" in
         read -r -a flags_array <<< "$flags"
         
         #check on virtualized
-        check_on_virtualized "$CLI_PATH" "$hostname"
+        #check_on_virtualized "$CLI_PATH" "$hostname"
         
         #check on vivado_developers
-        check_on_vivado_developers "$USER"
+        #check_on_vivado_developers "$USER"
 
         #check_on_commits
         commit_found_shell=""
