@@ -144,24 +144,55 @@ check_on_commit() {
     fi
   else
     #commit_dialog_check
-    result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
-    commit_found=$(echo "$result" | sed -n '1p')
-    commit_name=$(echo "$result" | sed -n '2p')
+    #result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
+    #commit_found=$(echo "$result" | sed -n '1p')
+    #commit_name=$(echo "$result" | sed -n '2p')
     #check if commit exists
-    exists=$($GITHUB_CLI_PATH/gh api repos/$REPO_ADDRESS/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+    #exists=$($GITHUB_CLI_PATH/gh api repos/$REPO_ADDRESS/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
     #forbidden combinations
-    if [ "$commit_found" = "0" ]; then 
-        commit_found="1"
-        commit_name=$DEFAULT_COMMIT
-    elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
-        exit 1
-    elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
-        echo ""
-        echo $CHECK_ON_COMMIT_ERR_MSG
-        echo ""
-        exit 1
-    fi
+    #if [ "$commit_found" = "0" ]; then 
+    #    commit_found="1"
+    #    commit_name=$DEFAULT_COMMIT
+    #elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+    #    $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
+    #    exit 1
+    #elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
+    #    echo ""
+    #    echo $CHECK_ON_COMMIT_ERR_MSG
+    #    echo ""
+    #    exit 1
+    #fi
+    commit_dialog_check "$CLI_PATH" "$command" "$WORKFLOW" "$GITHUB_CLI_PATH" "$REPO_ADDRESS" "$DEFAULT_COMMIT" "${flags_array[@]}"
+  fi
+}
+
+commit_dialog_check() {
+  local CLI_PATH=$1
+  local command=$2 #program
+  local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
+  local GITHUB_CLI_PATH=$4
+  local REPO_ADDRESS=$5
+  local DEFAULT_COMMIT=$6
+  shift 6
+  local flags_array=("$@")
+  #commit_dialog_check
+  result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
+  commit_found=$(echo "$result" | sed -n '1p')
+  commit_name=$(echo "$result" | sed -n '2p')
+  #check if commit exists
+  exists=$($GITHUB_CLI_PATH/gh api repos/$REPO_ADDRESS/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+  #forbidden combinations
+  if [ "$commit_found" = "0" ]; then 
+      commit_found="1"
+      commit_name=$DEFAULT_COMMIT
+  elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+      $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
+      exit 1
+  elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
+      echo ""
+      echo $CHECK_ON_COMMIT_ERR_MSG
+      echo ""
+      exit 1
   fi
 }
 
@@ -1722,19 +1753,7 @@ case "$command" in
 
         #early device_dialog_check
         if [ ! "$flags_array" = "" ]; then
-          result="$("$CLI_PATH/common/device_dialog_check" "${flags_array[@]}")"
-          device_found=$(echo "$result" | sed -n '1p')
-          device_index=$(echo "$result" | sed -n '2p')
-          #forbidden combinations
-          if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]); then
-              $CLI_PATH/help/${command}"_"${arguments} $CLI_PATH $CLI_NAME
-              exit 1
-          elif ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-            echo ""
-            echo $CHECK_ON_DEVICE_ERR_MSG
-            echo ""
-            exit
-          fi
+          device_dialog_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         fi
         
         #check on...
