@@ -7,7 +7,7 @@ CLI_PATH=$1
 CLI_NAME=$2
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 
-#echo ""
+echo ""
 echo "${bold}$CLI_NAME build opennic [flags] [--help]${normal}"
 echo ""
 echo "Generates OpenNIC's bitstreams and drivers."
