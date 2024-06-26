@@ -237,12 +237,10 @@ check_on_fpga() {
 
 check_on_gh() {
   local CLI_PATH=$1
-
-  #capture gh auth status
   logged_in=$($CLI_PATH/common/gh_auth_status)
   if [ "$logged_in" = "0" ]; then 
     echo ""
-    echo "Please, use $CLI_NAME set gh to login to your GitHub account"
+    echo "Please, use ${bold}$CLI_NAME set gh${normal} to login to your GitHub account"
     echo ""
     exit 1
   fi
@@ -1568,6 +1566,7 @@ case "$command" in
         
         #check on...
         check_on_vivado_developers "$USER"
+        check_on_gh "$CLI_PATH"
         commit_name=$(check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}")
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
@@ -1722,6 +1721,7 @@ case "$command" in
       multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
       check_on_virtualized "$CLI_PATH" "$hostname"
       check_on_vivado_developers "$USER"
+      check_on_gh "$CLI_PATH"
     fi
 
     case "$arguments" in
