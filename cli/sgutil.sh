@@ -26,13 +26,12 @@ DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
 #get name
-cli_name=${0##*/}
+CLI_NAME=${0##*/}
 
 #help
 cli_help() {
-  #cli_name=${0##*/}
   echo "
-${bold}$cli_name [commands] [arguments [flags]] [--help] [--version]${normal}
+${bold}$CLI_NAME [commands] [arguments [flags]] [--help] [--version]${normal}
 
 COMMANDS:
    build           - Creates binaries, bitstreams, and drivers for your accelerated applications.
@@ -245,7 +244,7 @@ check_on_gh() {
   logged_in=$($CLI_PATH/common/gh_auth_status)
   if [ "$logged_in" = "0" ]; then 
     echo ""
-    echo "Please, use $cli_name set gh to login to your GitHub account"
+    echo "Please, use $CLI_NAME set gh to login to your GitHub account"
     echo ""
     exit 1
   fi
@@ -417,7 +416,7 @@ check_on_vivado_developers() {
 
 build_help() {
     echo ""
-    echo "${bold}$cli_name build [arguments [flags]] [--help]${normal}"
+    echo "${bold}$CLI_NAME build [arguments [flags]] [--help]${normal}"
     echo ""
     echo "Creates binaries, bitstreams, and drivers for your accelerated applications."
     echo ""
@@ -436,7 +435,7 @@ build_help() {
 
 build_coyote_help() {
     echo ""
-    echo "${bold}$cli_name build coyote [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME build coyote [flags] [--help]${normal}"
     echo ""
     echo "Generates Coyote's bitstreams and drivers."
     echo ""
@@ -447,7 +446,7 @@ build_coyote_help() {
     #echo "                         perf_rdma_host, perf_rdma_card, perf_tcp,"
     #echo "                         rdma_regex, service_aes, service_reconfiguration."
     echo "   -c, --commit    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
-    echo "       --platform  - Xilinx platform (according to $cli_name get platform)."
+    echo "       --platform  - Xilinx platform (according to $CLI_NAME get platform)."
     echo "       --project   - Specifies your Coyote project name."
     echo ""
     echo "   -h, --help      - Help to build Coyote."
@@ -457,7 +456,7 @@ build_coyote_help() {
 
 build_hip_help() {
     echo ""
-    echo "${bold}$cli_name build hip [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME build hip [flags] [--help]${normal}"
     echo ""
     echo "Generates HIP binaries for your projects."
     echo ""
@@ -471,7 +470,7 @@ build_hip_help() {
 
 build_mpi_help() {
     echo ""
-    echo "${bold}$cli_name build mpi [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME build mpi [flags] [--help]${normal}"
     echo ""
     echo "Generates MPI binaries for your projects."
     echo ""
@@ -491,7 +490,7 @@ build_opennic_help() {
 
 build_vitis_help() {
     echo ""
-    echo "${bold}$cli_name build vitis [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME build vitis [flags] [--help]${normal}"
     echo ""
     echo "Uses acap_fpga_xclbin to generate XCLBIN binaries for Vitis workflow."
     echo ""
@@ -507,7 +506,7 @@ build_vitis_help() {
 
 build_vivado_help() {
     echo ""
-    echo "${bold}$cli_name build vivado [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME build vivado [flags] [--help]${normal}"
     echo ""
     echo "Generates .bit bitstreams and .ko drivers for Vivado workflow."
     echo ""
@@ -522,7 +521,7 @@ build_vivado_help() {
 #enable
 enable_help() {
     echo ""
-    echo "${bold}$cli_name enable [arguments [flags]] [--help]${normal}"
+    echo "${bold}$CLI_NAME enable [arguments [flags]] [--help]${normal}"
     echo ""
     echo "Enables your favorite development and deployment tools on your server."
     echo ""
@@ -538,7 +537,7 @@ enable_help() {
 
 enable_vitis_help() {
     echo ""
-    echo "${bold}$cli_name enable vitis [--help]${normal}"
+    echo "${bold}$CLI_NAME enable vitis [--help]${normal}"
     echo ""
     echo "Enables Vitis SDK (Software Development Kit) and Vitis_HLS (High-Level Synthesis)."
     echo ""
@@ -552,7 +551,7 @@ enable_vitis_help() {
 
 enable_vivado_help() {
     echo ""
-    echo "${bold}$cli_name enable vivado [--help]${normal}"
+    echo "${bold}$CLI_NAME enable vivado [--help]${normal}"
     echo ""
     echo "Enables Vivado HDI (Hardware Design and Implementation)."
     echo ""
@@ -566,7 +565,7 @@ enable_vivado_help() {
 
 enable_xrt_help() {
     echo ""
-    echo "${bold}$cli_name enable xrt [--help]${normal}"
+    echo "${bold}$CLI_NAME enable xrt [--help]${normal}"
     echo ""
     echo "Enables Xilinx Runtime (XRT)."
     echo ""
@@ -582,7 +581,7 @@ enable_xrt_help() {
 
 examine_help() {
     echo ""
-    echo "${bold}$cli_name examine [--help]${normal}"
+    echo "${bold}$CLI_NAME examine [--help]${normal}"
     echo ""
     echo "Status of the system and devices."
     echo ""
@@ -599,7 +598,7 @@ examine_help() {
 
 get_help() {
     echo ""
-    echo "${bold}$cli_name get [arguments [flags]] [--help]${normal}"
+    echo "${bold}$CLI_NAME get [arguments [flags]] [--help]${normal}"
     echo ""
     echo "Devices and host information."
     echo ""
@@ -628,12 +627,12 @@ get_help() {
 
 get_bdf_help() {
     echo ""
-    echo "${bold}$cli_name get bdf [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME get bdf [flags] [--help]${normal}"
     echo ""
     echo "Retreives FPGA/ACAP Bus Device Function."
     echo ""
     echo "FLAGS:"
-    echo "   -d, --device    - FPGA/ACAP Device Index (according to $cli_name examine)."
+    echo "   -d, --device    - FPGA/ACAP Device Index (according to $CLI_NAME examine)."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -642,12 +641,12 @@ get_bdf_help() {
 
 get_clock_help() {
     echo ""
-    echo "${bold}$cli_name get clock [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME get clock [flags] [--help]${normal}"
     echo ""
     echo "Retreives FPGA/ACAP Clock Information."
     echo ""
     echo "FLAGS:"
-    echo "   -d, --device    - FPGA/ACAP Device Index (according to $cli_name examine)."
+    echo "   -d, --device    - FPGA/ACAP Device Index (according to $CLI_NAME examine)."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -656,12 +655,12 @@ get_clock_help() {
 
 get_bus_help() {
     echo ""
-    echo "${bold}$cli_name get bus [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME get bus [flags] [--help]${normal}"
     echo ""
     echo "Retreives GPU PCI Bus ID."
     echo ""
     echo "FLAGS:"
-    echo "   -d, --device    - GPU Device Index (according to $cli_name examine)."
+    echo "   -d, --device    - GPU Device Index (according to $CLI_NAME examine)."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -670,12 +669,12 @@ get_bus_help() {
 
 get_memory_help() {
     echo ""
-    echo "${bold}$cli_name get clock [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME get clock [flags] [--help]${normal}"
     echo ""
     echo "Retreives FPGA/ACAP Memory Information."
     echo ""
     echo "FLAGS:"
-    echo "   -d, --device    - FPGA/ACAP Device Index (according to $cli_name examine)."
+    echo "   -d, --device    - FPGA/ACAP Device Index (according to $CLI_NAME examine)."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -684,12 +683,12 @@ get_memory_help() {
 
 get_name_help() {
     echo ""
-    echo "${bold}$cli_name get name [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME get name [flags] [--help]${normal}"
     echo ""
     echo "Retreives FPGA/ACAP device names."
     echo ""
     echo "FLAGS:"
-    echo "   -d, --device    - FPGA/ACAP Device Index (according to $cli_name examine)."
+    echo "   -d, --device    - FPGA/ACAP Device Index (according to $CLI_NAME examine)."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -698,7 +697,7 @@ get_name_help() {
 
 get_ifconfig_help() {
     echo ""
-    echo "${bold}$cli_name get ifconfig [--help]${normal}"
+    echo "${bold}$CLI_NAME get ifconfig [--help]${normal}"
     echo ""
     echo "Retreives host networking information."
     echo ""
@@ -712,12 +711,12 @@ get_ifconfig_help() {
 
 get_network_help() {
     echo ""
-    echo "${bold}$cli_name get network [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME get network [flags] [--help]${normal}"
     echo ""
     echo "Retreives FPGA/ACAP networking information."
     echo ""
     echo "FLAGS:"
-    echo "   -d, --device    - FPGA/ACAP Device Index (according to $cli_name examine)."
+    echo "   -d, --device    - FPGA/ACAP Device Index (according to $CLI_NAME examine)."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -726,12 +725,12 @@ get_network_help() {
 
 get_platform_help() {
     echo ""
-    echo "${bold}$cli_name get platform [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME get platform [flags] [--help]${normal}"
     echo ""
     echo "Retreives FPGA/ACAP platform names."
     echo ""
     echo "FLAGS:"
-    echo "   -d, --device    - FPGA/ACAP Device Index (according to $cli_name examine)."
+    echo "   -d, --device    - FPGA/ACAP Device Index (according to $CLI_NAME examine)."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -740,12 +739,12 @@ get_platform_help() {
 
 get_resource_help() {
     echo ""
-    echo "${bold}$cli_name get resource [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME get resource [flags] [--help]${normal}"
     echo ""
     echo "Retreives FPGA/ACAP Resource Availability."
     echo ""
     echo "FLAGS:"
-    echo "   -d, --device    - FPGA/ACAP Device Index (according to $cli_name examine)."
+    echo "   -d, --device    - FPGA/ACAP Device Index (according to $CLI_NAME examine)."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -754,12 +753,12 @@ get_resource_help() {
 
 get_serial_help() {
     echo ""
-    echo "${bold}$cli_name get serial [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME get serial [flags] [--help]${normal}"
     echo ""
     echo "Retreives FPGA/ACAP serial numbers."
     echo ""
     echo "FLAGS:"
-    echo "   -d, --device    - FPGA/ACAP Device Index (according to $cli_name examine)."
+    echo "   -d, --device    - FPGA/ACAP Device Index (according to $CLI_NAME examine)."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -768,12 +767,12 @@ get_serial_help() {
 
 get_slr_help() {
     echo ""
-    echo "${bold}$cli_name get slr [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME get slr [flags] [--help]${normal}"
     echo ""
     echo "Retreives FPGA/ACAP Retreives FPGA/ACAP Resource Availability and Memory Information per SLR."
     echo ""
     echo "FLAGS:"
-    echo "   -d, --device    - FPGA/ACAP Device Index (according to $cli_name examine)."
+    echo "   -d, --device    - FPGA/ACAP Device Index (according to $CLI_NAME examine)."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -782,7 +781,7 @@ get_slr_help() {
 
 get_syslog_help() {
     echo ""
-    echo "${bold}$cli_name get syslog [--help]${normal}"
+    echo "${bold}$CLI_NAME get syslog [--help]${normal}"
     echo ""
     echo "Gets the systems log with system messages and events generated by the operating system."
     echo ""
@@ -796,12 +795,12 @@ get_syslog_help() {
 
 get_workflow_help() {
     echo ""
-    echo "${bold}$cli_name get workflow [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME get workflow [flags] [--help]${normal}"
     echo ""
     echo "Retreives FPGA/ACAP current workflow."
     echo ""
     echo "FLAGS:"
-    echo "   -d, --device    - FPGA/ACAP Device Index (according to $cli_name examine)."
+    echo "   -d, --device    - FPGA/ACAP Device Index (according to $CLI_NAME examine)."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -810,7 +809,7 @@ get_workflow_help() {
 
 get_servers_help() {
     echo ""
-    echo "${bold}$cli_name get servers [--help]${normal}"
+    echo "${bold}$CLI_NAME get servers [--help]${normal}"
     echo ""
     echo "Retreives the list of servers you can use SSH to connect to."
     echo ""
@@ -826,7 +825,7 @@ get_servers_help() {
 
 new_help() {
     echo ""
-    echo "${bold}$cli_name new [arguments] [--help]${normal}"
+    echo "${bold}$CLI_NAME new [arguments] [--help]${normal}"
     echo ""
     echo "Creates a new project of your choice."
     echo ""
@@ -849,7 +848,7 @@ new_coyote_help() {
 
 new_hpi_help() {
     echo ""
-    echo "${bold}$cli_name new hip [--help]${normal}"
+    echo "${bold}$CLI_NAME new hip [--help]${normal}"
     echo ""
     echo "Creates a new project using HIP Hello, world! template."
     echo ""
@@ -863,7 +862,7 @@ new_hpi_help() {
 
 new_mpi_help() {
     echo ""
-    echo "${bold}$cli_name new mpi [--help]${normal}"
+    echo "${bold}$CLI_NAME new mpi [--help]${normal}"
     echo ""
     echo "Creates a new project using MPI Hello, world! template."
     echo ""
@@ -882,7 +881,7 @@ new_opennic_help() {
 
 new_vitis_help() {
     echo ""
-    echo "${bold}$cli_name new vitis [--help]${normal}"
+    echo "${bold}$CLI_NAME new vitis [--help]${normal}"
     echo ""
     echo "Creates a new project using Vitis Hello, world! template."
     echo ""
@@ -898,7 +897,7 @@ new_vitis_help() {
 
 program_help() {
     echo ""
-    echo "${bold}$cli_name program [arguments [flags]] [--help]${normal}"
+    echo "${bold}$CLI_NAME program [arguments [flags]] [--help]${normal}"
     echo ""
     echo "Download the acceleration program to a given FPGA/ACAP."
     echo ""
@@ -918,13 +917,13 @@ program_help() {
 
 program_coyote_help() {
     echo ""
-    echo "${bold}$cli_name program coyote [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME program coyote [flags] [--help]${normal}"
     echo ""
     echo "Programs Coyote to a given FPGA."
     echo ""
     echo "FLAGS:"
     echo "   -c, --commit    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
-    echo "   -d, --device    - FPGA Device Index (see $cli_name examine)."
+    echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
     echo "   -p, --project   - Specifies your Coyote project name." 
     #echo "       --regions   - Sets the number of independent regions (vFPGA)."
     echo "       --remote    - Local or remote deployment."
@@ -936,7 +935,7 @@ program_coyote_help() {
 
 program_driver_help() {
     echo ""
-    echo "${bold}$cli_name program driver [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME program driver [flags] [--help]${normal}"
     echo ""
     echo "Inserts a driver or module into the Linux kernel."
     echo ""
@@ -956,12 +955,12 @@ program_opennic_help() {
 
 program_reset_help() {
     echo ""
-    echo "${bold}$cli_name program reset [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME program reset [flags] [--help]${normal}"
     echo ""
     echo "Resets a given FPGA/ACAP."
     echo ""
     echo "FLAGS:"
-    echo "   -d, --device    - FPGA Device Index (see $cli_name examine)."
+    echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -975,13 +974,13 @@ program_revert_help() {
 
 program_vivado_help() {
     echo ""
-    echo "${bold}$cli_name program vivado [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME program vivado [flags] [--help]${normal}"
     echo ""
     echo "Programs a Vivado bitstream to a given FPGA."
     echo ""
     echo "FLAGS:"
     echo "   -b, --bitstream - Full path to the .bit bitstream to be programmed." 
-    echo "   -d, --device    - FPGA Device Index (see $cli_name examine)."
+    echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
     #echo "       --driver    - Driver (.ko) file path."
     echo ""
     echo "   -h, --help      - Help to program a bitstream."
@@ -991,12 +990,12 @@ program_vivado_help() {
 
 program_vitis_help() {
     echo ""
-    echo "${bold}$cli_name program vitis [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME program vitis [flags] [--help]${normal}"
     echo ""
     echo "Programs a Vitis binary to a given FPGA/ACAP."
     echo ""
     echo "FLAGS:"
-    echo "   -d, --device    - FPGA Device Index (see $cli_name examine)."
+    echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
     echo "   -p, --project   - Specifies your Vitis project name."
     echo "   -r, --remote    - Local or remote deployment."
     echo "   -x, --xclbin    - Vitis binary name to be programmed on the device."
@@ -1010,7 +1009,7 @@ program_vitis_help() {
 
 reboot_help() {
     echo ""
-    echo "${bold}$cli_name reboot [--help]${normal}"
+    echo "${bold}$CLI_NAME reboot [--help]${normal}"
     echo ""
     echo "Reboots the server (warm boot)."
     echo ""
@@ -1026,7 +1025,7 @@ reboot_help() {
 
 run_help() {
     echo ""
-    echo "${bold}$cli_name run [arguments [flags]] [--help]${normal}"
+    echo "${bold}$CLI_NAME run [arguments [flags]] [--help]${normal}"
     echo ""
     echo "Executes your accelerated application."
     echo ""
@@ -1045,13 +1044,13 @@ run_help() {
 
 run_coyote_help() {
     echo ""
-    echo "${bold}$cli_name run coyote [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME run coyote [flags] [--help]${normal}"
     echo ""
     echo "Runs Coyote on a given FPGA."
     echo ""
     echo "FLAGS:"
     echo "   -c, --commit    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
-    echo "   -d, --device    - FPGA Device Index (see $cli_name examine)."
+    echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
     echo "   -p, --project   - Specifies your Coyote project name."
     echo ""
     echo "   -h, --help      - Help to use this command."
@@ -1061,12 +1060,12 @@ run_coyote_help() {
 
 run_hip_help() {
     echo ""
-    echo "${bold}$cli_name run hip [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME run hip [flags] [--help]${normal}"
     echo ""
     echo "Runs your HIP application on a given GPU."
     echo ""
     echo "FLAGS"
-    echo "   -d, --device    - GPU Device Index (see $cli_name examine)."
+    echo "   -d, --device    - GPU Device Index (see $CLI_NAME examine)."
     echo "   -p, --project   - Specifies your HIP project name."
     echo ""
     echo "   -h, --help      - Help to use this command."
@@ -1076,7 +1075,7 @@ run_hip_help() {
 
 run_mpi_help() {
     echo ""
-    echo "${bold}$cli_name run mpi [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME run mpi [flags] [--help]${normal}"
     echo ""
     echo "Runs your MPI application according to your setup."
     echo ""
@@ -1090,12 +1089,12 @@ run_mpi_help() {
 
 run_vitis_help() {
     echo ""
-    echo "${bold}$cli_name run vitis [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME run vitis [flags] [--help]${normal}"
     echo ""
     echo "Runs a Vitis FPGA-binary on a given FPGA/ACAP."
     echo ""
     echo "FLAGS:"
-    #echo "   -d, --device    - FPGA Device Index (see $cli_name examine)."
+    #echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
     echo "   -c, --config    - Specifies a configuration of your choice."
     echo "   -p, --project   - Specifies your Vitis project name."
     echo "   -t, --target    - Binary compilation target (sw_emu, hw_emu, hw)."
@@ -1109,7 +1108,7 @@ run_vitis_help() {
 
 set_help() {
     echo ""
-    echo "${bold}$cli_name set [arguments [flags]] [--help]${normal}"
+    echo "${bold}$CLI_NAME set [arguments [flags]] [--help]${normal}"
     echo ""
     echo "Devices and host configuration."
     echo ""
@@ -1127,7 +1126,7 @@ set_help() {
 
 set_gh_help() {
     echo ""
-    echo "${bold}$cli_name set gh [--help]${normal}"
+    echo "${bold}$CLI_NAME set gh [--help]${normal}"
     echo ""
     echo "Enables GitHub CLI on your host (default path: ${bold}$GITHUB_CLI_PATH${normal})."
     echo ""
@@ -1146,7 +1145,7 @@ set_keys_help() {
 
 set_license_help() {
     echo ""
-    echo "${bold}$cli_name set license [--help]${normal}"
+    echo "${bold}$CLI_NAME set license [--help]${normal}"
     echo ""
     echo "Configures a set of verified license servers for Xilinx tools."
     echo ""
@@ -1160,7 +1159,7 @@ set_license_help() {
 
 set_mtu_help() {
     echo ""
-    echo "${bold}$cli_name set mtu [flags] [--help]${normal}"
+    echo "${bold}$CLI_NAME set mtu [flags] [--help]${normal}"
     echo ""
     echo "Sets a valid MTU value to your host networking interface."
     echo ""
@@ -1175,7 +1174,7 @@ set_mtu_help() {
 # validate -----------------------------------------------------------------------------------------------------------------------
 validate_help() {
     echo ""
-    echo "${bold}$cli_name validate [arguments [flags]] [--help]${normal}"
+    echo "${bold}$CLI_NAME validate [arguments [flags]] [--help]${normal}"
     echo ""
     echo "Validates the basic HACC infrastructure functionality."
     echo ""
@@ -1198,13 +1197,13 @@ validate_help() {
 
 validate_coyote_help() {
       echo ""
-      echo "${bold}$cli_name validate coyote [flags] [--help]${normal}"
+      echo "${bold}$CLI_NAME validate coyote [flags] [--help]${normal}"
       echo ""
       echo "Validates Coyote on the selected FPGA."
       echo ""
       echo "FLAGS:"
       echo "   -c, --commit    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
-      echo "   -d, --device    - FPGA Device Index (see $cli_name examine)."
+      echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
       echo ""
       echo "   -h, --help      - Help to use Coyote validation."
       echo ""
@@ -1213,7 +1212,7 @@ validate_coyote_help() {
 
 validate_docker_help() {
       echo ""
-      echo "${bold}$cli_name validate docker [--help]${normal}"
+      echo "${bold}$CLI_NAME validate docker [--help]${normal}"
       echo ""
       echo "Validates Docker installation on the server."
       echo ""
@@ -1227,12 +1226,12 @@ validate_docker_help() {
 
 validate_hip_help() {
       echo ""
-      echo "${bold}$cli_name validate hip [flags] [--help]${normal}"
+      echo "${bold}$CLI_NAME validate hip [flags] [--help]${normal}"
       echo ""
       echo "Validates HIP on the selected GPU."
       echo ""
       echo "FLAGS:"
-      echo "   -d, --device    - GPU Device Index (see $cli_name examine)."
+      echo "   -d, --device    - GPU Device Index (see $CLI_NAME examine)."
       echo ""
       echo "   -h, --help      - Help to use HIP validation."
       echo ""
@@ -1241,7 +1240,7 @@ validate_hip_help() {
 
 validate_iperf_help() {
       echo ""
-      echo "${bold}$cli_name validate iperf [flags] [--help]${normal}"
+      echo "${bold}$CLI_NAME validate iperf [flags] [--help]${normal}"
       echo ""
       echo "Measures HACC network performance."
       echo ""
@@ -1258,7 +1257,7 @@ validate_iperf_help() {
 
 validate_mpi_help() {
       echo ""
-      echo "${bold}$cli_name validate mpi [flags] [--help]${normal}"
+      echo "${bold}$CLI_NAME validate mpi [flags] [--help]${normal}"
       echo ""
       echo "Validates MPI."
       echo ""
@@ -1277,12 +1276,12 @@ validate_opennic_help() {
 
 validate_vitis_help() {
       echo ""
-      echo "${bold}$cli_name validate vitis [flags] [--help]${normal}"
+      echo "${bold}$CLI_NAME validate vitis [flags] [--help]${normal}"
       echo ""
       echo "Validates Vitis workflow on the selected FPGA/ACAP."
       echo ""
       echo "FLAGS:"
-      echo "   -d, --device    - FPGA Device Index (see $cli_name examine)."
+      echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
       echo ""
       echo "   -h, --help      - Help to use Vitis validation."
       echo ""
@@ -1291,12 +1290,12 @@ validate_vitis_help() {
 
 validate_vitis_ai_help() {
       echo ""
-      echo "${bold}$cli_name validate vitis-ai [flags] [--help]${normal}"
+      echo "${bold}$CLI_NAME validate vitis-ai [flags] [--help]${normal}"
       echo ""
       echo "Validates Vitis AI workflow on the selected FPGA????????/ACAP."
       echo ""
       echo "FLAGS:"
-      echo "   -d, --device    - FPGA Device Index (see $cli_name examine)."
+      echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
       echo ""
       echo "   -h, --help      - Help to use Vitis validation."
       echo ""
@@ -1573,7 +1572,7 @@ case "$command" in
         check_on_vivado_developers "$USER"
         commit_name=$(check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}")
         echo ""
-        echo "${bold}$cli_name $command $arguments (commit ID: $commit_name)${normal}"
+        echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
         echo ""
         check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
         check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
@@ -1599,7 +1598,7 @@ case "$command" in
         #print header
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
             echo ""
-            echo "${bold}$cli_name $command $arguments${normal}"
+            echo "${bold}$CLI_NAME $command $arguments${normal}"
             echo ""
         fi
 
@@ -1827,7 +1826,7 @@ case "$command" in
         fi
         echo ""
 
-        echo "${bold}$cli_name $command $arguments (commit IDs for shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
+        echo "${bold}$CLI_NAME $command $arguments (commit IDs for shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
         echo ""
 
         #check on device
