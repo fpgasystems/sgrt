@@ -1984,6 +1984,8 @@ case "$command" in
             commit_found_driver="1"
             commit_name_shell=$ONIC_SHELL_COMMIT
             commit_name_driver=$ONIC_DRIVER_COMMIT
+            #early
+            device_dialog_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         else
             #commit_dialog_check
             result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
