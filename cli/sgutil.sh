@@ -190,19 +190,20 @@ check_on_device() {
       fi
   else
       #device_dialog_check
-      result="$("$CLI_PATH/common/device_dialog_check" "${flags_array[@]}")"
-      device_found=$(echo "$result" | sed -n '1p')
-      device_index=$(echo "$result" | sed -n '2p')
-      #forbidden combinations
-      if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]); then
-          $CLI_PATH/help/${command}"_"${arguments} $CLI_PATH $CLI_NAME
-          exit 1
-      elif ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-        echo ""
-        echo $CHECK_ON_DEVICE_ERR_MSG
-        echo ""
-        exit
-      fi
+      #result="$("$CLI_PATH/common/device_dialog_check" "${flags_array[@]}")"
+      #device_found=$(echo "$result" | sed -n '1p')
+      #device_index=$(echo "$result" | sed -n '2p')
+      ##forbidden combinations
+      #if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]); then
+      #    $CLI_PATH/help/${command}"_"${arguments} $CLI_PATH $CLI_NAME
+      #    exit 1
+      #elif ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
+      #  echo ""
+      #  echo $CHECK_ON_DEVICE_ERR_MSG
+      #  echo ""
+      #  exit
+      #fi
+      device_dialog_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
       #forgotten mandatory
       if [[ $multiple_devices = "0" ]]; then
           device_found="1"
@@ -215,6 +216,29 @@ check_on_device() {
           device_index=$(echo "$result" | sed -n '2p')
           echo ""
       fi
+  fi
+}
+
+device_dialog_check() {
+  local CLI_PATH=$1
+  local command=$2
+  local arguments=$3
+  local multiple_devices=$4
+  local MAX_DEVICES=$5
+  shift 5
+  local flags_array=("$@")
+  result="$("$CLI_PATH/common/device_dialog_check" "${flags_array[@]}")"
+  device_found=$(echo "$result" | sed -n '1p')
+  device_index=$(echo "$result" | sed -n '2p')
+  #forbidden combinations
+  if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]); then
+      $CLI_PATH/help/${command}"_"${arguments} $CLI_PATH $CLI_NAME
+      exit 1
+  elif ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
+    echo ""
+    echo $CHECK_ON_DEVICE_ERR_MSG
+    echo ""
+    exit
   fi
 }
 
@@ -1458,7 +1482,7 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
-        #early platform check
+        #early platform_dialog_check
         if [ ! "$flags_array" = "" ]; then
           result="$("$CLI_PATH/common/platform_dialog_check" "${flags_array[@]}")"
           platform_found=$(echo "$result" | sed -n '1p')
@@ -1695,6 +1719,23 @@ case "$command" in
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
+
+        #early device_dialog_check
+        if [ ! "$flags_array" = "" ]; then
+          result="$("$CLI_PATH/common/device_dialog_check" "${flags_array[@]}")"
+          device_found=$(echo "$result" | sed -n '1p')
+          device_index=$(echo "$result" | sed -n '2p')
+          #forbidden combinations
+          if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]); then
+              $CLI_PATH/help/${command}"_"${arguments} $CLI_PATH $CLI_NAME
+              exit 1
+          elif ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
+            echo ""
+            echo $CHECK_ON_DEVICE_ERR_MSG
+            echo ""
+            exit
+          fi
+        fi
         
         #check on...
         check_on_vivado_developers "$USER"
