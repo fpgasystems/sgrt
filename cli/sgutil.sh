@@ -1823,10 +1823,6 @@ case "$command" in
             commit_found_driver="1"
             commit_name_shell=$ONIC_SHELL_COMMIT
             commit_name_driver=$ONIC_DRIVER_COMMIT
-            #header (1/2)
-            #echo ""
-            #echo "${bold}sgutil validate $WORKFLOW (commit IDs shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
-            #echo ""
         else
             #commit_dialog_check
             result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
@@ -1864,30 +1860,12 @@ case "$command" in
 
         echo "${bold}sgutil $command $arguments (commit IDs for shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
         echo ""
-        
-        #check on project
-        #check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
 
         #check on device
         check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        #echo ""
-
-        #add additional echo
-        #if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
-        #  echo ""
-        #fi
         
-        #check_on_remote "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
-
         #run
         $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --version $vivado_version
-
-
-
-
-        #valid_flags="-c --commit -d --device -h --help"
-        #echo ""
-        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)
         valid_flags="-d --device -h --help"
