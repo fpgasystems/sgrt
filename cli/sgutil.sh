@@ -1774,9 +1774,11 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
-        #early device_dialog_check
+        #early
         if [ ! "$flags_array" = "" ]; then
+          commit_dialog_check "$CLI_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
           device_dialog_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          project_dialog_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         fi
         
         #check on...
@@ -1970,7 +1972,7 @@ case "$command" in
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
-        
+
         #check_on_commits
         commit_found_shell=""
         commit_name_shell=""
