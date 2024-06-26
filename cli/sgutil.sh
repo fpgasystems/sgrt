@@ -379,10 +379,10 @@ check_on_platform() {
 check_on_project() {
   local CLI_PATH=$1
   local MY_PROJECTS_PATH=$2
-  local command=$3
-  local WORKFLOW=$4 #arguments and workflow are the same (i.e. opennic)
-  local commit_name=$5
-  shift 5
+  #local command=$3
+  local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
+  local commit_name=$4
+  shift 4
   local flags_array=("$@")
 
   project_found="0"
@@ -1555,13 +1555,14 @@ case "$command" in
         #check on...
         check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         echo ""
-        echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $$commit_name)${normal}"
+        echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name)${normal}"
         echo ""
-        check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$$commit_name" "${flags_array[@]}"
-        commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$$commit_name/$project_name/ONIC_DRIVER_COMMIT)
+        #check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
+        check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
         check_on_platform "$CLI_PATH" "$command" "$arguments" "${flags_array[@]}"
 
-        echo $$commit_name
+        echo $commit_name
         echo $commit_name_driver
         echo $platform_name
 
@@ -1570,7 +1571,7 @@ case "$command" in
         exit
         
         #run
-        $CLI_PATH/build/opennic --commit $$commit_name --platform $platform_name --project $project_name --version $vivado_version
+        $CLI_PATH/build/opennic --commit $commit_name --platform $platform_name --project $project_name --version $vivado_version
         echo ""
         
         
@@ -1785,7 +1786,8 @@ case "$command" in
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
         echo ""
-        check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
+        #check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
+        check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
           echo ""
