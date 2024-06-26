@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CLI_PATH=$(dirname "$0")
+CLI_NAME=${0##*/}
 SGRT_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
@@ -24,9 +25,6 @@ XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 #derived
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
-
-#get name
-CLI_NAME=${0##*/}
 
 #help
 cli_help() {
