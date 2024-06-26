@@ -20,6 +20,7 @@ ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 ONIC_DRIVER_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_REPO)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
+XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS_PATH)
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 
 #derived
@@ -243,6 +244,53 @@ check_on_gh() {
     echo "Please, use ${bold}$CLI_NAME set gh${normal} to login to your GitHub account"
     echo ""
     exit 1
+  fi
+}
+
+check_on_platform() {
+  local CLI_PATH=$1
+  local command=$2
+  local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
+  shift 3
+  local flags_array=("$@")
+
+  platform_found=""
+  platform_name=""
+
+  if [ "$flags_array" = "" ]; then
+    echo "${bold}Please, choose your platform:${normal}"
+    echo ""
+    result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
+    platform_found=$(echo "$result" | sed -n '1p')
+    platform_name=$(echo "$result" | sed -n '2p')
+    multiple_platforms=$(echo "$result" | sed -n '3p')
+    if [[ $multiple_platforms = "0" ]]; then
+        echo $platform_name
+    fi
+    echo ""
+  else
+    #platform_dialog_check
+    result="$("$CLI_PATH/common/platform_dialog_check" "${flags_array[@]}")"
+    platform_found=$(echo "$result" | sed -n '1p')
+    platform_name=$(echo "$result" | sed -n '2p')    
+    #forbidden combinations
+    if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
+        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH
+        exit
+    fi
+    #forgotten mandatory
+    if [[ $platform_found = "0" ]]; then
+        echo "${bold}Please, choose your platform:${normal}"
+        echo ""
+        result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
+        platform_found=$(echo "$result" | sed -n '1p')
+        platform_name=$(echo "$result" | sed -n '2p')
+        multiple_platforms=$(echo "$result" | sed -n '3p')
+        if [[ $multiple_platforms = "0" ]]; then
+            echo $platform_name
+        fi
+        echo ""
+    fi
   fi
 }
 
@@ -1349,6 +1397,16 @@ case "$command" in
     cli_version
     ;;
   build)
+    #vivado projects
+    if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
+
+      vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+      check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
+      check_on_vivado_developers "$USER"
+      check_on_gh "$CLI_PATH"
+
+    fi
+
     case "$arguments" in
       -h|--help)
         build_help
@@ -1366,9 +1424,37 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic) 
+        #check on flags
         valid_flags="-c --commit --platform --project -h --help" 
+        check_on_flags $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+        
+        #check on...
+        commit_name_shell=$(check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}")
         echo ""
-        command_run $command_arguments_flags"@"$valid_flags
+        echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name_shell)${normal}"
+        echo ""
+        check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name_shell" "${flags_array[@]}"
+        commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name_shell/$project_name/ONIC_DRIVER_COMMIT)
+        check_on_platform "$CLI_PATH" "$command" "$arguments" "${flags_array[@]}"
+
+        echo $commit_name_shell
+        echo $commit_name_driver
+        echo $platform_name
+
+        exit
+        
+        #run
+        $CLI_PATH/build/opennic --commit $commit_name_shell --platform $platform_name --project $project_name --version $vivado_version
+        echo ""
+        
+        
+        
+        #valid_flags="-c --commit --platform --project -h --help" 
+        #echo ""
+        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis) 
         valid_flags="-p --project -t --target -h --help" #-x --xclbin 
