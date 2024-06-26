@@ -1906,7 +1906,9 @@ case "$command" in
 
             # Check if commit_name contains exactly one comma
             if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
-                $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
+                echo ""
+                echo "Please, choose valid shell and driver commit IDs."
+                echo ""
                 exit
             fi
             
@@ -1945,7 +1947,7 @@ case "$command" in
         check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         echo ""
 
-        echo "${bold}$CLI_NAME $command $arguments (commit IDs for shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
+        echo "${bold}$CLI_NAME $command $arguments (shell and driver commit IDs: $commit_name_shell,$commit_name_driver)${normal}"
         echo ""
         
         #run
