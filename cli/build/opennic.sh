@@ -7,6 +7,9 @@ normal=$(tput sgr0)
 #usage:       $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --version $vivado_version
 #example: /opt/sgrt/cli/validate/opennic --commit            8077751             1cf2578 --device             1 --version          2022.2
 
+
+commit_name_driver="1cf2578"
+
 #constants
 
 XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS_PATH)
@@ -249,8 +252,8 @@ library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NA
 project_shell="$DIR/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 
 #check on shell
-compile="1"
-if [ -e "$project_shell" ]; then
+compile="0"
+if [ "$project_name" != "validate_opennic.$commit_name_driver.$FDEV_NAME.$vivado_version" ] && [ -e "$project_shell" ]; then
     #echo ""
     echo "${bold}The shell ${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit already exists. Do you want to remove it and compile it again (y/n)?${normal}"
     while true; do
@@ -258,10 +261,11 @@ if [ -e "$project_shell" ]; then
         case $yn in
             "y")
                 rm -f $project_shell 
-                #compile="1"
+                compile="1"
+                break
                 ;;
             "n") 
-                compile="0"
+                #compile="0"
                 break
                 ;;
         esac
@@ -272,7 +276,7 @@ fi
 #compile shell
 if [ "$compile" = "1" ]; then 
     #echo ""
-    echo "${bold}OpenNIC shell compilation (commit ID: $commit_name):${normal}"
+    echo "${bold}Shell compilation (commit ID: $commit_name)${normal}"
     echo ""
     echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1"
     cd $SHELL_BUILD_DIR
@@ -294,7 +298,7 @@ fi
 
 #compile driver
 #echo ""
-echo "${bold}Driver compilation:${normal}"
+echo "${bold}Driver compilation (commit ID: $commit_name_driver)${normal}"
 echo ""
 echo "cd $DRIVER_DIR && make"
 echo ""
