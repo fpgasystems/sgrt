@@ -7,7 +7,7 @@ CLI_PATH=$1
 CLI_NAME=$2
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 
-#echo ""
+echo ""
 echo "${bold}$CLI_NAME program opennic [flags] [--help]${normal}"
 echo ""
 echo "Programs OpenNIC to a given FPGA."
