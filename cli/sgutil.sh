@@ -1442,10 +1442,7 @@ case "$command" in
         fi
         
         #check on...
-        #commit_name_shell=$(check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}")
-
         check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $$commit_name)${normal}"
         echo ""
@@ -1668,7 +1665,6 @@ case "$command" in
         #check on...
         check_on_vivado_developers "$USER"
         check_on_gh "$CLI_PATH"
-        #commit_name=$(check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}")
         check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
