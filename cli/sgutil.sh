@@ -94,17 +94,17 @@ command_run() {
     fi
 }
 
-#messages
-CHECK_ON_COMMIT_MSG_1="Please, choose a valid commit ID."
-CHECK_ON_DEVICE_MSG_1="Please, choose a valid device index."
-CHECK_ON_FPGA_MSG_1="Sorry, this command is not available on $hostname."
-CHECK_ON_GH_MSG_1="Please, use ${bold}$CLI_NAME set gh${normal} to login to your GitHub account"
-CHECK_ON_PLATFORM_MSG_1="Please, choose a valid platform name."
-CHECK_ON_PROJECT_MSG_1="Please, choose a valid project name."
-CHECK_ON_REMOTE_MSG_1="Please, choose a valid deploy option."
-CHECK_ON_VIRTUALIZED_MSG_1="Sorry, this command is not available on $hostname."
-CHECK_ON_VIVADO_MSG_1="Please, choose a valid Vivado version."
-CHECK_ON_VIVADO_DEVELOPERS_MSG_1="Sorry, this command is not available for $USER."
+#error messages
+CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
+CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
+CHECK_ON_FPGA_ERR_MSG="Sorry, this command is not available on $hostname."
+CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to login to your GitHub account"
+CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
+CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
+CHECK_ON_REMOTE_ERR_MSG="Please, choose a valid deploy option."
+CHECK_ON_VIRTUALIZED_ERR_MSG="Sorry, this command is not available on $hostname."
+CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
+CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
 
 check_on_commit() {
   local CLI_PATH=$1
@@ -151,7 +151,7 @@ check_on_commit() {
         exit 1
     elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         echo ""
-        echo $CHECK_ON_COMMIT_MSG_1
+        echo $CHECK_ON_COMMIT_ERR_MSG
         echo ""
         exit 1
     fi
@@ -192,7 +192,7 @@ check_on_device() {
           exit 1
       elif ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
         echo ""
-        echo $CHECK_ON_DEVICE_MSG_1
+        echo $CHECK_ON_DEVICE_ERR_MSG
         echo ""
         exit
       fi
@@ -248,7 +248,7 @@ check_on_fpga() {
   fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
       echo ""
-      echo $CHECK_ON_FPGA_MSG_1
+      echo $CHECK_ON_FPGA_ERR_MSG
       echo ""
       exit 1
   fi
@@ -259,7 +259,7 @@ check_on_gh() {
   logged_in=$($CLI_PATH/common/gh_auth_status)
   if [ "$logged_in" = "0" ]; then 
     echo ""
-    echo $CHECK_ON_GH_MSG_1
+    echo $CHECK_ON_GH_ERR_MSG
     echo ""
     exit 1
   fi
@@ -294,7 +294,7 @@ check_on_platform() {
     #forbidden combinations
     if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
         echo ""
-        echo $CHECK_ON_PLATFORM_MSG_1
+        echo $CHECK_ON_PLATFORM_ERR_MSG
         echo ""
         exit 1
     fi
@@ -358,7 +358,7 @@ check_on_project() {
     if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
         #$CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
         echo ""
-        echo $CHECK_ON_PROJECT_MSG_1
+        echo $CHECK_ON_PROJECT_ERR_MSG
         echo ""
         exit 1
     fi
@@ -418,7 +418,7 @@ check_on_remote() {
     #forbidden combinations
     if [ "$deploy_option_found" = "1" ] && { [ "$deploy_option" -ne 0 ] && [ "$deploy_option" -ne 1 ]; }; then
         echo ""
-        echo $CHECK_ON_REMOTE_MSG_1
+        echo $CHECK_ON_REMOTE_ERR_MSG
         echo ""
         exit 1
     fi
@@ -452,7 +452,7 @@ check_on_virtualized() {
   virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
   if [ "$virtualized" = "1" ]; then
       echo ""
-      echo $CHECK_ON_VIRTUALIZED_MSG_1
+      echo $CHECK_ON_VIRTUALIZED_ERR_MSG
       echo ""
       exit 1
   fi
@@ -463,7 +463,7 @@ check_on_vivado() {
   local vivado_version=$2
   if [ ! -d $VIVADO_PATH/$vivado_version ]; then
     echo ""
-    echo $CHECK_ON_VIVADO_MSG_1
+    echo $CHECK_ON_VIVADO_ERR_MSG
     echo ""
     exit 1
   fi
@@ -474,7 +474,7 @@ check_on_vivado_developers() {
   member=$($CLI_PATH/common/is_member $username vivado_developers)
   if [ "$member" = "false" ]; then
       echo ""
-      echo $CHECK_ON_VIVADO_DEVELOPERS_MSG_1
+      echo $CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG
       echo ""
       exit 1
   fi
@@ -1943,13 +1943,13 @@ case "$command" in
             elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
                 if [ "$exists_shell" = "0" ]; then
                   echo ""
-                  echo "Please, choose a valid shell commit ID." #similar to CHECK_ON_COMMIT_MSG_1
+                  echo "Please, choose a valid shell commit ID." #similar to CHECK_ON_COMMIT_ERR_MSG
                   echo ""
                   exit 1
                 fi
                 if [ "$exists_driver" = "0" ]; then
                   echo ""
-                  echo "Please, choose a valid driver commit ID." #similar to CHECK_ON_COMMIT_MSG_1
+                  echo "Please, choose a valid driver commit ID." #similar to CHECK_ON_COMMIT_ERR_MSG
                   echo ""
                   exit 1
                 fi
