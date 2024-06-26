@@ -135,7 +135,8 @@ check_on_commit() {
         exit 1
     elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
         echo ""
-        echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist in the repository."
+        #echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist in the repository."
+        echo "Please, choose a valid commit ID."
         echo ""
         exit 1
     fi
@@ -230,7 +231,7 @@ check_on_fpga() {
   fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
       echo ""
-      echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
+      echo "Sorry, this command is not available on $hostname."
       echo ""
       exit 1
   fi
@@ -275,7 +276,9 @@ check_on_platform() {
     platform_name=$(echo "$result" | sed -n '2p')    
     #forbidden combinations
     if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
-        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
+        echo ""
+        echo "Please, choose a valid platform name."
+        echo ""
         exit 1
     fi
     #forgotten mandatory
@@ -336,7 +339,10 @@ check_on_project() {
     project_name=$(echo "$result" | sed -n '3p')
     #forbidden combinations
     if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
-        $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
+        #$CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
+        echo ""
+        echo "Please, choose a valid project name."
+        echo ""
         exit 1
     fi
     #forgotten mandatory
@@ -427,7 +433,7 @@ check_on_virtualized() {
   virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
   if [ "$virtualized" = "1" ]; then
       echo ""
-      echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
+      echo "Sorry, this command is not available on $hostname."
       echo ""
       exit 1
   fi
@@ -435,11 +441,10 @@ check_on_virtualized() {
 
 check_on_vivado() {
   local VIVADO_PATH=$1
-  local hostname=$2
-  local vivado_version=$3
+  local vivado_version=$2
   if [ ! -d $VIVADO_PATH/$vivado_version ]; then
     echo ""
-    echo "Please, choose a valid Vivado version for ${bold}$hostname!${normal}"
+    echo "Please, choose a valid Vivado version."
     echo ""
     exit 1
   fi
@@ -450,7 +455,7 @@ check_on_vivado_developers() {
   member=$($CLI_PATH/common/is_member $username vivado_developers)
   if [ "$member" = "false" ]; then
       echo ""
-      echo "Sorry, ${bold}$username!${normal} You are not granted to use this command."
+      echo "Sorry, you are not granted to use this command."
       echo ""
       exit 1
   fi
@@ -1400,7 +1405,7 @@ case "$command" in
     #vivado projects
     if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-      check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
+      check_on_vivado "$VIVADO_PATH" "$vivado_version"
       check_on_vivado_developers "$USER"
       check_on_gh "$CLI_PATH"
     fi
@@ -1436,7 +1441,12 @@ case "$command" in
           platform_name=$(echo "$result" | sed -n '2p')    
           #forbidden combinations
           if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
-              $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME
+              #$CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME
+
+              echo ""
+              echo "Please, choose a valid platform name."
+              echo ""
+
               exit 1
           fi
         fi
@@ -1634,7 +1644,7 @@ case "$command" in
     if [ "$arguments" = "opennic" ] || [ "$arguments" = "revert" ]; then
       check_on_fpga "$CLI_PATH" "$hostname"
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-      check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
+      check_on_vivado "$VIVADO_PATH" "$vivado_version"
       source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
       MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
       multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
@@ -1813,7 +1823,7 @@ case "$command" in
     if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
       check_on_fpga "$CLI_PATH" "$hostname"
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-      check_on_vivado "$VIVADO_PATH" "$hostname" "$vivado_version"
+      check_on_vivado "$VIVADO_PATH" "$vivado_version"
       source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
       MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
       multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
@@ -1914,10 +1924,22 @@ case "$command" in
                 $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
                 exit
             elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
-                echo ""
-                echo "Sorry, the commit IDs for shell and driver ${bold}($commit_name_shell,$commit_name_driver)${normal} do not exist in their repositories."
-                echo ""
-                exit
+                if [ "$exists_shell" = "0" ]; then
+                  echo ""
+                  echo "Please, choose a valid shell commit ID."
+                  echo ""
+                  exit 1
+                fi
+                if [ "$exists_driver" = "0" ]; then
+                  echo ""
+                  echo "Please, choose a valid driver commit ID."
+                  echo ""
+                  exit 1
+                fi
+                #echo ""
+                #echo "Sorry, the commit IDs for shell and driver ${bold}($commit_name_shell,$commit_name_driver)${normal} do not exist in their repositories."
+                #echo ""
+                #exit
             fi
         fi
         echo ""
