@@ -98,7 +98,7 @@ command_run() {
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
 CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
 CHECK_ON_FPGA_ERR_MSG="Sorry, this command is not available on $hostname."
-CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to login to your GitHub account"
+CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to your GitHub account."
 CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
 CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
 CHECK_ON_REMOTE_ERR_MSG="Please, choose a valid deploy option."
