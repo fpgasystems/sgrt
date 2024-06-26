@@ -3,13 +3,15 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+CLI_NAME=$1
+
 echo "" #this one is needed
-echo "${bold}sgutil program revert [flags] [--help]${normal}"
+echo "${bold}$CLI_NAME program revert [flags] [--help]${normal}"
 echo ""
 echo "Returns the specified FPGA to the Vitis workflow."
 echo ""
 echo "FLAGS:"
-echo "   -d, --device    - FPGA Device Index (see sgutil examine)."
+echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
 echo ""
 echo "   -h, --help      - Help to revert a device."
 echo ""

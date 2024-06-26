@@ -3,8 +3,10 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+CLI_NAME=$2
+
 #echo ""
-echo "${bold}sgutil set keys [--help]${normal}"
+echo "${bold}$CLI_NAME set keys [--help]${normal}"
 echo ""
 echo "Creates your RSA key pairs and adds to authorized_keys and known_hosts."
 echo ""

@@ -480,7 +480,7 @@ build_mpi_help() {
 }
 
 build_opennic_help() {
-    $CLI_PATH/help/build_opennic $CLI_PATH
+    $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME
     exit
 }
 
@@ -838,7 +838,7 @@ new_help() {
 }
 
 new_coyote_help() {
-    $CLI_PATH/help/new_coyote $COYOTE_COMMIT
+    $CLI_PATH/help/new_coyote $CLI_PATH $CLI_NAME
     exit
 }
 
@@ -871,7 +871,7 @@ new_mpi_help() {
 }
 
 new_opennic_help() {
-    $CLI_PATH/help/new_opennic $ONIC_SHELL_COMMIT $ONIC_DRIVER_COMMIT
+    $CLI_PATH/help/new_opennic $CLI_PATH $CLI_NAME
     exit
 }
 
@@ -945,7 +945,7 @@ program_driver_help() {
 }
 
 program_opennic_help() {
-    $CLI_PATH/help/program_opennic $ONIC_SHELL_COMMIT
+    $CLI_PATH/help/program_opennic $CLI_PATH $CLI_NAME
     exit
 }
 
@@ -964,7 +964,7 @@ program_reset_help() {
 }
 
 program_revert_help() {
-    $CLI_PATH/help/program_revert
+    $CLI_PATH/help/program_revert $CLI_NAME
     exit 
 }
 
@@ -1135,7 +1135,7 @@ set_gh_help() {
 }
 
 set_keys_help() {
-  $CLI_PATH/help/set_keys
+  $CLI_PATH/help/set_keys $CLI_NAME
   exit
 }
 
@@ -1266,7 +1266,7 @@ validate_mpi_help() {
 }
 
 validate_opennic_help() {
-    $CLI_PATH/help/validate_opennic $CLI_PATH
+    $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
     exit
 }
 
