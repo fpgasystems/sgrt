@@ -4,11 +4,15 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --version $vivado_version
-#example: /opt/sgrt/cli/validate/opennic --commit            8077751             1cf2578 --device             1 --version          2022.2
+#usage:       $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --platform                      $platform_name --project $project_name --version $vivado_version
+#example: /opt/sgrt/cli/validate/opennic --commit            8077751             1cf2578 --platform xilinx_u55c_gen3x16_xdma_3_202210_1 --project       hello_1 --version          2022.2
 
-
-commit_name_driver="1cf2578"
+#inputs
+commit_name=$2
+commit_name_driver=$3
+platform_name=$5
+project_name=$7
+vivado_version=$9
 
 #constants
 
@@ -44,23 +48,23 @@ fi
 #fi
 
 #check on valid Vivado and Vitis HLS version
-vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-vitis_version=$($CLI_PATH/common/get_xilinx_version vitis)
-if [ -z "$(echo $vivado_version)" ] || [ -z "$(echo $vitis_version)" ] || ([ "$vivado_version" != "$vitis_version" ]); then
-    #echo ""
-    echo "Please, source valid Vivado and Vitis HLS versions for ${bold}$hostname!${normal}"
-    echo ""
-    exit 1
-fi
+#vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+#vitis_version=$($CLI_PATH/common/get_xilinx_version vitis)
+#if [ -z "$(echo $vivado_version)" ] || [ -z "$(echo $vitis_version)" ] || ([ "$vivado_version" != "$vitis_version" ]); then
+#    #echo ""
+#    echo "Please, source valid Vivado and Vitis HLS versions for ${bold}$hostname!${normal}"
+#    echo ""
+#    exit 1
+#fi
 
 #check for vivado_developers
-member=$($CLI_PATH/common/is_member $USER vivado_developers)
-if [ "$member" = "false" ]; then
-    #echo ""
-    echo "Sorry, ${bold}$USER!${normal} You are not granted to use this command."
-    echo ""
-    exit
-fi
+#member=$($CLI_PATH/common/is_member $USER vivado_developers)
+#if [ "$member" = "false" ]; then
+#    #echo ""
+#    echo "Sorry, ${bold}$USER!${normal} You are not granted to use this command."
+#    echo ""
+#    exit
+#fi
 
 #check if workflow exists
 if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
@@ -71,154 +75,154 @@ if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
 fi
 
 #inputs
-read -a flags <<< "$@"
+#read -a flags <<< "$@"
 
 #check on flags
-commit_found=""
-commit_name=""
-project_found=""
-project_name=""
-platform_found=""
-platform_name=""
-if [ "$flags" = "" ]; then
-    #check on PWD
-    project_path=$(dirname "$PWD")
-    commit_name=$(basename "$project_path")
-    project_found="0"
-    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
-        commit_found="1"
-        project_found="1"
-        project_name=$(basename "$PWD")
-        #echo ""
-        #echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-        #echo ""
-        #echo $project_name
-        #echo ""
-    elif [ "$commit_name" = "$WORKFLOW" ]; then
-        commit_found="1"
-        commit_name="${PWD##*/}"
-    else
-        commit_found="1"
-        commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
-    fi
-    #header (1/2)
-    #echo ""
-    echo "${bold}sgutil build $WORKFLOW (commit ID: $commit_name)${normal}"
-    #project_dialog
-    if [[ $project_found = "0" ]]; then
-        echo ""
-        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-        echo ""
-        result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
-        project_found=$(echo "$result" | sed -n '1p')
-        project_name=$(echo "$result" | sed -n '2p')
-        multiple_projects=$(echo "$result" | sed -n '3p')
-        if [[ $multiple_projects = "0" ]]; then
-            echo $project_name
-        fi
-    fi
-    echo ""
-    #platform_dialog
-    echo "${bold}Please, choose your platform:${normal}"
-    echo ""
-    result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
-    platform_found=$(echo "$result" | sed -n '1p')
-    platform_name=$(echo "$result" | sed -n '2p')
-    multiple_platforms=$(echo "$result" | sed -n '3p')
-    if [[ $multiple_platforms = "0" ]]; then
-        echo $platform_name
-    fi
-    echo ""
-else
-    #commit_dialog_check
-    result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
-    commit_found=$(echo "$result" | sed -n '1p')
-    commit_name=$(echo "$result" | sed -n '2p')
-    #forbidden combinations
-    if [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/help/build_opennic $CLI_PATH
-        exit
-    fi
-    #check if commit exists
-    exists=$(gh api repos/Xilinx/open-nic-shell/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
-    #forbidden combinations
-    if [ "$commit_found" = "0" ]; then 
-        commit_found="1"
-        commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
-    elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-        $CLI_PATH/help/build_opennic $CLI_PATH
-        exit
-    elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
-        #echo ""
-        echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist on the repository."
-        echo ""
-        exit
-    fi
-    #project_dialog_check
-    result="$("$CLI_PATH/common/project_dialog_check" "${flags[@]}")"
-    project_found=$(echo "$result" | sed -n '1p')
-    project_path=$(echo "$result" | sed -n '2p')
-    project_name=$(echo "$result" | sed -n '3p')
-
-    #forbidden combinations
-    if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then 
-        $CLI_PATH/help/build_opennic $CLI_PATH
-        exit
-    fi
-    #platform_dialog_check
-    result="$("$CLI_PATH/common/platform_dialog_check" "${flags[@]}")"
-    platform_found=$(echo "$result" | sed -n '1p')
-    platform_name=$(echo "$result" | sed -n '2p')    
-    #forbidden combinations
-    if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
-        $CLI_PATH/help/build_opennic $CLI_PATH
-        exit
-    fi
-    #header (2/2)
-    #echo ""
-    echo "${bold}sgutil build $WORKFLOW (commit ID: $commit_name)${normal}"
-    echo ""
-    #check on PWD
-    project_path=$(dirname "$PWD")
-    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
-        project_found="1"
-        project_name=$(basename "$PWD")
-        #echo ""
-        #echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-        #echo ""
-        #echo $project_name
-        #echo ""
-    fi
-    #project_dialog (forgotten mandatory 1)
-    if [[ $project_found = "0" ]]; then
-        #echo ""
-        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
-        echo ""
-        result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
-        project_found=$(echo "$result" | sed -n '1p')
-        project_name=$(echo "$result" | sed -n '2p')
-        multiple_projects=$(echo "$result" | sed -n '3p')
-        if [[ $multiple_projects = "0" ]]; then
-            echo $project_name
-        fi
-        echo ""
-    fi
-    #platform_dialog (forgotten mandatory 2)
-    if [[ $platform_found = "0" ]]; then
-        #echo ""
-        echo "${bold}Please, choose your platform:${normal}"
-        echo ""
-        result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
-        platform_found=$(echo "$result" | sed -n '1p')
-        platform_name=$(echo "$result" | sed -n '2p')
-        multiple_platforms=$(echo "$result" | sed -n '3p')
-        if [[ $multiple_platforms = "0" ]]; then
-            echo $platform_name
-            #echo ""
-        fi
-        echo ""
-    fi
-fi
+#commit_found=""
+#commit_name=""
+#project_found=""
+#project_name=""
+#platform_found=""
+#platform_name=""
+#if [ "$flags" = "" ]; then
+#    #check on PWD
+#    project_path=$(dirname "$PWD")
+#    commit_name=$(basename "$project_path")
+#    project_found="0"
+#    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+#        commit_found="1"
+#        project_found="1"
+#        project_name=$(basename "$PWD")
+#        #echo ""
+#        #echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+#        #echo ""
+#        #echo $project_name
+#        #echo ""
+#    elif [ "$commit_name" = "$WORKFLOW" ]; then
+#        commit_found="1"
+#        commit_name="${PWD##*/}"
+#    else
+#        commit_found="1"
+#        commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
+#    fi
+#    #header (1/2)
+#    #echo ""
+#    echo "${bold}sgutil build $WORKFLOW (commit ID: $commit_name)${normal}"
+#    #project_dialog
+#    if [[ $project_found = "0" ]]; then
+#        echo ""
+#        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+#        echo ""
+#        result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
+#        project_found=$(echo "$result" | sed -n '1p')
+#        project_name=$(echo "$result" | sed -n '2p')
+#        multiple_projects=$(echo "$result" | sed -n '3p')
+#        if [[ $multiple_projects = "0" ]]; then
+#            echo $project_name
+#        fi
+#    fi
+#    echo ""
+#    #platform_dialog
+#    echo "${bold}Please, choose your platform:${normal}"
+#    echo ""
+#    result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
+#    platform_found=$(echo "$result" | sed -n '1p')
+#    platform_name=$(echo "$result" | sed -n '2p')
+#    multiple_platforms=$(echo "$result" | sed -n '3p')
+#    if [[ $multiple_platforms = "0" ]]; then
+#        echo $platform_name
+#    fi
+#    echo ""
+#else
+#    #commit_dialog_check
+#    result="$("$CLI_PATH/common/commit_dialog_check" "${flags[@]}")"
+#    commit_found=$(echo "$result" | sed -n '1p')
+#    commit_name=$(echo "$result" | sed -n '2p')
+#    #forbidden combinations
+#    if [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+#        $CLI_PATH/help/build_opennic $CLI_PATH
+#        exit
+#    fi
+#    #check if commit exists
+#    exists=$(gh api repos/Xilinx/open-nic-shell/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+#    #forbidden combinations
+#    if [ "$commit_found" = "0" ]; then 
+#        commit_found="1"
+#        commit_name=$(cat $CLI_PATH/constants/ONIC_SHELL_COMMIT)
+#    elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
+#        $CLI_PATH/help/build_opennic $CLI_PATH
+#        exit
+#    elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
+#        #echo ""
+#        echo "Sorry, the commit ID ${bold}$commit_name${normal} does not exist on the repository."
+#        echo ""
+#        exit
+#    fi
+#    #project_dialog_check
+#    result="$("$CLI_PATH/common/project_dialog_check" "${flags[@]}")"
+#    project_found=$(echo "$result" | sed -n '1p')
+#    project_path=$(echo "$result" | sed -n '2p')
+#    project_name=$(echo "$result" | sed -n '3p')
+#
+#    #forbidden combinations
+#    if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then 
+#        $CLI_PATH/help/build_opennic $CLI_PATH
+#        exit
+#    fi
+#    #platform_dialog_check
+#    result="$("$CLI_PATH/common/platform_dialog_check" "${flags[@]}")"
+#    platform_found=$(echo "$result" | sed -n '1p')
+#    platform_name=$(echo "$result" | sed -n '2p')    
+#    #forbidden combinations
+#    if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
+#        $CLI_PATH/help/build_opennic $CLI_PATH
+#        exit
+#    fi
+#    #header (2/2)
+#    #echo ""
+#    echo "${bold}sgutil build $WORKFLOW (commit ID: $commit_name)${normal}"
+#    echo ""
+#    #check on PWD
+#    project_path=$(dirname "$PWD")
+#    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+#        project_found="1"
+#        project_name=$(basename "$PWD")
+#        #echo ""
+#        #echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+#        #echo ""
+#        #echo $project_name
+#        #echo ""
+#    fi
+#    #project_dialog (forgotten mandatory 1)
+#    if [[ $project_found = "0" ]]; then
+#        #echo ""
+#        echo "${bold}Please, choose your $WORKFLOW project:${normal}"
+#        echo ""
+#        result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name)
+#        project_found=$(echo "$result" | sed -n '1p')
+#        project_name=$(echo "$result" | sed -n '2p')
+#        multiple_projects=$(echo "$result" | sed -n '3p')
+#        if [[ $multiple_projects = "0" ]]; then
+#            echo $project_name
+#        fi
+#        echo ""
+#    fi
+#    #platform_dialog (forgotten mandatory 2)
+#    if [[ $platform_found = "0" ]]; then
+#        #echo ""
+#        echo "${bold}Please, choose your platform:${normal}"
+#        echo ""
+#        result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
+#        platform_found=$(echo "$result" | sed -n '1p')
+#        platform_name=$(echo "$result" | sed -n '2p')
+#        multiple_platforms=$(echo "$result" | sed -n '3p')
+#        if [[ $multiple_platforms = "0" ]]; then
+#            echo $platform_name
+#            #echo ""
+#        fi
+#        echo ""
+#    fi
+#fi
 
 #cleanup bitstreams folder
 if [ -e "$BITSTREAMS_PATH/foo" ]; then
@@ -236,11 +240,6 @@ if ! [ -d "$DIR" ]; then
     echo "You must create your project first! Please, use sgutil new $WORKFLOW"
     echo ""
     exit
-fi
-
-#cleanup bitstreams folder
-if [ -e "$BITSTREAMS_PATH/foo" ]; then
-    sudo $CLI_PATH/common/rm "$BITSTREAMS_PATH/foo"
 fi
 
 #platform_name to FDEV_NAME
