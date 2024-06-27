@@ -329,9 +329,9 @@ check_on_gh() {
 
 check_on_platform() {
   local CLI_PATH=$1
-  local command=$2
-  local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
-  shift 3
+  local XILINX_PLATFORMS_PATH=$2
+  #local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
+  shift 2
   local flags_array=("$@")
 
   platform_found=""
@@ -350,16 +350,17 @@ check_on_platform() {
     echo ""
   else
     #platform_dialog_check
-    result="$("$CLI_PATH/common/platform_dialog_check" "${flags_array[@]}")"
-    platform_found=$(echo "$result" | sed -n '1p')
-    platform_name=$(echo "$result" | sed -n '2p')    
-    #forbidden combinations
-    if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
-        echo ""
-        echo $CHECK_ON_PLATFORM_ERR_MSG
-        echo ""
-        exit 1
-    fi
+    #result="$("$CLI_PATH/common/platform_dialog_check" "${flags_array[@]}")"
+    #platform_found=$(echo "$result" | sed -n '1p')
+    #platform_name=$(echo "$result" | sed -n '2p')    
+    ##forbidden combinations
+    #if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
+    #    echo ""
+    #    echo $CHECK_ON_PLATFORM_ERR_MSG
+    #    echo ""
+    #    exit 1
+    #fi
+    platform_dialog_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
     #forgotten mandatory
     if [[ $platform_found = "0" ]]; then
         echo $CHECK_ON_PLATFORM_MSG
@@ -373,6 +374,24 @@ check_on_platform() {
         fi
         echo ""
     fi
+  fi
+}
+
+platform_dialog_check() {
+  local CLI_PATH=$1
+  local XILINX_PLATFORMS_PATH=$2
+  #local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
+  shift 2
+  local flags_array=("$@")
+  result="$("$CLI_PATH/common/platform_dialog_check" "${flags_array[@]}")"
+  platform_found=$(echo "$result" | sed -n '1p')
+  platform_name=$(echo "$result" | sed -n '2p')    
+  #forbidden combinations
+  if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
+      echo ""
+      echo $CHECK_ON_PLATFORM_ERR_MSG
+      echo ""
+      exit 1
   fi
 }
 
@@ -1552,21 +1571,11 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
-        #early platform_dialog_check
+        #command line check
         if [ ! "$flags_array" = "" ]; then
-          result="$("$CLI_PATH/common/platform_dialog_check" "${flags_array[@]}")"
-          platform_found=$(echo "$result" | sed -n '1p')
-          platform_name=$(echo "$result" | sed -n '2p')    
-          #forbidden combinations
-          if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
-              #$CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME
-
-              echo ""
-              echo "Please, choose a valid platform name."
-              echo ""
-
-              exit 1
-          fi
+          commit_dialog_check "$CLI_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          platform_dialog_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
+          project_dialog_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         fi
         
         #check on...
@@ -1791,7 +1800,7 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
-        #early
+        #command line check
         if [ ! "$flags_array" = "" ]; then
           commit_dialog_check "$CLI_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
           device_dialog_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
@@ -1828,7 +1837,7 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
-        #early
+        #command line check
         if [ ! "$flags_array" = "" ]; then
           device_dialog_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         fi
@@ -2007,7 +2016,7 @@ case "$command" in
             commit_found_driver="1"
             commit_name_shell=$ONIC_SHELL_COMMIT
             commit_name_driver=$ONIC_DRIVER_COMMIT
-            #early
+            #command line check
             device_dialog_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         else
             #commit_dialog_check
