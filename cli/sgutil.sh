@@ -113,7 +113,7 @@ CHECK_ON_VIRTUALIZED_ERR_MSG="Sorry, this command is not available on $hostname.
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
 
-check_on_commit() {
+commit_dialog() {
   local CLI_PATH=$1
   local MY_PROJECTS_PATH=$2
   local command=$3 #program
@@ -177,7 +177,7 @@ commit_check() {
   fi
 }
 
-check_on_device() {
+device_dialog() {
   local CLI_PATH=$1
   local command=$2
   local arguments=$3
@@ -294,7 +294,7 @@ check_on_gh() {
   fi
 }
 
-check_on_platform() {
+platform_dialog() {
   local CLI_PATH=$1
   local XILINX_PLATFORMS_PATH=$2
   #local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
@@ -351,7 +351,7 @@ platform_check() {
   fi
 }
 
-check_on_project() {
+project_dialog() {
   local CLI_PATH=$1
   local MY_PROJECTS_PATH=$2
   #local command=$3
@@ -425,7 +425,7 @@ project_check() {
   fi
 }
 
-check_on_remote() {
+remote_dialog() {
   local CLI_PATH=$1
   local command=$2
   local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
@@ -1510,15 +1510,14 @@ case "$command" in
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         fi
         
-        #check on...
-        check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        #dialogs
+        commit_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name)${normal}"
         echo ""
-        #check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
-        check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
-        check_on_platform "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
+        platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
 
         echo $commit_name
         echo $commit_name_driver
@@ -1743,17 +1742,18 @@ case "$command" in
         #check on...
         check_on_vivado_developers "$USER"
         check_on_gh "$CLI_PATH"
-        check_on_commit "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+
+        #dialogs
+        commit_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
         echo ""
-        #check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
-        check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-        check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        device_dialog "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
           echo ""
         fi
-        check_on_remote "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
+        remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
         #run
         $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
         ;;
@@ -1773,16 +1773,14 @@ case "$command" in
         if [ ! "$flags_array" = "" ]; then
           device_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         fi
-
-        #print header
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
             echo ""
             echo "${bold}$CLI_NAME $command $arguments${normal}"
             echo ""
         fi
 
-        #check on...
-        check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        #dialogs
+        device_dialog "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
             workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
             if [[ $workflow = "vitis" ]]; then
@@ -1995,8 +1993,8 @@ case "$command" in
         fi
         #echo ""
 
-        #check on device
-        check_on_device "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        #dialogs
+        device_dialog "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         echo ""
 
         echo "${bold}$CLI_NAME $command $arguments (shell and driver commit IDs: $commit_name_shell,$commit_name_driver)${normal}"
