@@ -1957,7 +1957,13 @@ case "$command" in
             commit_found=$(echo "$result" | sed -n '1p')
             commit_name=$(echo "$result" | sed -n '2p')
 
-            # Check if commit_name contains exactly one comma
+            #check if commit_name is empty
+            if [ "$commit_found" = "1" ] && [ "$commit_name" = "" ]; then
+                $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
+                exit
+            fi
+            
+            #check if commit_name contains exactly one comma
             if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
                 echo ""
                 echo "Please, choose valid shell and driver commit IDs."
