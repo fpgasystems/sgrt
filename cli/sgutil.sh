@@ -115,13 +115,14 @@ CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $US
 
 commit_dialog() {
   local CLI_PATH=$1
-  local MY_PROJECTS_PATH=$2
-  local command=$3 #program
-  local WORKFLOW=$4 #arguments and workflow are the same (i.e. opennic)
-  local GITHUB_CLI_PATH=$5
-  local REPO_ADDRESS=$6
-  local DEFAULT_COMMIT=$7
-  shift 7
+  local CLI_NAME=$2
+  local MY_PROJECTS_PATH=$3
+  local command=$4 #program
+  local WORKFLOW=$5 #arguments and workflow are the same (i.e. opennic)
+  local GITHUB_CLI_PATH=$6
+  local REPO_ADDRESS=$7
+  local DEFAULT_COMMIT=$8
+  shift 8
   local flags_array=("$@")
   
   commit_found=""
@@ -143,18 +144,19 @@ commit_dialog() {
         commit_name=$DEFAULT_COMMIT
     fi
   else
-    commit_check "$CLI_PATH" "$command" "$WORKFLOW" "$GITHUB_CLI_PATH" "$REPO_ADDRESS" "$DEFAULT_COMMIT" "${flags_array[@]}"
+    commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$WORKFLOW" "$GITHUB_CLI_PATH" "$REPO_ADDRESS" "$DEFAULT_COMMIT" "${flags_array[@]}"
   fi
 }
 
 commit_check() {
   local CLI_PATH=$1
-  local command=$2 #program
-  local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
-  local GITHUB_CLI_PATH=$4
-  local REPO_ADDRESS=$5
-  local DEFAULT_COMMIT=$6
-  shift 6
+  local CLI_NAME=$2
+  local command=$3 #program
+  local WORKFLOW=$4 #arguments and workflow are the same (i.e. opennic)
+  local GITHUB_CLI_PATH=$5
+  local REPO_ADDRESS=$6
+  local DEFAULT_COMMIT=$7
+  shift 7
   local flags_array=("$@")
   #commit_dialog_check
   result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
@@ -179,11 +181,12 @@ commit_check() {
 
 device_dialog() {
   local CLI_PATH=$1
-  local command=$2
-  local arguments=$3
-  local multiple_devices=$4
-  local MAX_DEVICES=$5
-  shift 5
+  local CLI_NAME=$2
+  local command=$3
+  local arguments=$4
+  local multiple_devices=$5
+  local MAX_DEVICES=$6
+  shift 6
   local flags_array=("$@")
   
   device_found=""
@@ -201,7 +204,7 @@ device_dialog() {
           device_index=$(echo "$result" | sed -n '2p')
       fi
   else
-      device_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+      device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
       #forgotten mandatory
       if [[ $multiple_devices = "0" ]]; then
           device_found="1"
@@ -219,11 +222,12 @@ device_dialog() {
 
 device_check() {
   local CLI_PATH=$1
-  local command=$2
-  local arguments=$3
-  local multiple_devices=$4
-  local MAX_DEVICES=$5
-  shift 5
+  local CLI_NAME=$2
+  local command=$3
+  local arguments=$4
+  local multiple_devices=$5
+  local MAX_DEVICES=$6
+  shift 6
   local flags_array=("$@")
   result="$("$CLI_PATH/common/device_dialog_check" "${flags_array[@]}")"
   device_found=$(echo "$result" | sed -n '1p')
@@ -417,7 +421,6 @@ project_check() {
   project_name=$(echo "$result" | sed -n '3p')
   #forbidden combinations
   if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
-      #$CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
       echo ""
       echo $CHECK_ON_PROJECT_ERR_MSG
       echo ""
@@ -1505,13 +1508,13 @@ case "$command" in
 
         #command line check
         if [ ! "$flags_array" = "" ]; then
-          commit_check "$CLI_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
           platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         fi
         
         #dialogs
-        commit_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name)${normal}"
         echo ""
@@ -1733,8 +1736,8 @@ case "$command" in
 
         #command line check
         if [ ! "$flags_array" = "" ]; then
-          commit_check "$CLI_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-          device_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
           deployment_check "$CLI_PATH" "${flags_array[@]}"
         fi
@@ -1744,12 +1747,12 @@ case "$command" in
         check_on_gh "$CLI_PATH"
 
         #dialogs
-        commit_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-        device_dialog "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
           echo ""
         fi
@@ -1771,7 +1774,7 @@ case "$command" in
 
         #command line check
         if [ ! "$flags_array" = "" ]; then
-          device_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         fi
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
             echo ""
@@ -1780,7 +1783,7 @@ case "$command" in
         fi
 
         #dialogs
-        device_dialog "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
             workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
             if [[ $workflow = "vitis" ]]; then
@@ -1947,7 +1950,7 @@ case "$command" in
             commit_name_shell=$ONIC_SHELL_COMMIT
             commit_name_driver=$ONIC_DRIVER_COMMIT
             #command line check
-            device_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+            device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         else
             #commit_dialog_check
             result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
@@ -1994,7 +1997,7 @@ case "$command" in
         #echo ""
 
         #dialogs
-        device_dialog "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         echo ""
 
         echo "${bold}$CLI_NAME $command $arguments (shell and driver commit IDs: $commit_name_shell,$commit_name_driver)${normal}"
