@@ -1586,7 +1586,7 @@ case "$command" in
         #check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$command" "$arguments" "$commit_name" "${flags_array[@]}"
         check_on_project "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
-        check_on_platform "$CLI_PATH" "$command" "$arguments" "${flags_array[@]}"
+        check_on_platform "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
 
         echo $commit_name
         echo $commit_name_driver
