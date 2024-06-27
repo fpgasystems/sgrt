@@ -60,7 +60,6 @@ project_shell="$DIR/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 if [ -e "$library_shell" ]; then
     cp "$library_shell" "$project_shell"
 fi
-#$CLI_PATH/build/opennic --commit $commit_name_shell --platform $platform --project $DIR --version $vivado_version
 $CLI_PATH/build/opennic --commit $commit_name_shell $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version
 
 #add additional echo
