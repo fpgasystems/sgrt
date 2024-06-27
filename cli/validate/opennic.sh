@@ -38,8 +38,8 @@ fi
 device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 
 #platform to FDEV_NAME
-platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
-FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
+platform_name=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
+FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
 
 #set project name
 project_name="validate_opennic.$commit_name_driver.$FDEV_NAME.$vivado_version"
@@ -60,7 +60,8 @@ project_shell="$DIR/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 if [ -e "$library_shell" ]; then
     cp "$library_shell" "$project_shell"
 fi
-$CLI_PATH/build/opennic --commit $commit_name_shell --platform $platform --project $DIR --version $vivado_version
+#$CLI_PATH/build/opennic --commit $commit_name_shell --platform $platform --project $DIR --version $vivado_version
+$CLI_PATH/build/opennic --commit $commit_name_shell $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version
 
 #add additional echo
 workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)

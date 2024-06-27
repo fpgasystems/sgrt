@@ -252,8 +252,9 @@ project_shell="$DIR/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 
 #check on shell
 compile="0"
-if [ "$project_name" != "validate_opennic.$commit_name_driver.$FDEV_NAME.$vivado_version" ] && [ -e "$project_shell" ]; then
-    #echo ""
+if [ ! -e "$project_shell" ]; then
+    compile="1"
+elif [ -e "$project_shell" ] && [ "$project_name" != "validate_opennic.$commit_name_driver.$FDEV_NAME.$vivado_version" ]; then
     echo "${bold}The shell ${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit already exists. Do you want to remove it and compile it again (y/n)?${normal}"
     while true; do
         read -p "" yn

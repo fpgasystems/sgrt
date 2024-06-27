@@ -1521,24 +1521,10 @@ case "$command" in
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
         platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
-
-        echo $commit_name
-        echo $commit_name_driver
-        echo $platform_name
-
-        
-
-        exit
         
         #run
-        $CLI_PATH/build/opennic --commit $commit_name --platform $platform_name --project $project_name --version $vivado_version
+        $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version
         echo ""
-        
-        
-        
-        #valid_flags="-c --commit --platform --project -h --help" 
-        #echo ""
-        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis) 
         valid_flags="-p --project -t --target -h --help" #-x --xclbin 
