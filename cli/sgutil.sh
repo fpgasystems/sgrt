@@ -496,16 +496,17 @@ check_on_remote() {
     fi
   else
     #deployment_dialog_check
-    result="$("$CLI_PATH/common/deployment_dialog_check" "${flags_array[@]}")"
-    deploy_option_found=$(echo "$result" | sed -n '1p')
-    deploy_option=$(echo "$result" | sed -n '2p')
+    #result="$("$CLI_PATH/common/deployment_dialog_check" "${flags_array[@]}")"
+    #deploy_option_found=$(echo "$result" | sed -n '1p')
+    #deploy_option=$(echo "$result" | sed -n '2p')
     #forbidden combinations
-    if [ "$deploy_option_found" = "1" ] && { [ "$deploy_option" -ne 0 ] && [ "$deploy_option" -ne 1 ]; }; then
-        echo ""
-        echo $CHECK_ON_REMOTE_ERR_MSG
-        echo ""
-        exit 1
-    fi
+    #if [ "$deploy_option_found" = "1" ] && { [ "$deploy_option" -ne 0 ] && [ "$deploy_option" -ne 1 ]; }; then
+    #    echo ""
+    #    echo $CHECK_ON_REMOTE_ERR_MSG
+    #    echo ""
+    #    exit 1
+    #fi
+    deployment_dialog_check "$CLI_PATH" "${flags_array[@]}"
     #forgotten mandatory
     echo $CHECK_ON_REMOTE_MSG_1
     result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
@@ -527,6 +528,22 @@ check_on_remote() {
             #echo ""
         fi
     fi
+  fi
+}
+
+deployment_dialog_check() {
+  local CLI_PATH=$1
+  shift 1
+  local flags_array=("$@")
+  result="$("$CLI_PATH/common/deployment_dialog_check" "${flags_array[@]}")"
+  deploy_option_found=$(echo "$result" | sed -n '1p')
+  deploy_option=$(echo "$result" | sed -n '2p')
+  #forbidden combinations
+  if [ "$deploy_option_found" = "1" ] && { [ "$deploy_option" -ne 0 ] && [ "$deploy_option" -ne 1 ]; }; then
+      echo ""
+      echo $CHECK_ON_REMOTE_ERR_MSG
+      echo ""
+      exit 1
   fi
 }
 
@@ -1779,6 +1796,7 @@ case "$command" in
           commit_dialog_check "$CLI_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
           device_dialog_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           project_dialog_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+          deployment_dialog_check "$CLI_PATH" "${flags_array[@]}"
         fi
         
         #check on...
