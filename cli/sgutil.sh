@@ -143,30 +143,11 @@ check_on_commit() {
         commit_name=$DEFAULT_COMMIT
     fi
   else
-    #commit_dialog_check
-    #result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
-    #commit_found=$(echo "$result" | sed -n '1p')
-    #commit_name=$(echo "$result" | sed -n '2p')
-    #check if commit exists
-    #exists=$($GITHUB_CLI_PATH/gh api repos/$REPO_ADDRESS/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
-    #forbidden combinations
-    #if [ "$commit_found" = "0" ]; then 
-    #    commit_found="1"
-    #    commit_name=$DEFAULT_COMMIT
-    #elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-    #    $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
-    #    exit 1
-    #elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
-    #    echo ""
-    #    echo $CHECK_ON_COMMIT_ERR_MSG
-    #    echo ""
-    #    exit 1
-    #fi
-    commit_dialog_check "$CLI_PATH" "$command" "$WORKFLOW" "$GITHUB_CLI_PATH" "$REPO_ADDRESS" "$DEFAULT_COMMIT" "${flags_array[@]}"
+    commit_check "$CLI_PATH" "$command" "$WORKFLOW" "$GITHUB_CLI_PATH" "$REPO_ADDRESS" "$DEFAULT_COMMIT" "${flags_array[@]}"
   fi
 }
 
-commit_dialog_check() {
+commit_check() {
   local CLI_PATH=$1
   local command=$2 #program
   local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
@@ -220,21 +201,7 @@ check_on_device() {
           device_index=$(echo "$result" | sed -n '2p')
       fi
   else
-      #device_dialog_check
-      #result="$("$CLI_PATH/common/device_dialog_check" "${flags_array[@]}")"
-      #device_found=$(echo "$result" | sed -n '1p')
-      #device_index=$(echo "$result" | sed -n '2p')
-      ##forbidden combinations
-      #if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]); then
-      #    $CLI_PATH/help/${command}"_"${arguments} $CLI_PATH $CLI_NAME
-      #    exit 1
-      #elif ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-      #  echo ""
-      #  echo $CHECK_ON_DEVICE_ERR_MSG
-      #  echo ""
-      #  exit
-      #fi
-      device_dialog_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+      device_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
       #forgotten mandatory
       if [[ $multiple_devices = "0" ]]; then
           device_found="1"
@@ -250,7 +217,7 @@ check_on_device() {
   fi
 }
 
-device_dialog_check() {
+device_check() {
   local CLI_PATH=$1
   local command=$2
   local arguments=$3
@@ -349,18 +316,7 @@ check_on_platform() {
     fi
     echo ""
   else
-    #platform_dialog_check
-    #result="$("$CLI_PATH/common/platform_dialog_check" "${flags_array[@]}")"
-    #platform_found=$(echo "$result" | sed -n '1p')
-    #platform_name=$(echo "$result" | sed -n '2p')    
-    ##forbidden combinations
-    #if ([ "$platform_found" = "1" ] && [ "$platform_name" = "" ]) || ([ "$platform_found" = "1" ] && [ ! -d "$XILINX_PLATFORMS_PATH/$platform_name" ]); then
-    #    echo ""
-    #    echo $CHECK_ON_PLATFORM_ERR_MSG
-    #    echo ""
-    #    exit 1
-    #fi
-    platform_dialog_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
+    platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
     #forgotten mandatory
     if [[ $platform_found = "0" ]]; then
         echo $CHECK_ON_PLATFORM_MSG
@@ -377,7 +333,7 @@ check_on_platform() {
   fi
 }
 
-platform_dialog_check() {
+platform_check() {
   local CLI_PATH=$1
   local XILINX_PLATFORMS_PATH=$2
   #local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
@@ -430,20 +386,7 @@ check_on_project() {
       echo ""
     fi
   else
-    #project_dialog_check
-    #result="$("$CLI_PATH/common/project_dialog_check" "${flags_array[@]}")"
-    #project_found=$(echo "$result" | sed -n '1p')
-    #project_path=$(echo "$result" | sed -n '2p')
-    #project_name=$(echo "$result" | sed -n '3p')
-    #forbidden combinations
-    #if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
-    #    #$CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
-    #    echo ""
-    #    echo $CHECK_ON_PROJECT_ERR_MSG
-    #    echo ""
-    #    exit 1
-    #fi
-    project_dialog_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$WORKFLOW" "$commit_name" "${flags_array[@]}"
+    project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$WORKFLOW" "$commit_name" "${flags_array[@]}"
     #forgotten mandatory
     if [[ $project_found = "0" ]]; then
         #echo ""
@@ -461,7 +404,7 @@ check_on_project() {
   fi
 }
 
-project_dialog_check() {
+project_check() {
   local CLI_PATH=$1
   local MY_PROJECTS_PATH=$2
   local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
@@ -514,18 +457,7 @@ check_on_remote() {
         #echo ""
     fi
   else
-    #deployment_dialog_check
-    #result="$("$CLI_PATH/common/deployment_dialog_check" "${flags_array[@]}")"
-    #deploy_option_found=$(echo "$result" | sed -n '1p')
-    #deploy_option=$(echo "$result" | sed -n '2p')
-    #forbidden combinations
-    #if [ "$deploy_option_found" = "1" ] && { [ "$deploy_option" -ne 0 ] && [ "$deploy_option" -ne 1 ]; }; then
-    #    echo ""
-    #    echo $CHECK_ON_REMOTE_ERR_MSG
-    #    echo ""
-    #    exit 1
-    #fi
-    deployment_dialog_check "$CLI_PATH" "${flags_array[@]}"
+    deployment_check "$CLI_PATH" "${flags_array[@]}"
     #forgotten mandatory
     echo $CHECK_ON_REMOTE_MSG_1
     result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
@@ -550,7 +482,7 @@ check_on_remote() {
   fi
 }
 
-deployment_dialog_check() {
+deployment_check() {
   local CLI_PATH=$1
   shift 1
   local flags_array=("$@")
@@ -1573,9 +1505,9 @@ case "$command" in
 
         #command line check
         if [ ! "$flags_array" = "" ]; then
-          commit_dialog_check "$CLI_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-          platform_dialog_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
-          project_dialog_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+          commit_check "$CLI_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
+          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         fi
         
         #check on...
@@ -1802,10 +1734,10 @@ case "$command" in
 
         #command line check
         if [ ! "$flags_array" = "" ]; then
-          commit_dialog_check "$CLI_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-          device_dialog_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-          project_dialog_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-          deployment_dialog_check "$CLI_PATH" "${flags_array[@]}"
+          commit_check "$CLI_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          device_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+          deployment_check "$CLI_PATH" "${flags_array[@]}"
         fi
         
         #check on...
@@ -1839,7 +1771,7 @@ case "$command" in
 
         #command line check
         if [ ! "$flags_array" = "" ]; then
-          device_dialog_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          device_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         fi
 
         #print header
@@ -2017,7 +1949,7 @@ case "$command" in
             commit_name_shell=$ONIC_SHELL_COMMIT
             commit_name_driver=$ONIC_DRIVER_COMMIT
             #command line check
-            device_dialog_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+            device_check "$CLI_PATH" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         else
             #commit_dialog_check
             result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
