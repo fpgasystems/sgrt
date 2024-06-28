@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$(dirname "$0")")"
+CLI_NAME=$(basename "${CLI_PATH//\/cli}")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
@@ -28,24 +29,8 @@ VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 url="${HOSTNAME}"
 hostname="${url%%.*}"
 
-#check if workflow exists
-if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
-    echo ""
-    echo "You must build your project first! Please, use sgutil build $WORKFLOW"
-    echo ""
-    exit
-fi
-
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
-
-#check if project exists
-if ! [ -d "$DIR" ]; then
-    echo ""
-    echo "$DIR is not a valid project name!"
-    echo ""
-    exit
-fi
 
 #platform to FDEV_NAME
 platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
@@ -56,8 +41,8 @@ BIT_NAME="open_nic_shell.$FDEV_NAME.$vivado_version.bit"
 
 #check on bitstream
 if ! [ -e "$DIR/$BIT_NAME" ]; then
-    echo ""
-    echo "You must build your project first! Please, use sgutil build $WORKFLOW"
+    #echo ""
+    echo "Your targeted bitstream is missing. Please, use ${bold}$CLI_NAME build $WORKFLOW.${normal}"
     echo ""
     exit
 fi
@@ -66,9 +51,9 @@ fi
 workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
 
 #revert device (it removes driver as well)
-if [[ $workflow = "vivado" ]]; then
-    echo ""
-fi
+#if [[ $workflow = "vivado" ]]; then
+#    echo ""
+#fi
 $CLI_PATH/program/revert -d $device_index --version $vivado_version
 
 #get system interfaces (before adding the OpenNIC interface)
@@ -78,9 +63,9 @@ before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
 #program bitstream 
-if [[ $workflow = "vitis" ]]; then
-    echo ""
-fi
+#if [[ $workflow = "vitis" ]]; then
+#    echo ""
+#fi
 $CLI_PATH/program/vivado --device $device_index -b $DIR/$BIT_NAME -v $vivado_version
 
 #insert driver

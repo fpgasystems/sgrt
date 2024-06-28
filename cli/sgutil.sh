@@ -98,8 +98,8 @@ command_run() {
 CHECK_ON_DEVICE_MSG="${bold}Please, choose your device:${normal}"
 CHECK_ON_PLATFORM_MSG="${bold}Please, choose your platform:${normal}"
 CHECK_ON_PROJECT_MSG="${bold}Please, choose your project:${normal}"
-CHECK_ON_REMOTE_MSG_1="${bold}Quering remote servers with ssh:${normal}"
-CHECK_ON_REMOTE_MSG_2="${bold}Please, choose your deployment servers:${normal}"
+#CHECK_ON_REMOTE_MSG_1="${bold}Quering remote servers with ssh:${normal}"
+CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
 
 #error messages
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
@@ -441,18 +441,18 @@ remote_dialog() {
   SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
 
   if [ "$flags_array" = "" ]; then
-    echo $CHECK_ON_REMOTE_MSG_1
+    #echo $CHECK_ON_REMOTE_MSG_1
     result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
     servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
     servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
     num_remote_servers=$(echo "$servers_family_list" | wc -w)
-    echo ""
-    echo "Done!"
+    #echo ""
+    #echo "Done!"
     #deployment_dialog
     deploy_option="0"
     if [ "$num_remote_servers" -ge 1 ]; then
         echo ""
-        echo $CHECK_ON_REMOTE_MSG_2
+        echo $CHECK_ON_REMOTE_MSG
         echo ""
         echo "0) $hostname"
         echo "1) $hostname, $servers_family_list_string"
@@ -474,7 +474,7 @@ remote_dialog() {
         deploy_option="0"
         if [ "$num_remote_servers" -ge 1 ]; then
             echo ""
-            echo $CHECK_ON_REMOTE_MSG_2
+            echo $CHECK_ON_REMOTE_MSG
             echo ""
             echo "0) $hostname"
             echo "1) $hostname, $servers_family_list_string"
@@ -1744,6 +1744,7 @@ case "$command" in
           echo ""
         fi
         remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
+
         #run
         $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
         ;;
