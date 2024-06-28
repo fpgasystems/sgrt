@@ -44,16 +44,16 @@ fi
 #echo "${bold}sgutil new coyote${normal}"
 
 #create my_projects directory
-DIR="$MY_PROJECTS_PATH"
-if ! [ -d "$DIR" ]; then
-    mkdir ${DIR}
-fi
+#DIR="$MY_PROJECTS_PATH"
+#if ! [ -d "$DIR" ]; then
+#    mkdir ${DIR}
+#fi
 
 #create coyote directory
-DIR="$MY_PROJECTS_PATH/$WORKFLOW"
-if ! [ -d "$DIR" ]; then
-    mkdir ${DIR}
-fi
+#DIR="$MY_PROJECTS_PATH/$WORKFLOW"
+#if ! [ -d "$DIR" ]; then
+#    mkdir ${DIR}
+#fi
 
 #capture gh auth status
 logged_in=$($CLI_PATH/common/gh_auth_status)

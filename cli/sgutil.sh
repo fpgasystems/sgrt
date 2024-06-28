@@ -1460,11 +1460,6 @@ if [[ $(echo "$command_arguments_flags" | grep "\-\-help\b" | wc -l) = 1 ]]; the
   #echo "fifth: $command_arguments_flags"
 fi
 
-#get username
-#username=$USER
-
-
-
 #command and arguments switch
 case "$command" in
   -h|--help)
@@ -1647,6 +1642,12 @@ case "$command" in
     esac
     ;;
   new)
+    #create workflow directory
+    if [ "$arguments" = "coyote" ] || [ "$arguments" = "hip" ] || [ "$arguments" = "opennic" ]; then
+      #create directory
+      mkdir -p "$MY_PROJECTS_PATH/$arguments"
+    fi
+
     case "$arguments" in
       -h|--help)
         new_help
@@ -1881,6 +1882,11 @@ case "$command" in
     esac
     ;;
   validate)
+    #create workflow directory
+    if [ "$arguments" = "coyote" ] || [ "$arguments" = "hip" ] || [ "$arguments" = "opennic" ]; then
+      mkdir -p "$MY_PROJECTS_PATH/$arguments"
+    fi
+
     #require hot-plug
     if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
       check_on_fpga "$CLI_PATH" "$hostname"

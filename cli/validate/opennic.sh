@@ -27,7 +27,7 @@ url="${HOSTNAME}"
 hostname="${url%%.*}"
 
 #create directory
-mkdir -p "$MY_PROJECTS_PATH/$WORKFLOW"
+#mkdir -p "$MY_PROJECTS_PATH/$WORKFLOW"
 
 #cleanup bitstreams folder
 if [ -e "$BITSTREAMS_PATH/foo" ]; then
