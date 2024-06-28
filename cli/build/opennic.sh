@@ -22,14 +22,6 @@ MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 NUM_JOBS="16"
 WORKFLOW="opennic"
 
-#check if workflow exists
-if ! [ -d "$MY_PROJECTS_PATH/$WORKFLOW/" ]; then
-    #echo ""
-    echo "You must create your project first! Please, use sgutil new $WORKFLOW"
-    echo ""
-    exit
-fi
-
 #cleanup bitstreams folder
 if [ -e "$BITSTREAMS_PATH/foo" ]; then
     sudo $CLI_PATH/common/rm "$BITSTREAMS_PATH/foo"
@@ -39,14 +31,6 @@ fi
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
 SHELL_BUILD_DIR="$DIR/open-nic-shell/script"
 DRIVER_DIR="$DIR/open-nic-driver"
-
-#check if project exists
-if ! [ -d "$DIR" ]; then
-    #echo ""
-    echo "You must create your project first! Please, use sgutil new $WORKFLOW"
-    echo ""
-    exit
-fi
 
 #platform_name to FDEV_NAME
 FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
