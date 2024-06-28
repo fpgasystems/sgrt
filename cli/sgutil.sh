@@ -447,13 +447,13 @@ remote_dialog() {
     #deployment_dialog
     deploy_option="0"
     if [ "$num_remote_servers" -ge 1 ]; then
-        echo ""
+        #echo ""
         echo $CHECK_ON_REMOTE_MSG
         echo ""
         echo "0) $hostname"
         echo "1) $hostname, $servers_family_list_string"
         deploy_option=$($CLI_PATH/common/deployment_dialog $servers_family_list_string)
-        #echo ""
+        echo ""
     fi
   else
     deployment_check "$CLI_PATH" "${flags_array[@]}"
@@ -466,13 +466,13 @@ remote_dialog() {
         #deployment_dialog
         deploy_option="0"
         if [ "$num_remote_servers" -ge 1 ]; then
-            echo ""
+            #echo ""
             echo $CHECK_ON_REMOTE_MSG
             echo ""
             echo "0) $hostname"
             echo "1) $hostname, $servers_family_list_string"
             deploy_option=$($CLI_PATH/common/deployment_dialog $servers_family_list_string)
-            #echo ""
+            echo ""
         fi
     fi
   fi
