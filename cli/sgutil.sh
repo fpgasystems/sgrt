@@ -98,7 +98,6 @@ command_run() {
 CHECK_ON_DEVICE_MSG="${bold}Please, choose your device:${normal}"
 CHECK_ON_PLATFORM_MSG="${bold}Please, choose your platform:${normal}"
 CHECK_ON_PROJECT_MSG="${bold}Please, choose your project:${normal}"
-#CHECK_ON_REMOTE_MSG_1="${bold}Quering remote servers with ssh:${normal}"
 CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
 
 #error messages
@@ -441,13 +440,10 @@ remote_dialog() {
   SERVER_LIST=$(sort -u $CLI_PATH/constants/ACAP_SERVERS_LIST /$CLI_PATH/constants/FPGA_SERVERS_LIST)
 
   if [ "$flags_array" = "" ]; then
-    #echo $CHECK_ON_REMOTE_MSG_1
     result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
     servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
     servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
     num_remote_servers=$(echo "$servers_family_list" | wc -w)
-    #echo ""
-    #echo "Done!"
     #deployment_dialog
     deploy_option="0"
     if [ "$num_remote_servers" -ge 1 ]; then
@@ -462,13 +458,10 @@ remote_dialog() {
   else
     deployment_check "$CLI_PATH" "${flags_array[@]}"
     #forgotten mandatory
-    echo $CHECK_ON_REMOTE_MSG_1
     result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
     servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
     servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
     num_remote_servers=$(echo "$servers_family_list" | wc -w)
-    echo ""
-    echo "Done!"
     if [ "$deploy_option_found" = "0" ]; then
         #deployment_dialog
         deploy_option="0"
