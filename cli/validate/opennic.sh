@@ -63,13 +63,21 @@ fi
 $CLI_PATH/build/opennic --commit $commit_name_shell $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version
 
 #add additional echo
-workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-if [[ $workflow = "vivado" ]]; then
+#workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+#if [[ $workflow = "vivado" ]]; then
     echo ""
-fi
+#fi
+
+#add additional echo (1/2)
+workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
 
 #revert device
 $CLI_PATH/program/revert -d $device_index --version $vivado_version
+
+#add additional echo (2/2)
+if [[ $workflow = "vivado" ]]; then
+    echo ""
+fi
 
 #get system interfaces (before adding the OpenNIC interface)
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
