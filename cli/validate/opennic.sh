@@ -61,12 +61,7 @@ if [ -e "$library_shell" ]; then
     cp "$library_shell" "$project_shell"
 fi
 $CLI_PATH/build/opennic --commit $commit_name_shell $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version
-
-#add additional echo
-#workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-#if [[ $workflow = "vivado" ]]; then
-    echo ""
-#fi
+echo ""
 
 #add additional echo (1/2)
 workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
