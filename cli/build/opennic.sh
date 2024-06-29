@@ -15,9 +15,9 @@ project_name=$7
 vivado_version=$9
 
 #constants
-BIT_NAME="open_nic_shell.bit"
+BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_BITSTREAM_NAME)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
-DRIVER_NAME="onic.ko"
+DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 NUM_JOBS="16"
 WORKFLOW="opennic"
@@ -36,15 +36,15 @@ DRIVER_DIR="$DIR/open-nic-driver"
 FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
 
 #define shells
-library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-project_shell="$DIR/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+project_shell="$DIR/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 
 #check on shell
 compile="0"
 if [ ! -e "$project_shell" ]; then
     compile="1"
 elif [ -e "$project_shell" ] && [ "$project_name" != "validate_opennic.$commit_name_driver.$FDEV_NAME.$vivado_version" ]; then
-    echo "${bold}The shell ${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit already exists. Do you want to remove it and compile it again (y/n)?${normal}"
+    echo "${bold}The shell ${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit already exists. Do you want to remove it and compile it again (y/n)?${normal}"
     while true; do
         read -p "" yn
         case $yn in
@@ -73,15 +73,15 @@ if [ "$compile" = "1" ]; then
     echo ""
 
     #copy and send email
-    if [ -f "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" ]; then
+    if [ -f "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BITSTREAM_NAME" ]; then
         #copy to project
-        cp "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BIT_NAME" "$project_shell"
+        cp "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BITSTREAM_NAME" "$project_shell"
         #print message
-        echo "${bold}${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit is done!${normal}"
+        echo "${bold}${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit is done!${normal}"
         echo ""
         #send email
         user_email=$USER@ethz.ch
-        echo "Subject: Good news! sgutil build opennic (${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit) is done!" | sendmail $user_email
+        echo "Subject: Good news! sgutil build opennic (${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit) is done!" | sendmail $user_email
     fi
 fi
 
@@ -99,7 +99,7 @@ cp -f $DRIVER_DIR/$DRIVER_NAME $DIR/$DRIVER_NAME
 rm $DRIVER_DIR/Module.symvers
 rm -rf $DRIVER_DIR/hwmon
 rm $DRIVER_DIR/modules.order
-rm $DRIVER_DIR/onic.ko 
+rm $DRIVER_DIR/$DRIVER_NAME
 rm $DRIVER_DIR/onic.mod
 rm $DRIVER_DIR/onic.mod.c
 rm $DRIVER_DIR/onic.mod.o

@@ -14,7 +14,7 @@ device_index=$5
 vivado_version=$7
 
 #constants
-BIT_NAME="open_nic_shell.bit"
+BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_BITSTREAM_NAME)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 DEPLOY_OPTION="0"
 FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
@@ -55,8 +55,8 @@ if ! [ -d "$DIR" ]; then
 fi
 
 #build
-library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name_shell/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-project_shell="$DIR/${BIT_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name_shell/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+project_shell="$DIR/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 if [ -e "$library_shell" ]; then
     cp "$library_shell" "$project_shell"
 fi

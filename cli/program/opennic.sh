@@ -17,7 +17,8 @@ deploy_option=${10}
 servers_family_list=${11}
 
 #constants
-DRIVER_NAME="onic.ko"
+BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_BITSTREAM_NAME)
+DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="opennic"
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
@@ -37,10 +38,11 @@ platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 
 #set bitstream name
-BIT_NAME="open_nic_shell.$FDEV_NAME.$vivado_version.bit"
+#BIT_NAME="open_nic_shell.$FDEV_NAME.$vivado_version.bit"
+BITSTREAM_NAME=${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit
 
 #check on bitstream
-if ! [ -e "$DIR/$BIT_NAME" ]; then
+if ! [ -e "$DIR/$BITSTREAM_NAME" ]; then
     #echo ""
     echo "Your targeted bitstream is missing. Please, use ${bold}$CLI_NAME build $WORKFLOW.${normal}"
     echo ""
@@ -66,7 +68,7 @@ upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 #if [[ $workflow = "vitis" ]]; then
 #    echo ""
 #fi
-$CLI_PATH/program/vivado --device $device_index -b $DIR/$BIT_NAME -v $vivado_version
+$CLI_PATH/program/vivado --device $device_index -b $DIR/$BITSTREAM_NAME -v $vivado_version
 
 #insert driver
 eval "$CLI_PATH/program/driver -m $DIR/$DRIVER_NAME -p RS_FEC_ENABLED=0"
