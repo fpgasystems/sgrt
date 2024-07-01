@@ -37,9 +37,12 @@ fi
 #get device_name
 device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 
-#platform to FDEV_NAME
+#get platform_name
 platform_name=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
-FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
+
+#get FDEV_NAME
+#FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
+FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
 
 #set project name
 project_name="validate_opennic.$commit_name_driver.$FDEV_NAME.$vivado_version"
