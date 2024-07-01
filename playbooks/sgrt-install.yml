@@ -37,11 +37,11 @@
     templates: false #true-----------------------------------
     #scripts
     build: false
-    common: false
+    common: true
     enable: false
     examine: false
-    get: true
-    help: true
+    get: false
+    help: false
     new: false
     program: true
     reboot: false
@@ -340,6 +340,7 @@
         - driver_dialog_check
         - get_devices_acap_fpga_coyote
         - get_constant
+        - get_FDEV_NAME
         - get_email
         - get_files
         - get_max_devices
