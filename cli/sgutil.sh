@@ -16,7 +16,9 @@ arguments=$2
 COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
+ONIC_BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_BITSTREAM_NAME)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
+ONIC_DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
 ONIC_DRIVER_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_REPO)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
@@ -101,6 +103,7 @@ CHECK_ON_PROJECT_MSG="${bold}Please, choose your project:${normal}"
 CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
 
 #error messages
+CHECK_ON_BITSTREAM_ERR_MSG="Your targeted bitstream is missing. Please, use ${bold}$CLI_NAME build WILL_BE_REPLACED.${normal}"
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
 CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
 CHECK_ON_FPGA_ERR_MSG="Sorry, this command is not available on $hostname."
@@ -111,6 +114,19 @@ CHECK_ON_REMOTE_ERR_MSG="Please, choose a valid deploy option."
 CHECK_ON_VIRTUALIZED_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
+
+bitstream_check() {
+  local CLI_NAME=$1
+  local WORKFLOW=$2
+  local BITSTREAM_PATH=$3
+  if ! [ -e "$BITSTREAM_PATH" ]; then
+    #echo ""
+    #CHECK_ON_BITSTREAM_ERR_MSG="${CHECK_ON_BITSTREAM_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
+    echo "${CHECK_ON_BITSTREAM_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
+    echo ""
+    exit 1
+  fi
+}
 
 commit_dialog() {
   local CLI_PATH=$1
@@ -1736,6 +1752,13 @@ case "$command" in
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
           echo ""
         fi
+        
+        #bitstream check
+        FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
+        bitstream_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/${ONIC_BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+        bitstream_check "$CLI_NAME" "$arguments" "$bitstream_path"
+
+        #driver_check
         remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
         #run
