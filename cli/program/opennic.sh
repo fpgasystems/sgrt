@@ -34,29 +34,15 @@ hostname="${url%%.*}"
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
 
 #get FDEV_NAME
-#platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
-#FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
 
 #set bitstream name
-#BIT_NAME="open_nic_shell.$FDEV_NAME.$vivado_version.bit"
 BITSTREAM_NAME=${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit
-
-#check on bitstream
-#if ! [ -e "$DIR/$BITSTREAM_NAME" ]; then
-#    #echo ""
-#    echo "Your targeted bitstream is missing. Please, use ${bold}$CLI_NAME build $WORKFLOW.${normal}"
-#    echo ""
-#    exit
-#fi
 
 #get workflow (print echo)
 workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
 
 #revert device (it removes driver as well)
-#if [[ $workflow = "vivado" ]]; then
-#    echo ""
-#fi
 $CLI_PATH/program/revert -d $device_index --version $vivado_version
 
 #get system interfaces (before adding the OpenNIC interface)
@@ -66,9 +52,6 @@ before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
 #program bitstream 
-#if [[ $workflow = "vitis" ]]; then
-#    echo ""
-#fi
 $CLI_PATH/program/vivado --device $device_index -b $DIR/$BITSTREAM_NAME -v $vivado_version
 
 #insert driver
