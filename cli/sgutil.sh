@@ -273,7 +273,7 @@ driver_check() {
   fi
 }
 
-check_on_flags() {
+flags_check() {
     # we use an @ to separate between command_arguments_flags and the valid_flags
     read input <<< $@
     aux_1="${input%%@*}"
@@ -303,7 +303,7 @@ check_on_flags() {
     fi
 }
 
-check_on_fpga() {
+fpga_check() {
   local CLI_PATH=$1
   local hostname=$2
   acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
@@ -316,7 +316,7 @@ check_on_fpga() {
   fi
 }
 
-check_on_gh() {
+gh_check() {
   local CLI_PATH=$1
   logged_in=$($CLI_PATH/common/gh_auth_status)
   if [ "$logged_in" = "0" ]; then 
@@ -524,7 +524,7 @@ deployment_check() {
   fi
 }
 
-check_on_virtualized() {
+virtualized_check() {
   local CLI_PATH=$1
   local hostname=$2
   virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
@@ -536,7 +536,7 @@ check_on_virtualized() {
   fi
 }
 
-check_on_vivado() {
+vivado_check() {
   local VIVADO_PATH=$1
   local vivado_version=$2
   if [ ! -d $VIVADO_PATH/$vivado_version ]; then
@@ -547,7 +547,7 @@ check_on_vivado() {
   fi
 }
 
-check_on_vivado_developers() {
+vivado_developers_check() {
   local username=$1
   member=$($CLI_PATH/common/is_member $username vivado_developers)
   if [ "$member" = "false" ]; then
@@ -1495,9 +1495,9 @@ case "$command" in
     #vivado projects
     if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-      check_on_vivado "$VIVADO_PATH" "$vivado_version"
-      check_on_vivado_developers "$USER"
-      check_on_gh "$CLI_PATH"
+      vivado_check "$VIVADO_PATH" "$vivado_version"
+      vivado_developers_check "$USER"
+      gh_check "$CLI_PATH"
     fi
 
     case "$arguments" in
@@ -1519,7 +1519,7 @@ case "$command" in
       opennic) 
         #check on flags
         valid_flags="-c --commit --platform --project -h --help" 
-        check_on_flags $command_arguments_flags"@"$valid_flags
+        flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
@@ -1714,13 +1714,13 @@ case "$command" in
   program)
     #require hot-plug
     if [ "$arguments" = "opennic" ] || [ "$arguments" = "revert" ]; then
-      check_on_fpga "$CLI_PATH" "$hostname"
+      fpga_check "$CLI_PATH" "$hostname"
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-      check_on_vivado "$VIVADO_PATH" "$vivado_version"
+      vivado_check "$VIVADO_PATH" "$vivado_version"
       source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
       MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
       multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
-      check_on_virtualized "$CLI_PATH" "$hostname"
+      virtualized_check "$CLI_PATH" "$hostname"
     fi
     
     case "$arguments" in
@@ -1739,7 +1739,7 @@ case "$command" in
       opennic)
         #check on flags
         valid_flags="-c --commit -d --device -p --project --remote -h --help"
-        check_on_flags $command_arguments_flags"@"$valid_flags
+        flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
@@ -1752,8 +1752,8 @@ case "$command" in
           deployment_check "$CLI_PATH" "${flags_array[@]}"
         fi
         
-        check_on_vivado_developers "$USER"
-        check_on_gh "$CLI_PATH"
+        vivado_developers_check "$USER"
+        gh_check "$CLI_PATH"
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
@@ -1785,7 +1785,7 @@ case "$command" in
       revert)
         #check on flags
         valid_flags="-d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
-        check_on_flags $command_arguments_flags"@"$valid_flags
+        flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
@@ -1920,15 +1920,15 @@ case "$command" in
 
     #require hot-plug
     if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
-      check_on_fpga "$CLI_PATH" "$hostname"
+      fpga_check "$CLI_PATH" "$hostname"
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-      check_on_vivado "$VIVADO_PATH" "$vivado_version"
+      vivado_check "$VIVADO_PATH" "$vivado_version"
       source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
       MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
       multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
-      check_on_virtualized "$CLI_PATH" "$hostname"
-      check_on_vivado_developers "$USER"
-      check_on_gh "$CLI_PATH"
+      virtualized_check "$CLI_PATH" "$hostname"
+      vivado_developers_check "$USER"
+      gh_check "$CLI_PATH"
     fi
 
     case "$arguments" in
@@ -1956,7 +1956,7 @@ case "$command" in
       opennic)
         #check on flags
         valid_flags="-c --commit -d --device -h --help"
-        check_on_flags $command_arguments_flags"@"$valid_flags
+        flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
