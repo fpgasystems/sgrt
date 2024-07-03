@@ -14,7 +14,7 @@
     - alveo-u55c-08.inf.ethz.ch
     #- alveo-u55c-09.inf.ethz.ch
     #- alveo-u55c-03.inf.ethz.ch
-    - hacc-box-01.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
@@ -37,7 +37,7 @@
     templates: false #true-----------------------------------
     #scripts
     build: false
-    common: true
+    common: false
     enable: false
     examine: false
     get: false
@@ -168,11 +168,11 @@
         - MPICH_PATH
         - MY_DRIVERS_PATH
         - MY_PROJECTS_PATH
-        - ONIC_BITSTREAM_NAME
         - ONIC_DRIVER_COMMIT
         - ONIC_DRIVER_NAME
         - ONIC_DRIVER_REPO
         - ONIC_SHELL_COMMIT
+        - ONIC_SHELL_NAME
         - ONIC_SHELL_REPO
         - ROCM_PATH  
         - VIRTUALIZED_SERVERS_LIST
@@ -742,6 +742,7 @@
         - ONIC_COMMIT
         - BITSTREAM_PATH
         - VIVADO_DEVICES_MAX
+        - ONIC_BITSTREAM_NAME
     #help
     - name: deleting help scripts
       file:
