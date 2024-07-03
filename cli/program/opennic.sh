@@ -44,6 +44,9 @@ workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | 
 
 #revert device (it removes driver as well)
 $CLI_PATH/program/revert -d $device_index --version $vivado_version
+if [[ "$workflow" = "vivado" ]]; then
+    echo ""
+fi
 
 #get system interfaces (before adding the OpenNIC interface)
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
