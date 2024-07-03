@@ -98,8 +98,10 @@ command_run() {
 
 #dialog messages
 CHECK_ON_DEVICE_MSG="${bold}Please, choose your device:${normal}"
+CHECK_ON_NEW_MSG="${bold}Please, type a non-existing name for your project:${normal}"
 CHECK_ON_PLATFORM_MSG="${bold}Please, choose your platform:${normal}"
 CHECK_ON_PROJECT_MSG="${bold}Please, choose your project:${normal}"
+CHECK_ON_PUSH_MSG="${bold}Would you like to add the project to your GitHub account (y/n)?${normal}"
 CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
 
 #error messages
@@ -111,6 +113,7 @@ CHECK_ON_FPGA_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to your GitHub account."
 CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
 CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
+CHECK_ON_PUSH_ERR_MSG="Please, choose a valid push option."
 CHECK_ON_REMOTE_ERR_MSG="Please, choose a valid deploy option."
 CHECK_ON_VIRTUALIZED_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
@@ -327,6 +330,58 @@ gh_check() {
   fi
 }
 
+new_dialog() {
+  local CLI_PATH=$1
+  local MY_PROJECTS_PATH=$2
+  local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
+  local commit_name=$4 #arguments and workflow are the same (i.e. opennic)
+  shift 4
+  local flags_array=("$@")
+
+  new_found=""
+  new_name=""
+
+  if [ "$flags_array" = "" ]; then
+    #new_dialog
+    echo $CHECK_ON_NEW_MSG
+    echo ""
+    result=$($CLI_PATH/common/new_dialog $MY_PROJECTS_PATH $WORKFLOW $commit_name)
+    new_found=$(echo "$result" | sed -n '1p')
+    new_name=$(echo "$result" | sed -n '2p')
+    echo ""
+  else
+    new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$WORKFLOW" "$commit_name" "${flags_array[@]}"
+    #forgotten mandatory
+    if [[ $new_found = "0" ]]; then
+        echo $CHECK_ON_NEW_MSG
+        result=$($CLI_PATH/common/new_dialog $MY_PROJECTS_PATH $WORKFLOW $commit_name)
+        new_found=$(echo "$result" | sed -n '1p')
+        new_name=$(echo "$result" | sed -n '2p')
+        echo ""
+    fi
+  fi
+}
+
+new_check(){
+  local CLI_PATH=$1
+  local MY_PROJECTS_PATH=$2
+  local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
+  local commit_name=$4 #arguments and workflow are the same (i.e. opennic)
+  shift 4
+  local flags_array=("$@")
+  #new_dialog_check
+  result="$("$CLI_PATH/common/new_dialog_check" "${flags_array[@]}")"
+  new_found=$(echo "$result" | sed -n '1p')
+  new_name=$(echo "$result" | sed -n '2p')
+  #forbidden combinations
+  if [ "$new_found" = "1" ] && ([ "$new_name" = "" ] || [ -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$new_name" ]); then 
+      echo ""
+      echo $CHECK_ON_PROJECT_ERR_MSG
+      echo ""
+      exit 1
+  fi
+}
+
 platform_dialog() {
   local CLI_PATH=$1
   local XILINX_PLATFORMS_PATH=$2
@@ -452,6 +507,59 @@ project_check() {
   if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$project_path" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name" ]); then  
       echo ""
       echo $CHECK_ON_PROJECT_ERR_MSG
+      echo ""
+      exit 1
+  fi
+}
+
+push_dialog() {
+  local CLI_PATH=$1
+  local MY_PROJECTS_PATH=$2
+  local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
+  local commit_name=$4 #arguments and workflow are the same (i.e. opennic)
+  shift 4
+  local flags_array=("$@")
+
+  push_found=""
+  push_option=""
+
+  #capture gh auth status
+  logged_in=$($CLI_PATH/common/gh_auth_status)
+
+  if [ "$flags_array" = "" ]; then
+    #push_dialog
+    push_option="0"
+    if [ "$logged_in" = "1" ]; then
+        echo $CHECK_ON_PUSH_MSG
+        push_option=$($CLI_PATH/common/push_dialog)
+        echo ""
+    fi
+  else
+    push_check "$CLI_PATH" "${flags_array[@]}"
+    #forgotten mandatory
+    if [[ $push_found = "0" ]]; then
+        push_option="0"
+        if [ "$logged_in" = "1" ]; then
+            echo $CHECK_ON_PUSH_MSG
+            push_option=$($CLI_PATH/common/push_dialog)
+            echo ""
+        fi
+    fi
+  fi
+}
+
+push_check(){
+  local CLI_PATH=$1
+  shift 1
+  local flags_array=("$@")
+  #push_dialog_check
+  result="$("$CLI_PATH/common/push_dialog_check" "${flags_array[@]}")"
+  push_found=$(echo "$result" | sed -n '1p')
+  push_option=$(echo "$result" | sed -n '2p')
+  #forbidden combinations
+  if [[ "$push_found" = "1" && "$push_option" != "0" && "$push_option" != "1" ]]; then 
+      echo ""
+      echo "$CHECK_ON_PUSH_ERR_MSG"
       echo ""
       exit 1
   fi
@@ -1695,9 +1803,114 @@ case "$command" in
         $CLI_PATH/new/mpi
         ;;
       opennic)
+        #check on flags
         valid_flags="-c --commit --project --push -h --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #check_on_commits
+        commit_found_shell=""
+        commit_name_shell=""
+        commit_found_driver=""
+        commit_name_driver=""
+        if [ "$flags_array" = "" ]; then
+            #commit dialog
+            commit_found_shell="1"
+            commit_found_driver="1"
+            commit_name_shell=$ONIC_SHELL_COMMIT
+            commit_name_driver=$ONIC_DRIVER_COMMIT
+            #command line check
+            device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        else
+            #commit_dialog_check
+            result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
+            commit_found=$(echo "$result" | sed -n '1p')
+            commit_name=$(echo "$result" | sed -n '2p')
+
+            #check if commit_name is empty
+            if [ "$commit_found" = "1" ] && [ "$commit_name" = "" ]; then
+                $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
+                exit
+            fi
+            
+            #check if commit_name contains exactly one comma
+            if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
+                echo ""
+                echo "Please, choose valid shell and driver commit IDs."
+                echo ""
+                exit
+            fi
+            
+            #get shell and driver commits (shell_commit,driver_commit)
+            commit_name_shell=${commit_name%%,*}
+            commit_name_driver=${commit_name#*,}
+
+            #check if commits exist
+            exists_shell=$($GITHUB_CLI_PATH/gh api repos/$ONIC_SHELL_REPO/commits/$commit_name_shell 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+            exists_driver=$($GITHUB_CLI_PATH/gh api repos/$ONIC_DRIVER_REPO/commits/$commit_name_driver 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+
+            if [ "$commit_found" = "0" ]; then 
+                commit_name_shell=$ONIC_SHELL_COMMIT
+                commit_name_driver=$ONIC_DRIVER_COMMIT
+            elif [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
+                $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
+                exit
+            elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
+                if [ "$exists_shell" = "0" ]; then
+                  echo ""
+                  echo "Please, choose a valid shell commit ID." #similar to CHECK_ON_COMMIT_ERR_MSG
+                  echo ""
+                  exit 1
+                fi
+                if [ "$exists_driver" = "0" ]; then
+                  echo ""
+                  echo "Please, choose a valid driver commit ID." #similar to CHECK_ON_COMMIT_ERR_MSG
+                  echo ""
+                  exit 1
+                fi
+            fi
+        fi
+
+        #command line check
+        if [ ! "$flags_array" = "" ]; then
+
+          echo "Hey I am here"
+
+          #commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          #project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+          #remote_check "$CLI_PATH" "${flags_array[@]}"
+          new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
+          push_check "$CLI_PATH" "${flags_array[@]}"
+        fi
+        
+        vivado_developers_check "$USER"
+        gh_check "$CLI_PATH"
+
+        #dialogs
         echo ""
-        command_run $command_arguments_flags"@"$valid_flags
+        echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name_shell)${normal}"
+        echo ""
+        new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
+        push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
+  
+
+        echo "commit_name_shell: $commit_name_shell"
+        echo "commit_name_driver: $commit_name_driver"
+        echo "new_name: $new_name" 
+        echo "push_option: $push_option" 
+
+        exit
+
+        #run
+        $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --push $push_option
+        echo ""
+
+        #valid_flags="-c --commit --project --push -h --help"
+        #echo ""
+        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)
         if [ "$#" -ne 2 ]; then
