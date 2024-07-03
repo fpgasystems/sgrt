@@ -486,7 +486,7 @@ remote_dialog() {
         echo ""
     fi
   else
-    deployment_check "$CLI_PATH" "${flags_array[@]}"
+    remote_check "$CLI_PATH" "${flags_array[@]}"
     #forgotten mandatory
     result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
     servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
@@ -508,7 +508,7 @@ remote_dialog() {
   fi
 }
 
-deployment_check() {
+remote_check() {
   local CLI_PATH=$1
   shift 1
   local flags_array=("$@")
@@ -1749,7 +1749,7 @@ case "$command" in
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-          deployment_check "$CLI_PATH" "${flags_array[@]}"
+          remote_check "$CLI_PATH" "${flags_array[@]}"
         fi
         
         vivado_developers_check "$USER"
