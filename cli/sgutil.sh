@@ -106,6 +106,7 @@ CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
 CHECK_ON_BITSTREAM_ERR_MSG="Your targeted bitstream is missing. Please, use ${bold}$CLI_NAME build WILL_BE_REPLACED.${normal}"
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
 CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
+CHECK_ON_DRIVER_ERR_MSG="Your targeted driver is missing. Please, use ${bold}$CLI_NAME build WILL_BE_REPLACED.${normal}"
 CHECK_ON_FPGA_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to your GitHub account."
 CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
@@ -256,6 +257,19 @@ device_check() {
     echo $CHECK_ON_DEVICE_ERR_MSG
     echo ""
     exit
+  fi
+}
+
+driver_check() {
+  local CLI_NAME=$1
+  local WORKFLOW=$2
+  local DRIVER_PATH=$3
+  if ! [ -e "$DRIVER_PATH" ]; then
+    #echo ""
+    #CHECK_ON_BITSTREAM_ERR_MSG="${CHECK_ON_BITSTREAM_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
+    echo "${CHECK_ON_DRIVER_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
+    echo ""
+    exit 1
   fi
 }
 
@@ -1738,7 +1752,6 @@ case "$command" in
           deployment_check "$CLI_PATH" "${flags_array[@]}"
         fi
         
-        #check on...
         check_on_vivado_developers "$USER"
         check_on_gh "$CLI_PATH"
 
@@ -1753,12 +1766,13 @@ case "$command" in
           echo ""
         fi
         
-        #bitstream check
         FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
         bitstream_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/${ONIC_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
         bitstream_check "$CLI_NAME" "$arguments" "$bitstream_path"
 
-        #driver_check
+        driver_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/$ONIC_DRIVER_NAME"
+        driver_check "$CLI_NAME" "$arguments" "$driver_path"
+
         remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
         #run
