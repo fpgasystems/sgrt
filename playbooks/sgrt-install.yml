@@ -14,7 +14,7 @@
     - alveo-u55c-08.inf.ethz.ch
     #- alveo-u55c-09.inf.ethz.ch
     #- alveo-u55c-03.inf.ethz.ch
-    #- hacc-box-01.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
@@ -41,7 +41,7 @@
     enable: false
     examine: false
     get: false
-    help: false
+    help: true
     new: false
     program: true
     reboot: false
@@ -436,6 +436,7 @@
         - new_opennic
         - program_opennic
         - program_revert
+        - program_vivado
         - set_keys
         - validate_opennic
     #new

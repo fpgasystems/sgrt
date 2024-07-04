@@ -1232,19 +1232,8 @@ program_revert_help() {
 }
 
 program_vivado_help() {
-    echo ""
-    echo "${bold}$CLI_NAME program vivado [flags] [--help]${normal}"
-    echo ""
-    echo "Programs a Vivado bitstream to a given FPGA."
-    echo ""
-    echo "FLAGS:"
-    echo "   -b, --bitstream - Full path to the .bit bitstream to be programmed." 
-    echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
-    #echo "       --driver    - Driver (.ko) file path."
-    echo ""
-    echo "   -h, --help      - Help to program a bitstream."
-    echo ""
-    exit 1
+    $CLI_PATH/help/program_vivado $CLI_PATH $CLI_NAME
+    exit
 }
 
 program_vitis_help() {
@@ -2021,9 +2010,18 @@ case "$command" in
         echo ""
         ;;
       vivado)
-        valid_flags="-b --bitstream -d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion (Javier: 04.12.2023 --driver)  
-        echo ""
-        command_run $command_arguments_flags"@"$valid_flags
+        #check on flags
+        valid_flags="-b --bitstream -d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+
+
+        #valid_flags="-b --bitstream -d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion (Javier: 04.12.2023 --driver)  
+        #echo ""
+        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)
         valid_flags="-d --device -p --project -r --remote -x --xclbin -h --help"
