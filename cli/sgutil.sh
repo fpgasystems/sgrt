@@ -110,10 +110,8 @@ CHECK_ON_PUSH_MSG="${bold}Would you like to add the project to your GitHub accou
 CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
 
 #error messages
-#CHECK_ON_BITSTREAM_ERR_MSG="Your targeted bitstream is missing. Please, use ${bold}$CLI_NAME build WILL_BE_REPLACED.${normal}"
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
 CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
-#CHECK_ON_DRIVER_ERR_MSG="Your targeted driver is missing. Please, use ${bold}$CLI_NAME build WILL_BE_REPLACED.${normal}"
 CHECK_ON_FPGA_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to your GitHub account."
 CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
@@ -123,30 +121,6 @@ CHECK_ON_REMOTE_ERR_MSG="Please, choose a valid deploy option."
 CHECK_ON_VIRTUALIZED_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
-
-bitstream_dialog() {
-  local CLI_PATH=$1
-  local CLI_NAME=$2
-  local command=$3
-  local arguments=$4
-  shift 4
-  local flags_array=("$@")
-
-
-}
-
-#bitstream_check() {
-#  local CLI_NAME=$1
-#  local WORKFLOW=$2
-#  local BITSTREAM_PATH=$3
-#  if ! [ -e "$BITSTREAM_PATH" ]; then
-#    #echo ""
-#    #CHECK_ON_BITSTREAM_ERR_MSG="${CHECK_ON_BITSTREAM_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
-#    echo "${CHECK_ON_BITSTREAM_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
-#    echo ""
-#    exit 1
-#  fi
-#}
 
 commit_dialog() {
   local CLI_PATH=$1
@@ -272,19 +246,6 @@ device_check() {
       exit
   fi
 }
-
-#driver_check() {
-#  local CLI_NAME=$1
-#  local WORKFLOW=$2
-#  local DRIVER_PATH=$3
-#  if ! [ -e "$DRIVER_PATH" ]; then
-#    #echo ""
-#    #CHECK_ON_BITSTREAM_ERR_MSG="${CHECK_ON_BITSTREAM_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
-#    echo "${CHECK_ON_DRIVER_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
-#    echo ""
-#    exit 1
-#  fi
-#}
 
 flags_check() {
     # we use an @ to separate between command_arguments_flags and the valid_flags
@@ -1964,7 +1925,6 @@ case "$command" in
         #bitstream check
         FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
         bitstream_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/${ONIC_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-        #bitstream_check "$CLI_NAME" "$arguments" "$bitstream_path"
         if ! [ -e "$bitstream_path" ]; then
           echo "Your targeted bitstream is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
           echo ""
@@ -1973,7 +1933,6 @@ case "$command" in
 
         #driver check
         driver_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/$ONIC_DRIVER_NAME"
-        #driver_check "$CLI_NAME" "$arguments" "$driver_path"
         if ! [ -e "$driver_path" ]; then
           echo "Your targeted driver is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
           echo ""
