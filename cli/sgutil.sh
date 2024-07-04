@@ -2247,7 +2247,10 @@ case "$command" in
 
         #dialogs
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        echo ""
+        #echo ""
+        if [ "$commit_found" = "0" ]; then 
+            echo ""
+        fi
         
         #run
         $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --version $vivado_version
