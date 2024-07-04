@@ -2196,13 +2196,13 @@ case "$command" in
             commit_name=$(echo "$result" | sed -n '2p')
 
             #check if commit_name is empty
-            if [ "$commit_found" = "1" ] && [ "$commit_name" = "" ]; then
-                $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
-                exit
-            fi
+            #if [ "$commit_found" = "1" ] && [ "$commit_name" = "" ]; then
+            #    $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
+            #    exit
+            #fi
             
             #check if commit_name contains exactly one comma
-            if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
+            if [ "$commit_found" = "1" ] && { [ "$commit_name" = "" ] || ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; }; then #if [ "$commit_found" = "1" ] && ! [[ "$commit_name" =~ ^[^,]+,[^,]+$ ]]; then
                 echo ""
                 echo "Please, choose valid shell and driver commit IDs."
                 echo ""
@@ -2238,13 +2238,15 @@ case "$command" in
                 fi
             fi
         fi
-        #echo ""
-
-        #dialogs
-        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         echo ""
 
         echo "${bold}$CLI_NAME $command $arguments (shell and driver commit IDs: $commit_name_shell,$commit_name_driver)${normal}"
+        if [ "$device_found" = "0" ]; then 
+            echo ""
+        fi
+
+        #dialogs
+        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         echo ""
         
         #run
