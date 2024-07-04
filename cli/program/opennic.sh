@@ -5,7 +5,7 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 #usage:       $CLI_PATH/program/opennic --commit $comit_id --device $device_index --project $project_name --remote $remote_option --version $vivado_version
-#example: /opt/sgrt/cli/program/opennic --commit   8077751 --device             1 --project   hello_world --remote              0
+#example: /opt/sgrt/cli/program/opennic --commit   8077751 --device             1 --project   hello_world --remote              0 --version          2022.1
 
 #inputs
 commit_name=$2
