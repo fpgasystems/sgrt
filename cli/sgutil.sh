@@ -29,6 +29,11 @@ XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
+#get devices number
+source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
+multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+
 #get hostname
 url="${HOSTNAME}"
 hostname="${url%%.*}"
@@ -1600,7 +1605,7 @@ case "$command" in
     cli_version
     ;;
   build)
-    #vivado projects
+    #checks
     if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
       vivado_check "$VIVADO_PATH" "$vivado_version"
@@ -1632,7 +1637,7 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
-        #command line check
+        #checks (command line)
         if [ ! "$flags_array" = "" ]; then
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
           platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
@@ -1779,6 +1784,12 @@ case "$command" in
       mkdir -p "$MY_PROJECTS_PATH/$arguments"
     fi
 
+    #checks
+    if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
+      vivado_developers_check "$USER"
+      gh_check "$CLI_PATH"
+    fi
+
     case "$arguments" in
       -h|--help)
         new_help
@@ -1821,7 +1832,7 @@ case "$command" in
             commit_found_driver="1"
             commit_name_shell=$ONIC_SHELL_COMMIT
             commit_name_driver=$ONIC_DRIVER_COMMIT
-            #command line check
+            #checks (command line)
             device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         else
             #commit_dialog_check
@@ -1873,21 +1884,14 @@ case "$command" in
             fi
         fi
 
-        #command line check
+        #checks (command line)
         if [ ! "$flags_array" = "" ]; then
-
-          echo "Hey I am here"
-
-          #commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-          #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-          #project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-          #remote_check "$CLI_PATH" "${flags_array[@]}"
           new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
           push_check "$CLI_PATH" "${flags_array[@]}"
         fi
         
-        vivado_developers_check "$USER"
-        gh_check "$CLI_PATH"
+        #vivado_developers_check "$USER"
+        #gh_check "$CLI_PATH"
 
         #dialogs
         echo ""
@@ -1925,15 +1929,18 @@ case "$command" in
     esac
     ;;
   program)
-    #require hot-plug
-    if [ "$arguments" = "opennic" ] || [ "$arguments" = "revert" ]; then
+    #checks (1/2)
+    if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ] || [ "$arguments" = "revert" ]; then
+      virtualized_check "$CLI_PATH" "$hostname"
       fpga_check "$CLI_PATH" "$hostname"
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
       vivado_check "$VIVADO_PATH" "$vivado_version"
-      source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
-      MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
-      multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
-      virtualized_check "$CLI_PATH" "$hostname"
+    fi
+
+    #checks (2/2)
+    if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
+      vivado_developers_check "$USER"
+      gh_check "$CLI_PATH"
     fi
     
     case "$arguments" in
@@ -1957,7 +1964,7 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
-        #command line check
+        #checks (command line)
         if [ ! "$flags_array" = "" ]; then
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
@@ -1965,8 +1972,8 @@ case "$command" in
           remote_check "$CLI_PATH" "${flags_array[@]}"
         fi
         
-        vivado_developers_check "$USER"
-        gh_check "$CLI_PATH"
+        #vivado_developers_check "$USER"
+        #gh_check "$CLI_PATH"
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
@@ -2003,10 +2010,11 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
-        #command line check
+        #checks (command line)
         if [ ! "$flags_array" = "" ]; then
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         fi
+        
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
             echo ""
             echo "${bold}$CLI_NAME $command $arguments${normal}"
@@ -2131,15 +2139,12 @@ case "$command" in
       mkdir -p "$MY_PROJECTS_PATH/$arguments"
     fi
 
-    #require hot-plug
+    #checks
     if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
+      virtualized_check "$CLI_PATH" "$hostname"
       fpga_check "$CLI_PATH" "$hostname"
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
       vivado_check "$VIVADO_PATH" "$vivado_version"
-      source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
-      MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
-      multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
-      virtualized_check "$CLI_PATH" "$hostname"
       vivado_developers_check "$USER"
       gh_check "$CLI_PATH"
     fi
@@ -2185,7 +2190,7 @@ case "$command" in
             commit_found_driver="1"
             commit_name_shell=$ONIC_SHELL_COMMIT
             commit_name_driver=$ONIC_DRIVER_COMMIT
-            #command line check
+            #checks (command line)
             device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         else
             #commit_dialog_check
