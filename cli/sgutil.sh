@@ -1889,9 +1889,6 @@ case "$command" in
           new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
           push_check "$CLI_PATH" "${flags_array[@]}"
         fi
-        
-        #vivado_developers_check "$USER"
-        #gh_check "$CLI_PATH"
 
         #dialogs
         echo ""
@@ -1902,11 +1899,6 @@ case "$command" in
   
         #run
         $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --push $push_option
-        #echo ""
-
-        #valid_flags="-c --commit --project --push -h --help"
-        #echo ""
-        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)
         if [ "$#" -ne 2 ]; then
@@ -1963,9 +1955,6 @@ case "$command" in
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
           remote_check "$CLI_PATH" "${flags_array[@]}"
         fi
-        
-        #vivado_developers_check "$USER"
-        #gh_check "$CLI_PATH"
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
