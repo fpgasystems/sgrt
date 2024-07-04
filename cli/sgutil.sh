@@ -2241,7 +2241,7 @@ case "$command" in
         echo ""
 
         echo "${bold}$CLI_NAME $command $arguments (shell and driver commit IDs: $commit_name_shell,$commit_name_driver)${normal}"
-        if [ "$device_found" = "0" ]; then 
+        if [ "$commit_found" = "1" ] || [ "$device_found" = "0" ]; then 
             echo ""
         fi
 
