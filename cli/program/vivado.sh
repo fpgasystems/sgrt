@@ -1,10 +1,18 @@
 #!/bin/bash
 
+CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+#usage:       $CLI_PATH/program/vivado --bitstream         $bitstream_name --device $device_index --version $vivado_version
+#example: /opt/sgrt/cli/program/vivado --bitstream    path_to_my_shell.bit --device             1 --version          2022.1
+
+#inputs
+bitstream_name=$2
+device_index=$4
+vivado_version=$6
+
 #constants
-CLI_PATH="$(dirname "$(dirname "$0")")"
 #MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
@@ -19,134 +27,134 @@ hostname="${url%%.*}"
 email=$($CLI_PATH/common/get_email)
 
 #check on ACAP or FPGA servers (server must have at least one ACAP or one FPGA)
-acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
-    echo ""
-    echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
-    echo ""
-    exit
-fi
+#acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+#fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+#if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
+#    echo ""
+#    echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
+#    echo ""
+#    exit
+#fi
 
 #check on DEVICES_LIST
-source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+#source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
 
 #get number of fpga and acap devices present
-MAX_DEVICES=$(grep -E "fpga|acap" $DEVICES_LIST | wc -l)
+#MAX_DEVICES=$(grep -E "fpga|acap" $DEVICES_LIST | wc -l)
 
 #check on multiple devices
-multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+#multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 
 #check on vivado_developers
-member=$($CLI_PATH/common/is_member $USER vivado_developers)
-if [ "$member" = "false" ]; then
-    echo ""
-    echo "Sorry, ${bold}$USER!${normal} You are not granted to use this command."
-    echo ""
-    exit
-fi
+#member=$($CLI_PATH/common/is_member $USER vivado_developers)
+#if [ "$member" = "false" ]; then
+#    echo ""
+#    echo "Sorry, ${bold}$USER!${normal} You are not granted to use this command."
+#    echo ""
+#    exit
+#fi
 
 #inputs
-read -a flags <<< "$@"
+#read -a flags <<< "$@"
 
 #version_dialog_check
-result="$("$CLI_PATH/common/version_dialog_check" "${flags[@]}")"
-vivado_version=$(echo "$result" | sed -n '2p')
+#result="$("$CLI_PATH/common/version_dialog_check" "${flags[@]}")"
+#vivado_version=$(echo "$result" | sed -n '2p')
 
 #check on Vivado version
-if [ -n "$vivado_version" ]; then
-    #vivado_version is not empty and we check if the Vivado directory exists
-    if [ ! -d $VIVADO_PATH/$vivado_version ]; then
-        echo ""
-        echo "Please, choose a valid Vivado version for ${bold}$hostname!${normal}"
-        echo ""
-        exit 1
-    fi
-else
-    #vivado_version is empty and we set the more recent Vivado version by default
-    vivado_version=$(find "$VIVADO_PATH" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort -V | tail -n 1)
-
-    #vivado_version and VIVADO_PATH are empty
-    if [ -z "$vivado_version" ]; then
-        echo ""
-        echo "Please, source a valid Vivado version for ${bold}$hostname!${normal}"
-        echo ""
-        exit 1
-    fi
-fi
+#if [ -n "$vivado_version" ]; then
+#    #vivado_version is not empty and we check if the Vivado directory exists
+#    if [ ! -d $VIVADO_PATH/$vivado_version ]; then
+#        echo ""
+#        echo "Please, choose a valid Vivado version for ${bold}$hostname!${normal}"
+#        echo ""
+#        exit 1
+#    fi
+#else
+#    #vivado_version is empty and we set the more recent Vivado version by default
+#    vivado_version=$(find "$VIVADO_PATH" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort -V | tail -n 1)
+#
+#    #vivado_version and VIVADO_PATH are empty
+#    if [ -z "$vivado_version" ]; then
+#        echo ""
+#        echo "Please, source a valid Vivado version for ${bold}$hostname!${normal}"
+#        echo ""
+#        exit 1
+#    fi
+#fi
 
 #check on flags
-device_found=""
-device_index=""
-if [ "$flags" = "" ]; then
-    $CLI_PATH/sgutil program vivado -h
-    exit
-else
-    #device_dialog_check
-    result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
-    device_found=$(echo "$result" | sed -n '1p')
-    device_index=$(echo "$result" | sed -n '2p')
-    #forbidden combinations (1)
-    if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-        $CLI_PATH/sgutil program vivado -h
-        exit
-    fi
-    #device_dialog (forgotten mandatory)
-    #if [[ $multiple_devices = "0" ]]; then
-    #    device_found="1"
-    #    device_index="1"
-    #fi
-    #bitstream_dialog_check
-    result="$("$CLI_PATH/common/bitstream_dialog_check" "${flags[@]}")"
-    bitstream_found=$(echo "$result" | sed -n '1p')
-    bitstream_name=$(echo "$result" | sed -n '2p')
-    #forbidden combinations (2)
-    if [ "$bitstream_found" = "0" ]; then
-        $CLI_PATH/sgutil program vivado -h
-        exit
-    fi
-    #forbidden combinations (3)
-    if [ "$bitstream_found" = "1" ] && ([ "$bitstream_name" = "" ] || [ ! -f "$bitstream_name" ] || [ "${bitstream_name##*.}" != "bit" ]); then
-        $CLI_PATH/sgutil program vivado -h
-        exit
-    fi
-    #driver_dialog_check
-    #result="$("$CLI_PATH/common/driver_dialog_check" "${flags[@]}")"
-    #driver_found=$(echo "$result" | sed -n '1p')
-    #driver_name=$(echo "$result" | sed -n '2p')
-    ##forbidden combinations (3)
-    #if [ "$driver_found" = "1" ] && ([ "$driver_name" = "" ] || [ ! -f "$driver_name" ] || [ "${driver_name##*.}" != "ko" ]); then
-    #    $CLI_PATH/sgutil program vivado -h
-    #    exit
-    #fi
-    #forbidden combinations (4)
-    if [ "$multiple_devices" = "1" ] && [ "$bitstream_found" = "1" ] && [ "$device_found" = "0" ]; then # this means bitstream always needs --device when multiple_devices
-        $CLI_PATH/sgutil program vivado -h
-        exit
-    fi
-    #forbidden combinations (5)
-    #if ([ "$bitstream_found" = "0" ] && [ "$driver_found" = "0" ]); then
-    #    $CLI_PATH/sgutil program vivado -h
-    #    exit
-    #fi
-    #forbidden combinations (6)
-    #if ([ "$driver_found" = "1" ] && [ "$bitstream_found" = "0" ] && [ "$device_found" = "1" ]); then #the driver alone (without bitstream) does not need --device
-    #    $CLI_PATH/sgutil program vivado -h
-    #    exit
-    #fi
-    #device values when there is only a device
-    if [[ $multiple_devices = "0" ]]; then
-        device_found="1"
-        device_index="1"
-    fi
-fi
+#device_found=""
+#device_index=""
+#if [ "$flags" = "" ]; then
+#    $CLI_PATH/sgutil program vivado -h
+#    exit
+#else
+#    #device_dialog_check
+#    result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
+#    device_found=$(echo "$result" | sed -n '1p')
+#    device_index=$(echo "$result" | sed -n '2p')
+#    #forbidden combinations (1)
+#    if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
+#        $CLI_PATH/sgutil program vivado -h
+#        exit
+#    fi
+#    #device_dialog (forgotten mandatory)
+#    #if [[ $multiple_devices = "0" ]]; then
+#    #    device_found="1"
+#    #    device_index="1"
+#    #fi
+#    #bitstream_dialog_check
+#    result="$("$CLI_PATH/common/bitstream_dialog_check" "${flags[@]}")"
+#    bitstream_found=$(echo "$result" | sed -n '1p')
+#    bitstream_name=$(echo "$result" | sed -n '2p')
+#    #forbidden combinations (2)
+#    if [ "$bitstream_found" = "0" ]; then
+#        $CLI_PATH/sgutil program vivado -h
+#        exit
+#    fi
+#    #forbidden combinations (3)
+#    if [ "$bitstream_found" = "1" ] && ([ "$bitstream_name" = "" ] || [ ! -f "$bitstream_name" ] || [ "${bitstream_name##*.}" != "bit" ]); then
+#        $CLI_PATH/sgutil program vivado -h
+#        exit
+#    fi
+#    #driver_dialog_check
+#    #result="$("$CLI_PATH/common/driver_dialog_check" "${flags[@]}")"
+#    #driver_found=$(echo "$result" | sed -n '1p')
+#    #driver_name=$(echo "$result" | sed -n '2p')
+#    ##forbidden combinations (3)
+#    #if [ "$driver_found" = "1" ] && ([ "$driver_name" = "" ] || [ ! -f "$driver_name" ] || [ "${driver_name##*.}" != "ko" ]); then
+#    #    $CLI_PATH/sgutil program vivado -h
+#    #    exit
+#    #fi
+#    #forbidden combinations (4)
+#    if [ "$multiple_devices" = "1" ] && [ "$bitstream_found" = "1" ] && [ "$device_found" = "0" ]; then # this means bitstream always needs --device when multiple_devices
+#        $CLI_PATH/sgutil program vivado -h
+#        exit
+#    fi
+#    #forbidden combinations (5)
+#    #if ([ "$bitstream_found" = "0" ] && [ "$driver_found" = "0" ]); then
+#    #    $CLI_PATH/sgutil program vivado -h
+#    #    exit
+#    #fi
+#    #forbidden combinations (6)
+#    #if ([ "$driver_found" = "1" ] && [ "$bitstream_found" = "0" ] && [ "$device_found" = "1" ]); then #the driver alone (without bitstream) does not need --device
+#    #    $CLI_PATH/sgutil program vivado -h
+#    #    exit
+#    #fi
+#    #device values when there is only a device
+#    if [[ $multiple_devices = "0" ]]; then
+#        device_found="1"
+#        device_index="1"
+#    fi
+#fi
 
 #echo ""
 echo "${bold}sgutil program vivado${normal}"
 echo ""
 
 #program bitstream
-if [[ $bitstream_found = "1" ]]; then
+#if [[ $bitstream_found = "1" ]]; then
     #revert to xrt first if FPGA is already in baremetal (it is proven to be needed on non-virtualized environments)
     virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
     #if [ "$virtualized" = "0" ]; then
@@ -196,7 +204,7 @@ if [[ $bitstream_found = "1" ]]; then
         #    echo ""
         #fi
     fi
-fi
+#fi
 
 #program driver
 #if [[ $driver_found = "1" ]]; then
@@ -232,3 +240,5 @@ fi
 #    sleep 1
 #    echo ""
 #fi
+
+#author: https://github.com/jmoya82

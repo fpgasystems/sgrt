@@ -1868,18 +1868,23 @@ case "$command" in
     esac
     ;;
   program)
-    #checks (1/2)
-    if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ] || [ "$arguments" = "revert" ]; then
+    #checks (1/3)
+    if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ] || [ "$arguments" = "revert" ] || [ "$arguments" = "vivado" ]; then
       virtualized_check "$CLI_PATH" "$hostname"
       fpga_check "$CLI_PATH" "$hostname"
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
       vivado_check "$VIVADO_PATH" "$vivado_version"
     fi
 
-    #checks (2/2)
+    #checks (2/3)
     if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
       vivado_developers_check "$USER"
       gh_check "$CLI_PATH"
+    fi
+
+    #checks (3/3)
+    if [ "$arguments" = "vivado" ]; then
+      vivado_developers_check "$USER"
     fi
     
     case "$arguments" in
@@ -2027,11 +2032,10 @@ case "$command" in
               device_index="1"
           fi
         fi
+        echo ""
 
-        echo "device_index: $device_index"
-        echo "bitstream_name: $bitstream_name"
-        exit
-
+        #run
+        $CLI_PATH/program/vivado --bitstream $bitstream_name --device $device_index --version $vivado_version
 
         #valid_flags="-b --bitstream -d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion (Javier: 04.12.2023 --driver)  
         #echo ""

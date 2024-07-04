@@ -54,7 +54,8 @@ before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
 #program bitstream 
-$CLI_PATH/program/vivado --device $device_index -b $DIR/$BITSTREAM_NAME -v $vivado_version
+#$CLI_PATH/program/vivado --device $device_index -b $DIR/$BITSTREAM_NAME -v $vivado_version
+$CLI_PATH/program/vivado --bitstream $DIR/$BITSTREAM_NAME --device $device_index --version $vivado_version
 
 #insert driver
 eval "$CLI_PATH/program/driver -m $DIR/$DRIVER_NAME -p RS_FEC_ENABLED=0"
