@@ -1900,17 +1900,9 @@ case "$command" in
         new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
         push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
   
-
-        echo "commit_name_shell: $commit_name_shell"
-        echo "commit_name_driver: $commit_name_driver"
-        echo "new_name: $new_name" 
-        echo "push_option: $push_option" 
-
-        exit
-
         #run
         $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --push $push_option
-        echo ""
+        #echo ""
 
         #valid_flags="-c --commit --project --push -h --help"
         #echo ""
@@ -2014,7 +2006,7 @@ case "$command" in
         if [ ! "$flags_array" = "" ]; then
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         fi
-        
+
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
             echo ""
             echo "${bold}$CLI_NAME $command $arguments${normal}"
