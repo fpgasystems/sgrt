@@ -110,10 +110,10 @@ CHECK_ON_PUSH_MSG="${bold}Would you like to add the project to your GitHub accou
 CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
 
 #error messages
-CHECK_ON_BITSTREAM_ERR_MSG="Your targeted bitstream is missing. Please, use ${bold}$CLI_NAME build WILL_BE_REPLACED.${normal}"
+#CHECK_ON_BITSTREAM_ERR_MSG="Your targeted bitstream is missing. Please, use ${bold}$CLI_NAME build WILL_BE_REPLACED.${normal}"
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
 CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
-CHECK_ON_DRIVER_ERR_MSG="Your targeted driver is missing. Please, use ${bold}$CLI_NAME build WILL_BE_REPLACED.${normal}"
+#CHECK_ON_DRIVER_ERR_MSG="Your targeted driver is missing. Please, use ${bold}$CLI_NAME build WILL_BE_REPLACED.${normal}"
 CHECK_ON_FPGA_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to your GitHub account."
 CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
@@ -124,18 +124,29 @@ CHECK_ON_VIRTUALIZED_ERR_MSG="Sorry, this command is not available on $hostname.
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
 
-bitstream_check() {
-  local CLI_NAME=$1
-  local WORKFLOW=$2
-  local BITSTREAM_PATH=$3
-  if ! [ -e "$BITSTREAM_PATH" ]; then
-    #echo ""
-    #CHECK_ON_BITSTREAM_ERR_MSG="${CHECK_ON_BITSTREAM_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
-    echo "${CHECK_ON_BITSTREAM_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
-    echo ""
-    exit 1
-  fi
+bitstream_dialog() {
+  local CLI_PATH=$1
+  local CLI_NAME=$2
+  local command=$3
+  local arguments=$4
+  shift 4
+  local flags_array=("$@")
+
+
 }
+
+#bitstream_check() {
+#  local CLI_NAME=$1
+#  local WORKFLOW=$2
+#  local BITSTREAM_PATH=$3
+#  if ! [ -e "$BITSTREAM_PATH" ]; then
+#    #echo ""
+#    #CHECK_ON_BITSTREAM_ERR_MSG="${CHECK_ON_BITSTREAM_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
+#    echo "${CHECK_ON_BITSTREAM_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
+#    echo ""
+#    exit 1
+#  fi
+#}
 
 commit_dialog() {
   local CLI_PATH=$1
@@ -190,12 +201,9 @@ commit_check() {
   exists=$($GITHUB_CLI_PATH/gh api repos/$REPO_ADDRESS/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
   #forbidden combinations
   if [ "$commit_found" = "0" ]; then 
-      commit_found="1"
-      commit_name=$DEFAULT_COMMIT
-  elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ]); then 
-      $CLI_PATH/help/${command}"_"${WORKFLOW} $CLI_PATH $CLI_NAME
-      exit 1
-  elif [ "$commit_found" = "1" ] && [ "$exists" = "0" ]; then 
+    commit_found="1"
+    commit_name=$DEFAULT_COMMIT
+  elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ] || [ "$exists" = "0" ]); then 
       echo ""
       echo $CHECK_ON_COMMIT_ERR_MSG
       echo ""
@@ -257,29 +265,26 @@ device_check() {
   device_found=$(echo "$result" | sed -n '1p')
   device_index=$(echo "$result" | sed -n '2p')
   #forbidden combinations
-  if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]); then
-      $CLI_PATH/help/${command}"_"${arguments} $CLI_PATH $CLI_NAME
-      exit 1
-  elif ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-    echo ""
-    echo $CHECK_ON_DEVICE_ERR_MSG
-    echo ""
-    exit
+  if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && [ "$device_index" -ne 1 ]) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
+      echo ""
+      echo $CHECK_ON_DEVICE_ERR_MSG
+      echo ""
+      exit
   fi
 }
 
-driver_check() {
-  local CLI_NAME=$1
-  local WORKFLOW=$2
-  local DRIVER_PATH=$3
-  if ! [ -e "$DRIVER_PATH" ]; then
-    #echo ""
-    #CHECK_ON_BITSTREAM_ERR_MSG="${CHECK_ON_BITSTREAM_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
-    echo "${CHECK_ON_DRIVER_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
-    echo ""
-    exit 1
-  fi
-}
+#driver_check() {
+#  local CLI_NAME=$1
+#  local WORKFLOW=$2
+#  local DRIVER_PATH=$3
+#  if ! [ -e "$DRIVER_PATH" ]; then
+#    #echo ""
+#    #CHECK_ON_BITSTREAM_ERR_MSG="${CHECK_ON_BITSTREAM_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
+#    echo "${CHECK_ON_DRIVER_ERR_MSG//WILL_BE_REPLACED/$WORKFLOW}"
+#    echo ""
+#    exit 1
+#  fi
+#}
 
 flags_check() {
     # we use an @ to separate between command_arguments_flags and the valid_flags
@@ -1956,12 +1961,24 @@ case "$command" in
           echo ""
         fi
         
+        #bitstream check
         FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
         bitstream_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/${ONIC_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-        bitstream_check "$CLI_NAME" "$arguments" "$bitstream_path"
+        #bitstream_check "$CLI_NAME" "$arguments" "$bitstream_path"
+        if ! [ -e "$bitstream_path" ]; then
+          echo "Your targeted bitstream is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
+          echo ""
+          exit 1
+        fi
 
+        #driver check
         driver_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/$ONIC_DRIVER_NAME"
-        driver_check "$CLI_NAME" "$arguments" "$driver_path"
+        #driver_check "$CLI_NAME" "$arguments" "$driver_path"
+        if ! [ -e "$driver_path" ]; then
+          echo "Your targeted driver is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
+          echo ""
+          exit 1
+        fi
 
         remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
@@ -1999,6 +2016,7 @@ case "$command" in
                 echo ""
             fi
         fi
+
         workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
         if [[ $workflow = "vitis" ]]; then
             exit
@@ -2017,6 +2035,43 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
+        #checks (command line)
+        if [ "$flags" = "" ]; then
+          #program_vivado_help
+          echo ""
+          echo "Your targeted bitstream and device are missing."
+          echo ""
+          exit
+        else #if [ ! "$flags_array" = "" ]; then      
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          #bitstream_dialog_check
+          result="$("$CLI_PATH/common/bitstream_dialog_check" "${flags_array[@]}")"
+          bitstream_found=$(echo "$result" | sed -n '1p')
+          bitstream_name=$(echo "$result" | sed -n '2p')
+          #forbidden combinations (1/2)
+          if [ "$bitstream_found" = "0" ] || ([ "$bitstream_found" = "1" ] && ([ "$bitstream_name" = "" ] || [ ! -f "$bitstream_name" ] || [ "${bitstream_name##*.}" != "bit" ])); then
+              echo ""
+              echo "Please, choose a valid bitstream name."
+              echo ""
+              exit
+          fi
+          #forbidden combinations (2/2)
+          if [ "$multiple_devices" = "1" ] && [ "$bitstream_found" = "1" ] && [ "$device_found" = "0" ]; then # this means bitstream always needs --device when multiple_devices
+              echo ""
+              echo $CHECK_ON_DEVICE_ERR_MSG
+              echo ""
+              exit
+          fi
+          #device values when there is only a device
+          if [[ $multiple_devices = "0" ]]; then
+              device_found="1"
+              device_index="1"
+          fi
+        fi
+
+        echo "device_index: $device_index"
+        echo "bitstream_name: $bitstream_name"
+        exit
 
 
         #valid_flags="-b --bitstream -d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion (Javier: 04.12.2023 --driver)  
