@@ -56,7 +56,7 @@ fi
 
 #remove loaded drivers
 if [ "${#loaded_drivers[@]}" -gt 0 ]; then
-    echo ""
+    #echo ""
     echo "${bold}Removing drivers:${normal}"
     echo ""
 

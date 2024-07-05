@@ -45,6 +45,7 @@ workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | 
 #revert device (it removes driver as well)
 if [[ "$workflow" = "vivado" ]]; then
     echo "${bold}$CLI_NAME program revert${normal}"    
+    echo ""
 fi
 $CLI_PATH/program/revert -d $device_index --version $vivado_version
 if [[ "$workflow" = "vivado" ]]; then

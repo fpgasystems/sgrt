@@ -208,6 +208,7 @@ device_dialog() {
           result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
           device_found=$(echo "$result" | sed -n '1p')
           device_index=$(echo "$result" | sed -n '2p')
+          echo ""
       fi
   else
       device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
@@ -1923,9 +1924,9 @@ case "$command" in
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
-          echo ""
-        fi
+        #if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
+        #  echo ""
+        #fi
         
         #bitstream check
         FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
@@ -1974,11 +1975,11 @@ case "$command" in
 
         #dialogs
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
-            workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-            if [[ $workflow = "vitis" ]]; then
+        if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "0" ]]; then
+        #    workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+        #    if [[ $workflow = "vitis" ]]; then
                 echo ""
-            fi
+        #    fi
         fi
 
         workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$(dirname "$0")")"
+CLI_NAME="sgutil"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
@@ -69,6 +70,10 @@ echo ""
 workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
 
 #revert device
+if [[ "$workflow" = "vivado" ]]; then
+    echo "${bold}$CLI_NAME program revert${normal}"    
+    echo ""
+fi
 $CLI_PATH/program/revert -d $device_index --version $vivado_version
 
 #add additional echo (2/2)
