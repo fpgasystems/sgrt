@@ -2220,22 +2220,16 @@ case "$command" in
             if [ "$commit_found" = "0" ]; then 
                 commit_name_shell=$ONIC_SHELL_COMMIT
                 commit_name_driver=$ONIC_DRIVER_COMMIT
-            elif [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
-                $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
-                exit
-            elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
-                if [ "$exists_shell" = "0" ]; then
-                  echo ""
-                  echo "Please, choose a valid shell commit ID." #similar to CHECK_ON_COMMIT_ERR_MSG
-                  echo ""
-                  exit 1
-                fi
-                if [ "$exists_driver" = "0" ]; then
-                  echo ""
-                  echo "Please, choose a valid driver commit ID." #similar to CHECK_ON_COMMIT_ERR_MSG
-                  echo ""
-                  exit 1
-                fi
+            elif [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$exists_shell" = "0" ]); then
+                echo ""
+                echo "Please, choose a valid shell commit ID." # similar to CHECK_ON_COMMIT_ERR_MSG
+                echo ""
+                exit 1
+            elif [ "$commit_found" = "1" ] && ([ "$commit_name_driver" = "" ] || [ "$exists_driver" = "0" ]); then
+                echo ""
+                echo "Please, choose a valid driver commit ID." # similar to CHECK_ON_COMMIT_ERR_MSG
+                echo ""
+                exit 1
             fi
         fi
         echo ""
