@@ -2010,9 +2010,7 @@ case "$command" in
         else  
           echo ""
           echo "${bold}$CLI_NAME $command $arguments${normal}"    
-          #if [ "$flags_array" = "" ]; then
-            echo ""
-          #fi
+          echo ""
           device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
           if [[ $workflow = "vitis" ]]; then
