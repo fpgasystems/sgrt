@@ -1,10 +1,11 @@
 #!/bin/bash
 
+CLI_PATH="$(dirname "$(dirname "$0")")"
+CLI_NAME="sgutil"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
 #constants
-CLI_PATH="$(dirname "$(dirname "$0")")"
 XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 
@@ -91,8 +92,20 @@ else
     fi
 fi
 
+vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+
+#get workflow (print echo)
+workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
+
 #revert
+if [[ "$workflow" = "vivado" ]]; then
+    echo ""
+    echo "${bold}$CLI_NAME program revert${normal}"    
+fi
 $CLI_PATH/program/revert -d $device_index --version $vivado_version
+if [[ "$workflow" = "vivado" ]]; then
+    echo ""
+fi
 
 #get BDF (i.e., Bus:Device.Function) 
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
