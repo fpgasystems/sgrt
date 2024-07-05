@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$(dirname "$0")")"
+CLI_NAME=$(basename "${CLI_PATH//\/cli}")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
@@ -42,6 +43,9 @@ BITSTREAM_NAME=${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit
 workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
 
 #revert device (it removes driver as well)
+if [[ "$workflow" = "vivado" ]]; then
+    echo "${bold}$CLI_NAME program revert${normal}"    
+fi
 $CLI_PATH/program/revert -d $device_index --version $vivado_version
 if [[ "$workflow" = "vivado" ]]; then
     echo ""
