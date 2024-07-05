@@ -216,6 +216,7 @@ device_dialog() {
       if [[ $multiple_devices = "0" ]]; then
           device_found="1"
           device_index="1"
+          echo ""
       elif [[ $device_found = "0" ]]; then
           echo $CHECK_ON_DEVICE_MSG
           echo ""
@@ -1975,11 +1976,8 @@ case "$command" in
 
         #dialogs
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "0" ]]; then
-        #    workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-        #    if [[ $workflow = "vitis" ]]; then
-                echo ""
-        #    fi
+        if ([[ "$flags_array" = "" ]] && [[ $multiple_devices = "0" ]]) || ([[ ! "$flags_array" = "" ]] && [[ "$multiple_devices" = "1" ]] && [[ $device_found = "1" ]]); then
+            echo ""
         fi
 
         workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
