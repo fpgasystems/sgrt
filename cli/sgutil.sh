@@ -2036,10 +2036,6 @@ case "$command" in
 
         #run
         $CLI_PATH/program/vivado --bitstream $bitstream_name --device $device_index --version $vivado_version
-
-        #valid_flags="-b --bitstream -d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion (Javier: 04.12.2023 --driver)  
-        #echo ""
-        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       vitis)
         valid_flags="-d --device -p --project -r --remote -x --xclbin -h --help"
