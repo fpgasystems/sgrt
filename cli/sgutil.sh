@@ -1966,11 +1966,8 @@ case "$command" in
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         fi
         echo ""
-
-        #if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
-            #echo ""
-            echo "${bold}$CLI_NAME $command $arguments${normal}"
-            
+        
+        echo "${bold}$CLI_NAME $command $arguments${normal}"    
         if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
           echo ""
         fi
@@ -1988,7 +1985,6 @@ case "$command" in
         if [[ $workflow = "vitis" ]]; then
             exit
         fi
-        #echo ""
 
         #run
         $CLI_PATH/program/revert --device $device_index --version $vivado_version
