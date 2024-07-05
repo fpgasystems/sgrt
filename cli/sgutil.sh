@@ -197,35 +197,62 @@ device_dialog() {
   
   device_found=""
   device_index=""
-  if [ "$flags_array" = "" ]; then
-      #device_dialog
-      if [[ $multiple_devices = "0" ]]; then
-          device_found="1"
-          device_index="1"
-      else
-          echo $CHECK_ON_DEVICE_MSG
-          echo ""
-          result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
-          device_found=$(echo "$result" | sed -n '1p')
-          device_index=$(echo "$result" | sed -n '2p')
-          echo ""
-      fi
+
+  if [[ $multiple_devices = "0" ]]; then
+    device_found="1"
+    device_index="1"
   else
-      device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+    if [ "$flags_array" = "" ]; then
+      #device_dialog
+      echo $CHECK_ON_DEVICE_MSG
+      echo ""
+      result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+      device_found=$(echo "$result" | sed -n '1p')
+      device_index=$(echo "$result" | sed -n '2p')
+      echo ""
+    else
       #forgotten mandatory
-      if [[ $multiple_devices = "0" ]]; then
-          device_found="1"
-          device_index="1"
-          #echo ""
-      elif [[ $device_found = "0" ]]; then
-          echo $CHECK_ON_DEVICE_MSG
-          echo ""
-          result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
-          device_found=$(echo "$result" | sed -n '1p')
-          device_index=$(echo "$result" | sed -n '2p')
-          echo ""
+      device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+      if [[ $device_found = "0" ]]; then
+        echo $CHECK_ON_DEVICE_MSG
+        echo ""
+        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+        device_found=$(echo "$result" | sed -n '1p')
+        device_index=$(echo "$result" | sed -n '2p')
+        echo ""
       fi
+    fi
   fi
+
+  #if [ "$flags_array" = "" ]; then
+  #    #device_dialog
+  #    if [[ $multiple_devices = "0" ]]; then
+  #        device_found="1"
+  #        device_index="1"
+  #    else
+  #        echo $CHECK_ON_DEVICE_MSG
+  #        echo ""
+  #        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+  #        device_found=$(echo "$result" | sed -n '1p')
+  #        device_index=$(echo "$result" | sed -n '2p')
+  #        echo ""
+  #    fi
+  #else
+  #    device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+  #    #forgotten mandatory
+  #    if [[ $multiple_devices = "0" ]]; then
+  #        device_found="1"
+  #        device_index="1"
+  #        #echo ""
+  #    elif [[ $device_found = "0" ]]; then
+  #        echo $CHECK_ON_DEVICE_MSG
+  #        echo ""
+  #        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
+  #        device_found=$(echo "$result" | sed -n '1p')
+  #        device_index=$(echo "$result" | sed -n '2p')
+  #        echo ""
+  #    fi
+  #fi
 }
 
 device_check() {
@@ -1967,26 +1994,38 @@ case "$command" in
         if [ ! "$flags_array" = "" ]; then
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         fi
-        echo ""
+        #echo ""
         
-        echo "${bold}$CLI_NAME $command $arguments${normal}"    
-        if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
-          echo ""
-        fi
-
         #dialogs
-        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        if ([[ "$flags_array" = "" ]] && [[ $multiple_devices = "0" ]]) || ([[ ! "$flags_array" = "" ]] && [[ "$multiple_devices" = "1" ]] && [[ $device_found = "1" ]]); then
+        if [ "$multiple_devices" = "0" ]; then
+          device_found="1"
+          device_index="1"
+          workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+          if [[ $workflow = "vitis" ]]; then
+              exit
+          fi
+          echo ""
+          echo "${bold}$CLI_NAME $command $arguments${normal}"
+          echo ""
+        else  
+          echo ""
+          echo "${bold}$CLI_NAME $command $arguments${normal}"    
+          if [ "$flags_array" = "" ]; then
             echo ""
+          fi
+          device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+          if [[ $workflow = "vitis" ]]; then
+              exit
+          fi
         fi
-        if [[ ! "$flags_array" = "" ]] && [[ "$multiple_devices" = "0" ]] && [[ $device_found = "1" ]]; then
-            echo ""
-        fi
-
-        workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-        if [[ $workflow = "vitis" ]]; then
-            exit
-        fi
+        
+        #if ([[ "$flags_array" = "" ]] && [[ $multiple_devices = "0" ]]) || ([[ ! "$flags_array" = "" ]] && [[ "$multiple_devices" = "1" ]] && [[ $device_found = "1" ]]); then
+        #    echo ""
+        #fi
+        #if [[ ! "$flags_array" = "" ]] && [[ "$multiple_devices" = "0" ]] && [[ $device_found = "1" ]]; then
+        #    echo ""
+        #fi
 
         #run
         $CLI_PATH/program/revert --device $device_index --version $vivado_version
