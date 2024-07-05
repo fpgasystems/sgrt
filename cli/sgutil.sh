@@ -1998,7 +1998,6 @@ case "$command" in
         if [ ! "$flags_array" = "" ]; then
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         fi
-        #echo ""
         
         #dialogs
         if [ "$multiple_devices" = "0" ]; then
@@ -2028,31 +2027,8 @@ case "$command" in
           echo ""
           echo "${bold}$CLI_NAME $command $arguments${normal}"    
           echo ""
-          
-          #workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-          #if [[ $workflow = "vitis" ]]; then
-          #    exit
-          #fi
         fi
         
-        #workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-        #if [[ $workflow = "vitis" ]]; then
-        #    exit
-        #fi
-
-        #if ([[ "$flags_array" = "" ]] && [[ $multiple_devices = "0" ]]) || ([[ ! "$flags_array" = "" ]] && [[ "$multiple_devices" = "1" ]] && [[ $device_found = "1" ]]); then
-        #    echo ""
-        #fi
-        #if [[ ! "$flags_array" = "" ]] && [[ "$multiple_devices" = "0" ]] && [[ $device_found = "1" ]]; then
-        #    echo ""
-        #fi
-
-        #echo "device_found: $device_found"
-        #echo "device_index: $device_index"
-        #echo "vivado_version: $vivado_version"
-
-        #exit
-
         #run
         $CLI_PATH/program/revert --device $device_index --version $vivado_version
         if [[ $workflow = "vivado" ]]; then

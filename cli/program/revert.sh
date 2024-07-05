@@ -28,9 +28,6 @@ fi
 #get upstream_port
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
-#echo ""
-#echo "${bold}sgutil program revert${normal}"
-
 #get loaded drivers
 if [ -d "$MY_DRIVERS_PATH" ]; then
     # Initialize vectors
