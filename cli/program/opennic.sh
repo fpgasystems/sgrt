@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$(dirname "$0")")"
-CLI_NAME=$(basename "${CLI_PATH//\/cli}")
+CLI_NAME="sgutil"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
