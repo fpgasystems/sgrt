@@ -27,9 +27,6 @@ WORKFLOW="opennic"
 url="${HOSTNAME}"
 hostname="${url%%.*}"
 
-#create directory
-#mkdir -p "$MY_PROJECTS_PATH/$WORKFLOW"
-
 #cleanup bitstreams folder
 if [ -e "$BITSTREAMS_PATH/foo" ]; then
     sudo $CLI_PATH/common/rm "$BITSTREAMS_PATH/foo"
