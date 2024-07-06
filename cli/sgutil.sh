@@ -1877,7 +1877,7 @@ case "$command" in
 
         #dialogs
         echo ""
-        echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name_shell)${normal}"
+        echo "${bold}$CLI_NAME $command $arguments (commit IDs for shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
         echo ""
         new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"
         push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name_shell" "${flags_array[@]}"

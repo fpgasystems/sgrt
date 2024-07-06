@@ -51,7 +51,7 @@ DRIVER_DIR="$DIR/open-nic-driver"
 
 #new
 if ! [ -d "$DIR" ]; then
-    echo "${bold}$CLI_NAME new $WORKFLOW (commit ID: $commit_name_shell)${normal}"
+    echo "${bold}$CLI_NAME new $WORKFLOW (commit IDs for shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
     echo ""
     $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $project_name --push 0 
 fi
@@ -62,6 +62,8 @@ project_shell="$DIR/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 if [ -e "$library_shell" ]; then
     cp "$library_shell" "$project_shell"
 fi
+echo "${bold}$CLI_NAME build $WORKFLOW (commit ID for shell: $commit_name_shell)${normal}"
+echo ""
 $CLI_PATH/build/opennic --commit $commit_name_shell $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version
 echo ""
 
