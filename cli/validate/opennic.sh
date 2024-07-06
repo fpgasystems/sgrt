@@ -51,6 +51,8 @@ DRIVER_DIR="$DIR/open-nic-driver"
 
 #new
 if ! [ -d "$DIR" ]; then
+    echo "${bold}$CLI_NAME new $WORKFLOW (commit ID: $commit_name_shell)${normal}"
+    echo ""
     $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $project_name --push 0 
 fi
 
