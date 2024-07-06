@@ -51,7 +51,7 @@ DRIVER_DIR="$DIR/open-nic-driver"
 
 #new
 if ! [ -d "$DIR" ]; then
-    $CLI_PATH/new/opennic --commit $commit_name_shell,$commit_name_driver --project $project_name --push 0 
+    $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $project_name --push 0 
 fi
 
 #build
