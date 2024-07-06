@@ -354,6 +354,7 @@ new_dialog() {
     #forgotten mandatory
     if [[ $new_found = "0" ]]; then
         echo $CHECK_ON_NEW_MSG
+        echo ""
         result=$($CLI_PATH/common/new_dialog $MY_PROJECTS_PATH $WORKFLOW $commit_name)
         new_found=$(echo "$result" | sed -n '1p')
         new_name=$(echo "$result" | sed -n '2p')
