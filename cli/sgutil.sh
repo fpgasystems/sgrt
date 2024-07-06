@@ -2216,7 +2216,7 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
-        #check_on_commits
+        #checks (command line 1/2 - check_on_commits)
         commit_found_shell=""
         commit_name_shell=""
         commit_found_driver=""
@@ -2228,7 +2228,7 @@ case "$command" in
             commit_name_shell=$ONIC_SHELL_COMMIT
             commit_name_driver=$ONIC_DRIVER_COMMIT
             #checks (command line)
-            device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+            #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         else
             #commit_dialog_check
             result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
@@ -2272,20 +2272,38 @@ case "$command" in
                 exit 1
             fi
         fi
-        echo ""
-
-        echo "${bold}$CLI_NAME $command $arguments (shell and driver commit IDs: $commit_name_shell,$commit_name_driver)${normal}"
-        if [ "$commit_found" = "1" ] || [ "$device_found" = "0" ]; then 
-            echo ""
-        fi
-
-        #dialogs
-        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         #echo ""
-        if [ "$commit_found" = "0" ]; then 
-            echo ""
+
+        #initialize
+        device_found="0"
+        device_index=""
+
+        #checks (command line 2/2)
+        if [ ! "$flags_array" = "" ]; then
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         fi
-        
+
+        if [ "$multiple_devices" = "0" ]; then
+          device_found="1"
+          device_index="1"
+          echo ""
+          echo "${bold}$CLI_NAME $command $arguments (shell and driver commit IDs: $commit_name_shell,$commit_name_driver)${normal}"
+          echo ""
+        else
+          echo ""
+          echo "${bold}$CLI_NAME $command $arguments (shell and driver commit IDs: $commit_name_shell,$commit_name_driver)${normal}"
+          echo ""
+          #if [ "$commit_found" = "1" ] || [ "$device_found" = "0" ]; then 
+          #    echo ""
+          #fi
+          #dialogs
+          device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          #echo ""
+          #if [ "$commit_found" = "0" ]; then 
+          #    echo ""
+          #fi
+        fi
+
         #run
         $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --version $vivado_version
         ;;
