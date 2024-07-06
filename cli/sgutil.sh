@@ -172,7 +172,8 @@ commit_check() {
   commit_found=$(echo "$result" | sed -n '1p')
   commit_name=$(echo "$result" | sed -n '2p')
   #check if commit exists
-  exists=$($GITHUB_CLI_PATH/gh api repos/$REPO_ADDRESS/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+  #exists=$($GITHUB_CLI_PATH/gh api repos/$REPO_ADDRESS/commits/$commit_name 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+  exists=$($CLI_PATH/common/gh_commit_check $GITHUB_CLI_PATH $REPO_ADDRESS $commit_name)
   #forbidden combinations
   if [ "$commit_found" = "0" ]; then 
     commit_found="1"
@@ -1843,8 +1844,10 @@ case "$command" in
             commit_name_driver=${commit_name#*,}
 
             #check if commits exist
-            exists_shell=$($GITHUB_CLI_PATH/gh api repos/$ONIC_SHELL_REPO/commits/$commit_name_shell 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
-            exists_driver=$($GITHUB_CLI_PATH/gh api repos/$ONIC_DRIVER_REPO/commits/$commit_name_driver 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+            #exists_shell=$($GITHUB_CLI_PATH/gh api repos/$ONIC_SHELL_REPO/commits/$commit_name_shell 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+            #exists_driver=$($GITHUB_CLI_PATH/gh api repos/$ONIC_DRIVER_REPO/commits/$commit_name_driver 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+            exists_shell=$($CLI_PATH/common/gh_commit_check $GITHUB_CLI_PATH $ONIC_SHELL_REPO $commit_name_shell)
+            exists_driver=$($CLI_PATH/common/gh_commit_check $GITHUB_CLI_PATH $ONIC_DRIVER_REPO $commit_name_driver)
 
             if [ "$commit_found" = "0" ]; then 
                 commit_name_shell=$ONIC_SHELL_COMMIT
@@ -2246,8 +2249,10 @@ case "$command" in
             commit_name_driver=${commit_name#*,}
 
             #check if commits exist
-            exists_shell=$($GITHUB_CLI_PATH/gh api repos/$ONIC_SHELL_REPO/commits/$commit_name_shell 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
-            exists_driver=$($GITHUB_CLI_PATH/gh api repos/$ONIC_DRIVER_REPO/commits/$commit_name_driver 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+            #exists_shell=$($GITHUB_CLI_PATH/gh api repos/$ONIC_SHELL_REPO/commits/$commit_name_shell 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+            #exists_driver=$($GITHUB_CLI_PATH/gh api repos/$ONIC_DRIVER_REPO/commits/$commit_name_driver 2>/dev/null | jq -r 'if has("sha") then "1" else "0" end')
+            exists_shell=$($CLI_PATH/common/gh_commit_check $GITHUB_CLI_PATH $ONIC_SHELL_REPO $commit_name_shell)
+            exists_driver=$($CLI_PATH/common/gh_commit_check $GITHUB_CLI_PATH $ONIC_DRIVER_REPO $commit_name_driver)
 
             if [ "$commit_found" = "0" ]; then 
                 commit_name_shell=$ONIC_SHELL_COMMIT
