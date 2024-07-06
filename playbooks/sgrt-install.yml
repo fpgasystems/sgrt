@@ -37,11 +37,11 @@
     templates: false #true-----------------------------------
     #scripts
     build: false
-    common: false
+    common: true
     enable: false
     examine: false
     get: false
-    help: true
+    help: false
     new: false
     program: true
     reboot: false
@@ -351,6 +351,7 @@
         - get_xilinx_version
         - get_workflow
         - gh_auth_status
+        - gh_commit_check
         - git_clone_coyote
         - git_clone_opennic
         - git_clone_vitis
