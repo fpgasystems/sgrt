@@ -1999,20 +1999,13 @@ case "$command" in
         xrt_check "$CLI_PATH"
 
         #dialogs
-        
         echo ""
         echo "${bold}$CLI_NAME $command $arguments${normal}"
         echo ""
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        
-        #echo "$CLI_PATH/program/reset --device $device_index --version $vivado_version"
-        #exit
 
         #run
         $CLI_PATH/program/reset --device $device_index --version $vivado_version
-        
-        #valid_flags="-d --device -h --help"
-        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       revert)
         #check on flags
