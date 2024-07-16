@@ -121,6 +121,7 @@ CHECK_ON_REMOTE_ERR_MSG="Please, choose a valid deploy option."
 CHECK_ON_VIRTUALIZED_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
+CHECK_ON_XRT_ERR_MSG="Please, choose a valid XRT version."
 
 commit_dialog() {
   local CLI_PATH=$1
@@ -662,6 +663,18 @@ vivado_developers_check() {
   if [ "$member" = "false" ]; then
       echo ""
       echo $CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG
+      echo ""
+      exit 1
+  fi
+}
+
+xrt_check() {
+  local CLI_PATH=$1
+  #check on valid XRT and Vivado version
+  xrt_version=$($CLI_PATH/common/get_xilinx_version xrt)
+  if [ -z "$xrt_version" ]; then
+      echo ""
+      echo $CHECK_ON_XRT_ERR_MSG
       echo ""
       exit 1
   fi
@@ -1209,17 +1222,8 @@ program_opennic_help() {
 }
 
 program_reset_help() {
-    echo ""
-    echo "${bold}$CLI_NAME program reset [flags] [--help]${normal}"
-    echo ""
-    echo "Resets a given FPGA/ACAP."
-    echo ""
-    echo "FLAGS:"
-    echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
+    $CLI_PATH/help/program_reset $CLI_NAME
+    exit
 }
 
 program_revert_help() {
@@ -1899,7 +1903,7 @@ case "$command" in
     ;;
   program)
     #checks (1/3)
-    if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ] || [ "$arguments" = "revert" ] || [ "$arguments" = "vivado" ]; then
+    if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ] || [ "$arguments" = "reset" ] || [ "$arguments" = "revert" ] || [ "$arguments" = "vivado" ]; then
       virtualized_check "$CLI_PATH" "$hostname"
       fpga_check "$CLI_PATH" "$hostname"
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
@@ -1980,8 +1984,25 @@ case "$command" in
         $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
         ;;
       reset) 
+        #check on flags
         valid_flags="-d --device -h --help"
-        command_run $command_arguments_flags"@"$valid_flags
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #checks (command line)
+        if [ ! "$flags_array" = "" ]; then
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        fi
+
+        xrt_check "$CLI_PATH"
+        
+        echo "hola"
+        exit
+        
+        #valid_flags="-d --device -h --help"
+        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       revert)
         #check on flags
