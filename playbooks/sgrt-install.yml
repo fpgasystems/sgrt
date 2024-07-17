@@ -676,11 +676,11 @@
             src: "../cli/program/opennic.sh"
             dest: "{{ cli_path }}/program/opennic"
             mode: "0755"
-        #- name: run
-        #  copy:
-        #    src: "../cli/run/opennic.sh"
-        #    dest: "{{ cli_path }}/run/opennic"
-        #    mode: "0755"
+        - name: run
+          copy:
+            src: "../cli/run/opennic.sh"
+            dest: "{{ cli_path }}/run/opennic"
+            mode: "0755"
         - name: validate
           copy:
             src: "../cli/validate/opennic.sh"
