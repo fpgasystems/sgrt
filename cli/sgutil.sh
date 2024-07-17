@@ -1276,6 +1276,7 @@ run_help() {
     echo "   mpi             - Runs your MPI application according to your setup."
     echo ""
     echo "   coyote          - Runs Coyote on a given FPGA."
+    echo "   opennic         - Runs OpenNIC on a given FPGA."
     echo "   vitis           - Runs a Vitis FPGA-binary on a given FPGA/ACAP."
     echo ""
     echo "   hip             - Runs your HIP application on a given GPU."
@@ -1328,6 +1329,11 @@ run_mpi_help() {
     echo "   -h, --help      - Help to use this command."
     echo ""
     exit 1
+}
+
+run_opennic_help() {
+    $CLI_PATH/help/run_opennic $CLI_PATH $CLI_NAME
+    exit
 }
 
 run_vitis_help() {
@@ -1952,9 +1958,6 @@ case "$command" in
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        #if [[ "$flags_array" = "" ]] && [[ $multiple_devices = "1" ]]; then
-        #  echo ""
-        #fi
         
         #bitstream check
         FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
@@ -2126,6 +2129,22 @@ case "$command" in
     esac
     ;;
   run)
+
+    #checks (1/3)
+    #if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ] || [ "$arguments" = "reset" ] || [ "$arguments" = "revert" ] || [ "$arguments" = "vivado" ]; then
+    #  #virtualized_check "$CLI_PATH" "$hostname"
+    #  fpga_check "$CLI_PATH" "$hostname"
+    #  #vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+    #  #vivado_check "$VIVADO_PATH" "$vivado_version"
+    #fi
+
+    #checks (2/3)
+    if [ "$arguments" = "opennic" ]; then
+      fpga_check "$CLI_PATH" "$hostname"
+      vivado_developers_check "$USER"
+      gh_check "$CLI_PATH"
+    fi
+
     case "$arguments" in
       -h|--help)
         run_help
@@ -2137,6 +2156,35 @@ case "$command" in
       hip) 
         valid_flags="-d --device -p --project -h --help" 
         command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      opennic) 
+        #check on flags
+        valid_flags="-c --commit -d --device -p --project -h --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #checks (command line)
+        if [ ! "$flags_array" = "" ]; then
+          commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        fi
+
+        #dialogs
+        commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
+        echo ""
+        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+
+        echo "Hey I am here"
+        exit 1
+
+        #valid_flags="-c --commit -d --device -p --project -h --help"
+        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       mpi) 
         valid_flags="-p --project -h --help" 

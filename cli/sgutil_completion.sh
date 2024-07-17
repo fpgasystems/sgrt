@@ -142,7 +142,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 run)
-                    COMPREPLY=($(compgen -W "coyote hip mpi vitis --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote hip mpi opennic vitis --help" -- ${cur}))
                     ;;
                 set)
                     COMPREPLY=($(compgen -W "gh keys license mtu --help" -- ${cur})) #write
@@ -269,7 +269,7 @@ _sgutil_completions()
                     ;;
                 run)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
-                        coyote) # run 
+                        coyote)
                             COMPREPLY=($(compgen -W "--commit --device --project --help" -- ${cur})) 
                             ;;
                         hip)
@@ -277,6 +277,9 @@ _sgutil_completions()
                             ;;
                         mpi)
                             COMPREPLY=($(compgen -W "--project --help" -- ${cur}))
+                            ;;
+                        opennic)
+                            COMPREPLY=($(compgen -W "--commit --device --project --help" -- ${cur})) 
                             ;;
                         vitis)
                             COMPREPLY=($(compgen -W "--config --project --target --help" -- ${cur})) #--device 
@@ -379,6 +382,9 @@ _sgutil_completions()
 
             other_flags=( "--device" "--project" )
             command_completion_5 "$cur" "$COMP_CWORD" "run" "hip" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--device" "--project" )
+            command_completion_5 "$cur" "$COMP_CWORD" "run" "opennic" "${other_flags[@]}"
 
             other_flags=( "--config" "--project" "--target" )
             command_completion_5 "$cur" "$COMP_CWORD" "run" "vitis" "${other_flags[@]}"
@@ -491,6 +497,16 @@ _sgutil_completions()
 
             other_flags=( "--commit" "--device" )
             command_completion_7 "$cur" "$COMP_CWORD" "run" "coyote" "--project" "${other_flags[@]}"
+
+            #run opennic
+            other_flags=( "--device" "--project" )
+            command_completion_7 "$cur" "$COMP_CWORD" "run" "opennic" "--commit" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--project" )
+            command_completion_7 "$cur" "$COMP_CWORD" "run" "opennic" "--device" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--device" )
+            command_completion_7 "$cur" "$COMP_CWORD" "run" "opennic" "--project" "${other_flags[@]}"
 
             #run vitis    
             other_flags=( "--project" "--target" )
