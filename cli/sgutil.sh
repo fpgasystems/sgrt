@@ -110,6 +110,7 @@ CHECK_ON_PUSH_MSG="${bold}Would you like to add the project to your GitHub accou
 CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
 
 #error messages
+CHECK_ON_XRT_SHELL_ERR_MSG="Sorry, this command is only available for XRT shells."
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
 CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
 CHECK_ON_FPGA_ERR_MSG="Sorry, this command is not available on $hostname."
@@ -224,36 +225,6 @@ device_dialog() {
       fi
     fi
   fi
-
-  #if [ "$flags_array" = "" ]; then
-  #    #device_dialog
-  #    if [[ $multiple_devices = "0" ]]; then
-  #        device_found="1"
-  #        device_index="1"
-  #    else
-  #        echo $CHECK_ON_DEVICE_MSG
-  #        echo ""
-  #        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
-  #        device_found=$(echo "$result" | sed -n '1p')
-  #        device_index=$(echo "$result" | sed -n '2p')
-  #        echo ""
-  #    fi
-  #else
-  #    device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-  #    #forgotten mandatory
-  #    if [[ $multiple_devices = "0" ]]; then
-  #        device_found="1"
-  #        device_index="1"
-  #        #echo ""
-  #    elif [[ $device_found = "0" ]]; then
-  #        echo $CHECK_ON_DEVICE_MSG
-  #        echo ""
-  #        result=$($CLI_PATH/common/device_dialog $CLI_PATH $MAX_DEVICES $multiple_devices)
-  #        device_found=$(echo "$result" | sed -n '1p')
-  #        device_index=$(echo "$result" | sed -n '2p')
-  #        echo ""
-  #    fi
-  #fi
 }
 
 device_check() {
@@ -677,6 +648,31 @@ xrt_check() {
       echo $CHECK_ON_XRT_ERR_MSG
       echo ""
       exit 1
+  fi
+}
+
+xrt_shell_check() {
+  local CLI_PATH=$1
+  local device_index=$2
+  SHELLS=("xilinx_u250_gen" "xilinx_u280_gen" "xilinx_u50_gen" "xilinx_u55c_gen" "xilinx_vck5000_gen")
+
+  platform_name=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
+  platform_name="${platform_name%%gen*}gen"
+
+  #check if substring matches any array element
+  match_found=false
+  for shell in "${SHELLS[@]}"; do
+    if [[ "$platform_name" == "$shell" ]]; then
+        match_found=true
+        break
+    fi
+  done
+
+  if ! $match_found; then
+    echo ""
+    echo $CHECK_ON_XRT_SHELL_ERR_MSG
+    echo ""
+    exit 1
   fi
 }
 
@@ -2003,6 +1999,9 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments${normal}"
         echo ""
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        xrt_shell_check "$CLI_PATH" "$device_index"
+
+        echo "match_found: $match_found"
 
         #run
         $CLI_PATH/program/reset --device $device_index --version $vivado_version
