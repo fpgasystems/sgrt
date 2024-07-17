@@ -61,3 +61,5 @@ fi
 #print message
 echo "The project ${bold}$DIR${normal} has been created!"
 echo ""
+
+#author: https://github.com/jmoya82
