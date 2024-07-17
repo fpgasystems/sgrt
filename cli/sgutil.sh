@@ -669,7 +669,6 @@ xrt_shell_check() {
   done
 
   if ! $match_found; then
-    echo ""
     echo $CHECK_ON_XRT_SHELL_ERR_MSG
     echo ""
     exit 1
@@ -2000,8 +1999,6 @@ case "$command" in
         echo ""
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         xrt_shell_check "$CLI_PATH" "$device_index"
-
-        echo "match_found: $match_found"
 
         #run
         $CLI_PATH/program/reset --device $device_index --version $vivado_version
