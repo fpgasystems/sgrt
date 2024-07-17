@@ -2185,9 +2185,6 @@ case "$command" in
         FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
         DIR="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name"
         BUILD_DIR="$DIR/build_dir.$FDEV_NAME"
-
-        echo "BUILD_DIR is $BUILD_DIR"
-
         if [ ! -d "$BUILD_DIR" ]; then
           echo "Your targeted application is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
           echo ""
