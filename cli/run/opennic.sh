@@ -27,7 +27,6 @@ FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 BUILD_DIR="$DIR/build_dir.$FDEV_NAME" 
 
 #change directory
-echo ""
 echo "${bold}Changing directory:${normal}"
 echo ""
 echo "cd $BUILD_DIR"
