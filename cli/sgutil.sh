@@ -2180,8 +2180,22 @@ case "$command" in
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
 
-        echo "Hey I am here"
-        exit 1
+        #build check
+        platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
+        FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
+        DIR="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name"
+        BUILD_DIR="$DIR/build_dir.$FDEV_NAME"
+
+        echo "BUILD_DIR is $BUILD_DIR"
+
+        if [ ! -d "$BUILD_DIR" ]; then
+          echo "Your targeted application is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
+          echo ""
+          exit 1
+        fi
+        
+        #run
+        $CLI_PATH/run/opennic --commit $commit_name --device $device_index --project $project_name 
 
         #valid_flags="-c --commit -d --device -p --project -h --help"
         #command_run $command_arguments_flags"@"$valid_flags
