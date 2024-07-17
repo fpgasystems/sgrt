@@ -1997,9 +1997,9 @@ case "$command" in
         fi
 
         xrt_check "$CLI_PATH"
-
-        #dialogs
         echo ""
+        
+        #dialogs
         echo "${bold}$CLI_NAME $command $arguments${normal}"
         echo ""
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
