@@ -3,8 +3,7 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-CLI_PATH=$1
-CLI_NAME=$2
+CLI_NAME=$1
 
 echo ""
 echo "${bold}$CLI_NAME program vivado [flags] [--help]${normal}"
