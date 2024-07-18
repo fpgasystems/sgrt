@@ -435,6 +435,7 @@
         - build_opennic
         - new_coyote
         - new_opennic
+        - program_driver
         - program_opennic
         - program_reset
         - program_revert

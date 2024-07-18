@@ -1197,18 +1197,8 @@ program_coyote_help() {
 }
 
 program_driver_help() {
-    echo ""
-    echo "${bold}$CLI_NAME program driver [flags] [--help]${normal}"
-    echo ""
-    echo "Inserts a driver or module into the Linux kernel."
-    echo ""
-    echo "FLAGS:"
-    echo "   -m, --module    - Full path to the .ko module to be inserted."
-    echo "   -p, --params    - A comma separated list of module parameters." 
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
+    $CLI_PATH/help/program_driver $CLI_NAME
+    exit
 }
 
 program_opennic_help() {
@@ -1227,7 +1217,7 @@ program_revert_help() {
 }
 
 program_vivado_help() {
-    $CLI_PATH/help/program_vivado $CLI_PATH $CLI_NAME
+    $CLI_PATH/help/program_vivado $CLI_NAME
     exit
 }
 
@@ -1932,7 +1922,7 @@ case "$command" in
         ;;
       driver)
         valid_flags="-m --module -p --params -h --help"
-        echo ""
+        #echo ""
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
