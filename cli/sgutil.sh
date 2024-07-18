@@ -1976,11 +1976,13 @@ case "$command" in
 
         #dialogs
         driver_check "$CLI_PATH" "${flags_array[@]}"
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments${normal}"
+        echo ""
 
+        #run
+        $CLI_PATH/program/driver --module $driver_name --params $params_string
 
-
-        echo "HEY!"
-        
         #valid_flags="-m --module -p --params -h --help"
         #echo ""
         #command_run $command_arguments_flags"@"$valid_flags
