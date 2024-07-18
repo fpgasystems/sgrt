@@ -113,6 +113,8 @@ CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
 CHECK_ON_XRT_SHELL_ERR_MSG="Sorry, this command is only available for XRT shells."
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
 CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
+CHECK_ON_DRIVER_ERR_MSG="Please, choose a valid driver name."
+CHECK_ON_DRIVER_PARAMS_ERR_MSG="Please, choose a valid list of module parameters." 
 CHECK_ON_FPGA_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to your GitHub account."
 CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
@@ -245,6 +247,49 @@ device_check() {
       echo $CHECK_ON_DEVICE_ERR_MSG
       echo ""
       exit
+  fi
+}
+
+driver_check() {
+  local CLI_PATH=$1
+  shift 1
+  local flags_array=("$@")
+  
+  #driver_dialog_check
+  result="$("$CLI_PATH/common/driver_dialog_check" "${flags_array[@]}")"
+  driver_found=$(echo "$result" | sed -n '1p')
+  driver_name=$(echo "$result" | sed -n '2p') 
+
+  #forbidden combinations (1)
+  if [ "$driver_found" = "0" ]; then
+      program_driver_help
+  fi
+
+  #forbidden combinations (2)
+  if [ "$driver_found" = "1" ] && ([ "$driver_name" = "" ] || [ ! -f "$driver_name" ] || [ "${driver_name##*.}" != "ko" ]); then
+      #$CLI_PATH/sgutil program driver -h
+      #exit
+      echo ""
+      echo $CHECK_ON_DRIVER_ERR_MSG
+      echo ""
+      exit 1
+  fi
+  #params_dialog_check
+  result="$("$CLI_PATH/common/params_dialog_check" "${flags_array[@]}")"
+  params_found=$(echo "$result" | sed -n '1p')
+  params_string=$(echo "$result" | sed -n '2p')
+
+  #define the expected pattern for driver parameters
+  pattern='^[^=,]+=[^=,]+(,[^=,]+=[^=,]+)*$' 
+
+  #forbidden combinations (3)
+  if [ "$params_found" = "1" ] && ([ "$params_string" = "" ] || ! [[ $params_string =~ $pattern ]]); then
+      #$CLI_PATH/sgutil program driver -h
+      #exit
+      echo ""
+      echo $CHECK_ON_DRIVER_PARAMS_ERR_MSG
+      echo ""
+      exit 1
   fi
 }
 
@@ -1908,7 +1953,7 @@ case "$command" in
     fi
 
     #checks (3/3)
-    if [ "$arguments" = "vivado" ]; then
+    if [ "$arguments" = "driver" ] || [ "$arguments" = "vivado" ]; then
       vivado_developers_check "$USER"
     fi
     
@@ -1921,9 +1966,28 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       driver)
+        #check on flags
         valid_flags="-m --module -p --params -h --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+        
+        #checks (command line)
+        if [ "$flags_array" = "" ]; then
+          program_driver_help
+        fi
+
+        #dialogs
+        driver_check "$CLI_PATH" "${flags_array[@]}"
+
+
+
+        echo "HEY!"
+        
+        #valid_flags="-m --module -p --params -h --help"
         #echo ""
-        command_run $command_arguments_flags"@"$valid_flags
+        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
         #check on flags
