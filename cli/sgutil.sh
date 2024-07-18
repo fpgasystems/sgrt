@@ -267,8 +267,6 @@ driver_check() {
 
   #forbidden combinations (2)
   if [ "$driver_found" = "1" ] && ([ "$driver_name" = "" ] || [ ! -f "$driver_name" ] || [ "${driver_name##*.}" != "ko" ]); then
-      #$CLI_PATH/sgutil program driver -h
-      #exit
       echo ""
       echo $CHECK_ON_DRIVER_ERR_MSG
       echo ""
@@ -284,8 +282,6 @@ driver_check() {
 
   #forbidden combinations (3)
   if [ "$params_found" = "1" ] && ([ "$params_string" = "" ] || ! [[ $params_string =~ $pattern ]]); then
-      #$CLI_PATH/sgutil program driver -h
-      #exit
       echo ""
       echo $CHECK_ON_DRIVER_PARAMS_ERR_MSG
       echo ""
