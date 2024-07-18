@@ -1982,10 +1982,6 @@ case "$command" in
 
         #run
         $CLI_PATH/program/driver --module $driver_name --params $params_string
-
-        #valid_flags="-m --module -p --params -h --help"
-        #echo ""
-        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
         #check on flags

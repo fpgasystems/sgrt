@@ -14,59 +14,6 @@ params_string=$4
 #constants
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 
-#check on vivado_developers
-#member=$($CLI_PATH/common/is_member $USER vivado_developers)
-#if [ "$member" = "false" ]; then
-#    echo ""
-#    echo "Sorry, ${bold}$USER!${normal} You are not granted to use this command."
-#    echo ""
-#    exit
-#fi
-
-#inputs
-#read -a flags <<< "$@"
-
-#check on flags
-#device_found=""
-#device_index=""
-#if [ "$flags" = "" ]; then
-#    $CLI_PATH/sgutil program driver -h
-#    exit
-#else
-#    #driver_dialog_check
-#    result="$("$CLI_PATH/common/driver_dialog_check" "${flags[@]}")"
-#    driver_found=$(echo "$result" | sed -n '1p')
-#    driver_name=$(echo "$result" | sed -n '2p') 
-#
-#    #forbidden combinations (1)
-#    if [ "$driver_found" = "0" ]; then
-#        $CLI_PATH/sgutil program driver -h
-#        exit
-#    fi
-#    #forbidden combinations (2)
-#    if [ "$driver_found" = "1" ] && ([ "$driver_name" = "" ] || [ ! -f "$driver_name" ] || [ "${driver_name##*.}" != "ko" ]); then
-#        $CLI_PATH/sgutil program driver -h
-#        exit
-#    fi
-#    #params_dialog_check
-#    result="$("$CLI_PATH/common/params_dialog_check" "${flags[@]}")"
-#    params_found=$(echo "$result" | sed -n '1p')
-#    params_string=$(echo "$result" | sed -n '2p')
-#
-#    #define the expected pattern for driver parameters
-#    pattern='^[^=,]+=[^=,]+(,[^=,]+=[^=,]+)*$' 
-#
-#    #forbidden combinations (3)
-#    if [ "$params_found" = "1" ] && ([ "$params_string" = "" ] || ! [[ $params_string =~ $pattern ]]); then
-#        $CLI_PATH/sgutil program driver -h
-#        exit
-#    fi
-#
-#fi
-
-#echo ""
-#echo "${bold}sgutil program driver${normal}"
-
 #create folder
 if [ ! -d "$MY_DRIVERS_PATH" ]; then
     mkdir "$MY_DRIVERS_PATH"
@@ -107,3 +54,5 @@ echo "sudo insmod $MY_DRIVERS_PATH/$driver_name $params_string"
 sudo insmod $MY_DRIVERS_PATH/$driver_name $params_string
 sleep 1
 echo ""
+
+#author: https://github.com/jmoya82
