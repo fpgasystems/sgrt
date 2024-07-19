@@ -146,13 +146,29 @@
         
     #cli
     #copying files (when all/only if they do not exist on the remote)
-    #commit date
+    #commit and commit date
+    - name: checking commit
+      stat:
+        path: "{{ sgrt_base_path }}/COMMIT"
+      register: commit_stat
+      when: all
+    - name: copying commit
+      copy:
+        src: "../COMMIT"
+        dest: "{{ sgrt_base_path }}/COMMIT"
+        mode: "0644"
+      when: all and not commit_stat.stat.exists
+    - name: checking commit date
+      stat:
+        path: "{{ sgrt_base_path }}/COMMIT_DATE"
+      register: commit_date_stat
+      when: all
     - name: copying commit date
       copy:
         src: "../COMMIT_DATE"
         dest: "{{ sgrt_base_path }}/COMMIT_DATE"
         mode: "0644"
-      when: all or update #commit_date
+      when: all and not commit_date_stat.stat.exists
     #constants
     - name: checking constants
       find:
