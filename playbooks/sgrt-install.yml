@@ -37,6 +37,7 @@
     templates: false #true-----------------------------------
     #scripts
     build: false
+    commit_date: true
     common: false
     enable: false
     examine: false
@@ -144,6 +145,13 @@
         
     #cli
     #copying files (when all/only if they do not exist on the remote)
+    #commit date
+    - name: copying commit date
+      copy:
+        src: "../COMMIT_DATE"
+        dest: "{{ sgrt_base_path }}/COMMIT_DATE"
+        mode: "0644"
+      when: all or commit_date
     #constants
     - name: checking constants
       find:
