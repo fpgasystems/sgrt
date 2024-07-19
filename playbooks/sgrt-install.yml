@@ -441,6 +441,7 @@
       when: all or help
       loop:
         - build_opennic
+        - examine
         - new_coyote
         - new_opennic
         - program_driver
