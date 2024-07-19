@@ -122,6 +122,7 @@ CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
 CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
 CHECK_ON_PUSH_ERR_MSG="Please, choose a valid push option."
 CHECK_ON_REMOTE_ERR_MSG="Please, choose a valid deploy option."
+CHECK_ON_SUDO_ERR_MSG="Sorry, this command requires sudo capabilities."
 CHECK_ON_VIRTUALIZED_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
@@ -656,6 +657,15 @@ virtualized_check() {
       echo $CHECK_ON_VIRTUALIZED_ERR_MSG
       echo ""
       exit 1
+  fi
+}
+
+sudo_check() {
+  if ! sudo -n true 2>/dev/null; then
+    echo ""
+    echo $CHECK_ON_SUDO_ERR_MSG
+    echo ""
+    exit 1
   fi
 }
 
@@ -2306,6 +2316,7 @@ case "$command" in
           update_help
           exit 1
         fi
+        sudo_check
         $CLI_PATH/update
         ;;
     esac
