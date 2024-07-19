@@ -20,6 +20,7 @@
 * [reboot](./manual/sgutil-reboot.md#sgutil-reboot)
 * [run](./manual/sgutil-run.md#sgutil-run)
 * [set](./manual/sgutil-set.md#sgutil-set)
+* [update](./manual/sgutil-update.md#sgutil-update)
 * [validate](./manual/sgutil-validate.md#sgutil-validate)
 
 <!-- ### Options -->

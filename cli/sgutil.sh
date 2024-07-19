@@ -53,10 +53,11 @@ COMMANDS:
    reboot          - Reboots the server (warm boot).
    run             - Executes the accelerated application on a given device.
    set             - Devices and host configuration.
+   update          - Updates $CLI_NAME to its latest version.
    validate        - Validates the basic HACC infrastructure functionality.
 
-   -h, --help      - Help to use this application.
-   -v, --version   - Reports CLI version.
+   -h, --help      - Help to use $CLI_NAME.
+   -v, --version   - Reports $CLI_NAME version.
 "
   exit 1
 }
@@ -884,19 +885,9 @@ enable_xrt_help() {
 # examine ------------------------------------------------------------------------------------------------------------------------
 
 examine_help() {
-    echo ""
-    echo "${bold}$CLI_NAME examine [--help]${normal}"
-    echo ""
-    echo "Status of the system and devices."
-    echo ""
-    echo "ARGUMENTS"
-    echo "   This command has no arguments."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
+    $CLI_PATH/help/examine $CLI_NAME
+    exit
 }
-
 
 # get ----------------------------------------------------------------------------------------------------------------------------
 
@@ -1449,6 +1440,13 @@ set_mtu_help() {
     echo "   -h, --help      - Help to use this command."
     echo ""
     exit 1
+}
+
+# update ------------------------------------------------------------------------------------------------------------------------
+
+update_help() {
+    $CLI_PATH/help/update $CLI_NAME
+    exit
 }
 
 # validate -----------------------------------------------------------------------------------------------------------------------
@@ -2296,6 +2294,20 @@ case "$command" in
       *)
         set_help
       ;;  
+    esac
+    ;;
+  update)
+    case "$arguments" in
+      -h|--help)
+        update_help
+        ;;
+      *)
+        if [ "$#" -ne 1 ]; then
+          update_help
+          exit 1
+        fi
+        $CLI_PATH/update
+        ;;
     esac
     ;;
   validate)

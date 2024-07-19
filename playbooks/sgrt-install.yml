@@ -37,7 +37,7 @@
     templates: false #true-----------------------------------
     #scripts
     build: false
-    commit_date: true
+    #commit_date: true
     common: false
     enable: false
     examine: false
@@ -49,6 +49,7 @@
     run: false
     set: false
     sgutil: true 
+    update: true
     validate: false
     #workflows
     coyote: false
@@ -151,7 +152,7 @@
         src: "../COMMIT_DATE"
         dest: "{{ sgrt_base_path }}/COMMIT_DATE"
         mode: "0644"
-      when: all or commit_date
+      when: all or update #commit_date
     #constants
     - name: checking constants
       find:
@@ -451,6 +452,7 @@
         - program_vivado
         - run_opennic
         - set_keys
+        - update
         - validate_opennic
     #new
     - name: copying new scripts
@@ -560,7 +562,13 @@
             dest: /usr/share/bash-completion/completions/{{ cli_name }}
             mode: 0755
       when: all or sgutil
-
+    #update
+    - name: copying update
+      copy:
+        src: "../cli/update.sh"
+        dest: "{{ cli_path }}/update"
+        mode: "0755"
+      when: all or update
     #validate
     - name: copying validate scripts
       copy:
