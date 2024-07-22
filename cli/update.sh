@@ -36,10 +36,13 @@ local_commit_date=$(cat $BASE_PATH/COMMIT_DATE)
 remote_timestamp=$(date -d "$remote_commit_date" +%s)
 local_timestamp=$(date -d "$local_commit_date" +%s)
 
+echo ""
+echo "${bold}sgutil update${normal}"
+echo ""
+
 #compare the timestamps and confirm update
 update="0"
 if [ "$local_timestamp" -lt "$remote_timestamp" ]; then
-    echo ""
     echo "${bold}This will update $REPO_NAME to its latest version. Would you like to continue (y/n)?${normal}"
     update=$($CLI_PATH/common/push_dialog)
     echo ""
@@ -79,6 +82,9 @@ if [ $update = "1" ]; then
   echo ""
   echo "${bold}Backing up device files:${normal}"
   echo ""
+  cp -rf $CLI_PATH/bitstreams $UPDATES_PATH/$REPO_NAME/backup_bitstreams
+  echo "cp -rf $CLI_PATH/bitstreams $UPDATES_PATH/$REPO_NAME/backup_bitstreams"
+  sleep 1
   cp $CLI_PATH/devices_acap_fpga $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga
   echo "cp $CLI_PATH/devices_acap_fpga $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga"
   sleep 1
@@ -112,6 +118,9 @@ if [ $update = "1" ]; then
   sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli $installation_path_2/api #will be installation_path
   sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli $installation_path_2/cli #will be installation_path
   sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli $installation_path_2/templates #will be installation_path
+  #overwrite bitstreams
+  sudo rm -rf $installation_path_2/cli/bitstreams
+  sudo cp -rf $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path_2/cli/bitstreams #will be installation_path
   #overwrite device related info
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path_2/cli/devices_acap_fpga
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path_2/cli/devices_gpu
