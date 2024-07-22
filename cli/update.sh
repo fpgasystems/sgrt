@@ -131,16 +131,13 @@ if [ $update = "1" ]; then
   sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT_DATE $installation_path_2/COMMIT_DATE
   
   #copying sgutil_completion
-  sudo mv $installation_path/cli/$CLI_NAME"_completion" /usr/share/bash-completion/completions/$CLI_NAME
+  sudo mv $UPDATES_PATH/$REPO_NAME/cli/$CLI_NAME"_completion" /usr/share/bash-completion/completions/$CLI_NAME
   sudo chown root:root /usr/share/bash-completion/completions/$CLI_NAME
+  sudo rm -f $installation_path_2/cli/$CLI_NAME"_completion"
 
   #remove from temporal UPDATES_PATH
   rm -rf $UPDATES_PATH/$REPO_NAME
-fi
-echo ""
-echo "$CLI_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
-echo ""
 
-#echo "$remote_commit_date"
-#echo "$local_commit_date"
-#echo "$update"
+  echo "$CLI_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
+  echo ""
+fi
