@@ -199,6 +199,7 @@
         - ONIC_SHELL_COMMIT
         - ONIC_SHELL_NAME
         - ONIC_SHELL_REPO
+        - UPDATES_PATH
         - ROCM_PATH  
         - VIRTUALIZED_SERVERS_LIST
         - VITIS_COMMIT
