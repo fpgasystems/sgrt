@@ -1,14 +1,30 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$0")"
-CLI_NAME="sgrt"
+CLI_NAME="sgutil"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+#helper functions
+chmod_x() {
+    path="$1"
+    for file in "$path"/*.sh; do
+        chmod +x "$file"
+        mv "$file" "${file%.sh}"
+    done
+}
+
 #constants
 BASE_PATH=$(dirname "$CLI_PATH")
-MAIN_BRANCH_URL="https://api.github.com/repos/fpgasystems/sgrt/commits/main"
+REPO_NAME="sgrt"
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
+
+#derived
+MAIN_BRANCH_URL="https://api.github.com/repos/fpgasystems/$REPO_NAME/commits/main"
+REPO_URL="https://github.com/fpgasystems/$REPO_NAME.git"
+
+#get destination path
+installation_path=$(which sgutil | xargs dirname | xargs dirname)
 
 #get last commit date on the remote
 remote_commit_date=$(curl -s $MAIN_BRANCH_URL | jq -r '.commit.committer.date')
@@ -24,27 +40,107 @@ local_timestamp=$(date -d "$local_commit_date" +%s)
 update="0"
 if [ "$local_timestamp" -lt "$remote_timestamp" ]; then
     echo ""
-    echo "${bold}This will update $CLI_NAME to its latest version. Would you like to continue (y/n)?${normal}"
+    echo "${bold}This will update $REPO_NAME to its latest version. Would you like to continue (y/n)?${normal}"
     update=$($CLI_PATH/common/push_dialog)
     echo ""
 fi
 
 
 if [ $update = "1" ]; then
-
-  echo "We will checkout and update" 
-
   #checkout
   cd $UPDATES_PATH
-  git clone https://github.com/fpgasystems/sgrt.git
+  git clone $REPO_URL #https://github.com/fpgasystems/sgrt.git
 
+  #change to directory
+  cd $UPDATES_PATH/$REPO_NAME
+
+  #get commit ID
+  remote_commit_id=$(git rev-parse --short HEAD)
+  
+  #remove unnecessary files
+  rm -f *.md
+  rm -f *.png
+  rm -rf .git
+  rm -fr ./cli/manual
+  rm -f ./cli/manual.md
+  rm -fr ./api/manual
+  rm -f ./api/manual.md
+  rm -rf docs
+  rm -rf hacc-validation
+  rm -f overleaf_export.sh
+  rm -rf overleaf
+  rm -rf playbooks
 
   #update COMMIT and COMMIT_DATE
+  echo $remote_commit_id > COMMIT
+  echo $remote_commit_date > COMMIT_DATE
+
+  #backup files
+  echo ""
+  echo "${bold}Backing up device files:${normal}"
+  echo ""
+  cp $CLI_PATH/devices_acap_fpga $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga
+  echo "cp $CLI_PATH/devices_acap_fpga $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga"
+  sleep 1
+  cp $CLI_PATH/devices_gpu $UPDATES_PATH/$REPO_NAME/backup_devices_gpu
+  echo "cp $CLI_PATH/devices_gpu $UPDATES_PATH/$REPO_NAME/backup_devices_gpu"
+  sleep 1
+  cp $CLI_PATH/platforminfo $UPDATES_PATH/$REPO_NAME/backup_platforminfo
+  echo "cp $CLI_PATH/platforminfo $UPDATES_PATH/$REPO_NAME/backup_platforminfo"
+  sleep 1
+  cp -rf $CLI_PATH/constants $UPDATES_PATH/$REPO_NAME/backup_constants
+  echo "cp -rf $CLI_PATH/constants $UPDATES_PATH/$REPO_NAME/backup_constants"
+  sleep 1
+  echo ""
+
+  #manage scripts
+  chmod_x $UPDATES_PATH/$REPO_NAME/cli
+  chmod_x $UPDATES_PATH/$REPO_NAME/cli/build
+  chmod_x $UPDATES_PATH/$REPO_NAME/cli/common
+  chmod_x $UPDATES_PATH/$REPO_NAME/cli/enable
+  chmod_x $UPDATES_PATH/$REPO_NAME/cli/get
+  chmod_x $UPDATES_PATH/$REPO_NAME/cli/help
+  chmod_x $UPDATES_PATH/$REPO_NAME/cli/new
+  chmod_x $UPDATES_PATH/$REPO_NAME/cli/program
+  chmod_x $UPDATES_PATH/$REPO_NAME/cli/run
+  chmod_x $UPDATES_PATH/$REPO_NAME/cli/set
+  chmod_x $UPDATES_PATH/$REPO_NAME/cli/validate
+
+  #copy files
+  installation_path_2="/opt/sgrt_2"
+  sudo mkdir $installation_path_2
+  sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli $installation_path_2/api #will be installation_path
+  sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli $installation_path_2/cli #will be installation_path
+  sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli $installation_path_2/templates #will be installation_path
+  #overwrite device related info
+  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path_2/cli/devices_acap_fpga
+  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path_2/cli/devices_gpu
+  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_platforminfo $installation_path_2/cli/platforminfo
+  #overwrite constants
+  for file in "$UPDATES_PATH/$REPO_NAME/backup_constants"/*; 
+  do
+    # Check if the file is a regular file (not a directory)
+    if [ -f "$file" ]; then
+      # Copy the file to the target directory, overwriting if it exists
+      sudo cp -f "$file" "$installation_path_2/cli/constants"
+    fi
+  done
+
+  #copy COMMIT and COMMIT_DATE
+  sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT $installation_path_2/COMMIT
+  sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT_DATE $installation_path_2/COMMIT_DATE
+  
+  #copying sgutil_completion
+  sudo mv $installation_path/cli/$CLI_NAME"_completion" /usr/share/bash-completion/completions/$CLI_NAME
+  sudo chown root:root /usr/share/bash-completion/completions/$CLI_NAME
 
   #remove from temporal UPDATES_PATH
-
+  rm -rf $UPDATES_PATH/$REPO_NAME
 fi
+echo ""
+echo "$CLI_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
+echo ""
 
-echo "$remote_commit_date"
-echo "$local_commit_date"
-echo "$update"
+#echo "$remote_commit_date"
+#echo "$local_commit_date"
+#echo "$update"
