@@ -783,6 +783,11 @@
         - BITSTREAM_PATH
         - VIVADO_DEVICES_MAX
         - ONIC_BITSTREAM_NAME
+    #include folder
+    - name: deleting include folder
+      file:
+        path: "{{ sgrt_base_path }}/include"
+        state: absent
     #help
     - name: deleting help scripts
       file:
