@@ -8,6 +8,7 @@ normal=$(tput sgr0)
 #constants
 BASE_PATH=$(dirname "$CLI_PATH")
 MAIN_BRANCH_URL="https://api.github.com/repos/fpgasystems/sgrt/commits/main"
+UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
 
 #get last commit date on the remote
 remote_commit_date=$(curl -s $MAIN_BRANCH_URL | jq -r '.commit.committer.date')
@@ -33,9 +34,14 @@ if [ $update = "1" ]; then
 
   echo "We will checkout and update" 
 
+  #checkout
+  cd $UPDATES_PATH
+  git clone https://github.com/fpgasystems/sgrt.git
+
+
   #update COMMIT and COMMIT_DATE
 
-  #remove from temporal UPDATE_PATH
+  #remove from temporal UPDATES_PATH
 
 fi
 
