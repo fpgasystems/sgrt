@@ -14,8 +14,8 @@
     - alveo-u55c-08.inf.ethz.ch
     #- alveo-u55c-09.inf.ethz.ch
     #- alveo-u55c-03.inf.ethz.ch
-    - hacc-box-01.inf.ethz.ch
-    - hacc-box-02.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
+    #- hacc-box-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -245,17 +245,17 @@
         mode: "0644"
       when: all and not platforminfo_stat.stat.exists
     #version
-    - name: checking version
-      stat:
-        path: "{{ sgrt_base_path }}/VERSION"
-      register: version_stat
-      when: all
-    - name: copying version
-      copy:
-        src: "../VERSION"
-        dest: "{{ sgrt_base_path }}/VERSION"
-        mode: "0644"
-      when: all and not version_stat.stat.exists
+    #- name: checking version
+    #  stat:
+    #    path: "{{ sgrt_base_path }}/VERSION"
+    #  register: version_stat
+    #  when: all
+    #- name: copying version
+    #  copy:
+    #    src: "../VERSION"
+    #    dest: "{{ sgrt_base_path }}/VERSION"
+    #    mode: "0644"
+    #  when: all and not version_stat.stat.exists
 
     #copying templates
     #coyote
@@ -805,3 +805,8 @@
         - enable_regions
         - get_bus_device
         - opennic_setpci
+    #VERSION
+    - name: deleting VERSION
+      file:
+        path: "{{ sgrt_base_path }}/VERSION"
+        state: absent
