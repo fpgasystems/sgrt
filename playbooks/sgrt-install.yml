@@ -781,6 +781,7 @@
       loop:
         - ONIC_COMMIT
         - BITSTREAM_PATH
+        - BITSTREAMS_PATH
         - VIVADO_DEVICES_MAX
         - ONIC_BITSTREAM_NAME
     #include folder
