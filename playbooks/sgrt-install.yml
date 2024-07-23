@@ -42,9 +42,9 @@
     enable: false
     examine: false
     get: false
-    help: true
+    help: false
     new: false
-    program: true
+    program: false
     reboot: false
     run: false
     set: false
@@ -55,7 +55,7 @@
     coyote: false
     hip: false
     mpi: false
-    opennic: true
+    opennic: false
     vitis: false #true---------------------------------
   tasks:
 
@@ -765,6 +765,13 @@
         - device.hpp
         - host.hpp
         - host.cpp # I believe that was an error
+    #build
+    - name: deleting build scripts
+      file:
+        path: "{{ cli_path }}/build/{{ item }}"
+        state: absent
+      loop:
+        - shell
     #common
     - name: deleting common scripts
       file:
