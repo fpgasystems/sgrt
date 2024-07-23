@@ -122,13 +122,14 @@ if [ $update = "1" ]; then
   #copy files (from /tmp/sgrt to /opt/sgrt)
   #installation_path_2="/opt/sgrt_2"
   #sudo mkdir $installation_path_2
-  sudo cp -rf $UPDATES_PATH/$REPO_NAME/api $installation_path/api #will be installation_path
-  sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli $installation_path/cli #will be installation_path
+  sudo cp -rf $UPDATES_PATH/$REPO_NAME/api/* $installation_path/api #will be installation_path
+  sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/* $installation_path/cli #will be installation_path
+  sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/constants/* $installation_path/cli/constants #will be installation_path
 
   #echo "sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/get/bdf $installation_path/cli/get/bdf"
   #sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/get/bdf $installation_path/cli/get/bdf
 
-  sudo cp -rf $UPDATES_PATH/$REPO_NAME/templates/ $installation_path/templates/ #will be installation_path
+  sudo cp -rf $UPDATES_PATH/$REPO_NAME/templates/* $installation_path/templates/ #will be installation_path
   #overwrite bitstreams
   sudo rm -rf $installation_path/cli/bitstreams
   sudo cp -rf $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path/cli/bitstreams #will be installation_path
@@ -137,14 +138,14 @@ if [ $update = "1" ]; then
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path/cli/devices_gpu
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_platforminfo $installation_path/cli/platforminfo
   #overwrite constants
-  for file in "$UPDATES_PATH/$REPO_NAME/backup_constants"/*; 
-  do
-    # Check if the file is a regular file (not a directory)
-    if [ -f "$file" ]; then
-      # Copy the file to the target directory, overwriting if it exists
-      sudo cp -f "$file" "$installation_path/cli/constants"
-    fi
-  done
+  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_constants/* $installation_path/cli/constants
+  #for file in "$UPDATES_PATH/$REPO_NAME/backup_constants"/*; 
+  #do
+  #  #check if the file is a regular file (not a directory)
+  #  if [ -f "$file" ]; then
+  #    sudo cp -f "$file" "$installation_path/cli/constants"
+  #  fi
+  #done
 
   #copy COMMIT and COMMIT_DATE
   sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT $installation_path/COMMIT
