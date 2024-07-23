@@ -36,19 +36,23 @@ local_commit_date=$(cat $BASE_PATH/COMMIT_DATE)
 remote_timestamp=$(date -d "$remote_commit_date" +%s)
 local_timestamp=$(date -d "$local_commit_date" +%s)
 
-echo ""
-echo "${bold}sgutil update${normal}"
-echo ""
-
 #compare the timestamps and confirm update
 update="0"
 if [ "$local_timestamp" -lt "$remote_timestamp" ]; then
-    echo "${bold}This will update $REPO_NAME to its latest version. Would you like to continue (y/n)?${normal}"
+    echo ""
+    echo "${bold}sgutil update${normal}"
+    echo ""
+    echo "This will update $REPO_NAME to its latest version. Would you like to continue (y/n)?"
     update=$($CLI_PATH/common/push_dialog)
+    echo ""
+else
+    commit_id=$(cat $BASE_PATH/COMMIT)
+    echo ""
+    echo "$REPO_NAME is on its latest version ${bold}(commit ID: $commit_id)!${normal}"
     echo ""
 fi
 
-
+#update 
 if [ $update = "1" ]; then
   #checkout
   cd $UPDATES_PATH
@@ -112,41 +116,48 @@ if [ $update = "1" ]; then
   chmod_x $UPDATES_PATH/$REPO_NAME/cli/set
   chmod_x $UPDATES_PATH/$REPO_NAME/cli/validate
 
-  #copy files
-  installation_path_2="/opt/sgrt_2"
-  sudo mkdir $installation_path_2
-  sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli $installation_path_2/api #will be installation_path
-  sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli $installation_path_2/cli #will be installation_path
-  sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli $installation_path_2/templates #will be installation_path
+  #echo "sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli $installation_path/cli"
+  #exit
+  
+  #copy files (from /tmp/sgrt to /opt/sgrt)
+  #installation_path_2="/opt/sgrt_2"
+  #sudo mkdir $installation_path_2
+  sudo cp -rf $UPDATES_PATH/$REPO_NAME/api $installation_path/api #will be installation_path
+  sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli $installation_path/cli #will be installation_path
+
+  #echo "sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/get/bdf $installation_path/cli/get/bdf"
+  #sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/get/bdf $installation_path/cli/get/bdf
+
+  sudo cp -rf $UPDATES_PATH/$REPO_NAME/templates/ $installation_path/templates/ #will be installation_path
   #overwrite bitstreams
-  sudo rm -rf $installation_path_2/cli/bitstreams
-  sudo cp -rf $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path_2/cli/bitstreams #will be installation_path
+  sudo rm -rf $installation_path/cli/bitstreams
+  sudo cp -rf $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path/cli/bitstreams #will be installation_path
   #overwrite device related info
-  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path_2/cli/devices_acap_fpga
-  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path_2/cli/devices_gpu
-  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_platforminfo $installation_path_2/cli/platforminfo
+  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path/cli/devices_acap_fpga
+  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path/cli/devices_gpu
+  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_platforminfo $installation_path/cli/platforminfo
   #overwrite constants
   for file in "$UPDATES_PATH/$REPO_NAME/backup_constants"/*; 
   do
     # Check if the file is a regular file (not a directory)
     if [ -f "$file" ]; then
       # Copy the file to the target directory, overwriting if it exists
-      sudo cp -f "$file" "$installation_path_2/cli/constants"
+      sudo cp -f "$file" "$installation_path/cli/constants"
     fi
   done
 
   #copy COMMIT and COMMIT_DATE
-  sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT $installation_path_2/COMMIT
-  sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT_DATE $installation_path_2/COMMIT_DATE
+  sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT $installation_path/COMMIT
+  sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT_DATE $installation_path/COMMIT_DATE
   
   #copying sgutil_completion
   sudo mv $UPDATES_PATH/$REPO_NAME/cli/$CLI_NAME"_completion" /usr/share/bash-completion/completions/$CLI_NAME
   sudo chown root:root /usr/share/bash-completion/completions/$CLI_NAME
-  sudo rm -f $installation_path_2/cli/$CLI_NAME"_completion"
+  sudo rm -f $installation_path/cli/$CLI_NAME"_completion"
 
   #remove from temporal UPDATES_PATH
   rm -rf $UPDATES_PATH/$REPO_NAME
 
-  echo "$CLI_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
+  echo "$REPO_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
   echo ""
 fi
