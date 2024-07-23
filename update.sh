@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CLI_PATH="$(dirname "$0")"
+CLI_PATH="$(dirname "$0")/cli"
 CLI_NAME="sgutil"
 SGRT_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
@@ -159,6 +159,6 @@ if [ $update = "1" ]; then
   #remove from temporal UPDATES_PATH
   rm -rf $UPDATES_PATH/$REPO_NAME
 
-  echo "$REPO_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
+  echo "Neeeeeeew! $REPO_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
   echo ""
 fi

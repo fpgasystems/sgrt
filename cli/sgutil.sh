@@ -1455,7 +1455,17 @@ set_mtu_help() {
 # update ------------------------------------------------------------------------------------------------------------------------
 
 update_help() {
-    $CLI_PATH/help/update $CLI_NAME
+    #$CLI_PATH/help/update $CLI_NAME
+    echo ""
+    echo "${bold}$CLI_NAME update [--help]${normal}"
+    echo ""
+    echo "Updates $CLI_NAME to its latest version."
+    echo ""
+    echo "ARGUMENTS"
+    echo "   This command has no arguments."
+    echo ""
+    echo "   -h, --help      - Help to use this command."
+    echo ""
     exit
 }
 
@@ -2317,7 +2327,7 @@ case "$command" in
           exit 1
         fi
         sudo_check
-        $CLI_PATH/update
+        $SGRT_PATH/update
         ;;
     esac
     ;;

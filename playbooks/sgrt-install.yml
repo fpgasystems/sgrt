@@ -469,7 +469,6 @@
         - program_vivado
         - run_opennic
         - set_keys
-        - update
         - validate_opennic
     #new
     - name: copying new scripts
@@ -580,10 +579,16 @@
             mode: 0755
       when: all or sgutil
     #update
-    - name: copying update
+    #- name: copying update
+    #  copy:
+    #    src: "../cli/update.sh"
+    #    dest: "{{ cli_path }}/update"
+    #    mode: "0755"
+    #  when: all or update
+    - name: copying update (to sgrt_base_path)
       copy:
-        src: "../cli/update.sh"
-        dest: "{{ cli_path }}/update"
+        src: "../update.sh"
+        dest: "{{ sgrt_base_path }}/update"
         mode: "0755"
       when: all or update
     #validate
@@ -803,6 +808,7 @@
         state: absent
       loop:
         - opennic_validate
+        - update
     #program
     - name: deleting program scripts
       file:
