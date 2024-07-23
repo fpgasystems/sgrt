@@ -819,6 +819,11 @@
         - enable_regions
         - get_bus_device
         - opennic_setpci
+    #update
+    - name: deleting update (from cli_path)
+      file:
+        path: "{{ cli_path }}/update"
+        state: absent
     #VERSION
     - name: deleting VERSION
       file:
