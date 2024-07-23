@@ -116,20 +116,20 @@ if [ $update = "1" ]; then
   chmod_x $UPDATES_PATH/$REPO_NAME/cli/set
   chmod_x $UPDATES_PATH/$REPO_NAME/cli/validate
 
-  #echo "sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli $installation_path/cli"
-  #exit
+  #remove old version
+  sudo rm -rf $installation_path/api
+  sudo rm -rf $installation_path/cli
+  sudo rm -rf $installation_path/templates
   
   #copy files (from /tmp/sgrt to /opt/sgrt)
-  #installation_path_2="/opt/sgrt_2"
-  #sudo mkdir $installation_path_2
-  sudo cp -rf $UPDATES_PATH/$REPO_NAME/api/* $installation_path/api #will be installation_path
-  sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/* $installation_path/cli #will be installation_path
-  sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/constants/* $installation_path/cli/constants #will be installation_path
-
+  sudo mv $UPDATES_PATH/$REPO_NAME/api $installation_path/api
+  sudo mv $UPDATES_PATH/$REPO_NAME/cli $installation_path/cli
+  sudo mv $UPDATES_PATH/$REPO_NAME/templates $installation_path/templates
+  #sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/* $installation_path/cli #will be installation_path
+  #sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/constants/* $installation_path/cli/constants #will be installation_path
   #echo "sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/get/bdf $installation_path/cli/get/bdf"
   #sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/get/bdf $installation_path/cli/get/bdf
-
-  sudo cp -rf $UPDATES_PATH/$REPO_NAME/templates/* $installation_path/templates/ #will be installation_path
+  #sudo cp -rf $UPDATES_PATH/$REPO_NAME/templates/* $installation_path/templates/ #will be installation_path
   #overwrite bitstreams
   sudo rm -rf $installation_path/cli/bitstreams
   sudo cp -rf $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path/cli/bitstreams #will be installation_path
@@ -152,9 +152,9 @@ if [ $update = "1" ]; then
   sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT_DATE $installation_path/COMMIT_DATE
   
   #copying sgutil_completion
-  sudo mv $UPDATES_PATH/$REPO_NAME/cli/$CLI_NAME"_completion" /usr/share/bash-completion/completions/$CLI_NAME
+  sudo mv $installation_path/cli/$CLI_NAME"_completion" /usr/share/bash-completion/completions/$CLI_NAME
   sudo chown root:root /usr/share/bash-completion/completions/$CLI_NAME
-  sudo rm -f $installation_path/cli/$CLI_NAME"_completion"
+  #sudo rm -f $installation_path/cli/$CLI_NAME"_completion"
 
   #remove from temporal UPDATES_PATH
   rm -rf $UPDATES_PATH/$REPO_NAME
