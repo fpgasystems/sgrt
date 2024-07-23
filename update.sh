@@ -125,11 +125,7 @@ if [ $update = "1" ]; then
   sudo mv $UPDATES_PATH/$REPO_NAME/api $installation_path/api
   sudo mv $UPDATES_PATH/$REPO_NAME/cli $installation_path/cli
   sudo mv $UPDATES_PATH/$REPO_NAME/templates $installation_path/templates
-  #sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/* $installation_path/cli #will be installation_path
-  #sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/constants/* $installation_path/cli/constants #will be installation_path
-  #echo "sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/get/bdf $installation_path/cli/get/bdf"
-  #sudo cp -rf $UPDATES_PATH/$REPO_NAME/cli/get/bdf $installation_path/cli/get/bdf
-  #sudo cp -rf $UPDATES_PATH/$REPO_NAME/templates/* $installation_path/templates/ #will be installation_path
+  
   #overwrite bitstreams
   sudo rm -rf $installation_path/cli/bitstreams
   sudo cp -rf $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path/cli/bitstreams #will be installation_path
@@ -139,13 +135,6 @@ if [ $update = "1" ]; then
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_platforminfo $installation_path/cli/platforminfo
   #overwrite constants
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_constants/* $installation_path/cli/constants
-  #for file in "$UPDATES_PATH/$REPO_NAME/backup_constants"/*; 
-  #do
-  #  #check if the file is a regular file (not a directory)
-  #  if [ -f "$file" ]; then
-  #    sudo cp -f "$file" "$installation_path/cli/constants"
-  #  fi
-  #done
 
   #copy COMMIT and COMMIT_DATE
   sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT $installation_path/COMMIT
@@ -154,11 +143,10 @@ if [ $update = "1" ]; then
   #copying sgutil_completion
   sudo mv $installation_path/cli/$CLI_NAME"_completion" /usr/share/bash-completion/completions/$CLI_NAME
   sudo chown root:root /usr/share/bash-completion/completions/$CLI_NAME
-  #sudo rm -f $installation_path/cli/$CLI_NAME"_completion"
 
   #remove from temporal UPDATES_PATH
   rm -rf $UPDATES_PATH/$REPO_NAME
 
-  echo "Neeeeeeew! $REPO_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
+  echo "$REPO_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
   echo ""
 fi
