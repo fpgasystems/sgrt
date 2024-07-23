@@ -15,7 +15,7 @@ chmod_x() {
 }
 
 #constants
-BASE_PATH=$(dirname "$CLI_PATH")
+SGRT_PATH=$(dirname "$CLI_PATH")
 REPO_NAME="sgrt"
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
 
@@ -30,7 +30,7 @@ installation_path=$(which sgutil | xargs dirname | xargs dirname)
 remote_commit_date=$(curl -s $MAIN_BRANCH_URL | jq -r '.commit.committer.date')
 
 #get installed commit date
-local_commit_date=$(cat $BASE_PATH/COMMIT_DATE)
+local_commit_date=$(cat $SGRT_PATH/COMMIT_DATE)
 
 #convert the dates to Unix timestamps
 remote_timestamp=$(date -d "$remote_commit_date" +%s)
@@ -46,7 +46,7 @@ if [ "$local_timestamp" -lt "$remote_timestamp" ]; then
     update=$($CLI_PATH/common/push_dialog)
     echo ""
 else
-    commit_id=$(cat $BASE_PATH/COMMIT)
+    commit_id=$(cat $SGRT_PATH/COMMIT)
     echo ""
     echo "$REPO_NAME is on its latest version ${bold}(commit ID: $commit_id)!${normal}"
     echo ""
