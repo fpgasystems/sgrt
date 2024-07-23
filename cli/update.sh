@@ -2,6 +2,7 @@
 
 CLI_PATH="$(dirname "$0")"
 CLI_NAME="sgutil"
+SGRT_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
@@ -15,7 +16,6 @@ chmod_x() {
 }
 
 #constants
-SGRT_PATH=$(dirname "$CLI_PATH")
 REPO_NAME="sgrt"
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
 
