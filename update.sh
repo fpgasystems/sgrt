@@ -85,22 +85,17 @@ if [ $update = "1" ]; then
   #backup files
   echo ""
   echo "${bold}Backing up device files:${normal}"
-  echo ""
   cp -rf $CLI_PATH/bitstreams $UPDATES_PATH/$REPO_NAME/backup_bitstreams
-  echo "cp -rf $CLI_PATH/bitstreams $UPDATES_PATH/$REPO_NAME/backup_bitstreams"
   sleep 1
   cp $CLI_PATH/devices_acap_fpga $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga
-  echo "cp $CLI_PATH/devices_acap_fpga $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga"
   sleep 1
   cp $CLI_PATH/devices_gpu $UPDATES_PATH/$REPO_NAME/backup_devices_gpu
-  echo "cp $CLI_PATH/devices_gpu $UPDATES_PATH/$REPO_NAME/backup_devices_gpu"
   sleep 1
   cp $CLI_PATH/platforminfo $UPDATES_PATH/$REPO_NAME/backup_platforminfo
-  echo "cp $CLI_PATH/platforminfo $UPDATES_PATH/$REPO_NAME/backup_platforminfo"
   sleep 1
   cp -rf $CLI_PATH/constants $UPDATES_PATH/$REPO_NAME/backup_constants
-  echo "cp -rf $CLI_PATH/constants $UPDATES_PATH/$REPO_NAME/backup_constants"
   sleep 1
+  echo "Done!"
   echo ""
 
   #manage scripts
@@ -117,24 +112,42 @@ if [ $update = "1" ]; then
   chmod_x $UPDATES_PATH/$REPO_NAME/cli/validate
 
   #remove old version
+  echo "${bold}Removing old version:${normal}"
   sudo rm -rf $installation_path/api
+  sleep 1
   sudo rm -rf $installation_path/cli
+  sleep 1
   sudo rm -rf $installation_path/templates
+  sleep 1
+  echo "Done!"
+  echo ""
   
   #copy files (from /tmp/sgrt to /opt/sgrt)
+  echo "${bold}Copying new version:${normal}"
   sudo mv $UPDATES_PATH/$REPO_NAME/api $installation_path/api
+  sleep 1
   sudo mv $UPDATES_PATH/$REPO_NAME/cli $installation_path/cli
+  sleep 1
   sudo mv $UPDATES_PATH/$REPO_NAME/templates $installation_path/templates
+  sleep 1
+  echo "Done!"
+  echo ""
   
   #overwrite bitstreams
+  echo "${bold}Restoring device files:${normal}"
   sudo rm -rf $installation_path/cli/bitstreams
   sudo cp -rf $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path/cli/bitstreams #will be installation_path
+  sleep 1
   #overwrite device related info
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path/cli/devices_acap_fpga
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path/cli/devices_gpu
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_platforminfo $installation_path/cli/platforminfo
+  sleep 1
   #overwrite constants
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_constants/* $installation_path/cli/constants
+  sleep 1
+  echo "Done!"
+  echo ""
 
   #copy COMMIT and COMMIT_DATE
   sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT $installation_path/COMMIT
@@ -146,6 +159,7 @@ if [ $update = "1" ]; then
 
   #remove from temporal UPDATES_PATH
   rm -rf $UPDATES_PATH/$REPO_NAME
+  sleep 1
 
   echo "$REPO_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
   echo ""
