@@ -1,11 +1,16 @@
 #!/bin/bash
 
+CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
 #constants
-CLI_PATH="$(dirname "$(dirname "$0")")"
 DEVICES_LIST="$CLI_PATH/devices_gpu"
+
+# Check if the file is empty
+if [ ! -s "$DEVICES_LIST" ]; then
+    exit 1
+fi
 
 #check on DEVICES_LIST
 source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
