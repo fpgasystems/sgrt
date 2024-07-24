@@ -116,7 +116,7 @@ _sgutil_completions()
 
     case ${COMP_CWORD} in
         1)
-            COMPREPLY=($(compgen -W "build enable examine get new program reboot run set update validate --help --version" -- ${cur}))
+            COMPREPLY=($(compgen -W "build enable examine get new program reboot run set update validate --help --release" -- ${cur}))
             ;;
         2)
             case ${COMP_WORDS[COMP_CWORD-1]} in

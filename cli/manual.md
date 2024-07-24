@@ -7,7 +7,7 @@
 # CLI
 
 ## sgutil
-<code>sgutil [commands] [arguments [flags]] [--help] [--version]</code>
+<code>sgutil [commands] [arguments [flags]] [--help] [--release]</code>
 
 ### Commands
 
@@ -29,7 +29,7 @@
 &nbsp; &nbsp; Help to use sgutil.
 </p>
 
-<code>-v, --version</code>
+<code>-r, --release</code>
 <p>
   &nbsp; &nbsp; Reports sgutil version.
 </p>

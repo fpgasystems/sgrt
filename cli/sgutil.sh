@@ -41,7 +41,7 @@ hostname="${url%%.*}"
 #help
 cli_help() {
   echo "
-${bold}$CLI_NAME [commands] [arguments [flags]] [--help] [--version]${normal}
+${bold}$CLI_NAME [commands] [arguments [flags]] [--help] [--release]${normal}
 
 COMMANDS:
    build           - Creates binaries, bitstreams, and drivers for your accelerated applications.
@@ -57,15 +57,16 @@ COMMANDS:
    validate        - Validates the basic HACC infrastructure functionality.
 
    -h, --help      - Help to use $CLI_NAME.
-   -v, --version   - Reports $CLI_NAME version.
+   -r, --release   - Reports $CLI_NAME release.
 "
   exit 1
 }
 
-cli_version() {
-    version=$(cat $SGRT_PATH/VERSION)
+cli_release() {
+    release=$(cat $SGRT_PATH/COMMIT)
+    release_date=$(cat $SGRT_PATH/COMMIT_DATE)
     echo ""
-    echo "Version              : $version"
+    echo "Release (commit_ID)  : $release ($release_date)"
     echo ""
     exit 1
 }
@@ -1640,8 +1641,8 @@ case "$command" in
   -h|--help)
     cli_help
     ;;
-  -v|--version)
-    cli_version
+  -r|--release)
+    cli_release
     ;;
   build)
     #checks
