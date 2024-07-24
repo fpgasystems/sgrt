@@ -31,5 +31,5 @@
 
 <code>-r, --release</code>
 <p>
-  &nbsp; &nbsp; Reports sgutil version.
+  &nbsp; &nbsp; Reports sgutil release.
 </p>
