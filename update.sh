@@ -136,7 +136,7 @@ if [ $update = "1" ]; then
   #overwrite bitstreams
   echo "${bold}Restoring device files:${normal}"
   sudo rm -rf $installation_path/cli/bitstreams
-  sudo cp -rf $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path/cli/bitstreams #will be installation_path
+  sudo cp -rf $UPDATES_PATH/$REPO_NAME/backup_bitstreams $installation_path/cli/bitstreams
   sleep 1
   #overwrite device related info
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path/cli/devices_acap_fpga
