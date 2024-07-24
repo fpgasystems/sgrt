@@ -7,7 +7,7 @@
 # CLI
 
 ## sgutil
-<code>sgutil [commands] [arguments [flags]] [--help] [--version]</code>
+<code>sgutil [commands] [arguments [flags]] [--help] [--release]</code>
 
 ### Commands
 
@@ -20,6 +20,7 @@
 * [reboot](./manual/sgutil-reboot.md#sgutil-reboot)
 * [run](./manual/sgutil-run.md#sgutil-run)
 * [set](./manual/sgutil-set.md#sgutil-set)
+* [update](./manual/sgutil-update.md#sgutil-update)
 * [validate](./manual/sgutil-validate.md#sgutil-validate)
 
 <!-- ### Options -->
@@ -28,7 +29,7 @@
 &nbsp; &nbsp; Help to use sgutil.
 </p>
 
-<code>-v, --version</code>
+<code>-r, --release</code>
 <p>
   &nbsp; &nbsp; Reports sgutil version.
 </p>

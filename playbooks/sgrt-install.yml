@@ -14,8 +14,8 @@
     - alveo-u55c-08.inf.ethz.ch
     #- alveo-u55c-09.inf.ethz.ch
     #- alveo-u55c-03.inf.ethz.ch
-    - hacc-box-01.inf.ethz.ch
-    - hacc-box-02.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
+    #- hacc-box-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -37,24 +37,25 @@
     templates: false #true-----------------------------------
     #scripts
     build: false
-    commit_date: true
+    #commit_date: true
     common: false
     enable: false
     examine: false
     get: false
-    help: true
+    help: false
     new: false
-    program: true
+    program: false
     reboot: false
     run: false
     set: false
     sgutil: true 
+    update: true
     validate: false
     #workflows
     coyote: false
     hip: false
     mpi: false
-    opennic: true
+    opennic: false
     vitis: false #true---------------------------------
   tasks:
 
@@ -145,13 +146,29 @@
         
     #cli
     #copying files (when all/only if they do not exist on the remote)
-    #commit date
+    #commit and commit date
+    - name: checking commit
+      stat:
+        path: "{{ sgrt_base_path }}/COMMIT"
+      register: commit_stat
+      when: all
+    - name: copying commit
+      copy:
+        src: "../COMMIT"
+        dest: "{{ sgrt_base_path }}/COMMIT"
+        mode: "0644"
+      when: all and not commit_stat.stat.exists
+    - name: checking commit date
+      stat:
+        path: "{{ sgrt_base_path }}/COMMIT_DATE"
+      register: commit_date_stat
+      when: all
     - name: copying commit date
       copy:
         src: "../COMMIT_DATE"
         dest: "{{ sgrt_base_path }}/COMMIT_DATE"
         mode: "0644"
-      when: all or commit_date
+      when: all and not commit_date_stat.stat.exists
     #constants
     - name: checking constants
       find:
@@ -182,6 +199,7 @@
         - ONIC_SHELL_COMMIT
         - ONIC_SHELL_NAME
         - ONIC_SHELL_REPO
+        - UPDATES_PATH
         - ROCM_PATH  
         - VIRTUALIZED_SERVERS_LIST
         - VITIS_COMMIT
@@ -227,17 +245,17 @@
         mode: "0644"
       when: all and not platforminfo_stat.stat.exists
     #version
-    - name: checking version
-      stat:
-        path: "{{ sgrt_base_path }}/VERSION"
-      register: version_stat
-      when: all
-    - name: copying version
-      copy:
-        src: "../VERSION"
-        dest: "{{ sgrt_base_path }}/VERSION"
-        mode: "0644"
-      when: all and not version_stat.stat.exists
+    #- name: checking version
+    #  stat:
+    #    path: "{{ sgrt_base_path }}/VERSION"
+    #  register: version_stat
+    #  when: all
+    #- name: copying version
+    #  copy:
+    #    src: "../VERSION"
+    #    dest: "{{ sgrt_base_path }}/VERSION"
+    #    mode: "0644"
+    #  when: all and not version_stat.stat.exists
 
     #copying templates
     #coyote
@@ -441,6 +459,7 @@
       when: all or help
       loop:
         - build_opennic
+        - examine
         - new_coyote
         - new_opennic
         - program_driver
@@ -559,7 +578,19 @@
             dest: /usr/share/bash-completion/completions/{{ cli_name }}
             mode: 0755
       when: all or sgutil
-
+    #update
+    #- name: copying update
+    #  copy:
+    #    src: "../cli/update.sh"
+    #    dest: "{{ cli_path }}/update"
+    #    mode: "0755"
+    #  when: all or update
+    - name: copying update (to sgrt_base_path)
+      copy:
+        src: "../update.sh"
+        dest: "{{ sgrt_base_path }}/update"
+        mode: "0755"
+      when: all or update
     #validate
     - name: copying validate scripts
       copy:
@@ -739,6 +770,13 @@
         - device.hpp
         - host.hpp
         - host.cpp # I believe that was an error
+    #build
+    - name: deleting build scripts
+      file:
+        path: "{{ cli_path }}/build/{{ item }}"
+        state: absent
+      loop:
+        - shell
     #common
     - name: deleting common scripts
       file:
@@ -755,8 +793,14 @@
       loop:
         - ONIC_COMMIT
         - BITSTREAM_PATH
+        - BITSTREAMS_PATH
         - VIVADO_DEVICES_MAX
         - ONIC_BITSTREAM_NAME
+    #include folder
+    - name: deleting include folder
+      file:
+        path: "{{ sgrt_base_path }}/include"
+        state: absent
     #help
     - name: deleting help scripts
       file:
@@ -764,6 +808,7 @@
         state: absent
       loop:
         - opennic_validate
+        - update
     #program
     - name: deleting program scripts
       file:
@@ -774,3 +819,13 @@
         - enable_regions
         - get_bus_device
         - opennic_setpci
+    #update
+    - name: deleting update (from cli_path)
+      file:
+        path: "{{ cli_path }}/update"
+        state: absent
+    #VERSION
+    - name: deleting VERSION
+      file:
+        path: "{{ sgrt_base_path }}/VERSION"
+        state: absent

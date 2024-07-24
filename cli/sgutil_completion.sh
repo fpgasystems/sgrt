@@ -116,7 +116,7 @@ _sgutil_completions()
 
     case ${COMP_CWORD} in
         1)
-            COMPREPLY=($(compgen -W "build enable examine get new program reboot run set validate --help --version" -- ${cur}))
+            COMPREPLY=($(compgen -W "build enable examine get new program reboot run set update validate --help --release" -- ${cur}))
             ;;
         2)
             case ${COMP_WORDS[COMP_CWORD-1]} in
@@ -146,6 +146,9 @@ _sgutil_completions()
                     ;;
                 set)
                     COMPREPLY=($(compgen -W "gh keys license mtu --help" -- ${cur})) #write
+                    ;;
+                update)
+                    COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 validate)
                     COMPREPLY=($(compgen -W "coyote docker hip iperf mpi opennic vitis vitis-ai --help" -- ${cur}))

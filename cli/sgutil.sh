@@ -41,7 +41,7 @@ hostname="${url%%.*}"
 #help
 cli_help() {
   echo "
-${bold}$CLI_NAME [commands] [arguments [flags]] [--help] [--version]${normal}
+${bold}$CLI_NAME [commands] [arguments [flags]] [--help] [--release]${normal}
 
 COMMANDS:
    build           - Creates binaries, bitstreams, and drivers for your accelerated applications.
@@ -53,18 +53,20 @@ COMMANDS:
    reboot          - Reboots the server (warm boot).
    run             - Executes the accelerated application on a given device.
    set             - Devices and host configuration.
+   update          - Updates $CLI_NAME to its latest version.
    validate        - Validates the basic HACC infrastructure functionality.
 
-   -h, --help      - Help to use this application.
-   -v, --version   - Reports CLI version.
+   -h, --help      - Help to use $CLI_NAME.
+   -r, --release   - Reports $CLI_NAME release.
 "
   exit 1
 }
 
-cli_version() {
-    version=$(cat $SGRT_PATH/VERSION)
+cli_release() {
+    release=$(cat $SGRT_PATH/COMMIT)
+    release_date=$(cat $SGRT_PATH/COMMIT_DATE)
     echo ""
-    echo "Version              : $version"
+    echo "Release (commit_ID)  : $release ($release_date)"
     echo ""
     exit 1
 }
@@ -121,6 +123,7 @@ CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
 CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
 CHECK_ON_PUSH_ERR_MSG="Please, choose a valid push option."
 CHECK_ON_REMOTE_ERR_MSG="Please, choose a valid deploy option."
+CHECK_ON_SUDO_ERR_MSG="Sorry, this command requires sudo capabilities."
 CHECK_ON_VIRTUALIZED_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
@@ -658,6 +661,15 @@ virtualized_check() {
   fi
 }
 
+sudo_check() {
+  if ! sudo -n true 2>/dev/null; then
+    echo ""
+    echo $CHECK_ON_SUDO_ERR_MSG
+    echo ""
+    exit 1
+  fi
+}
+
 vivado_check() {
   local VIVADO_PATH=$1
   local vivado_version=$2
@@ -884,19 +896,9 @@ enable_xrt_help() {
 # examine ------------------------------------------------------------------------------------------------------------------------
 
 examine_help() {
-    echo ""
-    echo "${bold}$CLI_NAME examine [--help]${normal}"
-    echo ""
-    echo "Status of the system and devices."
-    echo ""
-    echo "ARGUMENTS"
-    echo "   This command has no arguments."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
+    $CLI_PATH/help/examine $CLI_NAME
+    exit
 }
-
 
 # get ----------------------------------------------------------------------------------------------------------------------------
 
@@ -1451,6 +1453,23 @@ set_mtu_help() {
     exit 1
 }
 
+# update ------------------------------------------------------------------------------------------------------------------------
+
+update_help() {
+    #$CLI_PATH/help/update $CLI_NAME
+    echo ""
+    echo "${bold}$CLI_NAME update [--help]${normal}"
+    echo ""
+    echo "Updates $CLI_NAME to its latest version."
+    echo ""
+    echo "ARGUMENTS"
+    echo "   This command has no arguments."
+    echo ""
+    echo "   -h, --help      - Help to use this command."
+    echo ""
+    exit
+}
+
 # validate -----------------------------------------------------------------------------------------------------------------------
 validate_help() {
     echo ""
@@ -1622,8 +1641,8 @@ case "$command" in
   -h|--help)
     cli_help
     ;;
-  -v|--version)
-    cli_version
+  -r|--release)
+    cli_release
     ;;
   build)
     #checks
@@ -2296,6 +2315,21 @@ case "$command" in
       *)
         set_help
       ;;  
+    esac
+    ;;
+  update)
+    case "$arguments" in
+      -h|--help)
+        update_help
+        ;;
+      *)
+        if [ "$#" -ne 1 ]; then
+          update_help
+          exit 1
+        fi
+        sudo_check
+        $SGRT_PATH/update
+        ;;
     esac
     ;;
   validate)
