@@ -1,14 +1,14 @@
 ---
 
 - hosts: 
-    - hacc-build
-    - alveo-u250
-    - alveo-u280
-    - alveo-u50d
-    - alveo-u55c
+    #- hacc-build
+    #- alveo-u250
+    #- alveo-u280
+    #- alveo-u50d
+    #- alveo-u55c
     - versal-vck5000
-    - hacc-boxes
-    #- alveo-u55c-01.inf.ethz.ch
+    #- hacc-boxes
+    #- alveo-u250-01.inf.ethz.ch
     #- hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
@@ -20,10 +20,10 @@
     sgrt_base_path: /opt/sgrt #/opt/sgrt
     api_path: "{{ sgrt_base_path }}/api"
     cli_path: "{{ sgrt_base_path }}/cli"
-    include_path: "{{ sgrt_base_path }}/include"
+    #include_path: "{{ sgrt_base_path }}/include"
     cli_name: sgutil
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: false
+    all: true
     #api installation
     api: false #true----------------
     #cli installation
@@ -83,7 +83,7 @@
         - "{{ cli_path }}/set"
         - "{{ cli_path }}/validate"
         #include
-        - "{{ include_path }}"
+        #- "{{ include_path }}"
 
     #api
     - name: copying includes
