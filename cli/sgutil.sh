@@ -22,11 +22,14 @@ ONIC_DRIVER_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_REPO)
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_SHELL_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
+REPO_NAME="sgrt"
+UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
 XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS_PATH)
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 
 #derived
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
+REPO_URL="https://github.com/fpgasystems/$REPO_NAME.git"
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
 #get devices number
@@ -2328,6 +2331,18 @@ case "$command" in
           exit 1
         fi
         sudo_check
+
+        #get update.sh
+        cd $UPDATES_PATH
+        git clone $REPO_URL > /dev/null 2>&1 #https://github.com/fpgasystems/sgrt.git
+
+        #copy update
+        sudo mv $UPDATES_PATH/$REPO_NAME/update.sh $SGRT_PATH/update
+        
+        #remove temporal copy
+        rm -rf $UPDATES_PATH/$REPO_NAME
+        
+        #run up to date update 
         $SGRT_PATH/update
         ;;
     esac
