@@ -164,3 +164,5 @@ if [ $update = "1" ]; then
   echo "$REPO_NAME was updated to its latest version ${bold}(commit ID: $remote_commit_id)!${normal}"
   echo ""
 fi
+
+#author: https://github.com/jmoya82
