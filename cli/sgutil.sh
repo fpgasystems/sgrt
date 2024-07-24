@@ -33,9 +33,11 @@ REPO_URL="https://github.com/fpgasystems/$REPO_NAME.git"
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
 #get devices number
-source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
-MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
-multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+if [ -s "$DEVICES_LIST" ]; then
+  source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+  MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
+  multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+fi
 
 #get hostname
 url="${HOSTNAME}"
