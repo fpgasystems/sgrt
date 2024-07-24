@@ -1,0 +1,42 @@
+---
+
+- hosts: 
+    #- hacc-build
+    #- alveo-u250
+    #- alveo-u280
+    #- alveo-u50d
+    #- alveo-u55c
+    #- versal-vck5000
+    #- hacc-boxes
+    - alveo-u55c-01.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
+  become: true
+  become_method: community.general.sudosu
+  become_user: root
+  ignore_unreachable: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    #paths definition
+    sgrt_base_path: /opt/sgrt #/opt/sgrt
+    api_path: "{{ sgrt_base_path }}/api"
+    cli_path: "{{ sgrt_base_path }}/cli"
+    cli_name: sgutil
+  tasks:
+
+    - name: Execute update command
+      shell: /opt/sgrt/update #/opt/sgrt/cli/help/program_opennic 
+      #become: true
+      #become_method: sudo
+      #become_user: root
+      environment:
+        http_proxy: http://proxy.ethz.ch:3128
+        https_proxy: https://proxy.ethz.ch:3128
+      register: sgutil_output
+
+    #- name: Execute update command with pseudo-TTY
+    #  shell: "script -q -c '/opt/sgrt/update' /dev/null"
+    #  register: sgutil_output
+
+    - name: Display the output of the sgutil update command
+      debug:
+        var: sgutil_output.stdout
