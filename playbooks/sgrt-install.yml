@@ -1,21 +1,15 @@
 ---
 
 - hosts: 
-    #- hacc-build
-    #- alveo-u250
-    #- alveo-u280
-    #- alveo-u50d
-    #- alveo-u55c
-    #- versal-vck5000
-    #- hacc-boxes
+    - hacc-build
+    - alveo-u250
+    - alveo-u280
+    - alveo-u50d
+    - alveo-u55c
+    - versal-vck5000
+    - hacc-boxes
     #- alveo-u55c-01.inf.ethz.ch
-    #- alveo-u55c-02.inf.ethz.ch
-    #- alveo-u55c-07.inf.ethz.ch
-    - alveo-u55c-08.inf.ethz.ch
-    #- alveo-u55c-09.inf.ethz.ch
-    #- alveo-u55c-03.inf.ethz.ch
     #- hacc-box-01.inf.ethz.ch
-    #- hacc-box-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -48,8 +42,8 @@
     reboot: false
     run: false
     set: false
-    sgutil: true 
-    update: true
+    sgutil: false 
+    update: false
     validate: false
     #workflows
     coyote: false
