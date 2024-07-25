@@ -56,7 +56,7 @@
     #    4. After replacing COMMIT and COMMIT_DATE in this playbook, we will execute it to properly install "sgrt" on the remotes.
     #    5. We revert the changes on the main playbook.
     COMMIT: "0000000"
-    COMMIT_ID: "1982-08-15T23:55:57Z"
+    COMMIT_DATE: "1982-08-15T23:55:57Z"
   tasks:
 
     #creating directories
@@ -145,28 +145,16 @@
     #cli
     #copying files (when all/only if they do not exist on the remote)
     #commit and commit date
-    #- name: checking commit
-    #  stat:
-    #    path: "{{ sgrt_base_path }}/COMMIT"
-    #  register: commit_stat
-    #  when: all
-    - name: copying COMMIT
+    - name: overwrite COMMIT
       copy:
-        src: "../COMMIT"
+        content: "{{ COMMIT }}"
         dest: "{{ sgrt_base_path }}/COMMIT"
         mode: "0644"
-      #when: all and not commit_stat.stat.exists
-   # - name: checking commit date
-   #   stat:
-   #     path: "{{ sgrt_base_path }}/COMMIT_DATE"
-   #   register: commit_date_stat
-   #   when: all
-    - name: copying COMMIT_DATE
+    - name: overwrite COMMIT_DATE
       copy:
-        src: "../COMMIT_DATE"
+        content: "{{ COMMIT_DATE }}"
         dest: "{{ sgrt_base_path }}/COMMIT_DATE"
         mode: "0644"
-      #when: all and not commit_date_stat.stat.exists
     #constants
     - name: checking constants
       find:
