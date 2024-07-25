@@ -152,6 +152,9 @@ if [ $update = "1" ]; then
   #copy COMMIT and COMMIT_DATE
   sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT $installation_path/COMMIT
   sudo cp -f $UPDATES_PATH/$REPO_NAME/COMMIT_DATE $installation_path/COMMIT_DATE
+
+  #ensure ownership
+  sudo chown -R root:root $installation_path
   
   #copying sgutil_completion
   sudo mv $installation_path/cli/$CLI_NAME"_completion" /usr/share/bash-completion/completions/$CLI_NAME
