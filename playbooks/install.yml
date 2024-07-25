@@ -17,18 +17,17 @@
   vars:
     ansible_python_interpreter: /usr/bin/python3
     #paths definition
-    sgrt_base_path: /opt/sgrt #/opt/sgrt
+    sgrt_base_path: /opt/sgrt
     api_path: "{{ sgrt_base_path }}/api"
     cli_path: "{{ sgrt_base_path }}/cli"
     cli_name: sgutil
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
     #api installation
-    api: false #true----------------
+    api: false
     #cli installation
     directories: false
-    templates: false #true-----------------------------------
-    #scripts
+    templates: false
     build: false
     common: false
     enable: false
@@ -43,15 +42,14 @@
     sgutil: true 
     update: false
     validate: false
-    #workflows
     coyote: false
     hip: false
     mpi: false
     opennic: false
-    vitis: false #true---------------------------------
+    vitis: false
     #release
     #    1. A new release happens when we merge to main.
-    #    2. For installing a new release, we run this playbook from the main branch.
+    #    2. For installing a new release, we run this playbook (with all: true) from the main branch.
     #    3. After login to one of our servers (i.e., alveo-u55c-01) we will run "sgutil update" and capture COMMIT and COMMIT_DATE.
     #    4. After replacing COMMIT and COMMIT_DATE in this playbook, we will execute it to properly install "sgrt" on the remotes.
     #    5. We revert the changes on the main playbook.
