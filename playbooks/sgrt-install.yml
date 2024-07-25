@@ -1,14 +1,14 @@
 ---
 
 - hosts: 
-    #- hacc-build
-    #- alveo-u250
-    #- alveo-u280
-    #- alveo-u50d
-    #- alveo-u55c
+    - hacc-build
+    - alveo-u250
+    - alveo-u280
+    - alveo-u50d
+    - alveo-u55c
     - versal-vck5000
-    #- hacc-boxes
-    #- alveo-u250-01.inf.ethz.ch
+    - hacc-boxes
+    #- alveo-u55c-01.inf.ethz.ch
     #- hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
@@ -20,10 +20,9 @@
     sgrt_base_path: /opt/sgrt #/opt/sgrt
     api_path: "{{ sgrt_base_path }}/api"
     cli_path: "{{ sgrt_base_path }}/cli"
-    #include_path: "{{ sgrt_base_path }}/include"
     cli_name: sgutil
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: true
+    all: false
     #api installation
     api: false #true----------------
     #cli installation
@@ -31,7 +30,6 @@
     templates: false #true-----------------------------------
     #scripts
     build: false
-    #commit_date: true
     common: false
     enable: false
     examine: false
@@ -42,7 +40,7 @@
     reboot: false
     run: false
     set: false
-    sgutil: false 
+    sgutil: true 
     update: false
     validate: false
     #workflows
@@ -51,6 +49,14 @@
     mpi: false
     opennic: false
     vitis: false #true---------------------------------
+    #release
+    #    1. A new release happens when we merge to main.
+    #    2. For installing a new release, we run this playbook from the main branch.
+    #    3. After login to one of our servers (i.e., alveo-u55c-01) we will run "sgutil update" and capture COMMIT and COMMIT_DATE.
+    #    4. After replacing COMMIT and COMMIT_DATE in this playbook, we will execute it to properly install "sgrt" on the remotes.
+    #    5. We revert the changes on the main playbook.
+    COMMIT: "0000000"
+    COMMIT_ID: "1982-08-15T23:55:57Z"
   tasks:
 
     #creating directories
@@ -82,8 +88,6 @@
         - "{{ cli_path }}/run"
         - "{{ cli_path }}/set"
         - "{{ cli_path }}/validate"
-        #include
-        #- "{{ include_path }}"
 
     #api
     - name: copying includes
@@ -141,28 +145,28 @@
     #cli
     #copying files (when all/only if they do not exist on the remote)
     #commit and commit date
-    - name: checking commit
-      stat:
-        path: "{{ sgrt_base_path }}/COMMIT"
-      register: commit_stat
-      when: all
-    - name: copying commit
+    #- name: checking commit
+    #  stat:
+    #    path: "{{ sgrt_base_path }}/COMMIT"
+    #  register: commit_stat
+    #  when: all
+    - name: copying COMMIT
       copy:
         src: "../COMMIT"
         dest: "{{ sgrt_base_path }}/COMMIT"
         mode: "0644"
-      when: all and not commit_stat.stat.exists
-    - name: checking commit date
-      stat:
-        path: "{{ sgrt_base_path }}/COMMIT_DATE"
-      register: commit_date_stat
-      when: all
-    - name: copying commit date
+      #when: all and not commit_stat.stat.exists
+   # - name: checking commit date
+   #   stat:
+   #     path: "{{ sgrt_base_path }}/COMMIT_DATE"
+   #   register: commit_date_stat
+   #   when: all
+    - name: copying COMMIT_DATE
       copy:
         src: "../COMMIT_DATE"
         dest: "{{ sgrt_base_path }}/COMMIT_DATE"
         mode: "0644"
-      when: all and not commit_date_stat.stat.exists
+      #when: all and not commit_date_stat.stat.exists
     #constants
     - name: checking constants
       find:
