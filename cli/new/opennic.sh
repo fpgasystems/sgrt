@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CLI_PATH="$(dirname "$(dirname "$0")")"
+SGRT_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
@@ -35,11 +36,18 @@ fi
 $CLI_PATH/common/git_clone_opennic $DIR $commit_name_shell $commit_name_driver
 
 #change to project directory
-cd $DIR
+#cd $DIR
 
 #save commit_name_shell
-echo "$commit_name_shell" > ONIC_SHELL_COMMIT
-echo "$commit_name_driver" > ONIC_DRIVER_COMMIT
+echo "$commit_name_shell" > $DIR/ONIC_SHELL_COMMIT
+echo "$commit_name_driver" > $DIR/ONIC_DRIVER_COMMIT
+
+#add template files
+mkdir -p $DIR/src
+cp $SGRT_PATH/templates/$WORKFLOW/config_add.sh $DIR/src/config_add
+cp $SGRT_PATH/templates/$WORKFLOW/config_delete.sh $DIR/src/config_delete
+cp $SGRT_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
+cp -r $SGRT_PATH/templates/$WORKFLOW/configs $DIR
 
 #push files
 if [ "$push_option" = "1" ]; then 
