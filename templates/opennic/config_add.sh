@@ -28,32 +28,6 @@ get_config_id() {
     echo $config_id
 }
 
-generate_selectable_values_1() {
-    local min="$1"
-    local max="$2"
-    local inc="$3"
-    local precision="$INC_DECIMALS"
-
-    # Initialize an empty array for selectable values
-    local selectable_values=()
-
-    # Initialize loop variable as floating-point number
-    local value="$min"
-
-    # Loop until the value exceeds the max
-    while (( $(echo "$value <= $max" | bc -l) )); do
-        # Append the value to the array
-        selectable_values+=("$value")
-        
-        # Increment the value using bc for floating-point arithmetic
-        value=$(echo "$value + $inc" | bc -l)
-        value=$(printf "%.${precision}f" "$value") # Round to the desired precision
-    done
-
-    # Print the selectable values separated by spaces
-    echo "${selectable_values[*]}"
-}
-
 generate_selectable_values() {
     local min="$1"
     local max="$2"
