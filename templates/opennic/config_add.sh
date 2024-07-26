@@ -162,13 +162,13 @@ if [[ "$config_id" == "host_config_000" ]]; then
     config_id="host_config_001"
 fi
 
-#create device_config.hpp (it is created each time)
+#create device_config (it is created each time)
 device_config_exists="0"
-if [ -f "$MY_PROJECT_PATH/configs/device_config.hpp" ]; then
-    rm -f "$MY_PROJECT_PATH/configs/device_config.hpp"
+if [ -f "$MY_PROJECT_PATH/configs/device_config" ]; then
+    rm -f "$MY_PROJECT_PATH/configs/device_config"
     device_config_exists="1"
 fi
-touch $MY_PROJECT_PATH/configs/device_config.hpp
+touch $MY_PROJECT_PATH/configs/device_config
 
 #create configuration file
 touch $MY_PROJECT_PATH/configs/$config_id
@@ -200,7 +200,7 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
 
     #select output file (should appear in the correct order)
     if [[ "$parameter_i" == "device:" ]]; then
-        output_file="device_config.hpp"
+        output_file="device_config"
         echo "${bold}Device parameters:${normal}"
         echo ""
     elif [[ "$parameter_i" == "host:" ]]; then
@@ -302,9 +302,9 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
 
         #add "const int" for device_config
         aux_str=""
-        if [[ "$output_file" == "device_config.hpp" ]]; then
-            aux_str="const int "
-        fi
+        #if [[ "$output_file" == "device_config" ]]; then
+        #    aux_str="const int "
+        #fi
 
         #add parameter to config
         add_to_config_file "$output_file" "$aux_str$parameter_i" "$selected_value"
@@ -316,19 +316,19 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
 
 done
 
-#print message (tracks changes on device_config.hpp)
+#print message (tracks changes on device_config)
 if [[ "$device_config_exists" == "0" ]]; then
     echo ""
-    echo "The configurations ${bold}device_config.hpp${normal} and ${bold}$config_id have been created!${normal}"
+    echo "The configurations ${bold}device_config${normal} and ${bold}$config_id have been created!${normal}"
     echo ""
 
-    #copy device_config.hpp to project folder
-    cp $MY_PROJECT_PATH/configs/device_config.hpp $MY_PROJECT_PATH/_device_config.hpp #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
+    #copy device_config to project folder
+    cp $MY_PROJECT_PATH/configs/device_config $MY_PROJECT_PATH/_device_config #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
 
 else
 
-    #compare existing _device_config.hpp with just generated device_config.hpp
-    are_equals=$($CLI_PATH/common/compare_files "$MY_PROJECT_PATH/configs/device_config.hpp" "$MY_PROJECT_PATH/_device_config.hpp")
+    #compare existing _device_config with just generated device_config
+    are_equals=$($CLI_PATH/common/compare_files "$MY_PROJECT_PATH/configs/device_config" "$MY_PROJECT_PATH/_device_config")
     
     #print message
     if [[ "$are_equals" == "1" ]]; then
@@ -337,12 +337,12 @@ else
         echo ""
     else
         echo ""
-        echo "${bold}device_config.hpp${normal} has been updated; ${bold}$config_id has been created!${normal}"
+        echo "${bold}device_config${normal} has been updated; ${bold}$config_id has been created!${normal}"
         echo ""
 
-        #update _device_config.hpp
-        rm -f "$MY_PROJECT_PATH/_device_config.hpp"    
-        cp $MY_PROJECT_PATH/configs/device_config.hpp $MY_PROJECT_PATH/_device_config.hpp #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
+        #update _device_config
+        rm -f "$MY_PROJECT_PATH/_device_config"    
+        cp $MY_PROJECT_PATH/configs/device_config $MY_PROJECT_PATH/_device_config #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
 
     fi
 
@@ -354,6 +354,6 @@ if [ -f "$MY_PROJECT_PATH/configs/host_config_000" ]; then
 fi
 
 #change permissions (we avoid that user directly uses vi)
-chmod a-w "$MY_PROJECT_PATH/configs/device_config.hpp"
-chmod a-w "$MY_PROJECT_PATH/_device_config.hpp"
+chmod a-w "$MY_PROJECT_PATH/configs/device_config"
+chmod a-w "$MY_PROJECT_PATH/_device_config"
 chmod a-w "$MY_PROJECT_PATH/configs/$config_id"
