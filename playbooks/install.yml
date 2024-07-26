@@ -28,7 +28,7 @@
     api: false
     #cli installation
     directories: false
-    templates: false
+    templates: true
     build: false
     common: false
     enable: false
@@ -40,13 +40,13 @@
     reboot: false
     run: false
     set: false
-    sgutil: true 
+    sgutil: false 
     update: false
     validate: false
     coyote: false
     hip: false
     mpi: false
-    opennic: false
+    opennic: true
     vitis: false
     #release
     #    1. A new release happens when we merge to main.
@@ -294,6 +294,23 @@
             dest: "{{ sgrt_base_path }}/templates"
             mode: "0755"
       when: all or (templates and mpi)
+    #opennic
+    - name: managing opennic template
+      block:
+        - name: managing opennic template
+          debug:
+            msg: ""
+        - name: deleting opennic template
+          file:
+            path: "{{ sgrt_base_path }}/templates/opennic"
+            state: absent
+          register: opennic_templates
+        - name: copying opennic template
+          copy:
+            src: "../templates/opennic"
+            dest: "{{ sgrt_base_path }}/templates"
+            mode: "0755"
+      when: all or (templates and opennic)
     #vitis  
     - name: managing vitis template
       block:

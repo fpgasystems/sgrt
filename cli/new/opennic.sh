@@ -43,11 +43,15 @@ echo "$commit_name_shell" > $DIR/ONIC_SHELL_COMMIT
 echo "$commit_name_driver" > $DIR/ONIC_DRIVER_COMMIT
 
 #add template files
-mkdir -p $DIR/src
-cp $SGRT_PATH/templates/$WORKFLOW/config_add.sh $DIR/src/config_add
-cp $SGRT_PATH/templates/$WORKFLOW/config_delete.sh $DIR/src/config_delete
+#mkdir -p $DIR/src
+cp $SGRT_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
+cp $SGRT_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
 cp $SGRT_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
 cp -r $SGRT_PATH/templates/$WORKFLOW/configs $DIR
+
+#compile files
+chmod +x $DIR/config_add
+chmod +x $DIR/config_delete
 
 #push files
 if [ "$push_option" = "1" ]; then 
