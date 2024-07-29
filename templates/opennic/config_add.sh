@@ -297,12 +297,12 @@ if [[ "$device_config_exists" == "0" ]]; then
     echo ""
 
     #copy device_config to project folder
-    cp $MY_PROJECT_PATH/configs/device_config $MY_PROJECT_PATH/_device_config #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
+    cp $MY_PROJECT_PATH/configs/device_config $MY_PROJECT_PATH/.device_config #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
 
 else
 
-    #compare existing _device_config with just generated device_config
-    are_equals=$($CLI_PATH/common/compare_files "$MY_PROJECT_PATH/configs/device_config" "$MY_PROJECT_PATH/_device_config")
+    #compare existing .device_config with just generated device_config
+    are_equals=$($CLI_PATH/common/compare_files "$MY_PROJECT_PATH/configs/device_config" "$MY_PROJECT_PATH/.device_config")
     
     #print message
     if [[ "$are_equals" == "1" ]]; then
@@ -314,9 +314,9 @@ else
         echo "${bold}device_config${normal} has been updated; ${bold}$config_id has been created!${normal}"
         echo ""
 
-        #update _device_config
-        rm -f "$MY_PROJECT_PATH/_device_config"    
-        cp $MY_PROJECT_PATH/configs/device_config $MY_PROJECT_PATH/_device_config #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
+        #update .device_config
+        rm -f "$MY_PROJECT_PATH/.device_config"    
+        cp $MY_PROJECT_PATH/configs/device_config $MY_PROJECT_PATH/.device_config #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
 
     fi
 
@@ -329,5 +329,5 @@ fi
 
 #change permissions (we avoid that user directly uses vi)
 chmod a-w "$MY_PROJECT_PATH/configs/device_config"
-chmod a-w "$MY_PROJECT_PATH/_device_config"
+chmod a-w "$MY_PROJECT_PATH/.device_config"
 chmod a-w "$MY_PROJECT_PATH/configs/$config_id"
