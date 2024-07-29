@@ -30,7 +30,7 @@
     directories: false
     templates: true
     build: false
-    common: false
+    common: true
     enable: false
     examine: false
     get: false
@@ -374,6 +374,7 @@
         - get_max_devices
         - get_multiple_devices
         - get_servers
+        - get_tclargs
         - get_vivado_devices
         - get_xclbin_cfg
         - get_xilinx_version
