@@ -19,7 +19,7 @@ BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
-NUM_JOBS="16"
+NUM_JOBS="8"
 WORKFLOW="opennic"
 
 #cleanup bitstreams folder
@@ -64,10 +64,12 @@ fi
 
 #compile shell
 if [ "$compile" = "1" ]; then 
-    #echo ""
+    #read configuration
+    tcl_args=$($CLI_PATH/common/get_tclargs $DIR/configs/device_config)
+    
     echo "${bold}Shell compilation (commit ID: $commit_name)${normal}"
     echo ""
-    echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1"
+    echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args"
     cd $SHELL_BUILD_DIR
     vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
     echo ""
