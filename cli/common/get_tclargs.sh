@@ -21,12 +21,12 @@ while IFS= read -r line; do
   var_name=$(echo "$var_name" | xargs)
   var_value=$(echo "$var_value" | xargs)
 
-  # Append to shell_parameters
+  # Append to shell_parameters without trailing semicolon
   shell_parameters+="-${var_name} ${var_value} "
 done < "$device_config"
 
-# Trim trailing space
-shell_parameters=$(echo "$shell_parameters" | xargs)
+# Trim trailing space and remove ;
+shell_parameters=$(echo "$shell_parameters" | xargs | tr -d ';')
 
 # Output the result
 echo "$shell_parameters"
