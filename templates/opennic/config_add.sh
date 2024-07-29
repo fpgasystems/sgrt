@@ -124,8 +124,8 @@ is_integer() {
     fi
 }
 
-echo ""
-echo "${bold}config_add${normal}"
+#echo ""
+#echo "${bold}config_add${normal}"
 echo ""
 
 #get config_id

@@ -119,6 +119,7 @@ CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
 #error messages
 CHECK_ON_XRT_SHELL_ERR_MSG="Sorry, this command is only available for XRT shells."
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
+CHECK_ON_CONFIGS_ERR_MSG="Please, create a valid configuration first."
 CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
 CHECK_ON_DRIVER_ERR_MSG="Please, choose a valid driver name."
 CHECK_ON_DRIVER_PARAMS_ERR_MSG="Please, choose a valid list of module parameters." 
@@ -192,6 +193,24 @@ commit_check() {
   elif [ "$commit_found" = "1" ] && ([ "$commit_name" = "" ] || [ "$exists" = "0" ]); then 
       echo ""
       echo $CHECK_ON_COMMIT_ERR_MSG
+      echo ""
+      exit 1
+  fi
+}
+
+configs_check() {
+  local CLI_PATH=$1
+  local MY_PROJECTS_PATH=$2
+  local WORKFLOW=$3  #arguments and workflow are the same (i.e. opennic)
+  local commit_name=$4
+  local project_name=$5
+  local insert_echo=$6
+  #check on configs
+  if [ ! -f "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/configs/device_config" ]; then
+      if [ "$insert_echo" = "1" ]; then
+        echo ""
+      fi
+      echo $CHECK_ON_CONFIGS_ERR_MSG
       echo ""
       exit 1
   fi
@@ -1687,6 +1706,7 @@ case "$command" in
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
           platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+          configs_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "1"
         fi
         
         #dialogs
@@ -1695,6 +1715,7 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name)${normal}"
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        configs_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "0"
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
         platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
         
