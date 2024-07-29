@@ -56,8 +56,19 @@ if ! [ -d "$DIR" ]; then
     $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $project_name --push 0 
 fi
 
+#create default configuration
+rm -f $DIR/configs/host_config_000
+touch $DIR/configs/device_config
+echo "min_pkt_len = 64;" >> "$DIR/configs/device_config"
+echo "max_pkt_len = 1514;" >> "$DIR/configs/device_config"
+echo "use_phys_func = 1;" >> "$DIR/configs/device_config"
+echo "num_phys_func = 1;" >> "$DIR/configs/device_config"
+echo "num_qdma = 1;" >> "$DIR/configs/device_config"
+echo "num_queue = 512;" >> "$DIR/configs/device_config"
+echo "num_cmac_port = 1;" >> "$DIR/configs/device_config"
+
 #build
-library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name_shell/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+library_shell="" #"$BITSTREAMS_PATH/$WORKFLOW/$commit_name_shell/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 project_shell="$DIR/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 if [ -e "$library_shell" ]; then
     cp "$library_shell" "$project_shell"
