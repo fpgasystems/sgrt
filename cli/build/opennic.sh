@@ -71,7 +71,7 @@ if [ "$compile" = "1" ]; then
     echo ""
     echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args"
     cd $SHELL_BUILD_DIR
-    vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1
+    vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args
     echo ""
 
     #copy and send email
