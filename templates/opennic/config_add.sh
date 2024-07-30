@@ -140,22 +140,200 @@ fi
 awk '/^device:/, /^$/{if (!/^device:/ && $0 != "") print}' $MY_PROJECT_PATH/config_parameters > $MY_PROJECT_PATH/device_parameters
 awk '/^host:/, /^$/{if (!/^host:/ && $0 != "") print}' $MY_PROJECT_PATH/config_parameters > $MY_PROJECT_PATH/host_parameters
 
-#create device_config (it is created each time)
-device_config_exists="0"
+#device
+msg=""
+create_device_config="1"
 if [ -f "$MY_PROJECT_PATH/configs/device_config" ]; then
-    rm -f "$MY_PROJECT_PATH/configs/device_config"
-    device_config_exists="1"
+    echo "${bold}A device_config file already exists. Do you want to remove it and create a new one (y/n)?${normal}"
+    while true; do
+        read -p "" yn
+        case $yn in
+            "y")
+                rm -f "$MY_PROJECT_PATH/configs/device_config"
+                touch $MY_PROJECT_PATH/configs/device_config
+                #create_device_config="1"
+                msg="${bold}device_config${normal} has been updated;"
+                break
+                ;;
+            "n") 
+                create_device_config="0"
+                break
+                ;;
+        esac
+    done
+    echo ""
 fi
-touch $MY_PROJECT_PATH/configs/device_config
+
+#store already declared parameters
+declare -a parameters_aux
+
+if [ "$create_device_config" == "1" ]; then
+    #read from parameters
+    declare -a parameters
+    declare -a descriptions
+    declare -a ranges
+
+    while read -r line; do
+        column_1=$(echo "$line" | awk '{print $1}')
+        column_2=$(echo "$line" | awk '{print $2}')
+        column_3=$(echo "$line" | awk '{print $3}')
+        parameters+=("$column_1")
+        ranges+=("$column_2")
+        descriptions+=("$column_3")
+    done < "$MY_PROJECT_PATH/device_parameters"
+
+    #create configuration
+    output_file="device_config"
+    echo "${bold}Device parameters:${normal}"
+    echo ""
+    for ((i = 0; i < ${#parameters[@]}; i++)); do
+        
+        #map to parameters
+        parameter_i="${parameters[i]}"
+        ranges_i="${ranges[i]}"
+
+        #select output file (should appear in the correct order)
+        #if [[ "$parameter_i" == "device:" ]]; then
+        #    output_file="device_config"
+        #    echo "${bold}Device parameters:${normal}"
+        #    echo ""
+        #elif [[ "$parameter_i" == "host:" ]]; then
+        #    output_file="$config_id"
+        #    echo ""
+        #    echo "${bold}Host parameters:${normal}"
+        #    echo ""
+        #else
+
+            min=""
+            max=""
+            inc=""
+            list=""
+            constant=""
+            selectable_values=""
+            selected_value=""
+            selectable_values_prompt=""
+            case "$ranges_i" in
+                *:*)
+                    colon_count=$(grep -o ":" <<< "$ranges_i" | wc -l)
+                    if [[ $colon_count -eq 1 ]]; then
+                        
+                        #extract min and max from ranges_i
+                        IFS=':' read -r min max <<< "$ranges_i"
+
+                        #replace already declared
+                        min=$(find_existing_parameter $min)
+                        max=$(find_existing_parameter $max)
+
+                        #check on integer
+                        is_integer_min=$(is_integer "$min")
+                        is_integer_max=$(is_integer "$max")
+
+                        # Derive increment
+                        if [[ "$is_integer_min" == "1" && "$is_integer_max" == "1" ]]; then
+                            #min and max are integers
+                            inc="1"
+                        elif [[ "$is_integer_min" == "0" && "$is_integer_max" == "0" ]]; then
+                            #min and max are decimals
+                            inc=$(echo "scale=$INC_DECIMALS; ($max - $min) / $INC_STEPS" | bc)                
+                        fi
+
+                    elif [[ $colon_count -eq 2 ]]; then
+                        
+                        #extract min, inc and max from ranges_i
+                        min="${ranges_i%%:*}"
+                        remaining="${ranges_i#*:}"
+                        inc="${remaining%%:*}"
+                        max="${remaining#*:}"
+
+                        #replace already declared
+                        min=$(find_existing_parameter $min)
+                        inc=$(find_existing_parameter $inc)
+                        max=$(find_existing_parameter $max)
+
+                    fi
+
+                    #generate selectable values
+                    selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
+
+                    #get prompt
+                    num_elements=$(echo "$selectable_values" | wc -w)
+
+                    #check if the number of elements is more than 10
+                    if (( num_elements > $MAX_PROMPT_ELEMENTS )); then
+                        #more elements than expected
+                        if [[ "$inc" == "1" ]]; then
+                            selectable_values_prompt="$min .. $max"
+                        else
+                            selectable_values_prompt="$min:$inc:$max"
+                        fi
+                    else
+                        #less elements than expected
+                        selectable_values_prompt=$selectable_values
+                    fi    
+                    
+                    ;;
+                *","*)
+                    #ranges_i is a comma separated list
+                    selectable_values=$(echo "$ranges_i" | tr "," " ")
+                    selectable_values_prompt=$selectable_values
+                    ;;
+                *)
+                    #ranges_i is a constant (a string without any colon (:), comma (,), or any other specified character)
+                    selected_value=$ranges_i
+                    ;;
+            esac
+
+            #get value from the user
+            if ! [[ "$selectable_values_prompt" == "" ]]; then
+                #prompt the user to choose one of the selectable values
+                read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
+                
+                #validate user input
+                while ! validate_input "$selected_value" "$selectable_values"; do
+                    read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
+                done
+            fi
+
+            #add "const int" for device_config
+            aux_str=""
+            #if [[ "$output_file" == "device_config" ]]; then
+            #    aux_str="const int "
+            #fi
+
+            #add parameter to config
+            add_to_config_file "$output_file" "$aux_str$parameter_i" "$selected_value"
+
+            #save already declared
+            parameters_aux+=("$parameter_i = $selected_value")
+
+        #fi
+
+    done
+    echo ""
+fi
+
+
+#echo "fins aci"
+#exit 
+
+#host
+
+#create device_config (it is created each time)
+#device_config_exists="0"
+#if [ -f "$MY_PROJECT_PATH/configs/device_config" ]; then
+#    rm -f "$MY_PROJECT_PATH/configs/device_config"
+#    device_config_exists="1"
+#fi
+#touch $MY_PROJECT_PATH/configs/device_config
 
 
 #create configuration file
 touch $MY_PROJECT_PATH/configs/$config_id
 
-#read from parameters
-declare -a parameters
-declare -a descriptions
-declare -a ranges
+#reset arrays
+parameters=()
+ranges=()
+descriptions=()
 
 while read -r line; do
     column_1=$(echo "$line" | awk '{print $1}')
@@ -164,13 +342,15 @@ while read -r line; do
     parameters+=("$column_1")
     ranges+=("$column_2")
     descriptions+=("$column_3")
-done < "$MY_PROJECT_PATH/config_parameters"
+done < "$MY_PROJECT_PATH/host_parameters"
 
 #store already declared parameters
 declare -a parameters_aux
 
 #create configuration
-output_file=""
+output_file="$config_id"
+echo "${bold}Host parameters:${normal}"
+echo ""
 for ((i = 0; i < ${#parameters[@]}; i++)); do
     
     #map to parameters
@@ -178,16 +358,16 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
     ranges_i="${ranges[i]}"
 
     #select output file (should appear in the correct order)
-    if [[ "$parameter_i" == "device:" ]]; then
-        output_file="device_config"
-        echo "${bold}Device parameters:${normal}"
-        echo ""
-    elif [[ "$parameter_i" == "host:" ]]; then
-        output_file="$config_id"
-        echo ""
-        echo "${bold}Host parameters:${normal}"
-        echo ""
-    else
+    #if [[ "$parameter_i" == "device:" ]]; then
+    #    output_file="device_config"
+    #    echo "${bold}Device parameters:${normal}"
+    #    echo ""
+    #elif [[ "$parameter_i" == "host:" ]]; then
+    #    output_file="$config_id"
+    #    echo ""
+    #    echo "${bold}Host parameters:${normal}"
+    #    echo ""
+    #else
 
         min=""
         max=""
@@ -291,37 +471,46 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
         #save already declared
         parameters_aux+=("$parameter_i = $selected_value")
 
-    fi
+    #fi
 
 done
 
 #print message (tracks changes on device_config)
-if [[ "$device_config_exists" == "0" ]]; then
-    echo ""
-    echo "The configurations ${bold}device_config${normal} and ${bold}$config_id have been created!${normal}"
-    echo ""
-
+if [[ "$create_device_config" == "1" ]]; then
+    if [[ "$msg" == "" ]]; then
+        echo ""
+        echo "The configurations ${bold}device_config${normal} and ${bold}$config_id${normal} have been created!${normal}"
+        echo ""
+    else
+        echo ""
+        echo $msg" ${bold}$config_id${normal} has been created!"
+        echo ""
+    fi
     #copy device_config to project folder
-    cp $MY_PROJECT_PATH/configs/device_config $MY_PROJECT_PATH/.device_config #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
+    #cp $MY_PROJECT_PATH/configs/device_config $MY_PROJECT_PATH/.device_config
 
 else
 
     #compare existing .device_config with just generated device_config
-    are_equals=$($CLI_PATH/common/compare_files "$MY_PROJECT_PATH/configs/device_config" "$MY_PROJECT_PATH/.device_config")
+    #are_equals=$($CLI_PATH/common/compare_files "$MY_PROJECT_PATH/configs/device_config" "$MY_PROJECT_PATH/device_parameters") #
+
+    #cat $MY_PROJECT_PATH/configs/device_config
+    #echo ""
+    #cat $MY_PROJECT_PATH/device_parameters
     
     #print message
-    if [[ "$are_equals" == "1" ]]; then
+    if [[ "$msg" == "" ]]; then
         echo ""
-        echo "The configuration ${bold}$config_id has been created!${normal}"
+        echo "The configuration ${bold}$config_id${normal} has been created!"
         echo ""
     else
         echo ""
-        echo "${bold}device_config${normal} has been updated; ${bold}$config_id has been created!${normal}"
+        echo $msg" ${bold}$config_id${normal} has been created!"
         echo ""
 
         #update .device_config
-        rm -f "$MY_PROJECT_PATH/.device_config"    
-        cp $MY_PROJECT_PATH/configs/device_config $MY_PROJECT_PATH/.device_config #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
+        #rm -f "$MY_PROJECT_PATH/.device_config"    
+        #cp $MY_PROJECT_PATH/configs/device_config $MY_PROJECT_PATH/.device_config #$XCLBIN_BUILD_DIR/$xclbin_i.parameters
 
     fi
 
@@ -334,5 +523,9 @@ fi
 
 #change permissions (we avoid that user directly uses vi)
 chmod a-w "$MY_PROJECT_PATH/configs/device_config"
-chmod a-w "$MY_PROJECT_PATH/.device_config"
+#chmod a-w "$MY_PROJECT_PATH/.device_config"
 chmod a-w "$MY_PROJECT_PATH/configs/$config_id"
+
+#remove temporal files
+rm -f $MY_PROJECT_PATH/device_parameters
+rm -f $MY_PROJECT_PATH/host_parameters
