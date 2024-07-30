@@ -124,6 +124,87 @@ is_integer() {
     fi
 }
 
+# Function to write configuration based on parameters and ranges
+write_config() {
+    local output_file="$1"
+    shift
+    local param_count=$#
+    local parameters=("${@:1:$(($param_count / 2))}")
+    local ranges=("${@:$(($param_count / 2 + 1))}")
+
+    for ((i = 0; i < ${#parameters[@]}; i++)); do
+        local parameter_i="${parameters[i]}"
+        local ranges_i="${ranges[i]}"
+        
+        local min=""
+        local max=""
+        local inc=""
+        local list=""
+        local constant=""
+        local selectable_values=""
+        local selected_value=""
+        local selectable_values_prompt=""
+        
+        case "$ranges_i" in
+            *:*)
+                local colon_count=$(grep -o ":" <<< "$ranges_i" | wc -l)
+                if [[ $colon_count -eq 1 ]]; then
+                    IFS=':' read -r min max <<< "$ranges_i"
+                    min=$(find_existing_parameter "$min")
+                    max=$(find_existing_parameter "$max")
+                    local is_integer_min=$(is_integer "$min")
+                    local is_integer_max=$(is_integer "$max")
+
+                    if [[ "$is_integer_min" == "1" && "$is_integer_max" == "1" ]]; then
+                        inc="1"
+                    elif [[ "$is_integer_min" == "0" && "$is_integer_max" == "0" ]]; then
+                        inc=$(echo "scale=$INC_DECIMALS; ($max - $min) / $INC_STEPS" | bc)
+                    fi
+
+                elif [[ $colon_count -eq 2 ]]; then
+                    min="${ranges_i%%:*}"
+                    local remaining="${ranges_i#*:}"
+                    inc="${remaining%%:*}"
+                    max="${remaining#*:}"
+                    min=$(find_existing_parameter "$min")
+                    inc=$(find_existing_parameter "$inc")
+                    max=$(find_existing_parameter "$max")
+                fi
+
+                selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
+                local num_elements=$(echo "$selectable_values" | wc -w)
+
+                if (( num_elements > MAX_PROMPT_ELEMENTS )); then
+                    if [[ "$inc" == "1" ]]; then
+                        selectable_values_prompt="$min .. $max"
+                    else
+                        selectable_values_prompt="$min:$inc:$max"
+                    fi
+                else
+                    selectable_values_prompt="$selectable_values"
+                fi
+                ;;
+            *","*)
+                selectable_values=$(echo "$ranges_i" | tr "," " ")
+                selectable_values_prompt="$selectable_values"
+                ;;
+            *)
+                selected_value="$ranges_i"
+                ;;
+        esac
+
+        if [[ -n "$selectable_values_prompt" ]]; then
+            read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
+            while ! validate_input "$selected_value" "$selectable_values"; do
+                read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
+            done
+        fi
+
+        add_to_config_file "$output_file" "$parameter_i" "$selected_value"
+        parameters_aux+=("$parameter_i = $selected_value")
+    done
+}
+
 echo ""
 
 #get config_id
@@ -184,109 +265,113 @@ if [ "$create_device_config" == "1" ]; then
     output_file="device_config"
     echo "${bold}Device parameters:${normal}"
     echo ""
-    for ((i = 0; i < ${#parameters[@]}; i++)); do
-        
-        #map to parameters
-        parameter_i="${parameters[i]}"
-        ranges_i="${ranges[i]}"
-
-        min=""
-        max=""
-        inc=""
-        list=""
-        constant=""
-        selectable_values=""
-        selected_value=""
-        selectable_values_prompt=""
-        case "$ranges_i" in
-            *:*)
-                colon_count=$(grep -o ":" <<< "$ranges_i" | wc -l)
-                if [[ $colon_count -eq 1 ]]; then
-                    
-                    #extract min and max from ranges_i
-                    IFS=':' read -r min max <<< "$ranges_i"
-
-                    #replace already declared
-                    min=$(find_existing_parameter $min)
-                    max=$(find_existing_parameter $max)
-
-                    #check on integer
-                    is_integer_min=$(is_integer "$min")
-                    is_integer_max=$(is_integer "$max")
-
-                    # Derive increment
-                    if [[ "$is_integer_min" == "1" && "$is_integer_max" == "1" ]]; then
-                        #min and max are integers
-                        inc="1"
-                    elif [[ "$is_integer_min" == "0" && "$is_integer_max" == "0" ]]; then
-                        #min and max are decimals
-                        inc=$(echo "scale=$INC_DECIMALS; ($max - $min) / $INC_STEPS" | bc)                
-                    fi
-
-                elif [[ $colon_count -eq 2 ]]; then
-                    
-                    #extract min, inc and max from ranges_i
-                    min="${ranges_i%%:*}"
-                    remaining="${ranges_i#*:}"
-                    inc="${remaining%%:*}"
-                    max="${remaining#*:}"
-
-                    #replace already declared
-                    min=$(find_existing_parameter $min)
-                    inc=$(find_existing_parameter $inc)
-                    max=$(find_existing_parameter $max)
-
-                fi
-
-                #generate selectable values
-                selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
-
-                #get prompt
-                num_elements=$(echo "$selectable_values" | wc -w)
-
-                #check if the number of elements is more than 10
-                if (( num_elements > $MAX_PROMPT_ELEMENTS )); then
-                    #more elements than expected
-                    if [[ "$inc" == "1" ]]; then
-                        selectable_values_prompt="$min .. $max"
-                    else
-                        selectable_values_prompt="$min:$inc:$max"
-                    fi
-                else
-                    #less elements than expected
-                    selectable_values_prompt=$selectable_values
-                fi    
-                
-                ;;
-            *","*)
-                #ranges_i is a comma separated list
-                selectable_values=$(echo "$ranges_i" | tr "," " ")
-                selectable_values_prompt=$selectable_values
-                ;;
-            *)
-                #ranges_i is a constant (a string without any colon (:), comma (,), or any other specified character)
-                selected_value=$ranges_i
-                ;;
-        esac
-
-        #get value from the user
-        if ! [[ "$selectable_values_prompt" == "" ]]; then
-            #prompt the user to choose one of the selectable values
-            read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
-            
-            #validate user input
-            while ! validate_input "$selected_value" "$selectable_values"; do
-                read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
-            done
-        fi
-
-        #add parameter to config
-        add_to_config_file "$output_file" "$parameter_i" "$selected_value"
-
-        #save already declared
-        parameters_aux+=("$parameter_i = $selected_value")
-    done
-    echo ""
+    
+    write_config "$output_file" "${parameters[@]}" "${ranges[@]}"
+    
+    
+    #for ((i = 0; i < ${#parameters[@]}; i++)); do
+    #    
+    #    #map to parameters
+    #    parameter_i="${parameters[i]}"
+    #    ranges_i="${ranges[i]}"
+    #
+    #    min=""
+    #    max=""
+    #    inc=""
+    #    list=""
+    #    constant=""
+    #    selectable_values=""
+    #    selected_value=""
+    #    selectable_values_prompt=""
+    #    case "$ranges_i" in
+    #        *:*)
+    #            colon_count=$(grep -o ":" <<< "$ranges_i" | wc -l)
+    #            if [[ $colon_count -eq 1 ]]; then
+    #                
+    #                #extract min and max from ranges_i
+    #                IFS=':' read -r min max <<< "$ranges_i"
+    #
+    #                #replace already declared
+    #                min=$(find_existing_parameter $min)
+    #                max=$(find_existing_parameter $max)
+    #
+    #                #check on integer
+    #                is_integer_min=$(is_integer "$min")
+    #                is_integer_max=$(is_integer "$max")
+    #
+    #                # Derive increment
+    #                if [[ "$is_integer_min" == "1" && "$is_integer_max" == "1" ]]; then
+    #                    #min and max are integers
+    #                    inc="1"
+    #                elif [[ "$is_integer_min" == "0" && "$is_integer_max" == "0" ]]; then
+    #                    #min and max are decimals
+    #                    inc=$(echo "scale=$INC_DECIMALS; ($max - $min) / $INC_STEPS" | bc)                
+    #                fi
+    #
+    #            elif [[ $colon_count -eq 2 ]]; then
+    #                
+    #                #extract min, inc and max from ranges_i
+    #                min="${ranges_i%%:*}"
+    #                remaining="${ranges_i#*:}"
+    #                inc="${remaining%%:*}"
+    #                max="${remaining#*:}"
+    #
+    #                #replace already declared
+    #                min=$(find_existing_parameter $min)
+    #                inc=$(find_existing_parameter $inc)
+    #                max=$(find_existing_parameter $max)
+    #
+    #            fi
+    #
+    #            #generate selectable values
+    #            selectable_values=$(generate_selectable_values "$min" "$max" "$inc")
+    #
+    #            #get prompt
+    #            num_elements=$(echo "$selectable_values" | wc -w)
+    #
+    #            #check if the number of elements is more than 10
+    #            if (( num_elements > $MAX_PROMPT_ELEMENTS )); then
+    #                #more elements than expected
+    #                if [[ "$inc" == "1" ]]; then
+    #                    selectable_values_prompt="$min .. $max"
+    #                else
+    #                    selectable_values_prompt="$min:$inc:$max"
+    #                fi
+    #            else
+    #                #less elements than expected
+    #                selectable_values_prompt=$selectable_values
+    #            fi    
+    #            
+    #            ;;
+    #        *","*)
+    #            #ranges_i is a comma separated list
+    #            selectable_values=$(echo "$ranges_i" | tr "," " ")
+    #            selectable_values_prompt=$selectable_values
+    #            ;;
+    #        *)
+    #            #ranges_i is a constant (a string without any colon (:), comma (,), or any other specified character)
+    #            selected_value=$ranges_i
+    #            ;;
+    #    esac
+    #
+    #    #get value from the user
+    #    if ! [[ "$selectable_values_prompt" == "" ]]; then
+    #        #prompt the user to choose one of the selectable values
+    #        read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
+    #        
+    #        #validate user input
+    #        while ! validate_input "$selected_value" "$selectable_values"; do
+    #            read -rp "$parameter_i [$selectable_values_prompt]: " selected_value
+    #        done
+    #    fi
+    #
+    #    #add parameter to config
+    #    add_to_config_file "$output_file" "$parameter_i" "$selected_value"
+    #
+    #    #save already declared
+    #    parameters_aux+=("$parameter_i = $selected_value")
+    #done
+    #echo ""
 fi
 
 #create configuration file
@@ -417,28 +502,6 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
 done
 
 #print message
-#if [[ "$create_device_config" == "1" ]]; then
-#    if [[ "$msg" == "" ]]; then
-#        echo ""
-#        echo "The configurations ${bold}device_config${normal} and ${bold}$config_id${normal} have been created!${normal}"
-#        echo ""
-#    else
-#        echo ""
-#        echo $msg" ${bold}$config_id${normal} has been created!"
-#        echo ""
-#    fi
-#else
-#    if [[ "$msg" == "" ]]; then
-#        echo ""
-#        echo "The configuration ${bold}$config_id${normal} has been created!"
-#        echo ""
-#    else
-#        echo ""
-#        echo $msg" ${bold}$config_id${normal} has been created!"
-#        echo ""
-#    fi
-#fi
-
 echo ""
 if [[ "$create_device_config" == "1" ]]; then
     if [[ -z "$msg" ]]; then
