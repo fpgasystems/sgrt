@@ -136,6 +136,10 @@ if [[ "$config_id" == "host_config_000" ]]; then
     config_id="host_config_001"
 fi
 
+#get device and host parameters
+awk '/^device:/, /^$/{if (!/^device:/ && $0 != "") print}' $MY_PROJECT_PATH/config_parameters > $MY_PROJECT_PATH/device_parameters
+awk '/^host:/, /^$/{if (!/^host:/ && $0 != "") print}' $MY_PROJECT_PATH/config_parameters > $MY_PROJECT_PATH/host_parameters
+
 #create device_config (it is created each time)
 device_config_exists="0"
 if [ -f "$MY_PROJECT_PATH/configs/device_config" ]; then
@@ -143,6 +147,7 @@ if [ -f "$MY_PROJECT_PATH/configs/device_config" ]; then
     device_config_exists="1"
 fi
 touch $MY_PROJECT_PATH/configs/device_config
+
 
 #create configuration file
 touch $MY_PROJECT_PATH/configs/$config_id
