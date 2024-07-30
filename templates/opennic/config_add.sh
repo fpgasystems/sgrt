@@ -279,10 +279,6 @@ if [ -n "$msg" ]; then
         read -p "" yn
         case $yn in
             "y")
-                #rm -f "$MY_PROJECT_PATH/configs/device_config"
-                #touch $MY_PROJECT_PATH/configs/device_config
-                #create_device_config="1"
-                #msg="${bold}device_config${normal} has been updated;"
                 break
                 ;;
             "n") 
@@ -348,11 +344,6 @@ echo ""
 if [ -f "$MY_PROJECT_PATH/configs/host_config_000" ]; then
     rm "$MY_PROJECT_PATH/configs/host_config_000"
 fi
-
-#change permissions (we avoid that user directly uses vi)
-#chmod a-w "$MY_PROJECT_PATH/configs/device_config"
-#chmod a-w "$MY_PROJECT_PATH/.device_config"
-#chmod a-w "$MY_PROJECT_PATH/configs/$config_id"
 
 #remove temporal files
 rm -f $MY_PROJECT_PATH/device_parameters
