@@ -262,7 +262,6 @@ if [ "$create_device_config" == "1" ]; then
     done < "$MY_PROJECT_PATH/device_parameters"
 
     #create configuration
-    #output_file="device_config"
     echo "${bold}Device parameters:${normal}"
     echo ""
     write_config "device_config" "${parameters[@]}" "${ranges[@]}"
@@ -286,11 +285,7 @@ while read -r line; do
     descriptions+=("$column_3")
 done < "$MY_PROJECT_PATH/host_parameters"
 
-#store already declared parameters
-#declare -a parameters_aux
-
 #create configuration
-#output_file="$config_id"
 echo "${bold}Host parameters:${normal}"
 echo ""
 write_config "$config_id" "${parameters[@]}" "${ranges[@]}"
