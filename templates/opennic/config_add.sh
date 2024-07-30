@@ -231,7 +231,7 @@ if [ -f "$MY_PROJECT_PATH/configs/device_config" ]; then
                 rm -f "$MY_PROJECT_PATH/configs/device_config"
                 touch $MY_PROJECT_PATH/configs/device_config
                 #create_device_config="1"
-                msg="${bold}device_config${normal} has been updated;"
+                msg="${bold}device_config${normal} has been updated"
                 break
                 ;;
             "n") 
@@ -265,38 +265,73 @@ if [ "$create_device_config" == "1" ]; then
     echo "${bold}Device parameters:${normal}"
     echo ""
     write_config "device_config" "${parameters[@]}" "${ranges[@]}"
+    
+    #change permissions (we avoid that user directly uses vi)
+    chmod a-w "$MY_PROJECT_PATH/configs/device_config"
     echo ""
 fi
 
-#create configuration file
-touch $MY_PROJECT_PATH/configs/$config_id
+#host
+create_host_config="1"
+if [ -n "$msg" ]; then
+    echo "${bold}Do you want to create a host configuration as well (y/n)?${normal}"
+    while true; do
+        read -p "" yn
+        case $yn in
+            "y")
+                #rm -f "$MY_PROJECT_PATH/configs/device_config"
+                #touch $MY_PROJECT_PATH/configs/device_config
+                #create_device_config="1"
+                #msg="${bold}device_config${normal} has been updated;"
+                break
+                ;;
+            "n") 
+                create_host_config="0"
+                break
+                ;;
+        esac
+    done
+    echo ""
+fi
 
-#reset arrays
-parameters=()
-ranges=()
-descriptions=()
+if [ "$create_host_config" == "1" ]; then
+    #create configuration file
+    touch $MY_PROJECT_PATH/configs/$config_id
 
-while read -r line; do
-    column_1=$(echo "$line" | awk '{print $1}')
-    column_2=$(echo "$line" | awk '{print $2}')
-    column_3=$(echo "$line" | awk '{print $3}')
-    parameters+=("$column_1")
-    ranges+=("$column_2")
-    descriptions+=("$column_3")
-done < "$MY_PROJECT_PATH/host_parameters"
+    #reset arrays
+    parameters=()
+    ranges=()
+    descriptions=()
 
-#create configuration
-echo "${bold}Host parameters:${normal}"
-echo ""
-write_config "$config_id" "${parameters[@]}" "${ranges[@]}"
+    while read -r line; do
+        column_1=$(echo "$line" | awk '{print $1}')
+        column_2=$(echo "$line" | awk '{print $2}')
+        column_3=$(echo "$line" | awk '{print $3}')
+        parameters+=("$column_1")
+        ranges+=("$column_2")
+        descriptions+=("$column_3")
+    done < "$MY_PROJECT_PATH/host_parameters"
+
+    #create configuration
+    echo "${bold}Host parameters:${normal}"
+    echo ""
+    write_config "$config_id" "${parameters[@]}" "${ranges[@]}"
+
+    #change permissions (we avoid that user directly uses vi)
+    chmod a-w "$MY_PROJECT_PATH/configs/$config_id"
+    echo ""
+fi
 
 #print message
-echo ""
 if [[ "$create_device_config" == "1" ]]; then
     if [[ -z "$msg" ]]; then
         msg="The configurations ${bold}device_config${normal} and ${bold}$config_id${normal} have been created!${normal}"
     else
-        msg="$msg ${bold}$config_id${normal} has been created!"
+        if [ "$create_host_config" == "1" ]; then
+            msg="$msg; ${bold}$config_id${normal} has been created!"
+        else
+            msg="$msg!"
+        fi
     fi
 else
     if [[ -z "$msg" ]]; then
@@ -315,9 +350,9 @@ if [ -f "$MY_PROJECT_PATH/configs/host_config_000" ]; then
 fi
 
 #change permissions (we avoid that user directly uses vi)
-chmod a-w "$MY_PROJECT_PATH/configs/device_config"
+#chmod a-w "$MY_PROJECT_PATH/configs/device_config"
 #chmod a-w "$MY_PROJECT_PATH/.device_config"
-chmod a-w "$MY_PROJECT_PATH/configs/$config_id"
+#chmod a-w "$MY_PROJECT_PATH/configs/$config_id"
 
 #remove temporal files
 rm -f $MY_PROJECT_PATH/device_parameters
