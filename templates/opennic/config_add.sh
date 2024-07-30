@@ -1,10 +1,10 @@
 #!/bin/bash
 
+MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
 #constants
-MY_PROJECT_PATH="$(dirname "$(dirname "$0")")"
 MAX_PROMPT_ELEMENTS=10
 INC_STEPS=2
 INC_DECIMALS=2
@@ -417,27 +417,45 @@ for ((i = 0; i < ${#parameters[@]}; i++)); do
 done
 
 #print message
+#if [[ "$create_device_config" == "1" ]]; then
+#    if [[ "$msg" == "" ]]; then
+#        echo ""
+#        echo "The configurations ${bold}device_config${normal} and ${bold}$config_id${normal} have been created!${normal}"
+#        echo ""
+#    else
+#        echo ""
+#        echo $msg" ${bold}$config_id${normal} has been created!"
+#        echo ""
+#    fi
+#else
+#    if [[ "$msg" == "" ]]; then
+#        echo ""
+#        echo "The configuration ${bold}$config_id${normal} has been created!"
+#        echo ""
+#    else
+#        echo ""
+#        echo $msg" ${bold}$config_id${normal} has been created!"
+#        echo ""
+#    fi
+#fi
+
+echo ""
 if [[ "$create_device_config" == "1" ]]; then
-    if [[ "$msg" == "" ]]; then
-        echo ""
-        echo "The configurations ${bold}device_config${normal} and ${bold}$config_id${normal} have been created!${normal}"
-        echo ""
+    if [[ -z "$msg" ]]; then
+        msg="The configurations ${bold}device_config${normal} and ${bold}$config_id${normal} have been created!${normal}"
     else
-        echo ""
-        echo $msg" ${bold}$config_id${normal} has been created!"
-        echo ""
+        msg="$msg ${bold}$config_id${normal} has been created!"
     fi
 else
-    if [[ "$msg" == "" ]]; then
-        echo ""
-        echo "The configuration ${bold}$config_id${normal} has been created!"
-        echo ""
+    if [[ -z "$msg" ]]; then
+        msg="The configuration ${bold}$config_id${normal} has been created!"
     else
-        echo ""
-        echo $msg" ${bold}$config_id${normal} has been created!"
-        echo ""
+        msg="$msg ${bold}$config_id${normal} has been created!"
     fi
 fi
+echo "$msg"
+echo ""
+
 
 #remove host_config_000 if exists
 if [ -f "$MY_PROJECT_PATH/configs/host_config_000" ]; then
