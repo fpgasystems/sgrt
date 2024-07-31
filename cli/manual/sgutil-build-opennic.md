@@ -12,9 +12,14 @@
 </p>
 
 ### Flags
-<code>-c, --commit <string></code>
+<code>    --commit <string></code>
 <p>
   &nbsp; &nbsp; GitHub shell commit ID.
+</p>
+
+<code>    --config <string></code>
+<p>
+  &nbsp; &nbsp; Configuration index.
 </p>
 
 <code>    --platform <string></code>

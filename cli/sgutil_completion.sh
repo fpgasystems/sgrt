@@ -169,7 +169,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         opennic)
-                            COMPREPLY=($(compgen -W "--commit --platform --project --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--commit --config --platform --project --help" -- ${cur}))
                             ;;
                         vitis) 
                             COMPREPLY=($(compgen -W "--project --target --help" -- ${cur})) #--xclbin 
@@ -350,7 +350,7 @@ _sgutil_completions()
             other_flags=( "--commit" "--platform" "--project" )
             command_completion_5 "$cur" "$COMP_CWORD" "build" "coyote" "${other_flags[@]}"
 
-            other_flags=( "--commit" "--platform" "--project" )
+            other_flags=( "--commit" "--config" "--platform" "--project" )
             command_completion_5 "$cur" "$COMP_CWORD" "build" "opennic" "${other_flags[@]}"
 
             other_flags=( "--project" "--target" )
@@ -423,13 +423,16 @@ _sgutil_completions()
             command_completion_7 "$cur" "$COMP_CWORD" "build" "coyote" "--project" "${other_flags[@]}"
 
             #build opennic
-            other_flags=( "--platform" "--project" )
+            other_flags=( "--config" "--platform" "--project" )
             command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--commit" "${other_flags[@]}"
 
-            other_flags=( "--commit" "--project" )
+            other_flags=( "--commit" "--platform" "--project" )
+            command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--config" "${other_flags[@]}"
+            
+            other_flags=( "--commit" "--config" "--project" )
             command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--platform" "${other_flags[@]}"
 
-            other_flags=( "--commit" "--platform" )
+            other_flags=( "--commit" "--config" "--platform" )
             command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--project" "${other_flags[@]}"
 
             #new coyote
@@ -546,6 +549,46 @@ _sgutil_completions()
             #COMP_WORDS[7]=--commit / --remote
             #COMP_WORDS[8]=0
             #Example: sgutil program coyote --device 1 --project hello_world --commit 0 -- (there are nine words)
+
+            #build opennic --commit
+            other_flags=( "--platform" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--commit" "--config" "${other_flags[@]}"
+            
+            other_flags=( "--config" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--commit" "--platform" "${other_flags[@]}"
+
+            other_flags=( "--config" "--platform" )
+            command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--commit" "--project" "${other_flags[@]}"
+            
+            #build opennic --config
+            other_flags=( "--platform" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--config" "--commit" "${other_flags[@]}"
+            
+            other_flags=( "--commit" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--config" "--platform" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--platform" )
+            command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--config" "--project" "${other_flags[@]}"
+
+            #build opennic --platform
+            other_flags=( "--config" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--platform" "--commit" "${other_flags[@]}"
+            
+            other_flags=( "--commit" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--platform" "--config" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--config" )
+            command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--platform" "--project" "${other_flags[@]}"
+
+            #build opennic --project
+            other_flags=( "--config" "--platform" )
+            command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--project" "--commit" "${other_flags[@]}"
+            
+            other_flags=( "--commit" "--platform" )
+            command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--project" "--config" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--config" )
+            command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--project" "--platform" "${other_flags[@]}"
 
             #program coyote --commit
             other_flags=( "--project" "--remote" )

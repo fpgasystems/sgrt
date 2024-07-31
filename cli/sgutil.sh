@@ -109,6 +109,7 @@ command_run() {
 }
 
 #dialog messages
+CHECK_ON_CONFIG_MSG="${bold}Please, choose your configuration:${normal}"
 CHECK_ON_DEVICE_MSG="${bold}Please, choose your device:${normal}"
 CHECK_ON_NEW_MSG="${bold}Please, type a non-existing name for your project:${normal}"
 CHECK_ON_PLATFORM_MSG="${bold}Please, choose your platform:${normal}"
@@ -119,7 +120,7 @@ CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
 #error messages
 CHECK_ON_XRT_SHELL_ERR_MSG="Sorry, this command is only available for XRT shells."
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
-CHECK_ON_CONFIGS_ERR_MSG="Please, create a valid configuration first."
+CHECK_ON_CONFIG_ERR_MSG="Please, create a valid configuration first."
 CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
 CHECK_ON_DRIVER_ERR_MSG="Please, choose a valid driver name."
 CHECK_ON_DRIVER_PARAMS_ERR_MSG="Please, choose a valid list of module parameters." 
@@ -198,6 +199,76 @@ commit_check() {
   fi
 }
 
+config_dialog() {
+  local CLI_PATH=$1
+  local MY_PROJECTS_PATH=$2
+  local WORKFLOW=$3
+  local commit_name=$4
+  local project_name=$5
+  shift 5
+  local flags_array=("$@")
+
+  config_found=""
+  config_name=""
+  
+  if [ "$flags_array" = "" ]; then
+    #config_dialog
+    echo $CHECK_ON_CONFIG_MSG
+    echo ""
+    result=$($CLI_PATH/common/config_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name)
+    config_found=$(echo "$result" | sed -n '1p')
+    config_name=$(echo "$result" | sed -n '2p')
+    multiple_configs=$(echo "$result" | sed -n '3p')
+    #check on config_name
+    if [[ $config_name = "" ]]; then
+         echo ""
+        echo $CHECK_ON_CONFIG_ERR_MSG
+        echo ""
+        exit 1
+    elif [[ $multiple_configs = "0" ]]; then
+        echo $config_name
+        echo ""
+    fi
+  else
+    config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$WORKFLOW" "$commit_name" "$project_name" "${flags_array[@]}"
+    #forgotten mandatory
+    if [[ $config_found = "0" ]]; then
+        #echo ""
+        echo $CHECK_ON_CONFIG_MSG
+        echo ""
+        result=$($CLI_PATH/common/config_dialog $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name)
+        config_found=$(echo "$result" | sed -n '1p')
+        config_name=$(echo "$result" | sed -n '2p')
+        multiple_configs=$(echo "$result" | sed -n '3p')
+        if [[ $multiple_configs = "0" ]]; then
+            echo $config_name
+        fi
+        echo ""
+    fi
+  fi
+}
+
+config_check() {
+  local CLI_PATH=$1
+  local MY_PROJECTS_PATH=$2
+  local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
+  local commit_name=$4
+  local project_name=$5
+  shift 5
+  local flags_array=("$@")
+  result="$("$CLI_PATH/common/config_dialog_check" "${flags_array[@]}")"
+  config_found=$(echo "$result" | sed -n '1p')
+  config_id=$(echo "$result" | sed -n '2p')
+  config_name=$(echo "$result" | sed -n '3p')
+  #forbidden combinations
+  if [ "$config_found" = "1" ] && ([ "$config_id" = "" ] || [ "$config_id" = "0" ] || [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/configs/$config_name" ]); then #implies that --project must be specified
+      echo ""
+      echo $CHECK_ON_CONFIG_ERR_MSG
+      echo ""
+      exit 1
+  fi
+}
+
 configs_check() {
   local CLI_PATH=$1
   local MY_PROJECTS_PATH=$2
@@ -210,7 +281,7 @@ configs_check() {
       if [ "$insert_echo" = "1" ]; then
         echo ""
       fi
-      echo $CHECK_ON_CONFIGS_ERR_MSG
+      echo $CHECK_ON_CONFIG_ERR_MSG
       echo ""
       exit 1
   fi
@@ -1695,7 +1766,7 @@ case "$command" in
         ;;
       opennic) 
         #check on flags
-        valid_flags="-c --commit --platform --project -h --help" 
+        valid_flags="--commit --config --platform --project -h --help" 
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -1706,7 +1777,8 @@ case "$command" in
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
           platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-          configs_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "1"
+          #configs_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "1"
+          config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "${flags_array[@]}"
         fi
         
         #dialogs
@@ -1715,7 +1787,8 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name)${normal}"
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-        configs_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "0"
+        #configs_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "0"
+        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "${flags_array[@]}"
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
         platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
         
