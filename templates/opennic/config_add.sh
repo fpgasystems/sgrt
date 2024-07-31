@@ -247,9 +247,6 @@ if [ -f "$MY_PROJECT_PATH/configs/device_config" ]; then
         read -p "" yn
         case $yn in
             "y")
-                rm -f "$MY_PROJECT_PATH/configs/device_config"
-                touch $MY_PROJECT_PATH/configs/device_config
-                #create_device_config="1"
                 msg="${bold}device_config${normal} has been updated"
                 break
                 ;;
@@ -266,20 +263,11 @@ fi
 declare -a parameters_aux
 
 if [ "$create_device_config" == "1" ]; then
+    #create configuration file
+    rm -f "$MY_PROJECT_PATH/configs/device_config"
+    touch $MY_PROJECT_PATH/configs/device_config
+
     #read from parameters
-    #declare -a parameters
-    #declare -a descriptions
-    #declare -a ranges
-
-    #while read -r line; do
-    #    column_1=$(echo "$line" | awk '{print $1}')
-    #    column_2=$(echo "$line" | awk '{print $2}')
-    #    column_3=$(echo "$line" | awk '{print $3}')
-    #    parameters+=("$column_1")
-    #    ranges+=("$column_2")
-    #    descriptions+=("$column_3")
-    #done < "$MY_PROJECT_PATH/device_parameters"
-
     read_parameters "$MY_PROJECT_PATH/device_parameters"
 
     #create configuration
@@ -315,20 +303,7 @@ if [ "$create_host_config" == "1" ]; then
     #create configuration file
     touch $MY_PROJECT_PATH/configs/$config_id
 
-    #reset arrays
-    #parameters=()
-    #ranges=()
-    #descriptions=()
-
-    #while read -r line; do
-    #    column_1=$(echo "$line" | awk '{print $1}')
-    #    column_2=$(echo "$line" | awk '{print $2}')
-    #    column_3=$(echo "$line" | awk '{print $3}')
-    #    parameters+=("$column_1")
-    #    ranges+=("$column_2")
-    #    descriptions+=("$column_3")
-    #done < "$MY_PROJECT_PATH/host_parameters"
-
+    #read from parameters
     read_parameters "$MY_PROJECT_PATH/host_parameters"
 
     #create configuration
