@@ -47,7 +47,6 @@ project_shell="$DIR/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 echo "${bold}Shell compilation (commit ID: $commit_name)${normal}"
 echo ""
 
-#check on shell
 compile="0"
 if [ ! -e "$project_shell" ]; then
     compile="1"
@@ -75,11 +74,9 @@ if [ "$compile" = "1" ]; then
     #read configuration
     tcl_args=$($CLI_PATH/common/get_tclargs $DIR/configs/device_config)
     
-    #echo "${bold}Shell compilation (commit ID: $commit_name)${normal}"
-    #echo ""
     echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args"
     cd $SHELL_BUILD_DIR
-    #vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args
+    vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args
     echo ""
 
     #copy and send email
