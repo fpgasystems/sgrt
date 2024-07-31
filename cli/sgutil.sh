@@ -221,7 +221,7 @@ config_dialog() {
     multiple_configs=$(echo "$result" | sed -n '3p')
     #check on config_name
     if [[ $config_name = "" ]]; then
-         echo ""
+        echo ""
         echo $CHECK_ON_CONFIG_ERR_MSG
         echo ""
         exit 1
@@ -260,8 +260,14 @@ config_check() {
   config_found=$(echo "$result" | sed -n '1p')
   config_id=$(echo "$result" | sed -n '2p')
   config_name=$(echo "$result" | sed -n '3p')
+
   #forbidden combinations
-  if [ "$config_found" = "1" ] && ([ "$config_id" = "" ] || [ "$config_id" = "0" ] || [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/configs/$config_name" ]); then #implies that --project must be specified
+  if [ "$project_name" = "" ]; then
+      echo ""
+      echo $CHECK_ON_PROJECT_ERR_MSG
+      echo ""
+      exit 1
+  elif [ "$config_found" = "1" ] && ([ "$config_id" = "" ] || [ "$config_id" = "0" ] || [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/configs/$config_name" ]); then #implies that --project must be specified
       echo ""
       echo $CHECK_ON_CONFIG_ERR_MSG
       echo ""
