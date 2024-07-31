@@ -275,24 +275,6 @@ config_check() {
   fi
 }
 
-configs_check() {
-  local CLI_PATH=$1
-  local MY_PROJECTS_PATH=$2
-  local WORKFLOW=$3  #arguments and workflow are the same (i.e. opennic)
-  local commit_name=$4
-  local project_name=$5
-  local insert_echo=$6
-  #check on configs
-  if [ ! -f "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/configs/device_config" ]; then
-      if [ "$insert_echo" = "1" ]; then
-        echo ""
-      fi
-      echo $CHECK_ON_CONFIG_ERR_MSG
-      echo ""
-      exit 1
-  fi
-}
-
 device_dialog() {
   local CLI_PATH=$1
   local CLI_NAME=$2
@@ -1783,7 +1765,6 @@ case "$command" in
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
           platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-          #configs_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "1"
           config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "${flags_array[@]}"
         fi
         
@@ -1793,7 +1774,6 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name)${normal}"
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-        #configs_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "0"
         config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "${flags_array[@]}"
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
         platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
