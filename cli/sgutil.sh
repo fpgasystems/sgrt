@@ -1779,7 +1779,7 @@ case "$command" in
         platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
         
         #run
-        $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version
+        $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --config $config_name --platform $platform_name --project $project_name --version $vivado_version
         echo ""
         ;;
       vitis) 

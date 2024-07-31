@@ -10,9 +10,10 @@ normal=$(tput sgr0)
 #inputs
 commit_name=$2
 commit_name_driver=$3
-platform_name=$5
-project_name=$7
-vivado_version=$9
+config_name=$5
+platform_name=$7
+project_name=$9
+vivado_version=${11}
 
 #constants
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
@@ -96,16 +97,20 @@ if [ "$compile" = "1" ]; then
     fi
 fi
 
-#compile application
-mkdir -p $BUILD_DIR
-touch $BUILD_DIR/_created_in_build_
-
 #compile driver
 echo "${bold}Driver compilation (commit ID: $commit_name_driver)${normal}"
 echo ""
 echo "cd $DRIVER_DIR && make"
 echo ""
 cd $DRIVER_DIR && make
+echo ""
+
+#application compilation
+echo "${bold}Application compilation ($config_name)${normal}"
+echo ""
+echo "The application gets compiled here... Done!"
+mkdir -p $BUILD_DIR
+touch $BUILD_DIR/_created_in_build_
 
 #copy driver
 cp -f $DRIVER_DIR/$DRIVER_NAME $DIR/$DRIVER_NAME
