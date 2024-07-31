@@ -43,12 +43,16 @@ BUILD_DIR="$DIR/build_dir.$FDEV_NAME"
 library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 project_shell="$DIR/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 
+#shell compilation
+echo "${bold}Shell compilation (commit ID: $commit_name)${normal}"
+echo ""
+
 #check on shell
 compile="0"
 if [ ! -e "$project_shell" ]; then
     compile="1"
 elif [ -e "$project_shell" ] && [ "$project_name" != "validate_opennic.$commit_name_driver.$FDEV_NAME.$vivado_version" ]; then
-    echo "${bold}The shell ${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit already exists. Do you want to remove it and compile it again (y/n)?${normal}"
+    echo "The shell ${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit already exists. Do you want to remove it and compile it again (y/n)?"
     while true; do
         read -p "" yn
         case $yn in
@@ -66,16 +70,16 @@ elif [ -e "$project_shell" ] && [ "$project_name" != "validate_opennic.$commit_n
     echo ""
 fi
 
-#compile shell
+#launch vivado
 if [ "$compile" = "1" ]; then 
     #read configuration
     tcl_args=$($CLI_PATH/common/get_tclargs $DIR/configs/device_config)
     
-    echo "${bold}Shell compilation (commit ID: $commit_name)${normal}"
-    echo ""
+    #echo "${bold}Shell compilation (commit ID: $commit_name)${normal}"
+    #echo ""
     echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args"
     cd $SHELL_BUILD_DIR
-    vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args
+    #vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args
     echo ""
 
     #copy and send email
