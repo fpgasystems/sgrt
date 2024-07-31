@@ -27,26 +27,26 @@
     #api installation
     api: false
     #cli installation
-    directories: false
-    templates: true
     build: false
-    common: true
+    common: false
+    coyote: false
+    directories: false
     enable: false
     examine: false
     get: false
     help: false
+    hip: false
+    mpi: false
     new: false
+    opennic: true
     program: false
     reboot: false
     run: false
     set: false
     sgutil: true 
+    templates: false
     update: false
     validate: false
-    coyote: false
-    hip: false
-    mpi: false
-    opennic: true
     vitis: false
     #release
     #    1. A new release happens when we merge to main.
