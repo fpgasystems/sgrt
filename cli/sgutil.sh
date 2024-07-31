@@ -227,8 +227,9 @@ config_dialog() {
         exit 1
     elif [[ $multiple_configs = "0" ]]; then
         echo $config_name
-        echo ""
+        #echo ""
     fi
+    echo ""
   else
     config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$WORKFLOW" "$commit_name" "$project_name" "${flags_array[@]}"
     #forgotten mandatory
