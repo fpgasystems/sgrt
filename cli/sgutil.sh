@@ -2286,9 +2286,6 @@ case "$command" in
         
         #run
         $CLI_PATH/run/opennic --commit $commit_name --device $device_index --project $project_name 
-
-        #valid_flags="-c --commit -d --device -p --project -h --help"
-        #command_run $command_arguments_flags"@"$valid_flags
         ;;
       mpi) 
         valid_flags="-p --project -h --help" 
