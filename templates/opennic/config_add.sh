@@ -124,6 +124,25 @@ is_integer() {
     fi
 }
 
+# Function to read parameters, ranges, and descriptions from a file
+read_parameters() {
+    local input_file="$1"
+    # Initialize arrays
+    parameters=()
+    ranges=()
+    descriptions=()
+
+    # Read each line from the input file
+    while read -r line; do
+        column_1=$(echo "$line" | awk '{print $1}')
+        column_2=$(echo "$line" | awk '{print $2}')
+        column_3=$(echo "$line" | awk '{print $3}')
+        parameters+=("$column_1")
+        ranges+=("$column_2")
+        descriptions+=("$column_3")
+    done < "$input_file"
+}
+
 # Function to write configuration based on parameters and ranges
 write_config() {
     local output_file="$1"
@@ -248,18 +267,20 @@ declare -a parameters_aux
 
 if [ "$create_device_config" == "1" ]; then
     #read from parameters
-    declare -a parameters
-    declare -a descriptions
-    declare -a ranges
+    #declare -a parameters
+    #declare -a descriptions
+    #declare -a ranges
 
-    while read -r line; do
-        column_1=$(echo "$line" | awk '{print $1}')
-        column_2=$(echo "$line" | awk '{print $2}')
-        column_3=$(echo "$line" | awk '{print $3}')
-        parameters+=("$column_1")
-        ranges+=("$column_2")
-        descriptions+=("$column_3")
-    done < "$MY_PROJECT_PATH/device_parameters"
+    #while read -r line; do
+    #    column_1=$(echo "$line" | awk '{print $1}')
+    #    column_2=$(echo "$line" | awk '{print $2}')
+    #    column_3=$(echo "$line" | awk '{print $3}')
+    #    parameters+=("$column_1")
+    #    ranges+=("$column_2")
+    #    descriptions+=("$column_3")
+    #done < "$MY_PROJECT_PATH/device_parameters"
+
+    read_parameters "$MY_PROJECT_PATH/device_parameters"
 
     #create configuration
     echo "${bold}Device parameters:${normal}"
@@ -295,18 +316,20 @@ if [ "$create_host_config" == "1" ]; then
     touch $MY_PROJECT_PATH/configs/$config_id
 
     #reset arrays
-    parameters=()
-    ranges=()
-    descriptions=()
+    #parameters=()
+    #ranges=()
+    #descriptions=()
 
-    while read -r line; do
-        column_1=$(echo "$line" | awk '{print $1}')
-        column_2=$(echo "$line" | awk '{print $2}')
-        column_3=$(echo "$line" | awk '{print $3}')
-        parameters+=("$column_1")
-        ranges+=("$column_2")
-        descriptions+=("$column_3")
-    done < "$MY_PROJECT_PATH/host_parameters"
+    #while read -r line; do
+    #    column_1=$(echo "$line" | awk '{print $1}')
+    #    column_2=$(echo "$line" | awk '{print $2}')
+    #    column_3=$(echo "$line" | awk '{print $3}')
+    #    parameters+=("$column_1")
+    #    ranges+=("$column_2")
+    #    descriptions+=("$column_3")
+    #done < "$MY_PROJECT_PATH/host_parameters"
+
+    read_parameters "$MY_PROJECT_PATH/host_parameters"
 
     #create configuration
     echo "${bold}Host parameters:${normal}"
