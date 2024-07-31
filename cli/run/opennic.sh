@@ -38,6 +38,11 @@ cd $BUILD_DIR
 #config_id=$(ls *.active)
 #config_id="${config_id%%.*}"
 
+echo "${bold}Device parameters:${normal}"
+echo ""
+cat $DIR/.device_config
+echo ""
+
 config_sw="config_xxx"
 
 echo "${bold}You are running $config_sw:${normal}"

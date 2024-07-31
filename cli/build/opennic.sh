@@ -35,6 +35,9 @@ DRIVER_DIR="$DIR/open-nic-driver"
 #platform_name to FDEV_NAME
 FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
 
+#define directories (2)
+BUILD_DIR="$DIR/build_dir.$FDEV_NAME"
+
 #define shells
 library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 project_shell="$DIR/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
@@ -78,14 +81,24 @@ if [ "$compile" = "1" ]; then
     if [ -f "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BITSTREAM_NAME" ]; then
         #copy to project
         cp "$DIR/open-nic-shell/build/a$FDEV_NAME/open_nic_shell/open_nic_shell.runs/impl_1/$BITSTREAM_NAME" "$project_shell"
+
+        #save .device_config
+        cp $DIR/configs/device_config $DIR/.device_config
+        chmod a-w "$DIR/.device_config"
+
         #print message
         echo "${bold}${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit is done!${normal}"
         echo ""
+
         #send email
         user_email=$USER@ethz.ch
         echo "Subject: Good news! sgutil build opennic (${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit) is done!" | sendmail $user_email
     fi
 fi
+
+#compile application
+mkdir -p $BUILD_DIR
+touch $BUILD_DIR/_created_in_build_
 
 #compile driver
 echo "${bold}Driver compilation (commit ID: $commit_name_driver)${normal}"
