@@ -78,6 +78,10 @@ if [ ! -f "$DIR/configs/device_config" ]; then
     echo "num_qdma = 1;" >> "$DIR/configs/device_config"
     echo "num_queue = 512;" >> "$DIR/configs/device_config"
     echo "num_cmac_port = 1;" >> "$DIR/configs/device_config"
+
+    #save .device_config
+    cp $DIR/configs/device_config $DIR/.device_config
+    chmod a-w "$DIR/.device_config"
 fi
 
 #build
