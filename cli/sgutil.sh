@@ -205,11 +205,19 @@ config_dialog() {
   local WORKFLOW=$3
   local commit_name=$4
   local project_name=$5
-  shift 5
+  local file_name=$6
+  shift 6
   local flags_array=("$@")
 
   config_found=""
   config_name=""
+
+  #check if the user has not created any config (for example, by checking on device_config)
+  if [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/configs/$file_name" ]; then
+    echo $CHECK_ON_CONFIG_ERR_MSG
+    echo ""
+    exit 1
+  fi
   
   if [ "$flags_array" = "" ]; then
     #config_dialog
@@ -1775,7 +1783,7 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name)${normal}"
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "${flags_array[@]}"
+        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "device_config" "${flags_array[@]}"
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
         platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
         
