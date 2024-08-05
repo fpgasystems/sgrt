@@ -6,10 +6,8 @@ num_phys_func 1:4                      "Number of QDMA physical functions per QD
 num_qdma      1,2                      "Number of QDMA subsystems, subjects to the board model (default to 1)"
 num_queue     1,2,5,10,512,1024,2048   "Number of QDMA queues (default to 512)"
 num_cmac_port 1,2                      "Number of CMAC ports, subjects to the board model (default to 1)"
+rs_fec        0,1                      "Enables or disables Reed-Solomon FEC encoding"
 
 host:
-W_MAX         1,2,4,8,16,32,64,128,256 "Maximum number of bits (default to 32)"
-W             1:W_MAX                  "Number of bits"
-F             0:W                      "Fractional part"
-RMSE          0.01:0.05                "Root Mean Squared Error"
-A             2                        "Just a constant"
+MAX_NUM_PINGS 10                       "Maximum number of ping messages"
+NUM_PINGS     1:MAX_NUM_PINGS          "Number of ping messages"
