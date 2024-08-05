@@ -9,8 +9,9 @@ normal=$(tput sgr0)
 
 #inputs
 commit_name=$2
-device_index=$4
-project_name=$6
+config_name=$4
+device_index=$6
+project_name=$8
 
 #constants
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
@@ -43,12 +44,10 @@ echo ""
 cat $DIR/.device_config
 echo ""
 
-config_sw="config_xxx"
-
-echo "${bold}You are running $config_sw:${normal}"
+echo "${bold}You are running $config_name:${normal}"
 echo ""
-#cat $DIR/configs/config_$config_sw
-#echo ""
+cat $DIR/configs/$config_name
+echo ""
     
 #run application
 echo "Your application should run here!"
