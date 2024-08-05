@@ -17,6 +17,11 @@
   &nbsp; &nbsp; GitHub commit ID.
 </p>
 
+<code>    --config <string></code>
+<p>
+  &nbsp; &nbsp; Configuration index.
+</p>
+
 <code>-d, --device <string></code>
 <p>
   &nbsp; &nbsp; FPGA Device Index (according to sgutil examine).

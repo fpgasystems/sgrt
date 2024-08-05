@@ -2329,7 +2329,7 @@ case "$command" in
         ;;
       opennic) 
         #check on flags
-        valid_flags="-c --commit -d --device -p --project -h --help"
+        valid_flags="--commit --config -d --device -p --project -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
