@@ -1776,9 +1776,15 @@ case "$command" in
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
           config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "${flags_array[@]}"
         fi
-        
+
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/device_config" ]; then
+            echo ""
+            echo "$CHECK_ON_CONFIG_ERR_MSG"
+            echo ""
+            exit
+        fi
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name)${normal}"
         echo ""
