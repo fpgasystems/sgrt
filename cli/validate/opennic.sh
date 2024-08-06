@@ -30,6 +30,7 @@ vivado_version=$7
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 DEPLOY_OPTION="0"
+DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
 FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 NUM_PINGS="5"
@@ -145,13 +146,11 @@ target_host=${remote_servers[0]}
 
 #get connection status
 connected=$(check_connectivity "$eno_onic" "$target_host")
-echo "Connectivity is $connected"
 
 #get target remote host
 if [[ $connected = "1" ]]; then
+    #ping
     if [[ ${#remote_servers[@]} -gt 0 ]]; then
-        #target_host=${remote_servers[0]}
-        #ping
         echo "${bold}ping -I $eno_onic -c $NUM_PINGS $target_host${normal}"
         echo ""
         ping -I $eno_onic -c $NUM_PINGS $target_host
@@ -164,7 +163,22 @@ else
     cp -f $DIR/configs/device_config $DIR/.device_config
 
     #revert and program
-    #...
+    #sudo rmmod ${DRIVER_NAME%.ko} 2>/dev/null
+    #eval "$CLI_PATH/program/driver -m $DIR/$DRIVER_NAME -p RS_FEC_ENABLED=1"
+    $CLI_PATH/program/revert -d $device_index --version $vivado_version
+    echo ""
+    before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
+    $CLI_PATH/program/opennic --commit $commit_name_shell --device $device_index --project $project_name --version $vivado_version --remote $DEPLOY_OPTION
+    after=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
+    after=${after%:}
+    eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
+
+    #ping
+    if [[ ${#remote_servers[@]} -gt 0 ]]; then
+        echo "${bold}ping -I $eno_onic -c $NUM_PINGS $target_host${normal}"
+        echo ""
+        ping -I $eno_onic -c $NUM_PINGS $target_host
+    fi
 fi
 
 #get RS_FEC_ENABLED from .device_config
