@@ -19,18 +19,6 @@ check_ip() {
 mac_address=$(echo "$mac_address" | tr '[:upper:]' '[:lower:]')
 
 #update NetworkManager (set interface as unmanaged)
-#device_to_add="unmanaged-devices=interface-name:$eno_onic"
-#if [ ! -e "$UNMANAGED_DEVICES_FILE" ]; then
-#    #create the file and add the device
-#    echo -e "[keyfile]\n$device_to_add" > "$UNMANAGED_DEVICES_FILE"
-#    #reload NetworkManager
-#    sudo systemctl reload NetworkManager
-#elif ! grep -qF "$device_to_add" "$UNMANAGED_DEVICES_FILE"; then
-#    #if the line does not existe in the file, append it at the end
-#    echo "$device_to_add" >> "$UNMANAGED_DEVICES_FILE"
-#    #reload NetworkManager
-#    sudo systemctl reload NetworkManager
-#fi
 device_to_add="interface-name:$eno_onic"
 if [ ! -e "$UNMANAGED_DEVICES_FILE" ]; then
     # Create the file and add the device
