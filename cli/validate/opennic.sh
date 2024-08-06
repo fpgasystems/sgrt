@@ -8,6 +8,17 @@ normal=$(tput sgr0)
 #usage:       $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --version $vivado_version
 #example: /opt/sgrt/cli/validate/opennic --commit            8077751             1cf2578 --device             1 --version          2022.2
 
+check_connectivity() {
+    local device_name=$1
+    local state=$(nmcli device show "$device_name" | grep 'GENERAL.STATE' | awk '{print $2, $3}')
+    
+    if [ "$state" == "100 (connected)" ]; then
+        echo "1"
+    else
+        echo "0"
+    fi
+}
+
 #inputs
 commit_name_shell=$2
 commit_name_driver=$3
@@ -70,16 +81,18 @@ if [ ! -f "$DIR/configs/device_config" ]; then
     echo "num_qdma = 1;" >> "$DIR/configs/device_config"
     echo "num_queue = 512;" >> "$DIR/configs/device_config"
     echo "num_cmac_port = 1;" >> "$DIR/configs/device_config"
-    echo "rs_fec = 1;" >> "$DIR/configs/device_config"
+    echo "rs_fec = 0;" >> "$DIR/configs/device_config"
+    chmod a-w "$DIR/configs/device_config"
 
     #host
     touch $DIR/configs/host_config_001
     echo "MAX_NUM_PINGS = 10;" >> "$DIR/configs/host_config_001"
     echo "NUM_PINGS = 5;" >> "$DIR/configs/host_config_001"
+    chmod a-w "$DIR/configs/host_config_001"
 
     #save .device_config
     cp $DIR/configs/device_config $DIR/.device_config
-    chmod a-w "$DIR/.device_config"
+    #chmod a-w "$DIR/.device_config"
 fi
 
 #build
@@ -126,13 +139,35 @@ eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
 #read FPGA_SERVERS_LIST excluding the current hostname
 IFS=$'\n' read -r -d '' -a remote_servers < <(grep -v "^$hostname$" "$FPGA_SERVERS_LIST" && printf '\0')
 
-#get target remote host
-if [[ ${#remote_servers[@]} -gt 0 ]]; then
-    target_host=${remote_servers[0]}
-    #ping
-    echo "${bold}ping -I $eno_onic -c $NUM_PINGS $target_host${normal}"
-    echo ""
-    ping -I $eno_onic -c $NUM_PINGS $target_host
-fi
+#get connection status
+connected=$(check_connectivity "$eno_onic")
+echo "Connectivity is $connected"
+echo "${bold}ping -I $eno_onic -c $NUM_PINGS $target_host${normal}"
+nmcli dev
 
+#get target remote host
+#if [[ $connected = "1" ]]; then
+    if [[ ${#remote_servers[@]} -gt 0 ]]; then
+        target_host=${remote_servers[0]}
+        #ping
+        echo "${bold}ping -I $eno_onic -c $NUM_PINGS $target_host${normal}"
+        echo ""
+        ping -I $eno_onic -c $NUM_PINGS $target_host
+    fi
+#else
+#    echo "Not connected"
+#
+#    #change RS_FEC_ENABLE to 1
+#    chmod a+w "$DIR/configs/device_config"
+#    sed -i 's/rs_fec = 0;/rs_fec = 1;/' "$DIR/configs/device_config"
+#    chmod a-w "$DIR/configs/device_config"
+#    cp -f $DIR/configs/device_config $DIR/.device_config
+#
+#fi
+
+#get RS_FEC_ENABLED from .device_config
+rs_fec=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
+
+echo ""
+echo "OpenNIC validated on ${bold}$hostname${normal} for ${bold}RS_FEC_ENABLE=$rs_fec!${normal}"
 echo ""
