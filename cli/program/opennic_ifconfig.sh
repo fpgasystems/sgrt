@@ -19,18 +19,42 @@ check_ip() {
 mac_address=$(echo "$mac_address" | tr '[:upper:]' '[:lower:]')
 
 #update NetworkManager (set interface as unmanaged)
-device_to_add="unmanaged-devices=interface-name:$eno_onic"
+#device_to_add="unmanaged-devices=interface-name:$eno_onic"
+#if [ ! -e "$UNMANAGED_DEVICES_FILE" ]; then
+#    #create the file and add the device
+#    echo -e "[keyfile]\n$device_to_add" > "$UNMANAGED_DEVICES_FILE"
+#    #reload NetworkManager
+#    sudo systemctl reload NetworkManager
+#elif ! grep -qF "$device_to_add" "$UNMANAGED_DEVICES_FILE"; then
+#    #if the line does not existe in the file, append it at the end
+#    echo "$device_to_add" >> "$UNMANAGED_DEVICES_FILE"
+#    #reload NetworkManager
+#    sudo systemctl reload NetworkManager
+#fi
+device_to_add="interface-name:$eno_onic"
 if [ ! -e "$UNMANAGED_DEVICES_FILE" ]; then
-    #create the file and add the device
-    echo -e "[keyfile]\n$device_to_add" > "$UNMANAGED_DEVICES_FILE"
-    #reload NetworkManager
-    sudo systemctl reload NetworkManager
-elif ! grep -qF "$device_to_add" "$UNMANAGED_DEVICES_FILE"; then
-    #if the line does not existe in the file, append it at the end
-    echo "$device_to_add" >> "$UNMANAGED_DEVICES_FILE"
-    #reload NetworkManager
-    sudo systemctl reload NetworkManager
+    # Create the file and add the device
+    echo -e "[keyfile]\nunmanaged-devices=$device_to_add" > "$UNMANAGED_DEVICES_FILE"
+else
+    # Extract the current devices
+    current_devices=$(grep -oP 'unmanaged-devices=\K.*' "$UNMANAGED_DEVICES_FILE")
+    
+    # Check if the device is already listed
+    if [[ ! $current_devices == *"$device_to_add"* ]]; then
+        # Add the new device to the list, comma-separated
+        if [ -z "$current_devices" ]; then
+            new_devices="$device_to_add"
+        else
+            new_devices="$current_devices,$device_to_add"
+        fi
+        
+        # Update the file with the new device list
+        sed -i "s|unmanaged-devices=.*|unmanaged-devices=$new_devices|" "$UNMANAGED_DEVICES_FILE"
+    fi
 fi
+
+#reload NetworkManager
+sudo systemctl reload NetworkManager
 
 #set IP and MAC with ifconfig
 sudo ifconfig $eno_onic down
