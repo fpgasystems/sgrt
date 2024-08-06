@@ -63,11 +63,8 @@ rm -f $DIR/configs/host_config_000
 if [ ! -f "$DIR/configs/device_config" ]; then
     #host
     touch $DIR/configs/host_config_001
-    echo "W_MAX = 32;" >> "$DIR/configs/host_config_001"
-    echo "W = 32;" >> "$DIR/configs/host_config_001"
-    echo "F = 0;" >> "$DIR/configs/host_config_001"
-    echo "RMSE = 0.01;" >> "$DIR/configs/host_config_001"
-    echo "A = 2;" >> "$DIR/configs/host_config_001"
+    echo "MAX_NUM_PINGS = 10;" >> "$DIR/configs/host_config_001"
+    echo "NUM_PINGS = 5;" >> "$DIR/configs/host_config_001"
     
     #device
     touch $DIR/configs/device_config
@@ -78,6 +75,7 @@ if [ ! -f "$DIR/configs/device_config" ]; then
     echo "num_qdma = 1;" >> "$DIR/configs/device_config"
     echo "num_queue = 512;" >> "$DIR/configs/device_config"
     echo "num_cmac_port = 1;" >> "$DIR/configs/device_config"
+    echo "rs_fec = 1;" >> "$DIR/configs/device_config"
 
     #save .device_config
     cp $DIR/configs/device_config $DIR/.device_config
