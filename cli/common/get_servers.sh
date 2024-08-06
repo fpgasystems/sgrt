@@ -6,14 +6,10 @@ hostname=$3
 username=$4
 
 test_ssh_access() {
-    username="$1"
-    server="$2"
+    local username="$1"
+    local server="$2"
     /usr/bin/ssh -q -o BatchMode=yes -o ConnectTimeout=5 "$username@$server" exit
-    if [ $? -eq 0 ]; then
-        return 0  # SSH access is successful
-    else
-        return 1  # SSH access failed
-    fi
+    return $?  # Return the SSH exit status
 }
 
 # Declare global variables
@@ -23,11 +19,13 @@ declare -g servers_family_list_string=""
 # Convert string to an array
 SERVER_LIST=($SERVER_LIST)
 
-#Loop through the server list and test SSH access
+# Loop through the server list and test SSH access
 servers=()
 for server in "${SERVER_LIST[@]}"; do
-    if test_ssh_access "$username" "$server"; then
-        servers+=("$server") 
+    # Use timeout command to limit the test_ssh_access function execution time
+    timeout 10s bash -c "$(declare -f test_ssh_access); test_ssh_access '$username' '$server'"
+    if [ $? -eq 0 ]; then
+        servers+=("$server")
     fi
 done
 
@@ -43,7 +41,7 @@ for server in "${servers[@]}"; do
     fi
 done
 
-#convert to string and remove the leading delimiter (:2)
+# Convert to string and remove the leading delimiter
 servers_family_list_string=$(printf ", %s" "${servers_family_list[@]}")
 servers_family_list_string=${servers_family_list_string:2}
   
