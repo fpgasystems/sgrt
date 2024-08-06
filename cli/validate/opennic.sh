@@ -61,11 +61,6 @@ rm -f $DIR/configs/host_config_000
 
 #create default configurations
 if [ ! -f "$DIR/configs/device_config" ]; then
-    #host
-    touch $DIR/configs/host_config_001
-    echo "MAX_NUM_PINGS = 10;" >> "$DIR/configs/host_config_001"
-    echo "NUM_PINGS = 5;" >> "$DIR/configs/host_config_001"
-    
     #device
     touch $DIR/configs/device_config
     echo "min_pkt_len = 64;" >> "$DIR/configs/device_config"
@@ -76,6 +71,11 @@ if [ ! -f "$DIR/configs/device_config" ]; then
     echo "num_queue = 512;" >> "$DIR/configs/device_config"
     echo "num_cmac_port = 1;" >> "$DIR/configs/device_config"
     echo "rs_fec = 1;" >> "$DIR/configs/device_config"
+
+    #host
+    touch $DIR/configs/host_config_001
+    echo "MAX_NUM_PINGS = 10;" >> "$DIR/configs/host_config_001"
+    echo "NUM_PINGS = 5;" >> "$DIR/configs/host_config_001"
 
     #save .device_config
     cp $DIR/configs/device_config $DIR/.device_config
