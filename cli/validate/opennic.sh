@@ -155,9 +155,20 @@ if [[ $connected = "1" ]]; then
         ping -I $eno_onic -c $NUM_PINGS $target_host
     fi
 else
-    #change RS_FEC_ENABLED to 1
+    #get RS_FEC_ENABLED from .device_config
+    rs_fec=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
+
+    #switch value
+    if [[ $rs_fec = "0" ]]; then
+        rs_fec="1"
+    elif [[ $rs_fec = "1" ]]; then
+        rs_fec="0"
+    fi
+    
+    #change to switched value
     chmod a+w "$DIR/configs/device_config"
-    sed -i 's/rs_fec = 0;/rs_fec = 1;/' "$DIR/configs/device_config"
+    #sed -i 's/rs_fec = 0;/rs_fec = 1;/' "$DIR/configs/device_config"
+    sed -i "s/^rs_fec = .*/rs_fec = $rs_fec/" "$DIR/configs/device_config"
     chmod a-w "$DIR/configs/device_config"
     cp -f $DIR/configs/device_config $DIR/.device_config
 
