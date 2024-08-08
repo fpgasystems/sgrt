@@ -23,16 +23,18 @@ fi
 sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
 
 #we need to copy the driver to /local to avoid permission problems
-#echo ""
-echo "${bold}Copying driver to $MY_DRIVERS_PATH:${normal}"
-echo ""
-echo "cp -f $driver_name $MY_DRIVERS_PATH"
+if [ ! -f "$MY_DRIVERS_PATH/$(basename "$driver_name")" ]; then
+    #echo ""
+    echo "${bold}Copying driver to $MY_DRIVERS_PATH:${normal}"
+    echo ""
+    echo "cp -f $driver_name $MY_DRIVERS_PATH"
 
-#remove first
-sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name
+    #remove first
+    sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name
 
-#copy driver
-cp -f $driver_name $MY_DRIVERS_PATH
+    #copy driver
+    cp -f $driver_name $MY_DRIVERS_PATH
+fi
 
 #get actual filename
 driver_name=$(basename "$driver_name")
