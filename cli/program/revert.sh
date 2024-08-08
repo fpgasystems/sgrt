@@ -61,13 +61,14 @@ if [ "${#loaded_drivers[@]}" -gt 0 ]; then
         echo "sudo rmmod ${driver%.*}"
         sudo rmmod "${driver%.*}" 2>/dev/null # with 2>/dev/null we avoid printing a message if the module does not exist
     done
+    echo ""
 fi
 
 #get device and serial name
 serial_number=$($CLI_PATH/get/serial -d $device_index | awk -F': ' '{print $2}' | grep -v '^$')
 device_name=$($CLI_PATH/get/name -d $device_index | awk -F': ' '{print $2}' | grep -v '^$')
 
-echo ""
+#echo ""
 echo "${bold}Programming XRT shell:${normal}"
 
 $VIVADO_PATH/$vivado_version/bin/vivado -nolog -nojournal -mode batch -source $CLI_PATH/program/flash_xrt_bitstream.tcl -tclargs $SERVERADDR $serial_number $device_name
