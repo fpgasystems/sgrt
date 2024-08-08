@@ -28,7 +28,8 @@ if [ ! -f "$MY_DRIVERS_PATH/$(basename "$driver_name")" ]; then
     echo "${bold}Copying driver to $MY_DRIVERS_PATH:${normal}"
     echo ""
     echo "cp -f $driver_name $MY_DRIVERS_PATH"
-
+    echo ""
+    
     #remove first
     sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name
 
@@ -41,7 +42,7 @@ driver_name=$(basename "$driver_name")
 
 #inserting driver
 if ! lsmod | grep -q ${driver_name%.ko}; then
-    echo ""
+    #echo ""
     echo "${bold}Inserting ${driver_name%.ko} driver:${normal}"
     echo ""
 
