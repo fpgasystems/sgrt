@@ -154,6 +154,14 @@ if [[ $connected = "1" ]]; then
         echo ""
         ping -I $eno_onic -c $NUM_PINGS $target_host
     fi
+
+    #get RS_FEC_ENABLED from .device_config
+    rs_fec=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
+
+    #print
+    echo ""
+    echo "OpenNIC validated on ${bold}$hostname (device $device_index)${normal} with ${bold}RS_FEC_ENABLED=$rs_fec!${normal}"
+    echo ""
 else
     #get RS_FEC_ENABLED from .device_config
     rs_fec=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
@@ -167,7 +175,6 @@ else
     
     #change to switched value
     chmod a+w "$DIR/configs/device_config"
-    #sed -i 's/rs_fec = 0;/rs_fec = 1;/' "$DIR/configs/device_config"
     sed -i "s/^rs_fec = .*/rs_fec = $rs_fec/" "$DIR/configs/device_config"
     chmod a-w "$DIR/configs/device_config"
     cp -f $DIR/configs/device_config $DIR/.device_config
@@ -187,11 +194,9 @@ else
         echo ""
         ping -I $eno_onic -c $NUM_PINGS $target_host
     fi
+
+    #print
+    echo ""
+    echo "OpenNIC validated on ${bold}$hostname (device $device_index)${normal} with ${bold}RS_FEC_ENABLED=$rs_fec!${normal}"
+    echo ""
 fi
-
-#get RS_FEC_ENABLED from .device_config
-rs_fec=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
-
-echo ""
-echo "OpenNIC validated on ${bold}$hostname${normal} for ${bold}RS_FEC_ENABLED=$rs_fec!${normal}"
-echo ""
