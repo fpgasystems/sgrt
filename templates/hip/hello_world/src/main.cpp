@@ -98,7 +98,13 @@ int main( int argc, char* argv[] )
  
     // Execute the kernel
     gpu::vadd<<<gridSize,N_THREADS>>>(GPUArrayA,GPUArrayB,GPUArrayC,N,deviceId);
-    hipDeviceSynchronize();
+    
+    hipError_t syncResult = hipDeviceSynchronize();
+    if (syncResult != hipSuccess) {
+        std::cerr << "hipDeviceSynchronize failed with error: " << hipGetErrorString(syncResult) << std::endl;
+        return 1;
+    }
+
     // Copy array back to host
    HIP_ASSERT(hipMemcpy(CPUArrayC,GPUArrayC, bytes, hipMemcpyDeviceToHost));
 
