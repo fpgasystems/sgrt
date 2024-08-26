@@ -200,3 +200,5 @@ else
     echo "OpenNIC validated on ${bold}$hostname (device $device_index)${normal} with ${bold}RS_FEC_ENABLED=$rs_fec!${normal}"
     echo ""
 fi
+
+#author: https://github.com/jmoya82
