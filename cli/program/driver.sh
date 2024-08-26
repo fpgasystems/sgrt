@@ -31,7 +31,7 @@ if [ ! -f "$MY_DRIVERS_PATH/$(basename "$driver_name")" ]; then
     echo ""
     
     #remove first
-    sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name
+    #sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name
 
     #copy driver
     cp -f $driver_name $MY_DRIVERS_PATH
