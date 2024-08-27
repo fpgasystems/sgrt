@@ -2574,7 +2574,7 @@ case "$command" in
         fi
 
         #FEC dialog
-        echo "Would you like to enable RS-FEC encoding (y/n)?"
+        echo "${bold}Would you like to enable RS-FEC encoding (y/n)?${normal}"
         while true; do
             read -p "" yn
             case $yn in
