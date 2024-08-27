@@ -22,6 +22,11 @@
   &nbsp; &nbsp; FPGA Device Index (see sgutil examine).
 </p>
 
+<code>-f, --fec <string></code>
+<p>
+  &nbsp; &nbsp; Enables or disables RS-FEC encoding.
+</p>
+
 <code>-h, --help <string></code>
 <p>
   &nbsp; &nbsp; Help to use this command.
@@ -30,5 +35,5 @@
 ### Examples
 ```
 $ sgutil validate opennic
-$ sgutil validate opennic -d 1
+$ sgutil validate opennic -d 1 -f 0
 ```

@@ -5,8 +5,8 @@ CLI_NAME="sgutil"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --RS_FEC_ENABLED $rs_fec --version $vivado_version
-#example: /opt/sgrt/cli/validate/opennic --commit            8077751             1cf2578 --device             1 --RS_FEC_ENABLED 1       --version          2022.2
+#usage:       $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --fec $fec_option --version $vivado_version
+#example: /opt/sgrt/cli/validate/opennic --commit            8077751             1cf2578 --device             1 --fec 1           --version          2022.2
 
 check_connectivity() {
     local interface="$1"
@@ -24,7 +24,7 @@ check_connectivity() {
 commit_name_shell=$2
 commit_name_driver=$3
 device_index=$5
-rs_fec=$7
+fec_option=$7
 vivado_version=$9
 
 #constants
@@ -86,7 +86,7 @@ rm -f $DIR/configs/host_config_000
     echo "num_qdma = 1;" >> "$DIR/configs/device_config"
     echo "num_queue = 512;" >> "$DIR/configs/device_config"
     echo "num_cmac_port = 1;" >> "$DIR/configs/device_config"
-    echo "rs_fec = $rs_fec;" >> "$DIR/configs/device_config"
+    echo "rs_fec = $fec_option;" >> "$DIR/configs/device_config"
     chmod a-w "$DIR/configs/device_config"
 
     #host
@@ -169,14 +169,14 @@ if [[ $connected = "1" ]]; then
     fi
 
     #get RS_FEC_ENABLED from .device_config
-    rs_fec=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
+    fec_option=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
 
     #print
     echo ""
-    echo -e "\e[32mOpenNIC validated on ${bold}$hostname (device $device_index)${normal}\e[32m with ${bold}RS_FEC_ENABLED=$rs_fec!${normal}\e[0m"
+    echo -e "\e[32mOpenNIC validated on ${bold}$hostname (device $device_index)${normal}\e[32m with ${bold}RS_FEC_ENABLED=$fec_option!${normal}\e[0m"
     echo ""
 else
-    echo -e "\e[31mOpenNIC failed on ${bold}$hostname (device $device_index)${normal}\e[31m with ${bold}RS_FEC_ENABLED=$rs_fec!${normal}\e[0m"
+    echo -e "\e[31mOpenNIC failed on ${bold}$hostname (device $device_index)${normal}\e[31m with ${bold}RS_FEC_ENABLED=$fec_option!${normal}\e[0m"
     echo ""
 fi
 

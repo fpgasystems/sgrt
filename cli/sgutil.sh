@@ -124,6 +124,7 @@ CHECK_ON_CONFIG_ERR_MSG="Please, create a valid configuration first."
 CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
 CHECK_ON_DRIVER_ERR_MSG="Please, choose a valid driver name."
 CHECK_ON_DRIVER_PARAMS_ERR_MSG="Please, choose a valid list of module parameters." 
+CHECK_ON_FEC_ERR_MSG="Please, choose a valid FEC option."
 CHECK_ON_FPGA_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to your GitHub account."
 CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
@@ -379,6 +380,22 @@ driver_check() {
   if [ "$params_found" = "1" ] && ([ "$params_string" = "" ] || ! [[ $params_string =~ $pattern ]]); then
       echo ""
       echo $CHECK_ON_DRIVER_PARAMS_ERR_MSG
+      echo ""
+      exit 1
+  fi
+}
+
+fec_check() {
+  local CLI_PATH=$1
+  shift 1
+  local flags_array=("$@")
+  result="$("$CLI_PATH/common/fec_dialog_check" "${flags_array[@]}")"
+  fec_option_found=$(echo "$result" | sed -n '1p')
+  fec_option=$(echo "$result" | sed -n '2p')
+  #forbidden combinations
+  if [ "$fec_option_found" = "1" ] && { [ "$fec_option" -ne 0 ] && [ "$fec_option" -ne 1 ]; }; then
+      echo ""
+      echo $CHECK_ON_FEC_ERR_MSG
       echo ""
       exit 1
   fi
@@ -2495,7 +2512,7 @@ case "$command" in
         ;;
       opennic)
         #check on flags
-        valid_flags="-c --commit -d --device -h --help"
+        valid_flags="-c --commit -d --device -f --fec -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -2554,10 +2571,13 @@ case "$command" in
         #initialize
         device_found="0"
         device_index=""
+        fec_option_found="0"
+        fec_option=""
 
         #checks (command line 2/2)
         if [ ! "$flags_array" = "" ]; then
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          fec_check "$CLI_PATH" "${flags_array[@]}"
         fi
 
         if [ "$multiple_devices" = "0" ]; then
@@ -2574,24 +2594,29 @@ case "$command" in
         fi
 
         #FEC dialog
-        echo "${bold}Would you like to enable RS-FEC encoding (y/n)?${normal}"
-        while true; do
-            read -p "" yn
-            case $yn in
-                "y")
-                    rs_fec="1"
-                    break
-                    ;;
-                "n") 
-                    rs_fec="0"
-                    break
-                    ;;
-            esac
-        done
-        echo ""
+        if [ "$fec_option_found" = "0" ]; then
+          echo "${bold}Would you like to enable RS-FEC encoding (y/n)?${normal}"
+          while true; do
+              read -p "" yn
+              case $yn in
+                  "y")
+                      fec_option="1"
+                      break
+                      ;;
+                  "n") 
+                      fec_option="0"
+                      break
+                      ;;
+              esac
+          done
+          echo ""
+        fi
+
+        echo "fec_option_found: $fec_option_found"
+        echo "fec_option: $fec_option"
 
         #run
-        $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --RS_FEC_ENABLED $rs_fec --version $vivado_version
+        $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --fec $fec_option --version $vivado_version
         ;;
       vitis)
         valid_flags="-d --device -h --help"

@@ -326,7 +326,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--processes --help" -- ${cur}))
                             ;;
                         opennic)
-                            COMPREPLY=($(compgen -W "--commit --device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--commit --device --fec --help" -- ${cur}))
                             ;;
                         vitis) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
@@ -399,7 +399,7 @@ _sgutil_completions()
             other_flags=( "--bandwidth" "--parallel" "--time" "--udp" )
             command_completion_5 "$cur" "$COMP_CWORD" "validate" "iperf" "${other_flags[@]}"
 
-            other_flags=( "--commit" "--device" )
+            other_flags=( "--commit" "--device" "--fec" )
             command_completion_5 "$cur" "$COMP_CWORD" "validate" "opennic" "${other_flags[@]}"
             ;;
         7)
@@ -527,6 +527,16 @@ _sgutil_completions()
             other_flags=( "--config" "--project" )
             command_completion_7 "$cur" "$COMP_CWORD" "run" "vitis" "--target" "${other_flags[@]}"
 
+            #validate opennic
+            other_flags=( "--device" "--fec" )
+            command_completion_7 "$cur" "$COMP_CWORD" "validate" "opennic" "--commit" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--fec" )
+            command_completion_7 "$cur" "$COMP_CWORD" "validate" "opennic" "--device" "${other_flags[@]}"
+
+            other_flags=( "--commit" "--device" )
+            command_completion_7 "$cur" "$COMP_CWORD" "validate" "opennic" "--fec" "${other_flags[@]}"
+            
             #validate iperf
             other_flags=( "--parallel" "--time" "--udp" )
             command_completion_7 "$cur" "$COMP_CWORD" "validate" "iperf" "--bandwidth" "${other_flags[@]}"
