@@ -216,21 +216,36 @@ else
 fi
 
 #cleaning
-#echo "${bold}Cleaning validation files:${normal}"
-##echo ""
+echo "${bold}Removing driver and reverting device:${normal}"
 
-#remove driver
-##driver_name="${DRIVER_NAME%.ko}"
-#sudo rmmod ${DRIVER_NAME%.ko}
-#sudo $CLI_PATH/common/rm "$MY_DRIVERS_PATH/$DRIVER_NAME"
+# Remove driver
+sudo rmmod ${DRIVER_NAME%.ko}
+sudo $CLI_PATH/common/rm "$MY_DRIVERS_PATH/$DRIVER_NAME"
 
-#revert
-#$CLI_PATH/program/revert -d $device_index --version $vivado_version > /dev/null 2>&1
+# Run revert in the background but attached to the current shell
+$CLI_PATH/program/revert -d $device_index --version $vivado_version > /dev/null 2>&1 &
 
-#remove validation project
+# Capture the PID of the background process
+revert_pid=$!
+
+# Initialize the counter
+counter=0
+max_wait_time=40  # Maximum wait time in seconds
+
+while [ $counter -lt $max_wait_time ]; do
+    echo -n "."  # Print a dot without a newline
+    sleep 1  # Sleep for 1 second
+    counter=$((counter + 1))  # Increment the counter by 1
+done
+
+# Wait for the revert process to complete
+wait $revert_pid
+
+# Remove validation project
 rm -rf $DIR
 
-#echo "Done!"
-echo ""
+# Ensure a new line after completion
+echo
+echo
 
 #author: https://github.com/jmoya82
