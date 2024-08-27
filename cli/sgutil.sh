@@ -2593,27 +2593,27 @@ case "$command" in
           device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         fi
 
-        #FEC dialog
+        #dialogs
         if [ "$fec_option_found" = "0" ]; then
-          echo "${bold}Would you like to enable RS-FEC encoding (y/n)?${normal}"
+          echo "${bold}Please, choose your encoding scheme:${normal}"
+          echo ""
+          echo "0) RS_FEC_ENABLED = 0"
+          echo "1) RS_FEC_ENABLED = 1"
           while true; do
-              read -p "" yn
-              case $yn in
-                  "y")
-                      fec_option="1"
+              read -p "" choice
+              case $choice in
+                  "0")
+                      fec_option="0"
                       break
                       ;;
-                  "n") 
-                      fec_option="0"
+                  "1")
+                      fec_option="1"
                       break
                       ;;
               esac
           done
           echo ""
         fi
-
-        echo "fec_option_found: $fec_option_found"
-        echo "fec_option: $fec_option"
 
         #run
         $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --fec $fec_option --version $vivado_version
