@@ -36,6 +36,7 @@ FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 NUM_PINGS="5"
+PROGRESS_MAX_TIME=40
 WORKFLOW="opennic"
 
 #get hostname
@@ -172,45 +173,9 @@ if [[ $connected = "1" ]]; then
 
     #print
     echo ""
-    #echo -e "\e[32mOpenNIC validated on ${bold}$hostname (device $device_index)${normal} with ${bold}RS_FEC_ENABLED=$rs_fec!${normal}\e[0m"
     echo -e "\e[32mOpenNIC validated on ${bold}$hostname (device $device_index)${normal}\e[32m with ${bold}RS_FEC_ENABLED=$rs_fec!${normal}\e[0m"
     echo ""
 else
-    #get RS_FEC_ENABLED from .device_config
-    #rs_fec=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
-
-    #switch value
-    #if [[ $rs_fec = "0" ]]; then
-    #    rs_fec="1"
-    #elif [[ $rs_fec = "1" ]]; then
-    #    rs_fec="0"
-    #fi
-    
-    #change to switched value
-    #chmod a+w "$DIR/configs/device_config"
-    #sed -i "s/^rs_fec = .*/rs_fec = $rs_fec/" "$DIR/configs/device_config"
-    #chmod a-w "$DIR/configs/device_config"
-    #cp -f $DIR/configs/device_config $DIR/.device_config
-
-    #revert and program
-    #$CLI_PATH/program/revert -d $device_index --version $vivado_version
-    #echo ""
-    #before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
-    #$CLI_PATH/program/opennic --commit $commit_name_shell --device $device_index --project $project_name --version $vivado_version --remote $DEPLOY_OPTION
-    #after=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
-    #after=${after%:}
-    #eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
-
-    #ping
-    #if [[ ${#remote_servers[@]} -gt 0 ]]; then
-    #    echo "${bold}ping -I $eno_onic -c $NUM_PINGS $target_host${normal}"
-    #    echo ""
-    #    ping -I $eno_onic -c $NUM_PINGS $target_host
-    #fi
-
-    #print
-    #echo ""
-    #echo "OpenNIC validated on ${bold}$hostname (device $device_index)${normal} with ${bold}RS_FEC_ENABLED=$rs_fec!${normal}"
     echo -e "\e[31mOpenNIC failed on ${bold}$hostname (device $device_index)${normal}\e[31m with ${bold}RS_FEC_ENABLED=$rs_fec!${normal}\e[0m"
     echo ""
 fi
@@ -228,11 +193,9 @@ $CLI_PATH/program/revert -d $device_index --version $vivado_version > /dev/null 
 # Capture the PID of the background process
 revert_pid=$!
 
-# Initialize the counter
+# Print progress
 counter=0
-max_wait_time=40  # Maximum wait time in seconds
-
-while [ $counter -lt $max_wait_time ]; do
+while [ $counter -lt $PROGRESS_MAX_TIME ]; do
     echo -n "."  # Print a dot without a newline
     sleep 1  # Sleep for 1 second
     counter=$((counter + 1))  # Increment the counter by 1
