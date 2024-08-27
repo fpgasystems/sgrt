@@ -2573,8 +2573,25 @@ case "$command" in
           device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         fi
 
+        #FEC dialog
+        echo "Would you like to enable RS-FEC encoding (y/n)?"
+        while true; do
+            read -p "" yn
+            case $yn in
+                "y")
+                    rs_fec="1"
+                    break
+                    ;;
+                "n") 
+                    rs_fec="0"
+                    break
+                    ;;
+            esac
+        done
+        echo ""
+
         #run
-        $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --version $vivado_version
+        $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --RS_FEC_ENABLED $rs_fec --version $vivado_version
         ;;
       vitis)
         valid_flags="-d --device -h --help"
