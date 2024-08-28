@@ -131,7 +131,7 @@ before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 
 #remove driver if exists
 if lsmod | grep -q "${DRIVER_NAME%.ko}"; then
-    echo "${bold}Removing drivers:${normal}"
+    echo "${bold}Removing driver:${normal}"
     echo ""
     echo "sudo rmmod ${DRIVER_NAME%.ko}"
     sudo rmmod ${DRIVER_NAME%.ko}
