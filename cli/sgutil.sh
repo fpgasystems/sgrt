@@ -15,6 +15,7 @@ arguments=$2
 #constants
 COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
+MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 ONIC_DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
@@ -361,7 +362,25 @@ driver_check() {
       program_driver_help
   fi
 
-  #forbidden combinations (2)
+  #forbidden combinations (2 - if -r or --remove are present no other flags are allowed)
+  remove_flag_found="0"
+
+  for flag in "${flags_array[@]}"; do
+    if [[ "$flag" == "-r" || "$flag" == "--remove" ]]; then
+      remove_flag_found="1"
+      break
+    fi
+  done
+
+  if [ "$remove_flag_found" = "1" ]; then
+    for flag in "${flags_array[@]}"; do
+      if [[ "$flag" != "-r" && "$flag" != "--remove" && "$flag" == -* ]]; then
+        program_driver_help
+      fi
+    done
+  fi
+
+  #forbidden combinations (3)
   if [ "$driver_found" = "1" ] && ([ "$driver_name" = "" ] || [ ! -f "$driver_name" ] || [ "${driver_name##*.}" != "ko" ]); then
       echo ""
       echo $CHECK_ON_DRIVER_ERR_MSG
@@ -376,7 +395,7 @@ driver_check() {
   #define the expected pattern for driver parameters
   pattern='^[^=,]+=[^=,]+(,[^=,]+=[^=,]+)*$' 
 
-  #forbidden combinations (3)
+  #forbidden combinations (4)
   if [ "$params_found" = "1" ] && ([ "$params_string" = "" ] || ! [[ $params_string =~ $pattern ]]); then
       echo ""
       echo $CHECK_ON_DRIVER_PARAMS_ERR_MSG
@@ -2102,7 +2121,7 @@ case "$command" in
         ;;
       driver)
         #check on flags
-        valid_flags="-i --insert -p --params -h --help"
+        valid_flags="-i --insert -p --params -r --remove -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -2115,6 +2134,44 @@ case "$command" in
 
         #dialogs
         driver_check "$CLI_PATH" "${flags_array[@]}"
+        #echo ""
+        #echo "${bold}$CLI_NAME $command $arguments${normal}"
+        #echo ""
+
+        #check on -r or --remove
+        if [ "$remove_flag_found" = "1" ]; then
+          #get actual filename (i.e. onik.ko without the path)
+          driver_name_base=$(basename "$driver_name")
+
+          if lsmod | grep -q "${driver_name_base%.ko}"; then
+            echo ""
+            echo "${bold}$CLI_NAME $command $arguments${normal}"
+            echo ""
+            
+            #remove module
+            echo "${bold}Removing ${driver_name_base%.ko} driver:${normal}"
+            echo ""
+            echo "sudo rmmod ${driver_name_base%.ko}"
+            echo ""
+            sudo rmmod ${driver_name_base%.ko}
+
+            echo "${bold}Deleting driver from $MY_DRIVERS_PATH:${normal}"
+            echo ""
+            echo "sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
+            echo "sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name"
+            echo ""
+
+            #change ownership to ensure writing permissions and remove
+            sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
+            sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name
+          else
+            echo ""
+            echo $CHECK_ON_DRIVER_ERR_MSG
+            echo ""
+          fi
+          exit
+        fi
+
         echo ""
         echo "${bold}$CLI_NAME $command $arguments${normal}"
         echo ""

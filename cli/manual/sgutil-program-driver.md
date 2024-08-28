@@ -8,7 +8,7 @@
 
 <code>sgutil program driver [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Inserts a driver or module into the Linux kernel.
+  &nbsp; &nbsp; Inserts or removes a driver or module into the Linux kernel.
 </p>
 
 ### Flags
@@ -22,6 +22,11 @@
   &nbsp; &nbsp; A comma separated list of module parameters.
 </p>
 
+<code>-r, --remove <string></code>
+<p>
+  &nbsp; &nbsp; Removes an existing module.
+</p>
+
 <code>-h, --help <string></code>
 <p>
   &nbsp; &nbsp; Help to use this command.
@@ -29,6 +34,7 @@
 
 ### Examples
 ```
-$ sgutil program driver -m my_driver.ko
-$ sgutil program driver -m my_driver.ko -p ip_addr_q0=0AFD4A7A,mac_addr_q0=000A350F5D28
+$ sgutil program driver -i my_driver.ko
+$ sgutil program driver -i my_driver.ko -p ip_addr_q0=0AFD4A7A,mac_addr_q0=000A350F5D28
+$ sgutil program driver -r my_driver.ko
 ```
