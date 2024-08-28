@@ -251,7 +251,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--commit --device --project --remote --help" -- ${cur}))
                             ;;
                         driver)
-                            COMPREPLY=($(compgen -W "--module --params --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--insert --params --help" -- ${cur}))
                             ;;
                         opennic)
                             COMPREPLY=($(compgen -W "--commit --device --project --remote --help" -- ${cur}))
@@ -367,7 +367,7 @@ _sgutil_completions()
             other_flags=( "--commit" "--device" "--project" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "coyote" "${other_flags[@]}"
             
-            other_flags=( "--module" "--params" )
+            other_flags=( "--insert" "--params" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "${other_flags[@]}"
 
             other_flags=( "--commit" "--device" "--project" "--remote" )

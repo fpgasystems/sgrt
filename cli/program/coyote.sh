@@ -387,7 +387,7 @@ $CLI_PATH/program/vivado --device $device_index -b $MY_PROJECTS_PATH/$WORKFLOW/$
 
 #insert coyote driver
 #eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$DRIVER_NAME -p ip_addr_q0=$IP_address_0_hex,mac_addr_q0=$MAC_address_0_hex"
-eval "$CLI_PATH/program/driver -m $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME -p config_fname=$CONFIG_FNAME"
+eval "$CLI_PATH/program/driver -i $MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$DRIVER_NAME -p config_fname=$CONFIG_FNAME"
 
 #enable vFPGA regions
 #$CLI_PATH/program/enable_N_REGIONS $device_index

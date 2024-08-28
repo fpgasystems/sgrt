@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/program/driver --module $driver_name --params $params_string
-#example: /opt/sgrt/cli/program/driver --module      onic.ko --params RS_FEC_ENABLED=0
+#usage:       $CLI_PATH/program/driver --insert $driver_name --params $params_string
+#example: /opt/sgrt/cli/program/driver --insert      onic.ko --params RS_FEC_ENABLED=0
 
 #inputs
 driver_name=$2

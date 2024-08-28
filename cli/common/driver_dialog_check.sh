@@ -9,7 +9,7 @@ declare -g driver_name=""
 #read flags
 for (( i=0; i<${#flags[@]}; i++ ))
 do
-    if [[ " ${flags[$i]} " =~ " -m " ]] || [[ " ${flags[$i]} " =~ " --module " ]] || [[ " ${flags[$i]} " =~ " --driver " ]]; then # flags[i] is -d or --device
+    if [[ " ${flags[$i]} " =~ " -i " ]] || [[ " ${flags[$i]} " =~ " --insert " ]]; then # flags[i] is -d or --device #|| [[ " ${flags[$i]} " =~ " --driver " ]]
         driver_found="1"
         driver_idx=$(($i+1))
         driver_name=${flags[$driver_idx]}

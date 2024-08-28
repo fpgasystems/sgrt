@@ -2102,7 +2102,7 @@ case "$command" in
         ;;
       driver)
         #check on flags
-        valid_flags="-m --module -p --params -h --help"
+        valid_flags="-i --insert -p --params -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -2120,7 +2120,7 @@ case "$command" in
         echo ""
 
         #run
-        $CLI_PATH/program/driver --module $driver_name --params $params_string
+        $CLI_PATH/program/driver --insert $driver_name --params $params_string
         ;;
       opennic)
         #check on flags

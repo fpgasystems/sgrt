@@ -12,7 +12,7 @@
 </p>
 
 ### Flags
-<code>-m, --module <string></code>
+<code>-i, --insert <string></code>
 <p>
   &nbsp; &nbsp; Full path to the .ko module to be inserted.
 </p>
