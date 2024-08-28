@@ -19,31 +19,58 @@ if [ ! -d "$MY_DRIVERS_PATH" ]; then
     mkdir "$MY_DRIVERS_PATH"
 fi
 
-#change ownership to ensure writing permissions
-sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
-
-#we need to copy the driver to /local to avoid permission problems
-if [ ! -f "$MY_DRIVERS_PATH/$(basename "$driver_name")" ]; then
-    #echo ""
-    echo "${bold}Copying driver to $MY_DRIVERS_PATH:${normal}"
-    echo ""
-    echo "cp -f $driver_name $MY_DRIVERS_PATH"
-    echo ""
-    
-    #remove first
-    #sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name
-
-    #copy driver
-    cp -f $driver_name $MY_DRIVERS_PATH
-fi
-
-#get actual filename
-driver_name=$(basename "$driver_name")
+#get actual filename (i.e. onik.ko without the path)
+driver_name_base=$(basename "$driver_name")
 
 #inserting driver
-if ! lsmod | grep -q ${driver_name%.ko}; then
+insert_driver="0"
+if ! lsmod | grep -q ${driver_name_base%.ko}; then
+    insert_driver="1"
+else
+    echo "The driver ${bold}${driver_name_base%.ko}${normal} is already inserted. Do you want to remove it and insert it again (y/n)?"
+    while true; do
+        read -p "" yn
+        case $yn in
+            "y")
+                insert_driver="1"
+                echo ""
+                echo "${bold}Removing driver:${normal}"
+                echo ""
+                echo "sudo rmmod ${driver_name_base%.ko}"
+                sudo rmmod ${driver_name_base%.ko}
+                break
+                ;;
+            "n") 
+                #compile="0"
+                break
+                ;;
+        esac
+    done
+    echo ""
+fi
+
+#inserting the driver
+if [ "$insert_driver" = "1" ]; then 
+    #change ownership to ensure writing permissions
+    sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
+
+    #we need to copy the driver to /local to avoid permission problems
+    #if [ ! -f "$MY_DRIVERS_PATH/$(basename "$driver_name")" ]; then
+        #echo ""
+        echo "${bold}Copying driver to $MY_DRIVERS_PATH:${normal}"
+        echo ""
+        echo "cp -f $driver_name $MY_DRIVERS_PATH"
+        echo ""
+        
+        #remove first
+        #sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name
+
+        #copy driver
+        cp -f $driver_name $MY_DRIVERS_PATH
+    #fi
+
     #echo ""
-    echo "${bold}Inserting ${driver_name%.ko} driver:${normal}"
+    echo "${bold}Inserting $driver_name_base driver:${normal}"
     echo ""
 
     #replace commas with spaces
@@ -54,8 +81,8 @@ if ! lsmod | grep -q ${driver_name%.ko}; then
     #echo "sudo rmmod ${driver_name%.ko}"
     #sudo rmmod ${driver_name%.ko} 2>/dev/null # with 2>/dev/null we avoid printing a message if the module does not exist
     #sleep 1
-    echo "sudo insmod $MY_DRIVERS_PATH/$driver_name $params_string"
-    sudo insmod $MY_DRIVERS_PATH/$driver_name $params_string
+    echo "sudo insmod $MY_DRIVERS_PATH/$driver_name_base $params_string"
+    sudo insmod $MY_DRIVERS_PATH/$driver_name_base $params_string
     sleep 1
     echo ""
 fi
