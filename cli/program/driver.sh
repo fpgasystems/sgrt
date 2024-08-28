@@ -55,19 +55,13 @@ if [ "$insert_driver" = "1" ]; then
     sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
 
     #we need to copy the driver to /local to avoid permission problems
-    #if [ ! -f "$MY_DRIVERS_PATH/$(basename "$driver_name")" ]; then
-        #echo ""
-        echo "${bold}Copying driver to $MY_DRIVERS_PATH:${normal}"
-        echo ""
-        echo "cp -f $driver_name $MY_DRIVERS_PATH"
-        echo ""
-        
-        #remove first
-        #sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name
-
-        #copy driver
-        cp -f $driver_name $MY_DRIVERS_PATH
-    #fi
+    echo "${bold}Copying driver to $MY_DRIVERS_PATH:${normal}"
+    echo ""
+    echo "cp -f $driver_name $MY_DRIVERS_PATH"
+    echo ""
+    
+    #copy driver
+    cp -f $driver_name $MY_DRIVERS_PATH
 
     #echo ""
     echo "${bold}Inserting $driver_name_base driver:${normal}"
@@ -77,10 +71,6 @@ if [ "$insert_driver" = "1" ]; then
     params_string=$(echo "$params_string" | tr ',' ' ')
     params_string=$(echo "$params_string" | tr ';' ' ')
 
-    #we always remove and insert the driver
-    #echo "sudo rmmod ${driver_name%.ko}"
-    #sudo rmmod ${driver_name%.ko} 2>/dev/null # with 2>/dev/null we avoid printing a message if the module does not exist
-    #sleep 1
     echo "sudo insmod $MY_DRIVERS_PATH/$driver_name_base $params_string"
     sudo insmod $MY_DRIVERS_PATH/$driver_name_base $params_string
     sleep 1
