@@ -72,6 +72,9 @@ if ! lsmod | grep -q ${driver_name_base%.ko}; then
     eval "$CLI_PATH/program/driver -i $DIR/$DRIVER_NAME -p RS_FEC_ENABLED=$rs_fec"
 fi
 
+#this gives time the driver binds the device properly
+sleep 2
+
 #get system interfaces (after adding the OpenNIC interface)
 after=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 
