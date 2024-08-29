@@ -64,8 +64,13 @@ $CLI_PATH/program/vivado --bitstream $DIR/$BITSTREAM_NAME --device $device_index
 #get RS_FEC_ENABLED from .device_config
 rs_fec=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
 
-#insert driver
-eval "$CLI_PATH/program/driver -i $DIR/$DRIVER_NAME -p RS_FEC_ENABLED=$rs_fec"
+#get actual filename (i.e. onik.ko without the path)
+driver_name_base=$(basename "$DRIVER_NAME")
+
+#insert driver (only if not present)
+if ! lsmod | grep -q ${driver_name_base%.ko}; then
+    eval "$CLI_PATH/program/driver -i $DIR/$DRIVER_NAME -p RS_FEC_ENABLED=$rs_fec"
+fi
 
 #get system interfaces (after adding the OpenNIC interface)
 after=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')

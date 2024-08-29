@@ -378,29 +378,40 @@ driver_check() {
         program_driver_help
       fi
     done
-  fi
 
-  #forbidden combinations (3)
-  if [ "$driver_found" = "1" ] && ([ "$driver_name" = "" ] || [ ! -f "$driver_name" ] || [ "${driver_name##*.}" != "ko" ]); then
-      echo ""
-      echo $CHECK_ON_DRIVER_ERR_MSG
-      echo ""
-      exit 1
-  fi
-  #params_dialog_check
-  result="$("$CLI_PATH/common/params_dialog_check" "${flags_array[@]}")"
-  params_found=$(echo "$result" | sed -n '1p')
-  params_string=$(echo "$result" | sed -n '2p')
+    #get actual filename (i.e. onik.ko without the path)
+    driver_name_base=$(basename "$driver_name")
 
-  #define the expected pattern for driver parameters
-  pattern='^[^=,]+=[^=,]+(,[^=,]+=[^=,]+)*$' 
+    #forbidden combinations (3)
+    if [ "$driver_found" = "1" ] && ([ "$driver_name_base" = "" ] || ! (lsmod | grep -q "${driver_name_base%.ko}" 2>/dev/null)); then
+        echo ""
+        echo $CHECK_ON_DRIVER_ERR_MSG
+        echo ""
+        exit 1
+    fi
+  else
+    #forbidden combinations (3)
+    if [ "$driver_found" = "1" ] && ([ "$driver_name" = "" ] || [ ! -f "$driver_name" ] || [ "${driver_name##*.}" != "ko" ]); then
+        echo ""
+        echo $CHECK_ON_DRIVER_ERR_MSG
+        echo ""
+        exit 1
+    fi
+    #params_dialog_check
+    result="$("$CLI_PATH/common/params_dialog_check" "${flags_array[@]}")"
+    params_found=$(echo "$result" | sed -n '1p')
+    params_string=$(echo "$result" | sed -n '2p')
 
-  #forbidden combinations (4)
-  if [ "$params_found" = "1" ] && ([ "$params_string" = "" ] || ! [[ $params_string =~ $pattern ]]); then
-      echo ""
-      echo $CHECK_ON_DRIVER_PARAMS_ERR_MSG
-      echo ""
-      exit 1
+    #define the expected pattern for driver parameters
+    pattern='^[^=,]+=[^=,]+(,[^=,]+=[^=,]+)*$' 
+
+    #forbidden combinations (4)
+    if [ "$params_found" = "1" ] && ([ "$params_string" = "" ] || ! [[ $params_string =~ $pattern ]]); then
+        echo ""
+        echo $CHECK_ON_DRIVER_PARAMS_ERR_MSG
+        echo ""
+        exit 1
+    fi
   fi
 }
 
@@ -2158,12 +2169,12 @@ case "$command" in
             echo "${bold}Deleting driver from $MY_DRIVERS_PATH:${normal}"
             echo ""
             echo "sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
-            echo "sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name"
+            echo "sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name.*"
             echo ""
 
             #change ownership to ensure writing permissions and remove
             sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
-            sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name
+            sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/$driver_name.*
           else
             echo ""
             echo $CHECK_ON_DRIVER_ERR_MSG

@@ -36,5 +36,5 @@
 ```
 $ sgutil program driver -i my_driver.ko
 $ sgutil program driver -i my_driver.ko -p ip_addr_q0=0AFD4A7A,mac_addr_q0=000A350F5D28
-$ sgutil program driver -r my_driver.ko
+$ sgutil program driver -r my_driver
 ```
