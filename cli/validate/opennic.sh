@@ -194,14 +194,15 @@ $CLI_PATH/program/revert -d $device_index --version $vivado_version > /dev/null 
 revert_pid=$!
 
 #print progress
+workflow="vivado"
 while true; do
-    workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
     if [ "$workflow" = "vivado" ]; then
         echo -n "."
-        sleep 0.2
+        sleep 0.5
     else
         break
     fi
+    workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index 2>/dev/null)
 done
 
 # Wait for the revert process to complete
