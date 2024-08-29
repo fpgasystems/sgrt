@@ -367,7 +367,7 @@ _sgutil_completions()
             other_flags=( "--commit" "--device" "--project" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "coyote" "${other_flags[@]}"
             
-            other_flags=( "--insert" "--params --remove" )
+            other_flags=( "--insert" "--params " ) #--remove
             command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "${other_flags[@]}"
 
             other_flags=( "--commit" "--device" "--project" "--remote" )
@@ -456,11 +456,11 @@ _sgutil_completions()
             command_completion_7 "$cur" "$COMP_CWORD" "new" "opennic" "--push" "${other_flags[@]}"
             
             #program driver
-            other_flags=( "--params" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--insert" "${other_flags[@]}"
+            #other_flags=( "--params" )
+            #command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--insert" "${other_flags[@]}"
 
-            other_flags=( "--insert" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--params" "${other_flags[@]}"
+            #other_flags=( "--insert" )
+            #command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--params" "${other_flags[@]}"
 
             other_flags=( "" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--remove" "${other_flags[@]}"
