@@ -194,11 +194,20 @@ $CLI_PATH/program/revert -d $device_index --version $vivado_version > /dev/null 
 revert_pid=$!
 
 # Print progress
-counter=0
-while [ $counter -lt $PROGRESS_MAX_TIME ]; do
-    echo -n "."  # Print a dot without a newline
-    sleep 1  # Sleep for 1 second
-    counter=$((counter + 1))  # Increment the counter by 1
+#counter=0
+#while [ $counter -lt $PROGRESS_MAX_TIME ]; do
+#    echo -n "."  # Print a dot without a newline
+#    sleep 1  # Sleep for 1 second
+#    counter=$((counter + 1))  # Increment the counter by 1
+#done
+while true; do
+    workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+    if [ "$workflow" = "vivado" ]; then
+        echo -n "."  # Print a dot without a newline
+        sleep 0.2  # Sleep for 0.2 seconds
+    else
+        break  # Escape the loop if workflow is not "vivado" (e.g., it's "vitis" as the revert finished)
+    fi
 done
 
 # Wait for the revert process to complete
