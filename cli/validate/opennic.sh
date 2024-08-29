@@ -181,11 +181,7 @@ else
 fi
 
 #cleaning
-echo "${bold}Removing driver and reverting device:${normal}"
-
-# Remove driver
-sudo rmmod ${DRIVER_NAME%.ko}
-sudo $CLI_PATH/common/rm "$MY_DRIVERS_PATH/$DRIVER_NAME"
+echo "${bold}Reverting device and removing driver:${normal}"
 
 # Run revert in the background but attached to the current shell
 $CLI_PATH/program/revert -d $device_index --version $vivado_version > /dev/null 2>&1 &
@@ -207,6 +203,10 @@ done
 
 # Wait for the revert process to complete
 wait $revert_pid
+
+# Remove driver
+sudo rmmod ${DRIVER_NAME%.ko}
+sudo $CLI_PATH/common/rm "$MY_DRIVERS_PATH/$DRIVER_NAME"
 
 # Remove validation project
 rm -rf $DIR
