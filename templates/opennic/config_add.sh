@@ -347,6 +347,4 @@ fi
 rm -f $MY_PROJECT_PATH/device_parameters
 rm -f $MY_PROJECT_PATH/host_parameters
 
-#are_equals=$($CLI_PATH/common/compare_files "$MY_PROJECT_PATH/configs/device_config" "$MY_PROJECT_PATH/device_parameters")
-
 #author: https://github.com/jmoya82
