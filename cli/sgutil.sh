@@ -13,6 +13,7 @@ command=$1
 arguments=$2
 
 #constants
+BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 COYOTE_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH COYOTE_COMMIT)
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
@@ -120,6 +121,7 @@ CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
 
 #error messages
 CHECK_ON_XRT_SHELL_ERR_MSG="Sorry, this command is only available for XRT shells."
+CHECK_ON_BITSTREAM_ERR_MSG="Your targeted bitstream is missing."
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
 CHECK_ON_CONFIG_ERR_MSG="Please, create a valid configuration first."
 CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
@@ -2218,7 +2220,7 @@ case "$command" in
         FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
         bitstream_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/${ONIC_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
         if ! [ -e "$bitstream_path" ]; then
-          echo "Your targeted bitstream is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
+          echo "$CHECK_ON_BITSTREAM_ERR_MSG Please, use ${bold}$CLI_NAME build $arguments.${normal}"
           echo ""
           exit 1
         fi
@@ -2659,6 +2661,15 @@ case "$command" in
           echo "${bold}$CLI_NAME $command $arguments (shell and driver commit IDs: $commit_name_shell,$commit_name_driver)${normal}"
           echo ""
           device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        fi
+
+        #bitstream check (the bitstream must be pre-compiled for validation)
+        FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
+        bitstream_path="$BITSTREAMS_PATH/$arguments/$commit_name_shell/${ONIC_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+        if ! [ -e "$bitstream_path" ]; then
+          echo "$CHECK_ON_BITSTREAM_ERR_MSG"
+          echo ""
+          exit 1
         fi
 
         #dialogs
