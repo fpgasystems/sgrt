@@ -27,14 +27,15 @@
     #api installation
     api: false
     #cli installation
+    bitstreams: false
     build: false
-    common: true
+    common: false
     coyote: false
     directories: false
     enable: false
     examine: false
     get: false
-    help: true
+    help: false
     hip: false
     mpi: false
     new: false
@@ -142,6 +143,13 @@
         - write.cpp
         
     #cli
+    #bitstreams
+    - name: copying bitstreams 
+      copy:
+        src: "../cli/bitstreams/"
+        dest: "{{ cli_path }}/bitstreams"
+        mode: "0644"
+      when: all or bitstreams
     #copying files (when all/only if they do not exist on the remote)
     #commit and commit date
     - name: overwrite COMMIT
