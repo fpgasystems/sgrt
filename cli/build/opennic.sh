@@ -44,13 +44,17 @@ library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BITSTREAM_NAME%.bit}.$F
 project_shell="$DIR/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
 
 #shell compilation
-echo "${bold}Shell compilation (commit ID: $commit_name)${normal}"
-echo ""
+#echo "${bold}Shell compilation (commit ID: $commit_name)${normal}"
+#echo ""
+
+#check on bitstream configuration
+are_equals=$($CLI_PATH/common/compare_files "$DIR/configs/device_config" "$DIR/.device_config")
 
 compile="0"
 if [ ! -e "$project_shell" ]; then
     compile="1"
-elif [ -e "$project_shell" ] && [ "$project_name" != "validate_opennic.$commit_name_driver.$FDEV_NAME.$vivado_version" ]; then
+elif [ -e "$project_shell" ] && [ "$are_equals" = "0" ] && [ "$project_name" != "validate_opennic.$commit_name_driver.$FDEV_NAME.$vivado_version" ]; then
+    echo ""
     echo "The shell ${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit already exists. Do you want to remove it and compile it again (y/n)?"
     while true; do
         read -p "" yn
@@ -71,6 +75,10 @@ fi
 
 #launch vivado
 if [ "$compile" = "1" ]; then 
+    #shell compilation
+    echo "${bold}Shell compilation (commit ID: $commit_name)${normal}"
+    echo ""
+
     #read configuration
     tcl_args=$($CLI_PATH/common/get_tclargs $DIR/configs/device_config)
     
