@@ -288,17 +288,17 @@ config_check() {
   fi
 }
 
-cpu_check() {
-  local CLI_PATH=$1
-  local hostname=$2
-  cpu_server=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
-  if [ "$cpu_server" = "0" ]; then
-      echo ""
-      echo $CHECK_ON_VIRTUALIZED_ERR_MSG
-      echo ""
-      exit 1
-  fi
-}
+#cpu_check() {
+#  local CLI_PATH=$1
+#  local hostname=$2
+#  cpu_server=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+#  if [ "$cpu_server" = "0" ]; then
+#      echo ""
+#      echo $CHECK_ON_VIRTUALIZED_ERR_MSG
+#      echo ""
+#      exit 1
+#  fi
+#}
 
 device_dialog() {
   local CLI_PATH=$1
@@ -1800,7 +1800,7 @@ case "$command" in
   build)
     #checks
     if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
-      cpu_check "$CLI_PATH" "$hostname"
+      #cpu_check "$CLI_PATH" "$hostname"
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
       vivado_check "$VIVADO_PATH" "$vivado_version"
       vivado_developers_check "$USER"
@@ -1857,9 +1857,12 @@ case "$command" in
         config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_NAME" "${flags_array[@]}"
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
         platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
+
+        #only CPU (build) servers can build both the bitstream and driver
+        all=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
         
         #run
-        $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --config $config_name --platform $platform_name --project $project_name --version $vivado_version
+        $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --config $config_name --platform $platform_name --project $project_name --version $vivado_version --all $all
         echo ""
         ;;
       vitis) 
