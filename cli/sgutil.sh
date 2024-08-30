@@ -288,6 +288,18 @@ config_check() {
   fi
 }
 
+cpu_check() {
+  local CLI_PATH=$1
+  local hostname=$2
+  cpu_server=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  if [ "$cpu_server" = "0" ]; then
+      echo ""
+      echo $CHECK_ON_VIRTUALIZED_ERR_MSG
+      echo ""
+      exit 1
+  fi
+}
+
 device_dialog() {
   local CLI_PATH=$1
   local CLI_NAME=$2
@@ -814,7 +826,7 @@ sudo_check() {
 vivado_check() {
   local VIVADO_PATH=$1
   local vivado_version=$2
-  if [ ! -d $VIVADO_PATH/$vivado_version ]; then
+  if [ -z "$vivado_version" ] || [ ! -d $VIVADO_PATH/$vivado_version ]; then
     echo ""
     echo $CHECK_ON_VIVADO_ERR_MSG
     echo ""
@@ -1788,6 +1800,7 @@ case "$command" in
   build)
     #checks
     if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
+      cpu_check "$CLI_PATH" "$hostname"
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
       vivado_check "$VIVADO_PATH" "$vivado_version"
       vivado_developers_check "$USER"
