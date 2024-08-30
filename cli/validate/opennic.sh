@@ -76,29 +76,26 @@ fi
 rm -f $DIR/configs/host_config_000
 
 #create default configurations
-#if [ ! -f "$DIR/configs/device_config" ]; then
-    #device
-    touch $DIR/configs/device_config
-    echo "min_pkt_len = 64;" >> "$DIR/configs/device_config"
-    echo "max_pkt_len = 1514;" >> "$DIR/configs/device_config"
-    echo "use_phys_func = 1;" >> "$DIR/configs/device_config"
-    echo "num_phys_func = 1;" >> "$DIR/configs/device_config"
-    echo "num_qdma = 1;" >> "$DIR/configs/device_config"
-    echo "num_queue = 512;" >> "$DIR/configs/device_config"
-    echo "num_cmac_port = 1;" >> "$DIR/configs/device_config"
-    echo "rs_fec = $fec_option;" >> "$DIR/configs/device_config"
-    chmod a-w "$DIR/configs/device_config"
+#device
+touch $DIR/configs/device_config
+echo "min_pkt_len = 64;" >> "$DIR/configs/device_config"
+echo "max_pkt_len = 1514;" >> "$DIR/configs/device_config"
+echo "use_phys_func = 1;" >> "$DIR/configs/device_config"
+echo "num_phys_func = 1;" >> "$DIR/configs/device_config"
+echo "num_qdma = 1;" >> "$DIR/configs/device_config"
+echo "num_queue = 512;" >> "$DIR/configs/device_config"
+echo "num_cmac_port = 1;" >> "$DIR/configs/device_config"
+echo "rs_fec = $fec_option;" >> "$DIR/configs/device_config"
+chmod a-w "$DIR/configs/device_config"
 
-    #host
-    touch $DIR/configs/host_config_001
-    echo "MAX_NUM_PINGS = 10;" >> "$DIR/configs/host_config_001"
-    echo "NUM_PINGS = 5;" >> "$DIR/configs/host_config_001"
-    chmod a-w "$DIR/configs/host_config_001"
+#host
+touch $DIR/configs/host_config_001
+echo "MAX_NUM_PINGS = 10;" >> "$DIR/configs/host_config_001"
+echo "NUM_PINGS = 5;" >> "$DIR/configs/host_config_001"
+chmod a-w "$DIR/configs/host_config_001"
 
-    #save .device_config
-    cp $DIR/configs/device_config $DIR/.device_config
-    #chmod a-w "$DIR/.device_config"
-#fi
+#save .device_config
+cp $DIR/configs/device_config $DIR/.device_config
 
 #build
 library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name_shell/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
