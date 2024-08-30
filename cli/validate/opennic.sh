@@ -43,11 +43,6 @@ WORKFLOW="opennic"
 url="${HOSTNAME}"
 hostname="${url%%.*}"
 
-#cleanup bitstreams folder
-if [ -e "$BITSTREAMS_PATH/foo" ]; then
-    sudo $CLI_PATH/common/rm "$BITSTREAMS_PATH/foo"
-fi
-
 #get device_name
 device_name=$($CLI_PATH/get/get_fpga_device_param $device_index device_name)
 

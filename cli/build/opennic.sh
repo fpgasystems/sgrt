@@ -23,11 +23,6 @@ MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 NUM_JOBS="8"
 WORKFLOW="opennic"
 
-#cleanup bitstreams folder
-if [ -e "$BITSTREAMS_PATH/foo" ]; then
-    sudo $CLI_PATH/common/rm "$BITSTREAMS_PATH/foo"
-fi
-
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
 SHELL_BUILD_DIR="$DIR/open-nic-shell/script"

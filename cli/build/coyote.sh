@@ -222,11 +222,6 @@ if ! [ -d "$DIR" ]; then
     exit
 fi
 
-#cleanup bitstreams folder
-if [ -e "$BITSTREAMS_PATH/foo" ]; then
-    sudo $CLI_PATH/common/rm "$BITSTREAMS_PATH/foo"
-fi
-
 #platform_name to FDEV_NAME
 FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
 
