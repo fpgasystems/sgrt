@@ -1855,7 +1855,6 @@ case "$command" in
 
         #only CPU (build) servers can build both the bitstream and driver
         is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
-        #echo "HEEEYYYY! $is_cpu"
 
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
@@ -1885,16 +1884,7 @@ case "$command" in
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_NAME" "${flags_array[@]}"
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
-        #if [ "$is_cpu" = "1" ]; then
-        #  platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "$is_cpu" "${flags_array[@]}"
-        #else
-        #  #platform_found="1"
-        #  platform_name="none"
-        #fi
         platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "$is_cpu" "${flags_array[@]}"
-
-        #only CPU (build) servers can build both the bitstream and driver
-        #all=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
         
         #run
         $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --config $config_name --platform $platform_name --project $project_name --version $vivado_version --all $is_cpu
