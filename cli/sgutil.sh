@@ -669,6 +669,19 @@ project_check() {
   local commit_name=$4
   shift 4
   local flags_array=("$@")
+
+  project_found="0"
+  project_name=""
+
+  #check on PWD
+  project_path=$(dirname "$PWD")  
+
+  if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name" ]; then 
+      project_found="1"
+      project_name=$(basename "$PWD")
+      return 1
+  fi
+
   result="$("$CLI_PATH/common/project_dialog_check" "${flags_array[@]}")"
   project_found=$(echo "$result" | sed -n '1p')
   project_path=$(echo "$result" | sed -n '2p')
@@ -1834,6 +1847,10 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
+        #only CPU (build) servers can build both the bitstream and driver
+        is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+        #echo "HEEEYYYY! $is_cpu"
+
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
@@ -1841,6 +1858,12 @@ case "$command" in
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
           config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "${flags_array[@]}"
         fi
+
+        #if [ "$platform_found" = "1" ] && [ "$is_cpu" = "0" ]; then
+        #  echo "--platform flag ignored."
+        #  #platform_found="1"
+        #  #platform_name="none"
+        #fi
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
@@ -1856,13 +1879,18 @@ case "$command" in
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_NAME" "${flags_array[@]}"
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
-        platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
+        if [ "$is_cpu" = "1" ]; then
+          platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
+        else
+          #platform_found="1"
+          platform_name="none"
+        fi
 
         #only CPU (build) servers can build both the bitstream and driver
-        all=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+        #all=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
         
         #run
-        $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --config $config_name --platform $platform_name --project $project_name --version $vivado_version --all $all
+        $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --config $config_name --platform $platform_name --project $project_name --version $vivado_version --all $is_cpu
         echo ""
         ;;
       vitis) 
