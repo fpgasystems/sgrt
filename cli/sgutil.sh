@@ -972,7 +972,8 @@ build_mpi_help() {
 }
 
 build_opennic_help() {
-    $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME
+    is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+    $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME $is_cpu
     exit
 }
 
@@ -1864,11 +1865,10 @@ case "$command" in
           config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "${flags_array[@]}"
         fi
 
-        #if [ "$platform_found" = "1" ] && [ "$is_cpu" = "0" ]; then
-        #  echo "--platform flag ignored."
-        #  #platform_found="1"
-        #  #platform_name="none"
-        #fi
+        #additional forbidden combination
+        if [ "$is_cpu" = "0" ] && [ "$platform_found" = "1" ]; then
+          build_opennic_help
+        fi
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"

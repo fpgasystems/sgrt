@@ -82,6 +82,12 @@ command_completion_9() {
     fi
 }
 
+#get hostname
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+
+is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+
 _sgutil_completions()
 {
     local cur
@@ -169,7 +175,12 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         opennic)
-                            COMPREPLY=($(compgen -W "--commit --config --platform --project --help" -- ${cur}))
+                            if [ "$is_cpu" = "0" ]; then
+                                #platform is not offered
+                                COMPREPLY=($(compgen -W "--commit --config --project --help" -- ${cur}))
+                            else
+                                COMPREPLY=($(compgen -W "--commit --config --platform --project --help" -- ${cur}))
+                            fi
                             ;;
                         vitis) 
                             COMPREPLY=($(compgen -W "--project --target --help" -- ${cur})) #--xclbin 
@@ -350,8 +361,14 @@ _sgutil_completions()
             other_flags=( "--commit" "--platform" "--project" )
             command_completion_5 "$cur" "$COMP_CWORD" "build" "coyote" "${other_flags[@]}"
 
-            other_flags=( "--commit" "--config" "--platform" "--project" )
-            command_completion_5 "$cur" "$COMP_CWORD" "build" "opennic" "${other_flags[@]}"
+            if [ "$is_cpu" = "0" ]; then
+                #platform is not offered
+                other_flags=( "--commit" "--config" "--project" )
+                command_completion_5 "$cur" "$COMP_CWORD" "build" "opennic" "${other_flags[@]}"
+            else
+                other_flags=( "--commit" "--config" "--platform" "--project" )
+                command_completion_5 "$cur" "$COMP_CWORD" "build" "opennic" "${other_flags[@]}"
+            fi
 
             other_flags=( "--project" "--target" )
             command_completion_5 "$cur" "$COMP_CWORD" "build" "vitis" "${other_flags[@]}"
