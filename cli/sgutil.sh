@@ -555,38 +555,44 @@ new_check(){
 platform_dialog() {
   local CLI_PATH=$1
   local XILINX_PLATFORMS_PATH=$2
+  local is_cpu=$3
   #local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
-  shift 2
+  shift 3
   local flags_array=("$@")
 
   platform_found=""
   platform_name=""
 
-  if [ "$flags_array" = "" ]; then
-    echo $CHECK_ON_PLATFORM_MSG
-    echo ""
-    result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
-    platform_found=$(echo "$result" | sed -n '1p')
-    platform_name=$(echo "$result" | sed -n '2p')
-    multiple_platforms=$(echo "$result" | sed -n '3p')
-    if [[ $multiple_platforms = "0" ]]; then
-        echo $platform_name
-    fi
-    echo ""
+  if [ "$is_cpu" = "0" ]; then
+    platform_found="1"
+    platform_name="none"
   else
-    platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
-    #forgotten mandatory
-    if [[ $platform_found = "0" ]]; then
-        echo $CHECK_ON_PLATFORM_MSG
-        echo ""
-        result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
-        platform_found=$(echo "$result" | sed -n '1p')
-        platform_name=$(echo "$result" | sed -n '2p')
-        multiple_platforms=$(echo "$result" | sed -n '3p')
-        if [[ $multiple_platforms = "0" ]]; then
-            echo $platform_name
-        fi
-        echo ""
+    if [ "$flags_array" = "" ]; then
+      echo $CHECK_ON_PLATFORM_MSG
+      echo ""
+      result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
+      platform_found=$(echo "$result" | sed -n '1p')
+      platform_name=$(echo "$result" | sed -n '2p')
+      multiple_platforms=$(echo "$result" | sed -n '3p')
+      if [[ $multiple_platforms = "0" ]]; then
+          echo $platform_name
+      fi
+      echo ""
+    else
+      platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
+      #forgotten mandatory
+      if [[ $platform_found = "0" ]]; then
+          echo $CHECK_ON_PLATFORM_MSG
+          echo ""
+          result=$($CLI_PATH/common/platform_dialog $XILINX_PLATFORMS_PATH)
+          platform_found=$(echo "$result" | sed -n '1p')
+          platform_name=$(echo "$result" | sed -n '2p')
+          multiple_platforms=$(echo "$result" | sed -n '3p')
+          if [[ $multiple_platforms = "0" ]]; then
+              echo $platform_name
+          fi
+          echo ""
+      fi
     fi
   fi
 }
@@ -1879,12 +1885,13 @@ case "$command" in
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
         config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_NAME" "${flags_array[@]}"
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
-        if [ "$is_cpu" = "1" ]; then
-          platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
-        else
-          #platform_found="1"
-          platform_name="none"
-        fi
+        #if [ "$is_cpu" = "1" ]; then
+        #  platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "$is_cpu" "${flags_array[@]}"
+        #else
+        #  #platform_found="1"
+        #  platform_name="none"
+        #fi
+        platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "$is_cpu" "${flags_array[@]}"
 
         #only CPU (build) servers can build both the bitstream and driver
         #all=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
