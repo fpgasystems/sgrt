@@ -48,6 +48,7 @@ cp $SGRT_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
 cp $SGRT_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
 cp $SGRT_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
 cp -r $SGRT_PATH/templates/$WORKFLOW/configs $DIR
+cp -r $SGRT_PATH/templates/$WORKFLOW/src $DIR
 
 #compile files
 chmod +x $DIR/config_add
