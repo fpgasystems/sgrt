@@ -79,18 +79,18 @@ LinkCtl=$($CLI_PATH/get/get_fpga_device_param $device_index LinkCtl)
 sudo $CLI_PATH/program/pci_hot_plug 1 $upstream_port $root_port $LinkCtl
 
 #inserting XRT driver
-echo "${bold}Inserting XRT drivers:${normal}"
-echo ""
-if [[ $(lsmod | grep xocl | wc -l) -gt 0 ]]; then
-    echo "sudo modprobe xocl"
-    sudo modprobe xocl
-    sleep 1
-fi
-if [[ $(lsmod | grep xclmgmt | wc -l) -gt 0 ]]; then
-    echo "sudo modprobe xclmgmt"
-    sudo modprobe xclmgmt
-    sleep 1
-fi
+#echo "${bold}Inserting XRT drivers:${normal}"
+#echo ""
+#if [[ $(lsmod | grep xocl | wc -l) -gt 0 ]]; then
+#    echo "sudo modprobe xocl"
+#    sudo modprobe xocl
+#    sleep 1
+#fi
+#if [[ $(lsmod | grep xclmgmt | wc -l) -gt 0 ]]; then
+#    echo "sudo modprobe xclmgmt"
+#    sudo modprobe xclmgmt
+#    sleep 1
+#fi
 #echo ""
 
 #author: https://github.com/jmoya82
