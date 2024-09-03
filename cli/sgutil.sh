@@ -2353,9 +2353,6 @@ case "$command" in
         
         #run
         $CLI_PATH/program/revert --device $device_index --version $vivado_version
-        #if [[ $workflow = "vivado" ]]; then
-        #  echo ""
-        #fi
         ;;
       vivado)
         #check on flags
