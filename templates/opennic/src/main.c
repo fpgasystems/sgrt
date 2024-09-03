@@ -2,19 +2,21 @@
 #include <stdlib.h>
 #include "onic.h"
 
-#define NUM_PINGS 10  // Define NUM_PINGS in main.c
-
 int main(int argc, char *argv[]) {
-    if (argc != 3) {
-        fprintf(stderr, "Usage: %s <onic_name> <remote_server_name>\n", argv[0]);
+    if (argc != 4) {
+        fprintf(stderr, "Usage: %s <onic_name> <remote_server_name> <index>\n", argv[0]);
         return 1;
     }
 
-    const char *onic_name = argv[1];  // Get the network interface name from the command-line argument
-    const char *remote_server_name = argv[2];  // Get the remote server name from the command-line argument
+    const char *onic_name = argv[1];
+    const char *remote_server_name = argv[2];
+    int index = atoi(argv[3]);
 
-    ping(onic_name, remote_server_name, NUM_PINGS);
-    
+    int num_pings = read_parameter(index, "NUM_PINGS");
+    if (num_pings == -1) {
+        return 1;
+    }
+
+    ping(onic_name, remote_server_name, num_pings);
     return 0;
 }
-
