@@ -52,7 +52,11 @@ echo "${bold}You are running $config_name:${normal}"
 echo ""
 cat $DIR/configs/$config_name
 echo ""
-    
+
+echo "${bold}Running your OpenNIC application:${normal}"
+echo ""
+echo "./onic --device enp161s0 --host alveo-u250-01 --config $config_index"
+echo ""
 ./onic --device enp161s0 --host alveo-u250-01 --config $config_index
 
 #run application

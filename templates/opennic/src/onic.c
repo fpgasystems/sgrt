@@ -58,6 +58,7 @@ void ping(const char *onic_name, const char *remote_server_name, int num_pings) 
     char command[256];
     snprintf(command, sizeof(command), "ping -I %s -c %d %s", onic_name, num_pings, remote_server_name);
     printf("%s\n", command);
+    printf("\n");
     int result = system(command);
     if (result != 0) {
         printf("Ping command failed with exit code %d\n", result);
