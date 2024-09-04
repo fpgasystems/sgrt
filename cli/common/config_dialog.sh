@@ -10,6 +10,7 @@ declare -g config_found="0"
 declare -g config_name=""
 declare -g multiple_configs="0"
 declare -g num_configs
+declare -g config_index=""
 
 # Enable nullglob to make unmatched globs expand to nothing
 shopt -s nullglob
@@ -43,6 +44,11 @@ else
             echo "" >&/dev/null
         else
             config_found="1"
+            # Extract the last part of the string after the last underscore
+            config_index="${config_name##*_}"
+
+            # Remove leading zeros
+            config_index=$((10#$config_index))
             break
         fi
     done
@@ -53,3 +59,4 @@ echo "$config_found"
 echo "$config_name"
 echo "$multiple_configs"
 echo "$num_configs"
+echo "$config_index"

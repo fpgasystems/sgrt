@@ -4,12 +4,12 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/run/opennic --commit $commit_name --config $config_name --device $device_index --project $project_name
-#example: /opt/sgrt/cli/run/opennic --commit      8077751 --config            1 --device             1 --project   hello_world
+#usage:       $CLI_PATH/run/opennic --commit $commit_name --config $config_index --device $device_index --project $project_name
+#example: /opt/sgrt/cli/run/opennic --commit      8077751 --config             1 --device             1 --project   hello_world
 
 #inputs
 commit_name=$2
-config_name=$4
+config_index=$4
 device_index=$6
 project_name=$8
 
@@ -25,14 +25,14 @@ platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 
 #define directories (2)
-BUILD_DIR="$DIR/build_dir.$FDEV_NAME" 
+#BUILD_DIR="$DIR/build_dir.$FDEV_NAME" 
 
 #change directory
 echo "${bold}Changing directory:${normal}"
 echo ""
-echo "cd $BUILD_DIR"
+echo "cd $DIR"
 echo ""
-cd $BUILD_DIR
+cd $DIR
 
 #display configuration
 #cd $DIR/configs/
@@ -44,13 +44,19 @@ echo ""
 cat $DIR/.device_config
 echo ""
 
+#get config name
+config_string=$($CLI_PATH/common/get_config_string $config_index)
+config_name="host_config_$config_string"
+
 echo "${bold}You are running $config_name:${normal}"
 echo ""
 cat $DIR/configs/$config_name
 echo ""
     
+./onic --device enp161s0 --host alveo-u250-01 --config $config_index
+
 #run application
-echo "Your application should run here!"
+#echo "Your application should run here!"
 #echo "${bold}Running perf_local host (./main -t 1 -d $device_index):${normal}"
 #./main -t 1 -d $device_index #-b $bus -s $device
 

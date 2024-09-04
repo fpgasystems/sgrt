@@ -209,19 +209,21 @@ config_dialog() {
   local WORKFLOW=$3
   local commit_name=$4
   local project_name=$5
-  local file_name=$6
+  #local file_name=$6
+  local config_prefix=$6
   shift 6
   local flags_array=("$@")
 
   config_found=""
   config_name=""
+  config_index=""
 
   #check if the user has not created any config (for example, by checking on device_config)
-  if [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/configs/$file_name" ]; then
-    echo $CHECK_ON_CONFIG_ERR_MSG
-    echo ""
-    exit 1
-  fi
+  #if [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/configs/$file_name" ]; then
+  #  echo $CHECK_ON_CONFIG_ERR_MSG
+  #  echo ""
+  #  exit 1
+  #fi
   
   if [ "$flags_array" = "" ]; then
     #config_dialog
@@ -231,6 +233,7 @@ config_dialog() {
     config_found=$(echo "$result" | sed -n '1p')
     config_name=$(echo "$result" | sed -n '2p')
     multiple_configs=$(echo "$result" | sed -n '3p')
+    config_index=$(echo "$result" | sed -n '5p')
     #check on config_name
     if [[ $config_name = "" ]]; then
         echo ""
@@ -239,13 +242,16 @@ config_dialog() {
         exit 1
     elif [[ $multiple_configs = "0" ]]; then
         echo $config_name
+        #set config_index
+        config_index="1"
         #echo ""
     fi
     echo ""
   else
-    config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$WORKFLOW" "$commit_name" "$project_name" "${flags_array[@]}"
+    config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$WORKFLOW" "$commit_name" "$project_name" "$config_prefix" "${flags_array[@]}"
     #forgotten mandatory
     if [[ $config_found = "0" ]]; then
+        echo "Here 3"
         #echo ""
         echo $CHECK_ON_CONFIG_MSG
         echo ""
@@ -253,8 +259,11 @@ config_dialog() {
         config_found=$(echo "$result" | sed -n '1p')
         config_name=$(echo "$result" | sed -n '2p')
         multiple_configs=$(echo "$result" | sed -n '3p')
+        config_index=$(echo "$result" | sed -n '5p')
         if [[ $multiple_configs = "0" ]]; then
             echo $config_name
+            #set config_index
+            config_index="1"
         fi
         echo ""
     fi
@@ -267,12 +276,17 @@ config_check() {
   local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
   local commit_name=$4
   local project_name=$5
-  shift 5
+  local config_prefix=$6
+  shift 6
   local flags_array=("$@")
   result="$("$CLI_PATH/common/config_dialog_check" "${flags_array[@]}")"
   config_found=$(echo "$result" | sed -n '1p')
-  config_id=$(echo "$result" | sed -n '2p')
-  config_name=$(echo "$result" | sed -n '3p')
+  config_index=$(echo "$result" | sed -n '2p')
+  #config_name=$(echo "$result" | sed -n '3p')
+
+  #get config name (we use the config_prefix as a parameter)
+  config_string=$($CLI_PATH/common/get_config_string $config_index)
+  config_name="$config_prefix$config_string"
 
   #forbidden combinations
   if [ "$project_name" = "" ]; then
@@ -280,7 +294,7 @@ config_check() {
       echo $CHECK_ON_PROJECT_ERR_MSG
       echo ""
       exit 1
-  elif [ "$config_found" = "1" ] && ([ "$config_id" = "" ] || [ "$config_id" = "0" ] || [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/configs/$config_name" ]); then #implies that --project must be specified
+  elif [ "$config_found" = "1" ] && ([ "$config_index" = "" ] || [ "$config_index" = "0" ] || [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/configs/$config_name" ]); then #implies that --project must be specified
       echo ""
       echo $CHECK_ON_CONFIG_ERR_MSG
       echo ""
@@ -2450,7 +2464,8 @@ case "$command" in
         flags_check $command_arguments_flags"@"$valid_flags
 
         #constants
-        CONFIG_NAME="device_config"
+        #CONFIG_NAME="device_config"
+        CONFIG_PREFIX="host_config_"
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
@@ -2460,12 +2475,12 @@ case "$command" in
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-          config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "${flags_array[@]}"
+          config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
         fi
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-        if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/$CONFIG_NAME" ]; then
+        if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/$config_name" ]; then
             echo ""
             echo "$CHECK_ON_CONFIG_ERR_MSG"
             echo ""
@@ -2475,22 +2490,22 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_NAME" "${flags_array[@]}"
+        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
 
         #build check
-        platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
-        FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
-        DIR="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name"
-        BUILD_DIR="$DIR/build_dir.$FDEV_NAME"
-        if [ ! -d "$BUILD_DIR" ]; then
+        #platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
+        #FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
+        #DIR="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name"
+        #BUILD_DIR="$DIR/build_dir.$FDEV_NAME"
+        if [ ! -x "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/onic" ]; then
           echo "Your targeted application is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
           echo ""
           exit 1
         fi
-        
+
         #run
-        $CLI_PATH/run/opennic --commit $commit_name --config $config_name --device $device_index --project $project_name 
+        $CLI_PATH/run/opennic --commit $commit_name --config $config_index --device $device_index --project $project_name 
         ;;
       mpi) 
         valid_flags="-p --project -h --help" 
