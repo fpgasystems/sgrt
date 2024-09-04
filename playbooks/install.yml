@@ -8,8 +8,9 @@
     #- alveo-u55c
     #- versal-vck5000
     #- hacc-boxes
-    #- alveo-u55c-08.inf.ethz.ch
+    #- alveo-u55c-01.inf.ethz.ch
     - hacc-box-01.inf.ethz.ch
+    #- hacc-box-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -29,13 +30,13 @@
     #cli installation
     bitstreams: false
     build: false
-    common: false
+    common: true
     coyote: false
     directories: false
     enable: false
     examine: false
     get: false
-    help: false
+    help: true
     hip: false
     mpi: false
     new: false
@@ -377,6 +378,7 @@
         - fec_dialog_check
         - get_devices_acap_fpga_coyote
         - get_config_param
+        - get_config_string
         - get_constant
         - get_FDEV_NAME
         - get_email
