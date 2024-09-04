@@ -6,13 +6,13 @@ CC = gcc
 # Compiler flags
 CFLAGS = -Wall
 
-# Source files (relative to the project root directory)
+# Source files
 SRC = src/main.c src/onic.c
 
-# Include directories (relative to the project root directory)
+# Include directories
 INCLUDES = -I./src
 
-# Target executable (placed in the project root directory)
+# Target executable
 TARGET = onic
 
 # Build target
