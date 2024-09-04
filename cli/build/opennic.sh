@@ -33,7 +33,7 @@ DRIVER_DIR="$DIR/open-nic-driver"
 FDEV_NAME=$(echo "$platform_name" | cut -d'_' -f2)
 
 #define directories (2)
-BUILD_DIR="$DIR/build_dir.$FDEV_NAME"
+#BUILD_DIR="$DIR/build_dir.$FDEV_NAME"
 
 #define shells
 library_shell="$BITSTREAMS_PATH/$WORKFLOW/$commit_name/${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
@@ -178,9 +178,14 @@ echo ""
 #application compilation
 echo "${bold}Application compilation ($config_name)${normal}"
 echo ""
-echo "The application gets compiled here... Done!"
-mkdir -p $BUILD_DIR
-touch $BUILD_DIR/_created_in_build_
+echo "cd $DIR"
+echo "make"
+echo ""
+cd $DIR
+make
+
+#mkdir -p $BUILD_DIR
+#touch $BUILD_DIR/_created_in_build_
 
 #copy driver
 cp -f $DRIVER_DIR/$DRIVER_NAME $DIR/$DRIVER_NAME
