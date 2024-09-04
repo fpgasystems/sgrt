@@ -1862,9 +1862,6 @@ case "$command" in
         valid_flags="--commit --platform --project -h --help" 
         flags_check $command_arguments_flags"@"$valid_flags
 
-        #constants
-        #CONFIG_NAME="device_config"
-
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
@@ -2464,7 +2461,6 @@ case "$command" in
         flags_check $command_arguments_flags"@"$valid_flags
 
         #constants
-        #CONFIG_NAME="device_config"
         CONFIG_PREFIX="host_config_"
 
         #inputs (split the string into an array)
@@ -2493,11 +2489,7 @@ case "$command" in
         config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
 
-        #build check
-        #platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
-        #FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
-        #DIR="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name"
-        #BUILD_DIR="$DIR/build_dir.$FDEV_NAME"
+        #onic application check
         if [ ! -x "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/onic" ]; then
           echo "Your targeted application is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
           echo ""
