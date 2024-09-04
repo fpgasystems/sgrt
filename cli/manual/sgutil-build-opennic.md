@@ -17,11 +17,6 @@
   &nbsp; &nbsp; GitHub shell commit ID.
 </p>
 
-<code>    --config <string></code>
-<p>
-  &nbsp; &nbsp; Configuration index.
-</p>
-
 <code>    --platform <string></code>
 <p>
   &nbsp; &nbsp; Xilinx platform (according to sgutil get platform).

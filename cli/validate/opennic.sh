@@ -100,7 +100,7 @@ if [ -e "$library_shell" ]; then
 fi
 echo "${bold}$CLI_NAME build $WORKFLOW (commit ID for shell: $commit_name_shell)${normal}"
 echo ""
-$CLI_PATH/build/opennic --commit $commit_name_shell $commit_name_driver --config "host_config_001" --platform $platform_name --project $project_name --version $vivado_version --all 0
+$CLI_PATH/build/opennic --commit $commit_name_shell $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version --all 0 #--config "host_config_001" 
 echo ""
 
 #add additional echo (1/2)

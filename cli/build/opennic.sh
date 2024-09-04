@@ -4,17 +4,16 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/build/opennic --commit $commit_name_shell $commit_name_driver --config    $config_name --platform                      $platform_name --project $project_name --version $vivado_version --all $all 
-#example: /opt/sgrt/cli/build/opennic --commit            8077751             1cf2578 --config host_config_001 --platform xilinx_u55c_gen3x16_xdma_3_202210_1 --project   hello_world --version          2022.2 --all    1 
+#usage:       $CLI_PATH/build/opennic --commit $commit_name_shell $commit_name_driver --platform                      $platform_name --project $project_name --version $vivado_version --all $all 
+#example: /opt/sgrt/cli/build/opennic --commit            8077751             1cf2578 --platform xilinx_u55c_gen3x16_xdma_3_202210_1 --project   hello_world --version          2022.2 --all    1 
 
 #inputs
 commit_name=$2
 commit_name_driver=$3
-config_name=$5
-platform_name=$7
-project_name=$9
-vivado_version=${11}
-all=${13}
+platform_name=$5
+project_name=$7
+vivado_version=$9
+all=${11}
 
 #constants
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
@@ -110,7 +109,7 @@ cd $DRIVER_DIR && make
 echo ""
 
 #application compilation
-echo "${bold}Application compilation ($config_name)${normal}"
+echo "${bold}Application compilation:${normal}"
 echo ""
 echo "cd $DIR"
 echo "make"

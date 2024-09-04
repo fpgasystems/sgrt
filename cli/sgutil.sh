@@ -1845,11 +1845,11 @@ case "$command" in
         ;;
       opennic) 
         #check on flags
-        valid_flags="--commit --config --platform --project -h --help" 
+        valid_flags="--commit --platform --project -h --help" 
         flags_check $command_arguments_flags"@"$valid_flags
 
         #constants
-        CONFIG_NAME="device_config"
+        #CONFIG_NAME="device_config"
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
@@ -1862,7 +1862,7 @@ case "$command" in
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
           platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-          config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "${flags_array[@]}"
+          #config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "${flags_array[@]}"
         fi
 
         #additional forbidden combination
@@ -1872,22 +1872,22 @@ case "$command" in
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
-        if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/$CONFIG_NAME" ]; then
-            echo ""
-            echo "$CHECK_ON_CONFIG_ERR_MSG"
-            echo ""
-            exit
-        fi
+        #if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/$CONFIG_NAME" ]; then
+        #    echo ""
+        #    echo "$CHECK_ON_CONFIG_ERR_MSG"
+        #    echo ""
+        #    exit
+        #fi
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name)${normal}"
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_NAME" "${flags_array[@]}"
+        #config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_NAME" "${flags_array[@]}"
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
         platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "$is_cpu" "${flags_array[@]}"
         
         #run
-        $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --config $config_name --platform $platform_name --project $project_name --version $vivado_version --all $is_cpu
+        $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version --all $is_cpu #--config "host_config_001" 
         echo ""
         ;;
       vitis) 
