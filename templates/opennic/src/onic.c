@@ -54,6 +54,48 @@ void flags_check(int argc, char *argv[], char **onic_name, char **remote_server_
     }
 }
 
+char* get_network(int device_index, int port_number) {
+    char command[256];
+    snprintf(command, sizeof(command), "sgutil get network --device %d --port %d", device_index, port_number);
+
+    // Open a pipe to the command and read the output
+    FILE *fp = popen(command, "r");
+    if (fp == NULL) {
+        fprintf(stderr, "Error: Failed to run command '%s'\n", command);
+        return NULL;
+    }
+
+    static char result[256];
+    result[0] = '\0'; // Initialize the result as an empty string
+
+    char line[256];
+    while (fgets(line, sizeof(line), fp) != NULL) {
+        // Look for lines that contain an IP address
+        char *ip_start = strstr(line, " ");
+        if (ip_start != NULL) {
+            ip_start += 1; // Skip the space character
+            char *ip_end = strchr(ip_start, ' ');
+            if (ip_end != NULL) {
+                *ip_end = '\0'; // Null-terminate the IP address
+                strncpy(result, ip_start, sizeof(result) - 1);
+                result[sizeof(result) - 1] = '\0'; // Ensure null-termination
+                break; // Exit after finding the first IP address
+            }
+        }
+    }
+
+    // Close the pipe
+    pclose(fp);
+
+    // Check if result is still empty (no IP found)
+    if (result[0] == '\0') {
+        fprintf(stderr, "Error: No valid IP address found in command output.\n");
+        return NULL;
+    }
+
+    return result;
+}
+
 void ping(const char *onic_name, const char *remote_server_name, int num_pings) {
     char command[256];
     snprintf(command, sizeof(command), "ping -I %s -c %d %s", onic_name, num_pings, remote_server_name);
