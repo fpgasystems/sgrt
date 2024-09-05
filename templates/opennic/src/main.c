@@ -7,6 +7,12 @@ int main(int argc, char *argv[]) {
     char *remote_server_name = NULL;
     int config_index = 0;
 
+    // Define and initialize device_index as a string
+    char *device_index_str = "1"; // or use NULL and set it dynamically
+
+    // Convert device_index_str to an integer
+    int device_index = atoi(device_index_str); // A
+
     // Check and process command-line flags
     flags_check(argc, argv, &onic_name, &remote_server_name, &config_index);
 
@@ -18,7 +24,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Get IP for device 1 and port 1
-    char *device_ip1 = get_network(1, 1);
+    char *device_ip1 = get_network(device_index, 1);
     if (device_ip1 != NULL) {
         printf("Device IP (port 1): %s\n", device_ip1);
         
