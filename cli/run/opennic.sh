@@ -55,9 +55,9 @@ echo ""
 
 echo "${bold}Running your OpenNIC application:${normal}"
 echo ""
-echo "./onic --device enp161s0 --host alveo-u250-01 --config $config_index"
+echo "./onic --device $device_index --host alveo-u250-01 --config $config_index"
 echo ""
-./onic --device enp161s0 --host alveo-u250-01 --config $config_index
+./onic --device "$device_index" --host alveo-u250-01 --config $config_index
 
 #run application
 #echo "Your application should run here!"
