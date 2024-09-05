@@ -72,15 +72,10 @@ else
         $CLI_PATH/sgutil get network -h
         exit
     fi
-
     #port_dialog_check
     result="$("$CLI_PATH/common/port_dialog_check" "${flags[@]}")"
     port_found=$(echo "$result" | sed -n '1p')
     port_index=$(echo "$result" | sed -n '2p')
-    
-
-
-
     #device_dialog (forgotten mandatory)
     if [[ $multiple_devices = "0" ]]; then
         device_found="1"
@@ -96,7 +91,7 @@ else
         $CLI_PATH/sgutil get network -h
         exit
     fi
-
+    
     #get values
     ip=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
     mac=$($CLI_PATH/get/get_fpga_device_param $device_index MAC)
