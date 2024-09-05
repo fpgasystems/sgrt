@@ -35,8 +35,8 @@
     directories: false
     enable: false
     examine: false
-    get: false
-    help: false
+    get: true
+    help: true
     hip: false
     mpi: false
     new: false
@@ -46,7 +46,7 @@
     run: false
     set: false
     sgutil: true 
-    templates: true
+    templates: false
     update: false
     validate: false
     vitis: false
@@ -408,6 +408,7 @@
         - params_dialog_check
         - platform_dialog
         - platform_dialog_check
+        - port_dialog_check
         - project_dialog
         - project_dialog_check
         - push_dialog
