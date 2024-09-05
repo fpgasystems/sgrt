@@ -72,6 +72,15 @@ else
         $CLI_PATH/sgutil get network -h
         exit
     fi
+
+    #port_dialog_check
+    result="$("$CLI_PATH/common/port_dialog_check" "${flags[@]}")"
+    port_found=$(echo "$result" | sed -n '1p')
+    port_index=$(echo "$result" | sed -n '2p')
+    
+
+
+
     #device_dialog (forgotten mandatory)
     if [[ $multiple_devices = "0" ]]; then
         device_found="1"
@@ -80,7 +89,15 @@ else
         $CLI_PATH/sgutil get network -h
         exit
     fi
-    #print
+    #forbidden combinations (port)
+    MAX_NUM_PORTS=$($CLI_PATH/get/get_fpga_device_param $device_index IP | grep -o '/' | wc -l)
+    MAX_NUM_PORTS=$((MAX_NUM_PORTS + 1))
+    if ([ "$port_found" = "1" ] && [ "$port_index" = "" ]) || ([ "$port_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $port_index != 1 ))) || ([ "$port_found" = "1" ] && ([[ "$port_index" -gt "$MAX_NUM_PORTS" ]] || [[ "$port_index" -lt 1 ]])); then
+        $CLI_PATH/sgutil get network -h
+        exit
+    fi
+
+    #get values
     ip=$($CLI_PATH/get/get_fpga_device_param $device_index IP)
     mac=$($CLI_PATH/get/get_fpga_device_param $device_index MAC)
     device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
@@ -88,8 +105,18 @@ else
     add_1=$(split_addresses $ip $mac 1)
     name="$device_index"
     name_length=$(( ${#name} + 1 ))
-    echo ""
-    echo "$name: $add_0"
-    printf "%-${name_length}s %s\n" "" "$add_1"
-    echo ""
+
+    #print
+    if [[ $port_found = "0" ]]; then
+        echo ""
+        echo "$name: $add_0"
+        printf "%-${name_length}s %s\n" "" "$add_1"
+        echo ""
+    else
+        port_index=$((port_index - 1))
+        var_name="add_$port_index" # Create the variable name string
+        echo ""
+        echo "$name: ${!var_name}" 
+        echo ""
+    fi
 fi
