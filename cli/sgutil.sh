@@ -1203,17 +1203,8 @@ get_ifconfig_help() {
 }
 
 get_network_help() {
-    echo ""
-    echo "${bold}$CLI_NAME get network [flags] [--help]${normal}"
-    echo ""
-    echo "Retreives FPGA/ACAP networking information."
-    echo ""
-    echo "FLAGS:"
-    echo "   -d, --device    - FPGA/ACAP Device Index (according to $CLI_NAME examine)."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
+  $CLI_PATH/help/get_network $CLI_PATH $CLI_NAME
+  exit
 }
 
 get_platform_help() {
@@ -1977,7 +1968,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       network)
-        valid_flags="-h --help -d --device"
+        valid_flags="-h --help -d --device -p --port"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       platform)

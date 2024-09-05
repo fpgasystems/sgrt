@@ -221,7 +221,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         network) 
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device --port --help" -- ${cur}))
                             ;;
                         platform) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
@@ -372,6 +372,10 @@ _sgutil_completions()
 
             other_flags=( "--project" "--target" )
             command_completion_5 "$cur" "$COMP_CWORD" "build" "vitis" "${other_flags[@]}"
+
+            #get
+            other_flags=( "--device" "--port" )
+            command_completion_5 "$cur" "$COMP_CWORD" "get" "network" "${other_flags[@]}"
 
             #new
             other_flags=( "--commit" "--project" "--push")
