@@ -54,6 +54,54 @@ void flags_check(int argc, char *argv[], char **onic_name, char **remote_server_
     }
 }
 
+char* get_interface_name(char *device_ip) {
+    char command[256];
+    snprintf(command, sizeof(command), "ifconfig");
+
+    FILE *fp = popen(command, "r");
+    if (fp == NULL) {
+        fprintf(stderr, "Error: Failed to run ifconfig command\n");
+        return NULL;
+    }
+
+    static char interface_name[256];
+    char line[256];
+    char current_interface[256] = "";  // Store the current interface name
+    int ip_found = 0;  // Flag to track if the IP is found
+
+    // Read through the ifconfig output line by line
+    while (fgets(line, sizeof(line), fp) != NULL) {
+        // Look for lines that define the interface name (these start without leading spaces)
+        if (line[0] != ' ') {
+            // Capture the interface name and remove any trailing colon
+            sscanf(line, "%s", current_interface);
+            char *colon_ptr = strchr(current_interface, ':');
+            if (colon_ptr != NULL) {
+                *colon_ptr = '\0';  // Remove the colon
+            }
+        }
+
+        // Look for the device_ip in subsequent lines
+        if (strstr(line, device_ip) != NULL) {
+            // If we find the IP, set the flag and break out of the loop
+            ip_found = 1;
+            strncpy(interface_name, current_interface, sizeof(interface_name) - 1);
+            interface_name[sizeof(interface_name) - 1] = '\0';  // Ensure null-termination
+            break;
+        }
+    }
+
+    pclose(fp);
+
+    // If the IP wasn't found, report an error
+    if (!ip_found) {
+        fprintf(stderr, "Error: No interface found for IP %s.\n", device_ip);
+        return NULL;
+    }
+
+    return interface_name;
+}
+
 char* get_network(int device_index, int port_number) {
     char command[256];
     snprintf(command, sizeof(command), "sgutil get network --device %d --port %d", device_index, port_number);
