@@ -11,17 +11,23 @@ int main(int argc, char *argv[]) {
     // Check and process command-line flags
     flags_check(argc, argv, &device_index, &remote_server_name, &config_index);
 
-    // Get IP for device 1 and port 1
-    char *device_ip = get_network(atoi(device_index), 1);
+    // read from device_config (index is set to zero)
+    int num_cmac_port = read_parameter(0, "num_cmac_port");
     
-    // Now get the interface name associated with this IP
-    char *interface_name = get_interface_name(device_ip);
-    
-    // Retrieve number of pings from the configuration
+    // read from configuration
     int num_pings = read_parameter(config_index, "NUM_PINGS");
-
-    // Perform ping operation
-    ping(interface_name, remote_server_name, num_pings);
-
+    
+    // Iterate over each CMAC port
+    for (int i = 1; i <= num_cmac_port; i++) {
+        // Get IP for device 1 and port 1
+        char *device_ip = get_network(atoi(device_index), i);
+        
+        // Now get the interface name associated with this IP
+        char *interface_name = get_interface_name(device_ip);
+        
+        // Perform ping operation
+        ping(interface_name, remote_server_name, num_pings);
+    }
+    
     return 0;
 }

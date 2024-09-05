@@ -157,7 +157,12 @@ void ping(const char *onic_name, const char *remote_server_name, int num_pings) 
 
 int read_parameter(int index, const char *parameter_name) {
     char config_file_path[256];
-    snprintf(config_file_path, sizeof(config_file_path), "./configs/host_config_%03d", index);
+
+    if (index == 0) {
+        snprintf(config_file_path, sizeof(config_file_path), "./.device_config");
+    } else {
+        snprintf(config_file_path, sizeof(config_file_path), "./configs/host_config_%03d", index);
+    }
 
     FILE *file = fopen(config_file_path, "r");
     if (file == NULL) {
