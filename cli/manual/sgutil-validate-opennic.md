@@ -8,7 +8,7 @@
 
 <code>sgutil validate opennic [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Validates OpenNIC on the selected FPGA.
+  &nbsp; &nbsp; Validates OpenNIC on an adaptive device.
 </p>
 
 ### Flags
@@ -19,7 +19,7 @@
 
 <code>-d, --device <string></code>
 <p>
-  &nbsp; &nbsp; FPGA Device Index (see sgutil examine).
+  &nbsp; &nbsp; Device Index (see sgutil examine).
 </p>
 
 <code>-f, --fec <string></code>

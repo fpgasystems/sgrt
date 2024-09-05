@@ -8,7 +8,7 @@
 
 <code>sgutil program opennic [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Programs OpenNIC to a given FPGA.
+  &nbsp; &nbsp; Programs OpenNIC to an adaptive device.
 </p>
 
 ### Flags
@@ -19,7 +19,7 @@
 
 <code>-d, --device <string></code>
 <p>
-  &nbsp; &nbsp; FPGA Device Index (see sgutil examine).
+  &nbsp; &nbsp; Device Index (see sgutil examine).
 </p>
 
 <code>-p, --project <string></code>
