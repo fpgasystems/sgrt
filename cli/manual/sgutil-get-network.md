@@ -8,13 +8,18 @@
 
 <code>sgutil get network [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives FPGA/ACAP networking information. 
+  &nbsp; &nbsp; Retreives networking information for adaptive devices.
 </p>
 
 ### Flags
 <code>-d, --device <string></code>
 <p>
-  &nbsp; &nbsp; FPGA/ACAP Device Index (according to sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
+</p>
+
+<code>-p, --port <string></code>
+<p>
+  &nbsp; &nbsp; Specifies the port number for the network adapter.
 </p>
 
 <code>-h, --help <string></code>

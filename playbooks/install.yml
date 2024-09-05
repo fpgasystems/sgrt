@@ -30,23 +30,23 @@
     #cli installation
     bitstreams: false
     build: false
-    common: true
+    common: false
     coyote: false
     directories: false
     enable: false
     examine: false
     get: false
-    help: true
+    help: false
     hip: false
     mpi: false
     new: false
     opennic: true
-    program: true
+    program: false
     reboot: false
     run: false
     set: false
     sgutil: true 
-    templates: false
+    templates: true
     update: false
     validate: false
     vitis: false
@@ -54,7 +54,7 @@
     #    1. A new release happens when we merge to main.
     #    2. For installing a new release, we will run this playbook (all: true) from the main branch.
     #    3. After login to one of our servers (i.e., alveo-u55c-01) a sudo user runs "sgutil update" and captures COMMIT and COMMIT_DATE.
-    #    4. After replacing COMMIT and COMMIT_DATE in this playbook, we will play it to properly install "sgrt" on the remotes.
+    #    4. After replacing COMMIT and COMMIT_DATE in this playbook, we will play it on all servers to properly install "sgrt" on the remotes.
     #    5. We revert the changes on this playbook.
     COMMIT: "0000000"
     COMMIT_DATE: "1982-08-15T23:55:57Z"
@@ -475,6 +475,7 @@
       loop:
         - build_opennic
         - examine
+        - get_network
         - new_coyote
         - new_opennic
         - program_driver
