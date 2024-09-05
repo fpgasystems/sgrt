@@ -24,9 +24,6 @@ DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name"
 platform=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 FDEV_NAME=$(echo "$platform" | cut -d'_' -f2)
 
-#define directories (2)
-#BUILD_DIR="$DIR/build_dir.$FDEV_NAME" 
-
 #change directory
 echo "${bold}Changing directory:${normal}"
 echo ""
@@ -35,10 +32,6 @@ echo ""
 cd $DIR
 
 #display configuration
-#cd $DIR/configs/
-#config_id=$(ls *.active)
-#config_id="${config_id%%.*}"
-
 echo "${bold}Device parameters:${normal}"
 echo ""
 cat $DIR/.device_config
@@ -53,16 +46,12 @@ echo ""
 cat $DIR/configs/$config_name
 echo ""
 
+#run application
 echo "${bold}Running your OpenNIC application:${normal}"
 echo ""
 echo "./onic --device $device_index --host alveo-u250-01 --config $config_index"
 echo ""
 ./onic --device "$device_index" --host alveo-u250-01 --config $config_index
-
-#run application
-#echo "Your application should run here!"
-#echo "${bold}Running perf_local host (./main -t 1 -d $device_index):${normal}"
-#./main -t 1 -d $device_index #-b $bus -s $device
 
 echo ""
 
