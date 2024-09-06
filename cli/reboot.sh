@@ -38,15 +38,15 @@ if [ "$member" = "false" ]; then
     exit
 fi
 
+#Loop for countdown
+for i in {30..0}; do
+    echo -n "."
+    sleep 0.5
+done
+
+# Print the final message after countdown
 echo ""
-echo "The server will reboot (warm boot) in 3 seconds."
-sleep 1
-echo "The server will reboot (warm boot) in 2 seconds.."
-sleep 1
-echo "The server will reboot (warm boot) in 1 seconds..."
-sleep 1
-echo ""
-echo "See you later, ${bold}$username!${normal}"
+echo -e "\nSee you later, ${bold}$username!${normal}"
 echo ""
 
 sudo reboot
