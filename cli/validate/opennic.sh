@@ -30,6 +30,7 @@ vivado_version=$9
 #constants
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
+CPU_SERVERS_LIST="$CLI_PATH/constants/CPU_SERVERS_LIST"
 DEPLOY_OPTION="0"
 DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
 FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
@@ -143,7 +144,7 @@ after=${after%:}
 eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
 
 #read FPGA_SERVERS_LIST excluding the current hostname
-IFS=$'\n' read -r -d '' -a remote_servers < <(grep -v "^$hostname$" "$FPGA_SERVERS_LIST" && printf '\0')
+IFS=$'\n' read -r -d '' -a remote_servers < <(cat "$CPU_SERVERS_LIST" "$FPGA_SERVERS_LIST" | grep -v "^$hostname$" && printf '\0')
 
 #set target host
 target_host=""
@@ -156,7 +157,6 @@ for server in "${remote_servers[@]}"; do
         break
     fi
 done
-
 
 #get target remote host
 if [[ $connected = "1" ]]; then
