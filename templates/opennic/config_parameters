@@ -11,3 +11,4 @@ rs_fec        0,1                      "Enables or disables Reed-Solomon FEC enc
 host:
 MAX_NUM_PINGS 10                       "Maximum number of ping messages"
 NUM_PINGS     1:MAX_NUM_PINGS          "Number of ping messages"
+remote_server xxxx-xxxxx-xx            "A reachable host in your network"
