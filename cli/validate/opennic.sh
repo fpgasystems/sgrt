@@ -146,10 +146,17 @@ eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
 IFS=$'\n' read -r -d '' -a remote_servers < <(grep -v "^$hostname$" "$FPGA_SERVERS_LIST" && printf '\0')
 
 #set target host
-target_host=${remote_servers[0]}
+target_host=""
+connected=""
+for server in "${remote_servers[@]}"; do
+    # Check connectivity to the current server
+    if [[ "$(check_connectivity "$eno_onic" "$server")" == "1" ]]; then
+        connected="1"
+        target_host="$server"
+        break
+    fi
+done
 
-#get connection status
-connected=$(check_connectivity "$eno_onic" "$target_host")
 
 #get target remote host
 if [[ $connected = "1" ]]; then
