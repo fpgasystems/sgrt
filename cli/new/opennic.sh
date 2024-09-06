@@ -8,6 +8,18 @@ normal=$(tput sgr0)
 #usage:       $CLI_PATH/new/opennic --commit $comit_name_shell $comit_name_driver --project   $new_name --push $push_option
 #example: /opt/sgrt/cli/new/opennic --commit           807775             1cf2578 --project hello_world --push            0
 
+check_connectivity() {
+    local interface="$1"
+    local remote_server="$2"
+
+    # Ping the remote server using the specified interface, sending only 1 packet
+    if ping -I "$interface" -c 1 "$remote_server" &> /dev/null; then
+        echo "1"
+    else
+        echo "0"
+    fi
+}
+
 #inputs
 commit_name_shell=$2
 commit_name_driver=$3
@@ -15,8 +27,14 @@ new_name=$5
 push_option=$7
 
 #constants
+CPU_SERVERS_LIST="$CLI_PATH/constants/CPU_SERVERS_LIST"
+FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="opennic"
+
+#get hostname
+url="${HOSTNAME}"
+hostname="${url%%.*}"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$new_name"
@@ -54,6 +72,26 @@ cp -r $SGRT_PATH/templates/$WORKFLOW/src $DIR
 #compile files
 chmod +x $DIR/config_add
 chmod +x $DIR/config_delete
+
+#get interface name
+mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
+
+#read CPU and FPGA_SERVERS_LIST excluding the current hostname
+IFS=$'\n' read -r -d '' -a remote_servers < <(cat "$CPU_SERVERS_LIST" "$FPGA_SERVERS_LIST" | grep -v "^$hostname$" && printf '\0')
+
+#get target host
+target_host=""
+connected=""
+for server in "${remote_servers[@]}"; do
+    # Check connectivity to the current server
+    if [[ "$(check_connectivity "$mellanox_name" "$server")" == "1" ]]; then
+        target_host="$server"
+        break
+    fi
+done
+
+#update remote_server in config_parameters
+sed -i "/^remote_server/s/xxxx-xxxxx-xx/$target_host/" "$DIR/config_parameters"
 
 #push files
 if [ "$push_option" = "1" ]; then 
