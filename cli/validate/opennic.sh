@@ -143,7 +143,7 @@ after=${after%:}
 #use comm to find the "extra" OpenNIC
 eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
 
-#read FPGA_SERVERS_LIST excluding the current hostname
+#read CPU and FPGA_SERVERS_LIST excluding the current hostname
 IFS=$'\n' read -r -d '' -a remote_servers < <(cat "$CPU_SERVERS_LIST" "$FPGA_SERVERS_LIST" | grep -v "^$hostname$" && printf '\0')
 
 #set target host
