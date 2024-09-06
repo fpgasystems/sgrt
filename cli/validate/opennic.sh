@@ -88,7 +88,7 @@ chmod a-w "$DIR/configs/device_config"
 touch $DIR/configs/host_config_001
 echo "MAX_NUM_PINGS = 10;" >> "$DIR/configs/host_config_001"
 echo "NUM_PINGS = 5;" >> "$DIR/configs/host_config_001"
-chmod a-w "$DIR/configs/host_config_001"
+#chmod a-w "$DIR/configs/host_config_001"
 
 #save .device_config
 cp $DIR/configs/device_config $DIR/.device_config
@@ -154,6 +154,9 @@ for server in "${remote_servers[@]}"; do
     if [[ "$(check_connectivity "$eno_onic" "$server")" == "1" ]]; then
         connected="1"
         target_host="$server"
+        #add to host_config_001 (this is only conceptual)
+        echo "remote_server = $target_host;" >> "$DIR/configs/host_config_001"
+        chmod a-w "$DIR/configs/host_config_001"
         break
     fi
 done
