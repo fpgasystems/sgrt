@@ -12,14 +12,14 @@ int main(int argc, char *argv[]) {
     flags_check(argc, argv, &device_index, &remote_server_name, &config_index);
 
     // read from device_config (index is set to zero)
-    int num_cmac_port = read_parameter(0, "num_cmac_port");
+    int num_cmac_port = atoi(read_parameter(0, "num_cmac_port"));
     
     // read from configuration
-    int num_pings = read_parameter(config_index, "NUM_PINGS");
+    int num_pings = atoi(read_parameter(config_index, "NUM_PINGS"));
     
     // Iterate over each CMAC port
     for (int i = 1; i <= num_cmac_port; i++) {
-        // Get IP for device 1 and port 1
+        // Get IP for device and port
         char *device_ip = get_network(atoi(device_index), i);
         
         // Now get the interface name associated with this IP

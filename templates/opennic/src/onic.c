@@ -155,7 +155,58 @@ void ping(const char *onic_name, const char *remote_server_name, int num_pings) 
     }
 }
 
-int read_parameter(int index, const char *parameter_name) {
+char* read_parameter(int index, const char *parameter_name) {
+    char config_file_path[256];
+    
+    if (index == 0) {
+        snprintf(config_file_path, sizeof(config_file_path), "./.device_config");
+    } else {
+        snprintf(config_file_path, sizeof(config_file_path), "./configs/host_config_%03d", index);
+    }
+
+    FILE *file = fopen(config_file_path, "r");
+    if (file == NULL) {
+        fprintf(stderr, "Error: Could not open config file %s\n", config_file_path);
+        return NULL;
+    }
+
+    static char value[256]; // static to persist after function returns
+    char line[256];
+
+    while (fgets(line, sizeof(line), file)) {
+        char key[256];
+        char temp_value[256];
+
+        // Use sscanf to parse lines in the form of "KEY = VALUE;"
+        if (sscanf(line, "%255[^=] = %255[^;];", key, temp_value) == 2) {
+            // Trim leading and trailing whitespace from key
+            char *trimmed_key = key;
+            while (*trimmed_key == ' ' || *trimmed_key == '\t') {
+                trimmed_key++;
+            }
+            char *end = trimmed_key + strlen(trimmed_key) - 1;
+            while (end > trimmed_key && (*end == ' ' || *end == '\t')) {
+                *end = '\0';
+                end--;
+            }
+
+            // Check if key matches the requested parameter
+            if (strcmp(trimmed_key, parameter_name) == 0) {
+                // Copy the value found to the result
+                strncpy(value, temp_value, sizeof(value) - 1);
+                value[sizeof(value) - 1] = '\0';  // Ensure null-termination
+                fclose(file);
+                return value;
+            }
+        }
+    }
+
+    fclose(file);
+    fprintf(stderr, "Error: Parameter %s not found in config file %s\n", parameter_name, config_file_path);
+    return NULL;
+}
+
+/* int read_parameter(int index, const char *parameter_name) {
     char config_file_path[256];
 
     if (index == 0) {
@@ -204,4 +255,4 @@ int read_parameter(int index, const char *parameter_name) {
     }
 
     return value;
-}
+} */
