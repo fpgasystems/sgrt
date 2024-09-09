@@ -51,8 +51,17 @@ echo "${bold}Running your OpenNIC application:${normal}"
 echo ""
 echo "./onic --config $config_index --device $device_index "
 echo ""
-./onic --config $config_index --device $device_index
+#./onic --config $config_index --device $device_index
+
+#echo ""
+
+# Run the command, display output to terminal, and capture the return value
+./onic --config "$config_index" --device "$device_index"
+return_code=$?
 
 echo ""
+
+#get return code
+exit $return_code
 
 #author: https://github.com/jmoya82

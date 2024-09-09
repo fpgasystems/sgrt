@@ -173,13 +173,21 @@ if [[ $connected = "1" ]]; then
     #run
     $CLI_PATH/run/opennic --commit $commit_name_shell --config 1 --device $device_index --project $project_name
 
-    #get RS_FEC_ENABLED from .device_config
-    fec_option=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
+    #get return code
+    return_code=$?
 
-    #print
-    #echo ""
-    echo -e "\e[32mOpenNIC validated on ${bold}$hostname (device $device_index)${normal}\e[32m with ${bold}RS_FEC_ENABLED=$fec_option!${normal}\e[0m"
-    echo ""
+    if [ $return_code -eq 0 ]; then
+        #get RS_FEC_ENABLED from .device_config
+        fec_option=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
+
+        #print
+        #echo ""
+        echo -e "\e[32mOpenNIC validated on ${bold}$hostname (device $device_index)${normal}\e[32m with ${bold}RS_FEC_ENABLED=$fec_option!${normal}\e[0m"
+        echo ""
+    else 
+        echo -e "\e[31mOpenNIC failed on ${bold}$hostname (device $device_index)${normal}\e[31m with ${bold}RS_FEC_ENABLED=$fec_option!${normal}\e[0m"
+        echo ""
+    fi
 else
     echo -e "\e[31mOpenNIC failed on ${bold}$hostname (device $device_index)${normal}\e[31m with ${bold}RS_FEC_ENABLED=$fec_option!${normal}\e[0m"
     echo ""
