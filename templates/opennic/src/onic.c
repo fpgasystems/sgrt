@@ -9,12 +9,10 @@ const char *valid_flags[] = {"-c", "--config", "-d", "--device"};
 #define NUM_FLAGS (sizeof(valid_flags) / sizeof(valid_flags[0]))
 #define MAX_LINE_LENGTH 256
 
-
 int flags_check(int argc, char *argv[], int *config_index, int *device_index) {
     int flags_error = 0;
 
     if (argc != 5) {  // 4 args + program name
-        //fprintf(stderr, "Error: Incorrect number of arguments.\n");
         flags_error = 1;
     }
 
