@@ -9,19 +9,16 @@ const char *valid_flags[] = {"-c", "--config", "-d", "--device"};
 #define NUM_FLAGS (sizeof(valid_flags) / sizeof(valid_flags[0]))
 #define MAX_LINE_LENGTH 256
 
-void flags_check(int argc, char *argv[], int *config_index, int *device_index) {
-    //if (argc != 5) {  // 4 args + program name
-    //    fprintf(stderr, "Error: Incorrect number of arguments.\n");
-    //    fprintf(stderr, "Usage: %s --config <config_index> --device <device_index>\n", argv[0]);
-    //    exit(1);
-    //}
+
+int flags_check(int argc, char *argv[], int *config_index, int *device_index) {
+    int flags_error = 0;
 
     if (argc != 5) {  // 4 args + program name
-        print_help();  // Print help if the number of arguments is incorrect
-        exit(1);
+        //fprintf(stderr, "Error: Incorrect number of arguments.\n");
+        flags_error = 1;
     }
 
-    for (int i = 1; i < argc; i += 2) {
+    for (int i = 1; i < argc && !flags_error; i += 2) {
         int valid = 0;
 
         // Validate the flag against valid_flags
@@ -34,38 +31,43 @@ void flags_check(int argc, char *argv[], int *config_index, int *device_index) {
 
         if (!valid) {
             fprintf(stderr, "Error: Invalid flag %s\n", argv[i]);
-            exit(1);
+            flags_error = 1;
+            break;
         }
 
         if (i + 1 >= argc) {
             fprintf(stderr, "Error: Flag %s must be followed by a value.\n", argv[i]);
-            exit(1);
+            flags_error = 1;
+            break;
         }
 
         // Handle device index conversion to int
         if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--device") == 0) {
-            *device_index = atoi(argv[i + 1]);  // Convert device_index to int
+            *device_index = atoi(argv[i + 1]);
             if (*device_index <= 0) {
-                fprintf(stderr, "Error: Invalid device index %s\n", argv[i + 1]);
-                exit(1);
+                //fprintf(stderr, "Error: Invalid device index %s\n", argv[i + 1]);
+                flags_error = 1;
+                break;
             }
         } 
         // Handle config index conversion to int
         else if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--config") == 0) {
             *config_index = atoi(argv[i + 1]);
             if (*config_index <= 0) {
-                fprintf(stderr, "Error: Invalid config index %s\n", argv[i + 1]);
-                exit(1);
+                //fprintf(stderr, "Error: Invalid config index %s\n", argv[i + 1]);
+                flags_error = 1;
+                break;
             }
         }
     }
 
     // Ensure all necessary parameters were provided
     if (*device_index == 0 || *config_index == 0) {
-        fprintf(stderr, "Error: Missing required parameters.\n");
-        fprintf(stderr, "Usage: %s --config <config_index> --device <device_index>\n", argv[0]);
-        exit(1);
+        //fprintf(stderr, "Error: Missing required parameters.\n");
+        flags_error = 1;
     }
+
+    return flags_error;  // Return 0 on success, 1 on error
 }
 
 char* get_interface_name(char *device_ip) {
