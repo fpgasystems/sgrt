@@ -5,7 +5,9 @@
 
 // Define valid flags
 const char *valid_flags[] = {"-d", "--device", "-h", "--host", "-c", "--config"};
+
 #define NUM_FLAGS (sizeof(valid_flags) / sizeof(valid_flags[0]))
+#define MAX_LINE_LENGTH 256
 
 void flags_check(int argc, char *argv[], char **onic_name, char **remote_server_name, int *index) {
     if (argc != 7) {  // 6 args + program name
@@ -157,52 +159,49 @@ void ping(const char *onic_name, const char *remote_server_name, int num_pings) 
 
 char* read_parameter(int index, const char *parameter_name) {
     char config_file_path[256];
+    char line[MAX_LINE_LENGTH];
     
+    // Determine the file path based on the index
     if (index == 0) {
         snprintf(config_file_path, sizeof(config_file_path), "./.device_config");
     } else {
         snprintf(config_file_path, sizeof(config_file_path), "./configs/host_config_%03d", index);
     }
 
+    // Open the configuration file
     FILE *file = fopen(config_file_path, "r");
-    if (file == NULL) {
-        fprintf(stderr, "Error: Could not open config file %s\n", config_file_path);
+    if (!file) {
+        perror("Failed to open config file");
         return NULL;
     }
 
-    static char value[256]; // static to persist after function returns
-    char line[256];
-
+    // Read each line in the file to search for the parameter
     while (fgets(line, sizeof(line), file)) {
-        char key[256];
-        char temp_value[256];
+        char param[MAX_LINE_LENGTH];
+        char val[MAX_LINE_LENGTH];
 
-        // Use sscanf to parse lines in the form of "KEY = VALUE;"
-        if (sscanf(line, "%255[^=] = %255[^;];", key, temp_value) == 2) {
-            // Trim leading and trailing whitespace from key
-            char *trimmed_key = key;
-            while (*trimmed_key == ' ' || *trimmed_key == '\t') {
-                trimmed_key++;
-            }
-            char *end = trimmed_key + strlen(trimmed_key) - 1;
-            while (end > trimmed_key && (*end == ' ' || *end == '\t')) {
-                *end = '\0';
-                end--;
+        // Try to parse the line as a "key = value" pair
+        if (sscanf(line, "%s = %s", param, val) == 2) {
+            // Remove any trailing semicolon
+            char *semicolon = strchr(val, ';');
+            if (semicolon) {
+                *semicolon = '\0';
             }
 
-            // Check if key matches the requested parameter
-            if (strcmp(trimmed_key, parameter_name) == 0) {
-                // Copy the value found to the result
-                strncpy(value, temp_value, sizeof(value) - 1);
-                value[sizeof(value) - 1] = '\0';  // Ensure null-termination
+            // If the parameter matches the requested name, return a dynamically allocated value
+            if (strcmp(param, parameter_name) == 0) {
+                char *result = malloc(strlen(val) + 1);  // Allocate memory for the result
+                if (result) {
+                    strcpy(result, val);  // Copy the value into the allocated memory
+                }
                 fclose(file);
-                return value;
+                return result;
             }
         }
     }
 
+    // If parameter is not found, return NULL
     fclose(file);
-    fprintf(stderr, "Error: Parameter %s not found in config file %s\n", parameter_name, config_file_path);
     return NULL;
 }
 

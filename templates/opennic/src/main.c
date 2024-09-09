@@ -19,6 +19,8 @@ int main(int argc, char *argv[]) {
     printf("remote_server: %s\n", remote_server);
 
     int num_pings = atoi(read_parameter(config_index, "NUM_PINGS"));
+
+    printf("remote_server (second test): %s\n", remote_server);
     
     // Iterate over each CMAC port
     for (int i = 1; i <= num_cmac_port; i++) {
