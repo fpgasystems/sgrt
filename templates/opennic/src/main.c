@@ -4,9 +4,13 @@
 
 int main(int argc, char *argv[]) {
     //char *onic_name = NULL;
-    char *device_index = NULL;
-    //char *remote_server_name = NULL;
+    //char *device_index = NULL;
+    
     int config_index = 0;
+
+    int device_index = 0;
+    //char *remote_server_name = NULL;
+    
 
     // Check and process command-line flags
     flags_check(argc, argv, &config_index, &device_index);
@@ -21,7 +25,7 @@ int main(int argc, char *argv[]) {
     // Iterate over each CMAC port
     for (int i = 1; i <= num_cmac_port; i++) {
         // Get IP for device and port
-        char *device_ip = get_network(atoi(device_index), i);
+        char *device_ip = get_network(device_index, i);
         
         // Now get the interface name associated with this IP
         char *interface_name = get_interface_name(device_ip);

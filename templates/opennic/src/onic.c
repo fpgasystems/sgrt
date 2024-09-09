@@ -9,7 +9,7 @@ const char *valid_flags[] = {"-c", "--config", "-d", "--device"};
 #define NUM_FLAGS (sizeof(valid_flags) / sizeof(valid_flags[0]))
 #define MAX_LINE_LENGTH 256
 
-void flags_check(int argc, char *argv[], int *config_index, char **device_index) {
+void flags_check(int argc, char *argv[], int *config_index, int *device_index) {
     if (argc != 5) {  // 4 args + program name
         fprintf(stderr, "Error: Incorrect number of arguments.\n");
         fprintf(stderr, "Usage: %s --config <config_index> --device <device_index>\n", argv[0]);
@@ -18,6 +18,8 @@ void flags_check(int argc, char *argv[], int *config_index, char **device_index)
 
     for (int i = 1; i < argc; i += 2) {
         int valid = 0;
+
+        // Validate the flag against valid_flags
         for (int j = 0; j < NUM_FLAGS; j++) {
             if (strcmp(argv[i], valid_flags[j]) == 0) {
                 valid = 1;
@@ -35,19 +37,26 @@ void flags_check(int argc, char *argv[], int *config_index, char **device_index)
             exit(1);
         }
 
+        // Handle device index conversion to int
         if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--device") == 0) {
-            *device_index = argv[i + 1];
-        } else if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--config") == 0) {
+            *device_index = atoi(argv[i + 1]);  // Convert device_index to int
+            if (*device_index <= 0) {
+                fprintf(stderr, "Error: Invalid device index %s\n", argv[i + 1]);
+                exit(1);
+            }
+        } 
+        // Handle config index conversion to int
+        else if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--config") == 0) {
             *config_index = atoi(argv[i + 1]);
             if (*config_index <= 0) {
-                fprintf(stderr, "Error: Invalid config config_index %s\n", argv[i + 1]);
+                fprintf(stderr, "Error: Invalid config index %s\n", argv[i + 1]);
                 exit(1);
             }
         }
     }
 
     // Ensure all necessary parameters were provided
-    if (*device_index == NULL || *config_index == 0) {
+    if (*device_index == 0 || *config_index == 0) {
         fprintf(stderr, "Error: Missing required parameters.\n");
         fprintf(stderr, "Usage: %s --config <config_index> --device <device_index>\n", argv[0]);
         exit(1);
