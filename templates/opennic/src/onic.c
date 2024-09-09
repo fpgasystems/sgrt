@@ -4,15 +4,15 @@
 #include "onic.h"
 
 // Define valid flags
-const char *valid_flags[] = {"-d", "--device", "-h", "--host", "-c", "--config"};
+const char *valid_flags[] = {"-d", "--device", "-c", "--config"};
 
 #define NUM_FLAGS (sizeof(valid_flags) / sizeof(valid_flags[0]))
 #define MAX_LINE_LENGTH 256
 
-void flags_check(int argc, char *argv[], char **onic_name, char **remote_server_name, int *index) {
-    if (argc != 7) {  // 6 args + program name
+void flags_check(int argc, char *argv[], char **device_index, int *config_index) {
+    if (argc != 5) {  // 4 args + program name
         fprintf(stderr, "Error: Incorrect number of arguments.\n");
-        fprintf(stderr, "Usage: %s --device <onic_name> --host <remote_server_name> --config <index>\n", argv[0]);
+        fprintf(stderr, "Usage: %s --device <device_index> --config <config_index>\n", argv[0]);
         exit(1);
     }
 
@@ -36,22 +36,20 @@ void flags_check(int argc, char *argv[], char **onic_name, char **remote_server_
         }
 
         if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--device") == 0) {
-            *onic_name = argv[i + 1];
-        } else if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--host") == 0) {
-            *remote_server_name = argv[i + 1];
+            *device_index = argv[i + 1];
         } else if (strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "--config") == 0) {
-            *index = atoi(argv[i + 1]);
-            if (*index <= 0) {
-                fprintf(stderr, "Error: Invalid config index %s\n", argv[i + 1]);
+            *config_index = atoi(argv[i + 1]);
+            if (*config_index <= 0) {
+                fprintf(stderr, "Error: Invalid config config_index %s\n", argv[i + 1]);
                 exit(1);
             }
         }
     }
 
     // Ensure all necessary parameters were provided
-    if (*onic_name == NULL || *remote_server_name == NULL || *index == 0) {
+    if (*device_index == NULL || *config_index == 0) {
         fprintf(stderr, "Error: Missing required parameters.\n");
-        fprintf(stderr, "Usage: %s --device <onic_name> --host <remote_server_name> --config <index>\n", argv[0]);
+        fprintf(stderr, "Usage: %s --device <device_index> --config <config_index>\n", argv[0]);
         exit(1);
     }
 }

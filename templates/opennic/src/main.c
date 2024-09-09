@@ -5,11 +5,11 @@
 int main(int argc, char *argv[]) {
     //char *onic_name = NULL;
     char *device_index = NULL;
-    char *remote_server_name = NULL;
+    //char *remote_server_name = NULL;
     int config_index = 0;
 
     // Check and process command-line flags
-    flags_check(argc, argv, &device_index, &remote_server_name, &config_index);
+    flags_check(argc, argv, &device_index, &config_index);
 
     // read from device_config (index is set to zero)
     int num_cmac_port = atoi(read_parameter(0, "num_cmac_port"));
