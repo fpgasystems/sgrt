@@ -3,14 +3,8 @@
 #include "onic.h"
 
 int main(int argc, char *argv[]) {
-    //char *onic_name = NULL;
-    //char *device_index = NULL;
-    
     int config_index = 0;
-
     int device_index = 0;
-    //char *remote_server_name = NULL;
-    
 
     // Check and process command-line flags
     flags_check(argc, argv, &config_index, &device_index);
@@ -31,7 +25,7 @@ int main(int argc, char *argv[]) {
         char *interface_name = get_interface_name(device_ip);
         
         // Perform ping operation
-        ping(interface_name, remote_server, num_pings); // should be remote_server
+        ping(interface_name, remote_server, num_pings);
     }
     
     return 0;
