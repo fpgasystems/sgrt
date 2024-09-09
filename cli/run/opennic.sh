@@ -51,7 +51,7 @@ echo "${bold}Running your OpenNIC application:${normal}"
 echo ""
 echo "./onic --config $config_index --device $device_index "
 echo ""
-./onic --config $config_index --device "$device_index"
+./onic --config $config_index --device $device_index
 
 echo ""
 
