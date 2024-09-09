@@ -163,17 +163,8 @@ done
 
 #get target remote host
 if [[ $connected = "1" ]]; then
-    #ping
-    #if [[ ${#remote_servers[@]} -gt 0 ]]; then
-    #    echo "${bold}ping -I $eno_onic -c $NUM_PINGS $target_host${normal}"
-    #    echo ""
-    #    ping -I $eno_onic -c $NUM_PINGS $target_host
-    #fi
-
     #run
     $CLI_PATH/run/opennic --commit $commit_name_shell --config 1 --device $device_index --project $project_name
-
-    #get return code
     return_code=$?
 
     if [ $return_code -eq 0 ]; then
@@ -181,7 +172,6 @@ if [[ $connected = "1" ]]; then
         fec_option=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
 
         #print
-        #echo ""
         echo -e "\e[32mOpenNIC validated on ${bold}$hostname (device $device_index)${normal}\e[32m with ${bold}RS_FEC_ENABLED=$fec_option!${normal}\e[0m"
         echo ""
     else 
