@@ -16,11 +16,11 @@ int main(int argc, char *argv[]) {
     
     // read from configuration
     char *remote_server = read_parameter(config_index, "remote_server");
-    printf("remote_server: %s\n", remote_server);
+    //printf("remote_server: %s\n", remote_server);
 
     int num_pings = atoi(read_parameter(config_index, "NUM_PINGS"));
 
-    printf("remote_server (second test): %s\n", remote_server);
+    //printf("remote_server (second test): %s\n", remote_server);
     
     // Iterate over each CMAC port
     for (int i = 1; i <= num_cmac_port; i++) {
@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
         char *interface_name = get_interface_name(device_ip);
         
         // Perform ping operation
-        ping(interface_name, "hacc-build-01", num_pings); // should be remote_server
+        ping(interface_name, remote_server, num_pings); // should be remote_server
     }
     
     return 0;
