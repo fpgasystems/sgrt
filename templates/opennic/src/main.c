@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
     int config_index = 0;
 
     // Check and process command-line flags
-    flags_check(argc, argv, &device_index, &config_index);
+    flags_check(argc, argv, &config_index, &device_index);
 
     // read from device_config (index is set to zero)
     int num_cmac_port = atoi(read_parameter(0, "num_cmac_port"));

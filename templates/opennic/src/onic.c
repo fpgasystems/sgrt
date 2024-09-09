@@ -4,15 +4,15 @@
 #include "onic.h"
 
 // Define valid flags
-const char *valid_flags[] = {"-d", "--device", "-c", "--config"};
+const char *valid_flags[] = {"-c", "--config", "-d", "--device"};
 
 #define NUM_FLAGS (sizeof(valid_flags) / sizeof(valid_flags[0]))
 #define MAX_LINE_LENGTH 256
 
-void flags_check(int argc, char *argv[], char **device_index, int *config_index) {
+void flags_check(int argc, char *argv[], int *config_index, char **device_index) {
     if (argc != 5) {  // 4 args + program name
         fprintf(stderr, "Error: Incorrect number of arguments.\n");
-        fprintf(stderr, "Usage: %s --device <device_index> --config <config_index>\n", argv[0]);
+        fprintf(stderr, "Usage: %s --config <config_index> --device <device_index>\n", argv[0]);
         exit(1);
     }
 
@@ -49,7 +49,7 @@ void flags_check(int argc, char *argv[], char **device_index, int *config_index)
     // Ensure all necessary parameters were provided
     if (*device_index == NULL || *config_index == 0) {
         fprintf(stderr, "Error: Missing required parameters.\n");
-        fprintf(stderr, "Usage: %s --device <device_index> --config <config_index>\n", argv[0]);
+        fprintf(stderr, "Usage: %s --config <config_index> --device <device_index>\n", argv[0]);
         exit(1);
     }
 }
