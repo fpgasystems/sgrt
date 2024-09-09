@@ -1,0 +1,9 @@
+./onic [flags] [--help]
+
+Runs your OpenNIC application.
+
+FLAGS:
+   -c, --config    - Configuration index.
+   -d, --device    - FPGA Device Index (according to sgutil examine).
+
+   -h, --help      - Help to use this command.

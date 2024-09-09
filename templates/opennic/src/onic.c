@@ -10,9 +10,14 @@ const char *valid_flags[] = {"-c", "--config", "-d", "--device"};
 #define MAX_LINE_LENGTH 256
 
 void flags_check(int argc, char *argv[], int *config_index, int *device_index) {
+    //if (argc != 5) {  // 4 args + program name
+    //    fprintf(stderr, "Error: Incorrect number of arguments.\n");
+    //    fprintf(stderr, "Usage: %s --config <config_index> --device <device_index>\n", argv[0]);
+    //    exit(1);
+    //}
+
     if (argc != 5) {  // 4 args + program name
-        fprintf(stderr, "Error: Incorrect number of arguments.\n");
-        fprintf(stderr, "Usage: %s --config <config_index> --device <device_index>\n", argv[0]);
+        print_help();  // Print help if the number of arguments is incorrect
         exit(1);
     }
 
@@ -162,6 +167,21 @@ void ping(const char *onic_name, const char *remote_server_name, int num_pings) 
     if (result != 0) {
         printf("Ping command failed with exit code %d\n", result);
     }
+}
+
+void print_help() {
+    FILE *file = fopen("./src/onic_help", "r");
+    if (!file) {
+        perror("Error: Could not open help file");
+        exit(1);
+    }
+
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        printf("%s", line);
+    }
+
+    fclose(file);
 }
 
 char* read_parameter(int index, const char *parameter_name) {
