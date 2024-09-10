@@ -208,6 +208,7 @@ done
 wait $revert_pid
 
 # Remove driver
+cd $MY_DRIVERS_PATH
 sudo rmmod ${DRIVER_NAME%.ko}
 sudo $CLI_PATH/common/rm "$MY_DRIVERS_PATH/$DRIVER_NAME"
 

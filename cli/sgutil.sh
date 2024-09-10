@@ -2187,6 +2187,9 @@ case "$command" in
             echo ""
             echo "${bold}$CLI_NAME $command $arguments${normal}"
             echo ""
+
+            #change directory (this is important)
+            cd $MY_DRIVERS_PATH
             
             #remove module
             echo "${bold}Removing ${driver_name_base%.ko} driver:${normal}"
