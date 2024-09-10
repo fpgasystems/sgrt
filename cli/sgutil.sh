@@ -217,13 +217,6 @@ config_dialog() {
   config_found=""
   config_name=""
   config_index=""
-
-  #check if the user has not created any config (for example, by checking on device_config)
-  #if [ ! -e "$MY_PROJECTS_PATH/$WORKFLOW/$commit_name/$project_name/configs/$file_name" ]; then
-  #  echo $CHECK_ON_CONFIG_ERR_MSG
-  #  echo ""
-  #  exit 1
-  #fi
   
   if [ "$flags_array" = "" ]; then
     #config_dialog
@@ -251,7 +244,6 @@ config_dialog() {
     config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$WORKFLOW" "$commit_name" "$project_name" "$config_prefix" "${flags_array[@]}"
     #forgotten mandatory
     if [[ $config_found = "0" ]]; then
-        echo "Here 3"
         #echo ""
         echo $CHECK_ON_CONFIG_MSG
         echo ""
@@ -2467,17 +2459,23 @@ case "$command" in
 
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        #if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/$config_name" ]; then
+        #    echo ""
+        #    echo "$CHECK_ON_CONFIG_ERR_MSG"
+        #    echo ""
+        #    exit
+        #fi
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
+        echo ""
+        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
         if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/$config_name" ]; then
             echo ""
             echo "$CHECK_ON_CONFIG_ERR_MSG"
             echo ""
             exit
         fi
-        echo ""
-        echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
-        echo ""
-        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
 
         #onic application check
