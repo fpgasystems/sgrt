@@ -1,15 +1,14 @@
 ---
 
 - hosts: 
-    #- hacc-build
-    #- alveo-u250
-    #- alveo-u280
-    #- alveo-u50d
-    #- alveo-u55c
-    #- versal-vck5000
-    #- hacc-boxes
-    #- alveo-u55c-01.inf.ethz.ch
-    - hacc-box-01.inf.ethz.ch
+    #- hacc_build
+    #- alveo_u250
+    #- alveo_u280
+    #- alveo_u50d
+    #- alveo_u55c
+    #- versal_vck5000
+    #- hacc_boxes
+    - hacc-box-02.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
@@ -24,7 +23,7 @@
     cli_name: sgutil
     templates_path: "{{ sgrt_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: false
+    all: true
     #api installation
     api: false
     #cli installation
@@ -35,13 +34,13 @@
     directories: false
     enable: false
     examine: false
-    get: true
-    help: true
+    get: false
+    help: false
     hip: false
     mpi: false
     new: false
     opennic: true
-    program: false
+    program: true
     reboot: false
     run: false
     set: false
@@ -197,6 +196,7 @@
         - ROCM_PATH  
         - VIRTUALIZED_SERVERS_LIST
         - VITIS_COMMIT
+        - WORKFLOWS_PATH
         - XILINX_PLATFORMS_PATH
         - XILINX_TOOLS_PATH
         - XILINXD_LICENSE_FILE
