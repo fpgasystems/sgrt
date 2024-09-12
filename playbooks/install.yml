@@ -1,14 +1,15 @@
 ---
 
 - hosts: 
-    #- hacc_build
     #- alveo_u250
     #- alveo_u280
     #- alveo_u50d
     #- alveo_u55c
+    - versal_v80
     #- versal_vck5000
+    #- hacc_build
     #- hacc_boxes
-    - hacc-box-02.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
@@ -35,12 +36,12 @@
     enable: false
     examine: false
     get: false
-    help: false
+    help: true
     hip: false
     mpi: false
     new: false
-    opennic: true
-    program: true
+    opennic: false
+    program: false
     reboot: false
     run: false
     set: false
@@ -360,6 +361,7 @@
         mode: "0755"
       when: all or common
       loop:
+        - add_to_workflows
         - address_to_hex
         - bitstream_dialog_check
         - chown
