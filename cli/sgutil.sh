@@ -37,7 +37,7 @@ VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 #get devices number
 if [ -s "$DEVICES_LIST" ]; then
   source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
-  MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap" $DEVICES_LIST)
+  MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap|asoc" $DEVICES_LIST)
   multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 fi
 

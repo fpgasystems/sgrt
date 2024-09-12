@@ -73,7 +73,7 @@ fi
 source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
 
 #get number of fpga and acap devices present
-MAX_DEVICES=$(grep -E "fpga|acap" $DEVICES_LIST | wc -l)
+MAX_DEVICES=$(grep -E "fpga|acap|asoc" $DEVICES_LIST | wc -l)
 
 #check on multiple devices
 multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)

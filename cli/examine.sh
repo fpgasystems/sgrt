@@ -69,7 +69,7 @@ if [[ -s "$DEVICE_LIST_FPGA" ]]; then
     echo ""
     print_reconfigurable_devices_header
     #get number of fpga and acap devices present
-    MAX_RECONF_DEVICES=$(grep -E "fpga|acap" $DEVICE_LIST_FPGA | wc -l)
+    MAX_RECONF_DEVICES=$(grep -E "fpga|acap|asoc" $DEVICE_LIST_FPGA | wc -l)
     #loop over reconfigurable devices
     for ((i=1; i<=$MAX_RECONF_DEVICES; i++)); do
       id=$($CLI_PATH/get/get_fpga_device_param $i id)
