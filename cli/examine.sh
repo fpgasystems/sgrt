@@ -9,6 +9,7 @@ XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
 DEVICE_LIST_FPGA="$CLI_PATH/devices_acap_fpga"
 DEVICE_LIST_GPU="$CLI_PATH/devices_gpu"
 DEVICE_TYPE_NAME_STR_LENGTH=20
+SERIAL_NUMBER_STR_LENGTH=13
 NETWORKING_STR_LENGTH=35
 
 split_addresses (){
@@ -88,6 +89,9 @@ if [[ -s "$DEVICE_LIST_FPGA" ]]; then
         aux="$device_type ($device_name)"
         diff=$(( $DEVICE_TYPE_NAME_STR_LENGTH - ${#aux} ))
         device_type_name="$aux$(printf '%*s' $diff)"
+        #adjust serial number string length
+        diff=$(( $SERIAL_NUMBER_STR_LENGTH - ${#serial_number} ))
+        serial_number="$serial_number$(printf '%*s' $diff)"
         #split ip
         add_0=$(split_addresses $ip $mac 0)
         add_1=$(split_addresses $ip $mac 1)
