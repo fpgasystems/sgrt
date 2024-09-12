@@ -8,7 +8,7 @@ CLI_NAME=$2
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 
-#echo ""
+echo ""
 echo "${bold}$CLI_NAME new opennic [flags] [--help]${normal}"
 echo ""
 echo "Creates a new project using OpenNIC Hello, world! template."
