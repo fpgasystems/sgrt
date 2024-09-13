@@ -3,6 +3,34 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+is_opennic(){
+    local device_index=$1
+
+    # Get device MAC address
+    MACs=$($CLI_PATH/get/get_fpga_device_param "$device_index" MAC)
+    MAC0="${MACs%%/*}"
+
+    # Convert MAC address to lowercase
+    MAC0=$(echo "$MAC0" | tr '[:upper:]' '[:lower:]')
+
+    # Get device IP address
+    IPs=$($CLI_PATH/get/get_fpga_device_param "$device_index" IP)
+    IP0="${IPs%%/*}"
+
+    # Use ifconfig and awk to check for both IP and MAC in the same interface block
+    if ifconfig | awk -v ip="$IP0" -v mac="$MAC0" '
+        BEGIN { found_ip = 0; found_mac = 0; }
+        /inet/ && $2 == ip { found_ip = 1 }
+        /ether/ && $2 == mac { found_mac = 1 }
+        found_ip && found_mac { exit 0 }  # Found both IP and MAC, success
+        END { exit (found_ip && found_mac ? 0 : 1) }  # Return success if both are found
+    '; then
+        echo "1"
+    else
+        echo "0"
+    fi
+}
+
 #constants
 CLI_PATH="$(dirname "$(dirname "$0")")"
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
@@ -44,7 +72,15 @@ if [ "$flags" = "" ]; then
         upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 	    bdf="${upstream_port%??}" #i.e., we transform 81:00.0 into 81:00    
         if [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 1 ]]; then
-            echo "$device_index: vivado"
+            #check on OpenNIC
+            opennic=$(is_opennic "$device_index")
+
+            #check on integrations
+            if [ "$opennic" = "1" ]; then
+                echo "$device_index: opennic"
+            else
+                echo "$device_index: vivado"
+            fi
         elif [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 2 ]]; then
             echo "$device_index: vitis"
         else
@@ -76,7 +112,15 @@ else
     #print
     echo ""
     if [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 1 ]]; then
-        echo "$device_index: vivado"
+        #check on OpenNIC
+        opennic=$(is_opennic "$device_index")
+
+        #check on integrations
+        if [ "$opennic" = "1" ]; then
+            echo "$device_index: opennic"
+        else
+            echo "$device_index: vivado"
+        fi
     elif [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 2 ]]; then
         echo "$device_index: vitis"
     else
