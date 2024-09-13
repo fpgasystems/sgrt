@@ -7,10 +7,11 @@
     #- alveo_u55c
     #- versal_v80
     #- versal_vck5000
-    - hacc_build
+    #- hacc_build
     #- hacc_boxes
     #- hacc-box-01.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
+    - alveo-u55c-07.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -24,7 +25,7 @@
     cli_name: sgutil
     templates_path: "{{ sgrt_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: false
+    all: true
     #api installation
     api: false
     #cli installation
@@ -360,7 +361,6 @@
         mode: "0755"
       when: all or common
       loop:
-        - add_to_workflows
         - address_to_hex
         - bitstream_dialog_check
         - chown
