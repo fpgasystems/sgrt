@@ -123,11 +123,18 @@ before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 
 #remove driver if exists
 if lsmod | grep -q "${DRIVER_NAME%.ko}"; then
-    echo "${bold}Removing driver:${normal}"
+    #we mimic the text that would appear when >/dev/null 2>&1 whould be omitted
+    echo "${bold}$CLI_NAME program driver:${normal}"
     echo ""
-    #echo "sudo rmmod ${DRIVER_NAME%.ko}"
-    #sudo rmmod ${DRIVER_NAME%.ko}
-    echo "$CLI_PATH/sgutil program driver --remove ${DRIVER_NAME%.ko}"
+    echo "${bold}Removing ${DRIVER_NAME%.ko} driver:${normal}"
+    echo ""
+    echo "sudo rmmod ${DRIVER_NAME%.ko}"
+    echo ""
+    echo "${bold}Deleting driver from $MY_DRIVERS_PATH:${normal}"
+    echo ""
+    echo "sudo /opt/sgrt/cli/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
+    echo "sudo /opt/sgrt/cli/common/rm $MY_DRIVERS_PATH/${DRIVER_NAME%.ko}.*"
+    #echo "$CLI_PATH/sgutil program driver --remove ${DRIVER_NAME%.ko}"
     $CLI_PATH/sgutil program driver --remove "${DRIVER_NAME%.ko}" >/dev/null 2>&1
     echo ""
 fi
