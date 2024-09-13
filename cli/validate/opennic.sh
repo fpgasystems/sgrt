@@ -54,7 +54,7 @@ platform_name=$($CLI_PATH/get/get_fpga_device_param $device_index platform)
 FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
 
 #set project name
-project_name="validate_opennic.$commit_name_driver.$FDEV_NAME.$vivado_version"
+project_name="validate_opennic.$hostname.$commit_name_driver.$FDEV_NAME.$vivado_version"
 
 #define directories (1)
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$project_name"
