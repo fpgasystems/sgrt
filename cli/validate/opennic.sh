@@ -108,7 +108,7 @@ echo ""
 workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
 
 #revert device
-if [[ "$workflow" = "vivado" ]]; then
+if [ "$workflow" = "opennic" ] || [ "$workflow" = "vivado" ]; then
     echo "${bold}$CLI_NAME program revert${normal}"    
     echo ""
 fi
