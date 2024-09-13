@@ -37,7 +37,6 @@ FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 NUM_PINGS="5"
-PROGRESS_MAX_TIME=50
 WORKFLOW="opennic"
 
 #get hostname
@@ -115,9 +114,9 @@ fi
 $CLI_PATH/program/revert -d $device_index --version $vivado_version
 
 #add additional echo (2/2)
-if [[ $workflow = "vivado" ]]; then
-    echo ""
-fi
+#if [ "$workflow" = "opennic" ] || [ "$workflow" = "vivado" ]; then
+#    echo ""
+#fi
 
 #get system interfaces (before adding the OpenNIC interface)
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
@@ -128,8 +127,8 @@ if lsmod | grep -q "${DRIVER_NAME%.ko}"; then
     echo ""
     #echo "sudo rmmod ${DRIVER_NAME%.ko}"
     #sudo rmmod ${DRIVER_NAME%.ko}
-    echo "$CLI_PATH/sgutil program driver --remove onic"
-    $CLI_PATH/sgutil program driver --remove onic >/dev/null 2>&1
+    echo "$CLI_PATH/sgutil program driver --remove ${DRIVER_NAME%.ko}"
+    $CLI_PATH/sgutil program driver --remove "${DRIVER_NAME%.ko}" >/dev/null 2>&1
     echo ""
 fi
 
@@ -213,7 +212,7 @@ wait $revert_pid
 #cd $MY_DRIVERS_PATH
 #sudo rmmod ${DRIVER_NAME%.ko}
 #sudo $CLI_PATH/common/rm "$MY_DRIVERS_PATH/$DRIVER_NAME"
-$CLI_PATH/sgutil program driver --remove onic >/dev/null 2>&1
+$CLI_PATH/sgutil program driver --remove ${DRIVER_NAME%.ko} >/dev/null 2>&1
 
 # Remove validation project
 rm -rf $DIR
