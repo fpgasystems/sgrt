@@ -19,6 +19,9 @@ if [ ! -d "$MY_DRIVERS_PATH" ]; then
     mkdir "$MY_DRIVERS_PATH"
 fi
 
+#get current path
+current_path=$(pwd)
+
 #get actual filename (i.e. onik.ko without the path)
 driver_name_base=$(basename "$driver_name")
 
@@ -32,12 +35,34 @@ else
         read -p "" yn
         case $yn in
             "y")
+                #driver will be reinserted
                 insert_driver="1"
+                
+                #change directory (this is important)
+                cd $MY_DRIVERS_PATH
+                
+                #adding echo
                 echo ""
-                echo "${bold}Removing driver:${normal}"
+
+                #remove module
+                echo "${bold}Removing ${driver_name_base%.ko} driver:${normal}"
                 echo ""
                 echo "sudo rmmod ${driver_name_base%.ko}"
+                echo ""
                 sudo rmmod ${driver_name_base%.ko}
+
+                #change back
+                #cd $current_path
+
+                echo "${bold}Deleting driver from $MY_DRIVERS_PATH:${normal}"
+                echo ""
+                echo "sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
+                echo "sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*"
+                #echo ""
+
+                #change ownership to ensure writing permissions and remove
+                sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
+                sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*
                 break
                 ;;
             "n") 
@@ -53,6 +78,9 @@ fi
 if [ "$insert_driver" = "1" ]; then 
     #change ownership to ensure writing permissions
     sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
+
+    #change back
+    cd $current_path
 
     #we need to copy the driver to /local to avoid permission problems
     echo "${bold}Copying driver to $MY_DRIVERS_PATH:${normal}"
@@ -70,6 +98,9 @@ if [ "$insert_driver" = "1" ]; then
     #replace commas with spaces
     params_string=$(echo "$params_string" | tr ',' ' ')
     params_string=$(echo "$params_string" | tr ';' ' ')
+
+    #change directory (this is important)
+    cd $MY_DRIVERS_PATH
 
     echo "sudo insmod $MY_DRIVERS_PATH/$driver_name_base $params_string"
     sudo insmod $MY_DRIVERS_PATH/$driver_name_base $params_string
