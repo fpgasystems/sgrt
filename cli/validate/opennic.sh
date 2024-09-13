@@ -193,9 +193,9 @@ $CLI_PATH/program/revert -d $device_index --version $vivado_version > /dev/null 
 revert_pid=$!
 
 #print progress
-workflow="vivado"
+workflow="opennic"
 while true; do
-    if [ "$workflow" = "vivado" ]; then
+    if [ "$workflow" = "opennic" ] || [ "$workflow" = "vivado" ]; then
         echo -n "."
         sleep 0.5
     else
