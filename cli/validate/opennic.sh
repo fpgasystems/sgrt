@@ -37,7 +37,7 @@ FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 NUM_PINGS="5"
-PROGRESS_MAX_TIME=40
+PROGRESS_MAX_TIME=50
 WORKFLOW="opennic"
 
 #get hostname
@@ -126,8 +126,10 @@ before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 if lsmod | grep -q "${DRIVER_NAME%.ko}"; then
     echo "${bold}Removing driver:${normal}"
     echo ""
-    echo "sudo rmmod ${DRIVER_NAME%.ko}"
-    sudo rmmod ${DRIVER_NAME%.ko}
+    #echo "sudo rmmod ${DRIVER_NAME%.ko}"
+    #sudo rmmod ${DRIVER_NAME%.ko}
+    echo "$CLI_PATH/sgutil program driver --remove onic"
+    $CLI_PATH/sgutil program driver --remove onic >/dev/null 2>&1
     echo ""
 fi
 
@@ -208,9 +210,10 @@ done
 wait $revert_pid
 
 # Remove driver
-cd $MY_DRIVERS_PATH
-sudo rmmod ${DRIVER_NAME%.ko}
-sudo $CLI_PATH/common/rm "$MY_DRIVERS_PATH/$DRIVER_NAME"
+#cd $MY_DRIVERS_PATH
+#sudo rmmod ${DRIVER_NAME%.ko}
+#sudo $CLI_PATH/common/rm "$MY_DRIVERS_PATH/$DRIVER_NAME"
+$CLI_PATH/sgutil program driver --remove onic >/dev/null 2>&1
 
 # Remove validation project
 rm -rf $DIR
