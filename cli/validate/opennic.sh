@@ -219,6 +219,8 @@ wait $revert_pid
 #cd $MY_DRIVERS_PATH
 #sudo rmmod ${DRIVER_NAME%.ko}
 #sudo $CLI_PATH/common/rm "$MY_DRIVERS_PATH/$DRIVER_NAME"
+echo "${bold}$CLI_NAME program driver:${normal}"
+echo ""
 $CLI_PATH/sgutil program driver --remove ${DRIVER_NAME%.ko} >/dev/null 2>&1
 
 # Remove validation project
