@@ -51,9 +51,6 @@ else
                 echo ""
                 sudo rmmod ${driver_name_base%.ko}
 
-                #change back
-                #cd $current_path
-
                 echo "${bold}Deleting driver from $MY_DRIVERS_PATH:${normal}"
                 echo ""
                 echo "sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
