@@ -9,7 +9,7 @@
     #- versal_vck5000
     #- hacc_build
     #- hacc_boxes
-    #- hacc-box-01.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
