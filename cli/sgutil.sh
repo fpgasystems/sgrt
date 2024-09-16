@@ -1869,6 +1869,15 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments (commit ID for shell: $commit_name)${normal}"
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        #we force the user to create a configuration
+        if [ ! -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/device_config" ]; then
+            #get current path
+            current_path=$(pwd)
+            cd "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name"
+            echo "${bold}Adding device and host configurations with ./config_add:${normal}"
+            ./config_add
+            cd "$current_path"
+        fi
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
         platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "$is_cpu" "${flags_array[@]}"
         
