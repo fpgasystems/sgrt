@@ -10,8 +10,6 @@
     #- hacc_build
     #- hacc_boxes
     #- hacc-box-01.inf.ethz.ch
-    #- hacc-box-02.inf.ethz.ch
-    - alveo-u55c-07.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -35,19 +33,19 @@
     coyote: false
     directories: false
     enable: false
-    examine: true
-    get: true
-    help: true
+    examine: false
+    get: false
+    help: false
     hip: false
     mpi: false
     new: false
-    opennic: true
+    opennic: false
     program: false
     reboot: false
     run: false
     set: false
     sgutil: false 
-    templates: true
+    templates: false
     update: false
     validate: false
     vitis: false
