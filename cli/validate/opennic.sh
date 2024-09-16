@@ -140,6 +140,8 @@ if lsmod | grep -q "${DRIVER_NAME%.ko}"; then
 fi
 
 #program opennic
+echo "${bold}$CLI_NAME program $WORKFLOW (commit ID: $commit_name_shell)${normal}"
+echo ""
 $CLI_PATH/program/opennic --commit $commit_name_shell --device $device_index --project $project_name --version $vivado_version --remote $DEPLOY_OPTION
 
 #get system interfaces (after adding the OpenNIC interface)
@@ -172,6 +174,8 @@ done
 #get target remote host
 if [[ $connected = "1" ]]; then
     #run
+    echo "${bold}$CLI_NAME run $WORKFLOW (commit ID: $commit_name_shell)${normal}"
+    echo ""
     $CLI_PATH/run/opennic --commit $commit_name_shell --config 1 --device $device_index --project $project_name
     return_code=$?
 
