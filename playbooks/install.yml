@@ -50,11 +50,10 @@
     validate: false
     vitis: false
     #release
-    #    1. A new release happens when we merge to main.
-    #    2. For installing a new release, we will run this playbook (all: true) from the main branch.
-    #    3. After login to one of our servers (i.e., alveo-u55c-01) a sudo user runs "sgutil update" and captures COMMIT and COMMIT_DATE.
-    #    4. After replacing COMMIT and COMMIT_DATE in this playbook, we will play it on all servers to properly install "sgrt" on the remotes.
-    #    5. We revert the changes on this playbook.
+    #    1. Merge a development branch into main.
+    #    2. Login to a server (i.e., hacc-box-01), run "sgutil update," and capture COMMIT and COMMIT_DATE. Remeber that "sgutil update" is only for sudo users.
+    #    3. Replace COMMIT and COMMIT_DATE in this playbook, and play it on all servers (all: true) to install "sgrt" on all the remotes.
+    #    4. We revert the changes on this playbook.
     COMMIT: "0000000"
     COMMIT_DATE: "1982-08-15T23:55:57Z"
   tasks:
