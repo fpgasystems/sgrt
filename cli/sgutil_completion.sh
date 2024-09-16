@@ -98,23 +98,21 @@ _sgutil_completions()
     if [[ ${cur} == ./* || ${cur} == /* || ${cur} == ../* ]]; then
         # Trim trailing spaces and slash if present
         cur="${cur%%[[:space:]]}"
-        #cur="${cur%/}"
-        # Generate completions for directories
-        dir_completions=($(compgen -d -- ${cur}))
-        # Generate completions for files
-        file_completions=($(compgen -f -- ${cur}))
-        # Check if there are directory completions
-        if [[ ${#dir_completions[@]} -gt 0 ]]; then
-            COMPREPLY=("${dir_completions[@]}")
-        else
-            COMPREPLY=("${file_completions[@]}")
-        fi
-        # If the completion is a directory, add a trailing slash
+
+        # Generate completions for directories and files
+        dir_completions=($(compgen -d -- "${cur}"))
+        file_completions=($(compgen -f -- "${cur}"))
+
+        # Combine both directory and file completions
+        COMPREPLY=("${dir_completions[@]}" "${file_completions[@]}")
+
+        # Add a trailing slash for directory completions
         for ((i = 0; i < ${#COMPREPLY[@]}; i++)); do
             if [[ -d ${COMPREPLY[$i]} ]]; then
                 COMPREPLY[$i]+="/"
             fi
         done
+
         # Disable appending space after completion
         compopt -o nospace
         return 0
