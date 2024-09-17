@@ -23,7 +23,7 @@
     cli_name: sgutil
     templates_path: "{{ sgrt_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: true
+    all: false
     #api installation
     api: false
     #cli installation
@@ -39,12 +39,12 @@
     hip: false
     mpi: false
     new: false
-    opennic: false
+    opennic: true
     program: false
     reboot: false
     run: false
     set: false
-    sgutil: false 
+    sgutil: true 
     templates: false
     update: false
     validate: false
@@ -629,7 +629,6 @@
         - coyote
         - docker
         - hip
-        - iperf
         - mpi
         - opennic
         - vitis
@@ -828,6 +827,11 @@
     - name: deleting include folder
       file:
         path: "{{ sgrt_base_path }}/include"
+        state: absent
+    #iperf
+    - name: deleting iperf
+      file:
+        path: "{{ cli_path }}/validate/iperf"
         state: absent
     #help
     - name: deleting help scripts

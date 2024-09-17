@@ -1649,7 +1649,6 @@ validate_help() {
     echo ""
     echo "ARGUMENTS:"
     echo "   docker          - Validates Docker installation on the server."
-    echo "   iperf           - Measures HACC network performance."
     echo "   mpi             - Validates MPI."
     echo ""
     echo "   coyote          - Validates Coyote on the selected FPGA/ACAP."
@@ -1703,23 +1702,6 @@ validate_hip_help() {
       echo "   -d, --device    - GPU Device Index (see $CLI_NAME examine)."
       echo ""
       echo "   -h, --help      - Help to use HIP validation."
-      echo ""
-      exit 1
-}
-
-validate_iperf_help() {
-      echo ""
-      echo "${bold}$CLI_NAME validate iperf [flags] [--help]${normal}"
-      echo ""
-      echo "Measures HACC network performance."
-      echo ""
-      echo "FLAGS:"
-      echo "   -b, --bandwidth - Bandwidth to send at in bits/sec or packets per second."
-      echo "   -p, --parallel  - Number of parallel client threads to run."
-      echo "   -t, --time      - Time in seconds to transmit for."
-      echo "   -u, --udp       - When set to 1, uses UDP rather than TCP."
-      echo ""
-      echo "   -h, --help      - Help to use iperf validation."
       echo ""
       exit 1
 }
@@ -2601,11 +2583,6 @@ case "$command" in
         ;;
       hip)
         valid_flags="-d --device -h --help"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
-      iperf)
-        #valid flags
-        valid_flags="-b --bandwidth -h --help -p --parallel -t --time -u --udp"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       mpi)
