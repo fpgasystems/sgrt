@@ -137,6 +137,7 @@ CHECK_ON_SUDO_ERR_MSG="Sorry, this command requires sudo capabilities."
 CHECK_ON_VIRTUALIZED_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
+CHECK_ON_WORKFLOW_ERR_MSG="Please, program your device first."
 CHECK_ON_XRT_ERR_MSG="Please, choose a valid XRT version."
 
 commit_dialog() {
@@ -2201,6 +2202,14 @@ case "$command" in
             exit
         fi
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+
+        #onic workflow check
+        workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+        if [ ! "$workflow" = "opennic" ]; then
+            echo "$CHECK_ON_WORKFLOW_ERR_MSG"
+            echo ""
+            exit
+        fi
 
         #onic application check
         if [ ! -x "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/onic" ]; then
