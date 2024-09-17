@@ -1295,7 +1295,7 @@ program_help() {
     echo "   driver          - Inserts a driver or module into the Linux kernel."
     echo "   opennic         - Programs OpenNIC to a given FPGA."
     echo "   reset           - Performs a 'HOT Reset' on a Vitis device."
-    echo "   revert          - Returns a reconfigurable device to its default fabric setup."
+    echo "   revert          - Returns a device to its default fabric setup."
     echo "   vivado          - Programs a Vivado bitstream to a given FPGA."
     echo ""
     echo "   -h, --help      - Help to use this command."

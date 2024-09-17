@@ -8,7 +8,7 @@
 
 <code>sgutil program revert [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Returns a reconfigurable device to its default fabric setup.
+  &nbsp; &nbsp; Returns a device to its default fabric setup.
 </p>
 
 ### Flags
