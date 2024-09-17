@@ -13,11 +13,8 @@
 
 ### Arguments
 
-* [coyote](./sgutil-build-coyote.md#sgutil-build-coyote)
 * [hip](./sgutil-build-hip.md#sgutil-build-hip)
-* [mpi](./sgutil-build-mpi.md#sgutil-build-mpi)
 * [opennic](./sgutil-build-opennic.md#sgutil-build-opennic)
-* [vitis](./sgutil-build-vitis.md#sgutil-build-vitis)
 
 <code>-h, --help</code>
 <p>

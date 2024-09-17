@@ -14,12 +14,9 @@
 ### Arguments
 
 * [docker](./sgutil-validate-docker.md#sgutil-validate-docker)
-* [iperf](./sgutil-validate-iperf.md#sgutil-validate-iperf)
-* [mpi](./sgutil-validate-mpi.md#sgutil-validate-mpi)
 
 <!-- Extra line -->
 
-* [coyote](./sgutil-validate-coyote.md#sgutil-validate-coyote)
 * [opennic](./sgutil-validate-opennic.md#sgutil-validate-opennic)
 * [vitis](./sgutil-validate-vitis.md#sgutil-validate-vitis)
 

@@ -13,13 +13,7 @@
 
 ### Arguments
 
-* [mpi](./sgutil-run-mpi.md#sgutil-run-mpi)
-
-<!-- Extra line -->
-
-* [coyote](./sgutil-run-coyote.md#sgutil-run-coyote)
 * [opennic](./sgutil-run-opennic.md#sgutil-run-opennic)
-* [vitis](./sgutil-run-vitis.md#sgutil-run-vitis)
 
 <!-- Extra line -->
 
