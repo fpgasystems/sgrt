@@ -9,7 +9,7 @@ Creates a `device::vitis` instance to operate with.
 
 device::vitis open(const std::string& device_index, const std::string& project_path, const std::string& emulationMode)
 
-* `device_index`: ACAP/FPGA device index.
+* `device_index`: FPGA device index.
 * `project_path`: Project path.
 
 ### Methods
