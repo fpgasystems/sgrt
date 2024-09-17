@@ -155,8 +155,9 @@ done
 #revert devices
 if [ $devices_to_revert -ge 1 ]; then
     echo "${bold}$CLI_NAME program revert${normal}"    
-    #echo ""
-
+    echo ""
+    echo "${bold}Programming XRT shell:${normal}"    
+    
     #loop over the devices
     for ((i=0; i<${#serial_numbers[@]}; i++)); do
         if [[ -n ${serial_numbers[i]} ]]; then
