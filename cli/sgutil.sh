@@ -944,21 +944,8 @@ build_opennic_help() {
     exit
 }
 
-build_vivado_help() {
-    echo ""
-    echo "${bold}$CLI_NAME build vivado [flags] [--help]${normal}"
-    echo ""
-    echo "Generates .bit bitstreams and .ko drivers for Vivado workflow."
-    echo ""
-    echo "FLAGS:"
-    #echo "   -p, --project   - Specifies your Vivado project name."
-    echo ""
-    echo "   -h, --help      - Help to build a bitstream."
-    echo ""
-    exit 1
-}
+# enable ------------------------------------------------------------------------------------------------------------------------
 
-#enable
 enable_help() {
     echo ""
     echo "${bold}$CLI_NAME enable [arguments [flags]] [--help]${normal}"
@@ -1257,11 +1244,6 @@ new_help() {
     echo "   -h, --help      - Help to use this command."
     echo ""
     exit 1
-}
-
-new_coyote_help() {
-    $CLI_PATH/help/new_coyote $CLI_PATH $CLI_NAME
-    exit
 }
 
 new_hpi_help() {
