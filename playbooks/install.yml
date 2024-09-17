@@ -174,13 +174,11 @@
       when: all and constants_contents.matched == 0
       loop:
         - ACAP_SERVERS_LIST
-        - COYOTE_COMMIT
         - CPU_SERVERS_LIST
         - FPGA_SERVERS_LIST
         - GITHUB_CLI_PATH
         - GPU_SERVERS_LIST
         - LOCAL_PATH
-        - MPICH_PATH
         - MY_DRIVERS_PATH
         - MY_PROJECTS_PATH
         - ONIC_DRIVER_COMMIT
@@ -192,7 +190,6 @@
         - UPDATES_PATH
         - ROCM_PATH  
         - VIRTUALIZED_SERVERS_LIST
-        - VITIS_COMMIT
         - XILINX_PLATFORMS_PATH
         - XILINX_TOOLS_PATH
         - XILINXD_LICENSE_FILE
@@ -676,6 +673,9 @@
         - VIVADO_DEVICES_MAX
         - ONIC_BITSTREAM_NAME
         - WORKFLOWS_PATH
+        - VITIS_COMMIT
+        - MPICH_PATH
+        - COYOTE_COMMIT
     #coyote
     - name: deleting coyote workflow
       file:
