@@ -60,6 +60,11 @@ DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$project_name"
 SHELL_BUILD_DIR="$DIR/open-nic-shell/script"
 DRIVER_DIR="$DIR/open-nic-driver"
 
+#remove in the beginning
+if [ -d "$DIR" ]; then
+    rm -rf "$DIR"
+fi
+
 #new
 if ! [ -d "$DIR" ]; then
     echo "${bold}$CLI_NAME new $WORKFLOW (commit IDs for shell and driver: $commit_name_shell,$commit_name_driver)${normal}"
@@ -222,7 +227,7 @@ wait $revert_pid
 # Remove driver
 $CLI_PATH/sgutil program driver --remove ${DRIVER_NAME%.ko} >/dev/null 2>&1
 
-# Remove validation project
+#remove at the end
 rm -rf $DIR
 
 # Ensure a new line after completion
