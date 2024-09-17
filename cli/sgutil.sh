@@ -917,7 +917,6 @@ build_help() {
     echo "ARGUMENTS:"
     echo "   coyote          - Generates Coyote's bitstreams and drivers."
     echo "   hip             - Generates HIP binaries for your projects."
-    echo "   mpi             - Generates MPI binaries for your projects."
     echo "   opennic         - Generates OpenNIC's bitstreams and drivers."
     echo "   vitis           - Uses acap_fpga_xclbin to generate XCLBIN binaries for Vitis workflow." #Vitis .xo kernels and .xclbin binaries generation.
     #echo "   vivado (soon)   - Generates .bit bitstreams and .ko drivers for Vivado workflow." #Compiles a bitstream and a driver.
@@ -956,21 +955,6 @@ build_hip_help() {
     echo ""
     echo "FLAGS:"
     echo "   -p, --project   - Specifies your HIP project name."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
-}
-
-build_mpi_help() {
-    echo ""
-    echo "${bold}$CLI_NAME build mpi [flags] [--help]${normal}"
-    echo ""
-    echo "Generates MPI binaries for your projects."
-    echo ""
-    echo "FLAGS:"
-    #echo "   This command has no flags."
-    echo "   -p, --project   - Specifies your MPI project name."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -1308,7 +1292,6 @@ new_help() {
     echo "ARGUMENTS:"
     echo "   coyote          - Creates a new project using Coyote Hello, world! template."
     echo "   hip             - Creates a new project using HIP Hello, world! template."
-    echo "   mpi             - Creates a new project using MPI Hello, world! template."
     echo "   opennic         - Creates a new project using OpenNIC Hello, world! template."
     echo "   vitis           - Creates a new project using Vitis Hello, world! template." 
     echo ""
@@ -1327,20 +1310,6 @@ new_hpi_help() {
     echo "${bold}$CLI_NAME new hip [--help]${normal}"
     echo ""
     echo "Creates a new project using HIP Hello, world! template."
-    echo ""
-    echo "FLAGS"
-    echo "   This command has no flags."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
-}
-
-new_mpi_help() {
-    echo ""
-    echo "${bold}$CLI_NAME new mpi [--help]${normal}"
-    echo ""
-    echo "Creates a new project using MPI Hello, world! template."
     echo ""
     echo "FLAGS"
     echo "   This command has no flags."
@@ -1476,8 +1445,6 @@ run_help() {
     echo "Executes your accelerated application."
     echo ""
     echo "ARGUMENTS:"
-    echo "   mpi             - Runs your MPI application according to your setup."
-    echo ""
     echo "   coyote          - Runs Coyote on a given FPGA."
     echo "   opennic         - Runs OpenNIC on a given FPGA."
     echo "   vitis           - Runs a Vitis FPGA-binary on a given FPGA/ACAP."
@@ -1514,20 +1481,6 @@ run_hip_help() {
     echo "FLAGS"
     echo "   -d, --device    - GPU Device Index (see $CLI_NAME examine)."
     echo "   -p, --project   - Specifies your HIP project name."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
-}
-
-run_mpi_help() {
-    echo ""
-    echo "${bold}$CLI_NAME run mpi [flags] [--help]${normal}"
-    echo ""
-    echo "Runs your MPI application according to your setup."
-    echo ""
-    echo "FLAGS"
-    echo "   -p, --project   - Specifies your MPI project name."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -1649,7 +1602,6 @@ validate_help() {
     echo ""
     echo "ARGUMENTS:"
     echo "   docker          - Validates Docker installation on the server."
-    echo "   mpi             - Validates MPI."
     echo ""
     echo "   coyote          - Validates Coyote on the selected FPGA/ACAP."
     echo "   opennic         - Validates OpenNIC on the selected FPGA/ACAP."
@@ -1702,20 +1654,6 @@ validate_hip_help() {
       echo "   -d, --device    - GPU Device Index (see $CLI_NAME examine)."
       echo ""
       echo "   -h, --help      - Help to use HIP validation."
-      echo ""
-      exit 1
-}
-
-validate_mpi_help() {
-      echo ""
-      echo "${bold}$CLI_NAME validate mpi [flags] [--help]${normal}"
-      echo ""
-      echo "Validates MPI."
-      echo ""
-      echo "FLAGS:"
-      echo "   -p, --processes - Specify the number of processes to use."
-      echo ""
-      echo "   -h, --help      - Help to use MPI validation."
       echo ""
       exit 1
 }
@@ -1816,10 +1754,6 @@ case "$command" in
         ;;
       hip) 
         valid_flags="-p --project -h --help"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
-      mpi) 
-        valid_flags="-p --project -h --help" 
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic) 
@@ -2015,13 +1949,6 @@ case "$command" in
           exit 1
         fi
         $CLI_PATH/new/hip
-        ;;
-      mpi)
-        if [ "$#" -ne 2 ]; then
-          new_mpi_help
-          exit 1
-        fi
-        $CLI_PATH/new/mpi
         ;;
       opennic)
         #check on flags
@@ -2476,10 +2403,6 @@ case "$command" in
         #run
         $CLI_PATH/run/opennic --commit $commit_name --config $config_index --device $device_index --project $project_name 
         ;;
-      mpi) 
-        valid_flags="-p --project -h --help" 
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
       vitis) 
         valid_flags="-c --config -p --project -t --target -h --help" #-d --device 
         command_run $command_arguments_flags"@"$valid_flags
@@ -2583,10 +2506,6 @@ case "$command" in
         ;;
       hip)
         valid_flags="-d --device -h --help"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
-      mpi)
-        valid_flags="-h --help -p --processes"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)

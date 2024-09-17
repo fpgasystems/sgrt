@@ -37,7 +37,6 @@
     get: false
     help: false
     hip: false
-    mpi: false
     new: false
     opennic: true
     program: false
@@ -284,23 +283,6 @@
             dest: "{{ sgrt_base_path }}/templates"
             mode: "0755"
       when: all or (templates and hip)
-    #mpi
-    - name: managing mpi template
-      block:
-        - name: managing mpi template
-          debug:
-            msg: ""
-        - name: deleting mpi template
-          file:
-            path: "{{ sgrt_base_path }}/templates/mpi"
-            state: absent
-          register: mpi_templates
-        - name: copying mpi template
-          copy:
-            src: "../templates/mpi"
-            dest: "{{ sgrt_base_path }}/templates"
-            mode: "0755"
-      when: all or (templates and mpi)
     #opennic
     - name: managing opennic template
       block:
@@ -347,7 +329,6 @@
       loop:
         - coyote
         - hip
-        - mpi
         - opennic
         - vitis
     #common
@@ -495,7 +476,6 @@
       loop:
         - coyote
         - hip
-        - mpi
         - opennic
         - vitis
     #program
@@ -555,7 +535,6 @@
       loop:
         - coyote
         - hip
-        - mpi
         - opennic
         - vitis
     #set
@@ -629,7 +608,6 @@
         - coyote
         - docker
         - hip
-        - mpi
         - opennic
         - vitis
         - vitis-ai
@@ -694,33 +672,6 @@
             dest: "{{ cli_path }}/validate/hip"
             mode: "0755"
       when: all or hip
-    #mpi
-    - name: copying mpi workflow
-      block:
-        - name: copying mpi workflow
-          debug:
-            msg: ""
-        - name: new
-          copy:
-            src: "../cli/new/mpi.sh"
-            dest: "{{ cli_path }}/new/mpi"
-            mode: "0755"
-        - name: build
-          copy:
-            src: "../cli/build/mpi.sh"
-            dest: "{{ cli_path }}/build/mpi"
-            mode: "0755"
-        - name: run
-          copy:
-            src: "../cli/run/mpi.sh"
-            dest: "{{ cli_path }}/run/mpi"
-            mode: "0755"
-        - name: validate
-          copy:
-            src: "../cli/validate/mpi.sh"
-            dest: "{{ cli_path }}/validate/mpi"
-            mode: "0755"
-      when: all or mpi
     #opennic
     - name: copying opennic workflow
       block:
@@ -841,6 +792,15 @@
       loop:
         - opennic_validate
         - update
+    #mpi
+    - name: deleting mpi workflow
+      file:
+        path: "{{ cli_path }}/{{ item }}/mpi"
+        state: absent
+      loop:
+        - new
+        - build
+        - run
     #program
     - name: deleting program scripts
       file:

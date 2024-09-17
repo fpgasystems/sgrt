@@ -125,7 +125,7 @@ _sgutil_completions()
         2)
             case ${COMP_WORDS[COMP_CWORD-1]} in
                 build)
-                    COMPREPLY=($(compgen -W "coyote hip mpi opennic vitis --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote hip opennic vitis --help" -- ${cur}))
                     ;;
                 enable)
                     COMPREPLY=($(compgen -W "vitis vivado xrt --help" -- ${cur}))
@@ -137,7 +137,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "bdf clock bus name ifconfig memory network platform resource serial slr servers syslog workflow --help" -- ${cur}))
                     ;;
                 new)
-                    COMPREPLY=($(compgen -W "coyote hip mpi opennic vitis --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote hip opennic vitis --help" -- ${cur}))
                     ;;
                 program)
                     COMPREPLY=($(compgen -W "coyote driver opennic reset revert vitis vivado --help" -- ${cur}))
@@ -146,7 +146,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 run)
-                    COMPREPLY=($(compgen -W "coyote hip mpi opennic vitis --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote hip opennic vitis --help" -- ${cur}))
                     ;;
                 set)
                     COMPREPLY=($(compgen -W "gh keys license mtu --help" -- ${cur})) #write
@@ -155,7 +155,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 validate)
-                    COMPREPLY=($(compgen -W "coyote docker hip mpi opennic vitis vitis-ai --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "coyote docker hip opennic vitis vitis-ai --help" -- ${cur}))
                     ;;
             esac
             ;;
@@ -168,9 +168,6 @@ _sgutil_completions()
                             ;;
                         hip)
                             COMPREPLY=($(compgen -W "--project --help" -- ${cur}))
-                            ;;
-                        mpi)
-                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         opennic)
                             if [ "$is_cpu" = "0" ]; then
@@ -287,9 +284,6 @@ _sgutil_completions()
                         hip)
                             COMPREPLY=($(compgen -W "--device --project --help" -- ${cur}))
                             ;;
-                        mpi)
-                            COMPREPLY=($(compgen -W "--project --help" -- ${cur}))
-                            ;;
                         opennic)
                             COMPREPLY=($(compgen -W "--commit --config --device --project --help" -- ${cur})) 
                             ;;
@@ -327,9 +321,6 @@ _sgutil_completions()
                             ;;
                         hip)
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
-                            ;;
-                        mpi) 
-                            COMPREPLY=($(compgen -W "--processes --help" -- ${cur}))
                             ;;
                         opennic)
                             COMPREPLY=($(compgen -W "--commit --device --fec --help" -- ${cur}))
