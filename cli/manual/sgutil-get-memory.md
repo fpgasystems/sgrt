@@ -8,13 +8,13 @@
 
 <code>sgutil get memory [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives FPGA/ACAP Memory Information.
+  &nbsp; &nbsp; Retreives FPGA Memory Information.
 </p>
 
 ### Flags
 <code>-d, --device <string></code>
 <p>
-  &nbsp; &nbsp; FPGA/ACAP Device Index (according to sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 </p>
 
 <code>-h, --help <string></code>

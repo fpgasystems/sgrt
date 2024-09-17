@@ -5,13 +5,13 @@ Back to sgutil program
 
 sgutil program reset [flags] [--help]
 
-  &nbsp; &nbsp; Resets a given FPGA/ACAP.
+  &nbsp; &nbsp; Resets a given FPGA.
 
 
 ### Flags
 -d, --device 
 
-  &nbsp; &nbsp; FPGA Device Index (see sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 
 
 -h, --help 

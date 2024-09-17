@@ -8,13 +8,13 @@
 
 <code>sgutil validate vitis [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Validates Vitis workflow on the selected FPGA/ACAP.
+  &nbsp; &nbsp; Validates Vitis workflow on the selected FPGA.
 </p>
 
 ### Flags
 <code>-d, --device <string></code>
 <p>
-  &nbsp; &nbsp; FPGA Device Index (see sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 </p>
 
 <code>-h, --help <string></code>

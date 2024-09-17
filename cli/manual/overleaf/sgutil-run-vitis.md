@@ -5,13 +5,13 @@ Back to sgutil run
 
 sgutil run vitis [flags] [--help]
 
-  &nbsp; &nbsp; Runs a Vitis FPGA-binary on a given FPGA/ACAP.
+  &nbsp; &nbsp; Runs a Vitis FPGA-binary on a given FPGA.
 
 
 ### Flags
 -d, --device 
 
-  &nbsp; &nbsp; FPGA Device Index (see sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 
 
     --platform

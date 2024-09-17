@@ -5,13 +5,13 @@ Back to sgutil get
 
 sgutil get serial [flags] [--help]
 
-  &nbsp; &nbsp; Retreives FPGA/ACAP serial numbers.
+  &nbsp; &nbsp; Retreives FPGA serial numbers.
 
 
 ### Flags
 -d, --device 
 
-  &nbsp; &nbsp; FPGA/ACAP Device Index (according to sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 
 
 -h, --help 

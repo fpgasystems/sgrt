@@ -8,13 +8,13 @@
 
 <code>sgutil program vitis [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Programs a Vitis binary to a given FPGA/ACAP.
+  &nbsp; &nbsp; Programs a Vitis binary to a given FPGA.
 </p>
 
 ### Flags
 <code>-d, --device <string></code>
 <p>
-  &nbsp; &nbsp; FPGA Device Index (see sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 </p>
 
 <code>-p, --project <string></code>

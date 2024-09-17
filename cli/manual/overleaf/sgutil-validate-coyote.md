@@ -11,7 +11,7 @@ sgutil validate coyote [flags] [--help]
 ### Flags
 -d, --device 
 
-  &nbsp; &nbsp; FPGA Device Index (see sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 
 
 -h, --help 

@@ -19,7 +19,7 @@
 
 <code>-d, --device <string></code>
 <p>
-  &nbsp; &nbsp; FPGA Device Index (see sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 </p>
 
 <code>-h, --help <string></code>

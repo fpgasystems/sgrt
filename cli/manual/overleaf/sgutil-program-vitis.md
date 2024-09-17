@@ -5,13 +5,13 @@ Back to sgutil program
 
 sgutil program vitis [flags] [--help]
 
-  &nbsp; &nbsp; Programs a Vitis binary to a given FPGA/ACAP.
+  &nbsp; &nbsp; Programs a Vitis binary to a given FPGA.
 
 
 ### Flags
 -d, --device 
 
-  &nbsp; &nbsp; FPGA Device Index (see sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 
 
 -p, --project 

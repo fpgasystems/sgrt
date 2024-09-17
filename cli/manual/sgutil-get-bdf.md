@@ -8,13 +8,13 @@
 
 <code>sgutil get bdf [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives FPGA/ACAP Bus Device Function.
+  &nbsp; &nbsp; Retreives FPGA Bus Device Function.
 </p>
 
 ### Flags
 <code>-d, --device <string></code>
 <p>
-  &nbsp; &nbsp; FPGA/ACAP Device Index (according to sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 </p>
 
 <code>-h, --help <string></code>

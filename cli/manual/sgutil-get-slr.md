@@ -8,13 +8,13 @@
 
 <code>sgutil get slr [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives FPGA/ACAP Resource Availability and Memory Information per SLR.
+  &nbsp; &nbsp; Retreives FPGA Resource Availability and Memory Information per SLR.
 </p>
 
 ### Flags
 <code>-d, --device <string></code>
 <p>
-  &nbsp; &nbsp; FPGA/ACAP Device Index (according to sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 </p>
 
 <code>-h, --help <string></code>

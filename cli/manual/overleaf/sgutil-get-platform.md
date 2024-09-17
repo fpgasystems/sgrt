@@ -5,13 +5,13 @@ Back to sgutil get
 
 sgutil get platform [flags] [--help]
 
-  &nbsp; &nbsp; Retreives FPGA/ACAP platform names.
+  &nbsp; &nbsp; Retreives FPGA platform names.
 
 
 ### Flags
 -d, --device 
 
-  &nbsp; &nbsp; FPGA/ACAP Device Index (according to sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 
 
 -h, --help 

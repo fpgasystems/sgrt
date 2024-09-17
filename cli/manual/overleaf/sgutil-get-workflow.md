@@ -5,13 +5,13 @@ Back to sgutil get
 
 sgutil get workflow [flags] [--help]
 
-  &nbsp; &nbsp; Retreives FPGA/ACAP current workflow.
+  &nbsp; &nbsp; Retreives FPGA current workflow.
 
 
 ### Flags
 -d, --device 
 
-  &nbsp; &nbsp; FPGA/ACAP Device Index (according to sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 
 
 -h, --help 

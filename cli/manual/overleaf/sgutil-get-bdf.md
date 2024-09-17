@@ -5,13 +5,13 @@ Back to sgutil get
 
 sgutil get bdf [flags] [--help]
 
-  &nbsp; &nbsp; Retreives FPGA/ACAP Bus Device Function.
+  &nbsp; &nbsp; Retreives FPGA Bus Device Function.
 
 
 ### Flags
 -d, --device 
 
-  &nbsp; &nbsp; FPGA/ACAP Device Index (according to sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 
 
 -h, --help 

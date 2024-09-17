@@ -16,7 +16,7 @@ sgutil program vivado [flags] [--help]
 
     --device 
 
-  &nbsp; &nbsp; FPGA Device Index (see sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 
 
     --driver 
