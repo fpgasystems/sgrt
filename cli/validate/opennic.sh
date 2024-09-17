@@ -37,7 +37,13 @@ FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 NUM_PINGS="5"
+SERVERADDR="localhost"
 WORKFLOW="opennic"
+XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
+
+#derived
+DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
+VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
 #get hostname
 url="${HOSTNAME}"
@@ -109,14 +115,59 @@ $CLI_PATH/build/opennic --commit $commit_name_shell $commit_name_driver --platfo
 echo ""
 
 #add additional echo (1/2)
-workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+#workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
 
-#revert device
-if [ "$workflow" = "opennic" ] || [ "$workflow" = "vivado" ]; then
+#get devices number
+MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap|asoc" $DEVICES_LIST)
+
+#get list of devices to revert
+serial_numbers=()
+device_names=()
+upstream_ports=()
+root_ports=()
+LinkCtls=()
+devices_to_revert=0
+for (( i=1; i<=MAX_DEVICES; i++ )); do
+    workflow_i=$($CLI_PATH/common/get_workflow "$CLI_PATH" "$i")
+    if [ "$workflow_i" = "opennic" ] || [ "$workflow_i" = "vivado" ]; then
+        upstream_port=$($CLI_PATH/get/get_fpga_device_param $i upstream_port)
+	    bdf="${upstream_port%??}" #i.e., we transform 81:00.0 into 81:00
+        #serial_numbers
+		serial_number=$($CLI_PATH/get/serial -d $i | awk -F': ' '{print $2}' | grep -v '^$')
+		serial_numbers+=("$serial_number")
+		#device_names
+		device_name=$($CLI_PATH/get/name -d $i | awk -F': ' '{print $2}' | grep -v '^$')
+		device_names+=("$device_name")
+		#upstream_ports
+		upstream_port=$($CLI_PATH/get/get_fpga_device_param $i upstream_port)
+		upstream_ports+=("$upstream_port")
+		#root_ports
+		root_port=$($CLI_PATH/get/get_fpga_device_param $i root_port)
+		root_ports+=("$root_port")
+		#LinkCtl
+		LinkCtl=$($CLI_PATH/get/get_fpga_device_param $i LinkCtl)
+		LinkCtls+=("$LinkCtl")
+		#increase counter
+		((devices_to_revert++))
+    fi
+done
+
+#revert devices
+if [ $devices_to_revert -ge 1 ]; then
     echo "${bold}$CLI_NAME program revert${normal}"    
-    echo ""
+    #echo ""
+
+    #loop over the devices
+    for ((i=0; i<${#serial_numbers[@]}; i++)); do
+        if [[ -n ${serial_numbers[i]} ]]; then
+            serial_number=${serial_numbers[i]}
+            device_name=${device_names[i]}
+            $VIVADO_PATH/$vivado_version/bin/vivado -nolog -nojournal -mode batch -source $CLI_PATH/program/flash_xrt_bitstream.tcl -tclargs $SERVERADDR $serial_number $device_name
+        fi
+    done
+    #hotplug
+    sudo $CLI_PATH/program/pci_hot_plug $i "${upstream_ports[@]}" "${root_ports[@]}" "${LinkCtls[@]}"
 fi
-$CLI_PATH/program/revert -d $device_index --version $vivado_version
 
 #add additional echo (2/2)
 #if [ "$workflow" = "opennic" ] || [ "$workflow" = "vivado" ]; then
