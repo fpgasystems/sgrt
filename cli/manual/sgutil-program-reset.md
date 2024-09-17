@@ -8,7 +8,7 @@
 
 <code>sgutil program reset [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Resets a given FPGA/ACAP.
+  &nbsp; &nbsp; Performs a 'HOT Reset' on a Vitis device.
 </p>
 
 ### Flags

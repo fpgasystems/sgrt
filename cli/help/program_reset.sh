@@ -8,7 +8,7 @@ CLI_NAME=$1
 echo ""
 echo "${bold}$CLI_NAME program reset [flags] [--help]${normal}"
 echo ""
-echo "Resets a given FPGA/ACAP."
+echo "Performs a 'HOT Reset' on a Vitis device."
 echo ""
 echo "FLAGS:"
 echo "   -d, --device    - FPGA Device Index (according to ${bold}$CLI_NAME examine${normal})."
