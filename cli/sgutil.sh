@@ -915,34 +915,12 @@ build_help() {
     echo "Creates binaries, bitstreams, and drivers for your accelerated applications."
     echo ""
     echo "ARGUMENTS:"
-    echo "   coyote          - Generates Coyote's bitstreams and drivers."
     echo "   hip             - Generates HIP binaries for your projects."
     echo "   opennic         - Generates OpenNIC's bitstreams and drivers."
     echo "   vitis           - Uses acap_fpga_xclbin to generate XCLBIN binaries for Vitis workflow." #Vitis .xo kernels and .xclbin binaries generation.
     #echo "   vivado (soon)   - Generates .bit bitstreams and .ko drivers for Vivado workflow." #Compiles a bitstream and a driver.
     echo ""
     echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
-}
-
-build_coyote_help() {
-    echo ""
-    echo "${bold}$CLI_NAME build coyote [flags] [--help]${normal}"
-    echo ""
-    echo "Generates Coyote's bitstreams and drivers."
-    echo ""
-    echo "FLAGS:"
-    #echo "   -c, --config    - Coyote's configuration:"
-    #echo "                         perf_hosts, perf_fpga, gbm_dtrees,"
-    #echo "                         hyperloglog, perf_dram, perf_hbm,"
-    #echo "                         perf_rdma_host, perf_rdma_card, perf_tcp,"
-    #echo "                         rdma_regex, service_aes, service_reconfiguration."
-    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
-    echo "       --platform  - Xilinx platform (according to $CLI_NAME get platform)."
-    echo "       --project   - Specifies your Coyote project name."
-    echo ""
-    echo "   -h, --help      - Help to build Coyote."
     echo ""
     exit 1
 }
@@ -1290,7 +1268,6 @@ new_help() {
     echo "Creates a new project of your choice."
     echo ""
     echo "ARGUMENTS:"
-    echo "   coyote          - Creates a new project using Coyote Hello, world! template."
     echo "   hip             - Creates a new project using HIP Hello, world! template."
     echo "   opennic         - Creates a new project using OpenNIC Hello, world! template."
     echo "   vitis           - Creates a new project using Vitis Hello, world! template." 
@@ -1347,31 +1324,12 @@ program_help() {
     echo "Download the acceleration program to a given FPGA/ACAP."
     echo ""
     echo "ARGUMENTS:"
-    echo "   coyote          - Programs Coyote to a given FPGA."
     echo "   driver          - Inserts a driver or module into the Linux kernel."
     echo "   opennic         - Programs OpenNIC to a given FPGA."
     echo "   reset           - Resets a given FPGA/ACAP."
     echo "   revert          - Returns the specified FPGA to the Vitis workflow."
     echo "   vitis           - Programs a Vitis binary to a given FPGA/ACAP."
     echo "   vivado          - Programs a Vivado bitstream to a given FPGA."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
-}
-
-program_coyote_help() {
-    echo ""
-    echo "${bold}$CLI_NAME program coyote [flags] [--help]${normal}"
-    echo ""
-    echo "Programs Coyote to a given FPGA."
-    echo ""
-    echo "FLAGS:"
-    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
-    echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
-    echo "   -p, --project   - Specifies your Coyote project name." 
-    #echo "       --regions   - Sets the number of independent regions (vFPGA)."
-    echo "       --remote    - Local or remote deployment."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -1445,27 +1403,10 @@ run_help() {
     echo "Executes your accelerated application."
     echo ""
     echo "ARGUMENTS:"
-    echo "   coyote          - Runs Coyote on a given FPGA."
     echo "   opennic         - Runs OpenNIC on a given FPGA."
     echo "   vitis           - Runs a Vitis FPGA-binary on a given FPGA/ACAP."
     echo ""
     echo "   hip             - Runs your HIP application on a given GPU."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
-}
-
-run_coyote_help() {
-    echo ""
-    echo "${bold}$CLI_NAME run coyote [flags] [--help]${normal}"
-    echo ""
-    echo "Runs Coyote on a given FPGA."
-    echo ""
-    echo "FLAGS:"
-    echo "   -c, --commit    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
-    echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
-    echo "   -p, --project   - Specifies your Coyote project name."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -1603,7 +1544,6 @@ validate_help() {
     echo "ARGUMENTS:"
     echo "   docker          - Validates Docker installation on the server."
     echo ""
-    echo "   coyote          - Validates Coyote on the selected FPGA/ACAP."
     echo "   opennic         - Validates OpenNIC on the selected FPGA/ACAP."
     echo "   vitis           - Validates Vitis workflow on the selected FPGA/ACAP." 
     echo "   vitis-ai        - Validates Vitis AI workflow on the selected FPGA????????/ACAP." 
@@ -1613,21 +1553,6 @@ validate_help() {
     echo "   -h, --help      - Help to use this command."
     echo ""
     exit 1
-}
-
-validate_coyote_help() {
-      echo ""
-      echo "${bold}$CLI_NAME validate coyote [flags] [--help]${normal}"
-      echo ""
-      echo "Validates Coyote on the selected FPGA."
-      echo ""
-      echo "FLAGS:"
-      echo "   -c, --commit    - GitHub commit ID (default: ${bold}$COYOTE_COMMIT${normal})."
-      echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
-      echo ""
-      echo "   -h, --help      - Help to use Coyote validation."
-      echo ""
-      exit 1
 }
 
 validate_docker_help() {
@@ -1736,7 +1661,7 @@ case "$command" in
     ;;
   build)
     #checks
-    if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
+    if [ "$arguments" = "opennic" ]; then
       #cpu_check "$CLI_PATH" "$hostname"
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
       vivado_check "$VIVADO_PATH" "$vivado_version"
@@ -1747,10 +1672,6 @@ case "$command" in
     case "$arguments" in
       -h|--help)
         build_help
-        ;;
-      coyote) 
-        valid_flags="-c --commit --platform --project -h --help" 
-        command_run $command_arguments_flags"@"$valid_flags
         ;;
       hip) 
         valid_flags="-p --project -h --help"
@@ -1923,13 +1844,13 @@ case "$command" in
     ;;
   new)
     #create workflow directory
-    if [ "$arguments" = "coyote" ] || [ "$arguments" = "hip" ] || [ "$arguments" = "opennic" ]; then
+    if [ "$arguments" = "hip" ] || [ "$arguments" = "opennic" ]; then
       #create directory
       mkdir -p "$MY_PROJECTS_PATH/$arguments"
     fi
 
     #checks
-    if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
+    if [ "$arguments" = "opennic" ]; then
       vivado_developers_check "$USER"
       gh_check "$CLI_PATH"
     fi
@@ -1937,11 +1858,6 @@ case "$command" in
     case "$arguments" in
       -h|--help)
         new_help
-        ;;
-      coyote)
-        valid_flags="-c --commit --project --push -h --help"
-        echo ""
-        command_run $command_arguments_flags"@"$valid_flags
         ;;
       hip)
         if [ "$#" -ne 2 ]; then
@@ -2051,7 +1967,7 @@ case "$command" in
     ;;
   program)
     #checks (1/3)
-    if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ] || [ "$arguments" = "reset" ] || [ "$arguments" = "revert" ] || [ "$arguments" = "vivado" ]; then
+    if [ "$arguments" = "opennic" ] || [ "$arguments" = "reset" ] || [ "$arguments" = "revert" ] || [ "$arguments" = "vivado" ]; then
       virtualized_check "$CLI_PATH" "$hostname"
       fpga_check "$CLI_PATH" "$hostname"
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
@@ -2059,7 +1975,7 @@ case "$command" in
     fi
 
     #checks (2/3)
-    if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
+    if [ "$arguments" = "opennic" ]; then
       vivado_developers_check "$USER"
       gh_check "$CLI_PATH"
     fi
@@ -2072,10 +1988,6 @@ case "$command" in
     case "$arguments" in
       -h|--help)
         program_help
-        ;;
-      coyote)
-        valid_flags="-c --commit -d --device -p --project --remote -h --help" #--regions
-        command_run $command_arguments_flags"@"$valid_flags
         ;;
       driver)
         #check on flags
@@ -2333,7 +2245,7 @@ case "$command" in
   run)
 
     #checks (1/3)
-    #if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ] || [ "$arguments" = "reset" ] || [ "$arguments" = "revert" ] || [ "$arguments" = "vivado" ]; then
+    #if [ "$arguments" = "opennic" ] || [ "$arguments" = "reset" ] || [ "$arguments" = "revert" ] || [ "$arguments" = "vivado" ]; then
     #  #virtualized_check "$CLI_PATH" "$hostname"
     #  fpga_check "$CLI_PATH" "$hostname"
     #  #vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
@@ -2350,10 +2262,6 @@ case "$command" in
     case "$arguments" in
       -h|--help)
         run_help
-        ;;
-      coyote) 
-        valid_flags="-c --commit -d --device -p --project -h --help"
-        command_run $command_arguments_flags"@"$valid_flags
         ;;
       hip) 
         valid_flags="-d --device -p --project -h --help" 
@@ -2481,12 +2389,12 @@ case "$command" in
     ;;
   validate)
     #create workflow directory
-    if [ "$arguments" = "coyote" ] || [ "$arguments" = "hip" ] || [ "$arguments" = "opennic" ]; then
+    if [ "$arguments" = "hip" ] || [ "$arguments" = "opennic" ]; then
       mkdir -p "$MY_PROJECTS_PATH/$arguments"
     fi
 
     #checks
-    if [ "$arguments" = "coyote" ] || [ "$arguments" = "opennic" ]; then
+    if [ "$arguments" = "opennic" ]; then
       virtualized_check "$CLI_PATH" "$hostname"
       fpga_check "$CLI_PATH" "$hostname"
       vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
@@ -2496,10 +2404,6 @@ case "$command" in
     fi
 
     case "$arguments" in
-      coyote)
-        valid_flags="-c --commit -d --device -h --help"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
       docker)
         valid_flags="-h --help"
         command_run $command_arguments_flags"@"$valid_flags

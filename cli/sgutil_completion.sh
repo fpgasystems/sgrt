@@ -125,7 +125,7 @@ _sgutil_completions()
         2)
             case ${COMP_WORDS[COMP_CWORD-1]} in
                 build)
-                    COMPREPLY=($(compgen -W "coyote hip opennic vitis --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "hip opennic vitis --help" -- ${cur}))
                     ;;
                 enable)
                     COMPREPLY=($(compgen -W "vitis vivado xrt --help" -- ${cur}))
@@ -137,16 +137,16 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "bdf clock bus name ifconfig memory network platform resource serial slr servers syslog workflow --help" -- ${cur}))
                     ;;
                 new)
-                    COMPREPLY=($(compgen -W "coyote hip opennic vitis --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "hip opennic vitis --help" -- ${cur}))
                     ;;
                 program)
-                    COMPREPLY=($(compgen -W "coyote driver opennic reset revert vitis vivado --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "driver opennic reset revert vitis vivado --help" -- ${cur}))
                     ;;
                 reboot)
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 run)
-                    COMPREPLY=($(compgen -W "coyote hip opennic vitis --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "hip opennic vitis --help" -- ${cur}))
                     ;;
                 set)
                     COMPREPLY=($(compgen -W "gh keys license mtu --help" -- ${cur})) #write
@@ -155,7 +155,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 validate)
-                    COMPREPLY=($(compgen -W "coyote docker hip opennic vitis vitis-ai --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "docker hip opennic vitis vitis-ai --help" -- ${cur}))
                     ;;
             esac
             ;;
@@ -163,9 +163,6 @@ _sgutil_completions()
             case ${COMP_WORDS[COMP_CWORD-2]} in
                 build)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
-                        coyote)
-                            COMPREPLY=($(compgen -W "--commit --platform --project --help" -- ${cur}))
-                            ;;
                         hip)
                             COMPREPLY=($(compgen -W "--project --help" -- ${cur}))
                             ;;
@@ -243,9 +240,6 @@ _sgutil_completions()
                     ;;
                 new) 
                     case ${COMP_WORDS[COMP_CWORD-1]} in
-                        coyote)
-                            COMPREPLY=($(compgen -W "--commit --project --push --help" -- ${cur}))
-                            ;;
                         opennic)
                             COMPREPLY=($(compgen -W "--commit --project --push --help" -- ${cur}))
                             ;;
@@ -253,9 +247,6 @@ _sgutil_completions()
                     ;;
                 program)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
-                        coyote)
-                            COMPREPLY=($(compgen -W "--commit --device --project --remote --help" -- ${cur}))
-                            ;;
                         driver)
                             COMPREPLY=($(compgen -W "--insert --params --remove --help" -- ${cur}))
                             ;;
@@ -278,9 +269,6 @@ _sgutil_completions()
                     ;;
                 run)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
-                        coyote)
-                            COMPREPLY=($(compgen -W "--commit --device --project --help" -- ${cur})) 
-                            ;;
                         hip)
                             COMPREPLY=($(compgen -W "--device --project --help" -- ${cur}))
                             ;;
@@ -313,9 +301,6 @@ _sgutil_completions()
                     ;;
                 validate)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
-                        coyote)
-                            COMPREPLY=($(compgen -W "--commit --device --help" -- ${cur}))
-                            ;;
                         docker)
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
@@ -344,9 +329,6 @@ _sgutil_completions()
             #Example: sgutil program coyote --device 1 -- (there are five words)
 
             #build
-            other_flags=( "--commit" "--platform" "--project" )
-            command_completion_5 "$cur" "$COMP_CWORD" "build" "coyote" "${other_flags[@]}"
-
             if [ "$is_cpu" = "0" ]; then
                 #platform is not offered
                 other_flags=( "--commit" "--project" )
@@ -365,15 +347,9 @@ _sgutil_completions()
 
             #new
             other_flags=( "--commit" "--project" "--push")
-            command_completion_5 "$cur" "$COMP_CWORD" "new" "coyote" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--project" "--push")
             command_completion_5 "$cur" "$COMP_CWORD" "new" "opennic" "${other_flags[@]}"
 
             #program
-            other_flags=( "--commit" "--device" "--project" "--remote" )
-            command_completion_5 "$cur" "$COMP_CWORD" "program" "coyote" "${other_flags[@]}"
-            
             other_flags=( "--insert" "--params " ) #--remove
             command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "${other_flags[@]}"
 
@@ -387,9 +363,6 @@ _sgutil_completions()
             command_completion_5 "$cur" "$COMP_CWORD" "program" "vivado" "${other_flags[@]}"
 
             #run
-            other_flags=( "--commit" "--device" "--project" )
-            command_completion_5 "$cur" "$COMP_CWORD" "run" "coyote" "${other_flags[@]}"
-
             other_flags=( "--device" "--project" )
             command_completion_5 "$cur" "$COMP_CWORD" "run" "hip" "${other_flags[@]}"
 
@@ -400,9 +373,6 @@ _sgutil_completions()
             command_completion_5 "$cur" "$COMP_CWORD" "run" "vitis" "${other_flags[@]}"
 
             #validate
-            other_flags=( "--commit" "--device" )
-            command_completion_5 "$cur" "$COMP_CWORD" "validate" "coyote" "${other_flags[@]}"
-
             other_flags=( "--commit" "--device" "--fec" )
             command_completion_5 "$cur" "$COMP_CWORD" "validate" "opennic" "${other_flags[@]}"
             ;;
@@ -416,16 +386,6 @@ _sgutil_completions()
             #COMP_WORDS[6]=hello_world
             #Example: sgutil program coyote --device 1 --project hello_world -- (there are seven words)
             
-            #build coyote
-            other_flags=( "--platform" "--project" )
-            command_completion_7 "$cur" "$COMP_CWORD" "build" "coyote" "--commit" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--project" )
-            command_completion_7 "$cur" "$COMP_CWORD" "build" "coyote" "--platform" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--platform" )
-            command_completion_7 "$cur" "$COMP_CWORD" "build" "coyote" "--project" "${other_flags[@]}"
-
             #build opennic
             other_flags=( "--platform" "--project" )
             command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--commit" "${other_flags[@]}"
@@ -438,16 +398,6 @@ _sgutil_completions()
 
             other_flags=( "--commit" "--platform" )
             command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--project" "${other_flags[@]}"
-
-            #new coyote
-            other_flags=( "--project" "--push" )
-            command_completion_7 "$cur" "$COMP_CWORD" "new" "coyote" "--commit" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--push" )
-            command_completion_7 "$cur" "$COMP_CWORD" "new" "coyote" "--project" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--project" )
-            command_completion_7 "$cur" "$COMP_CWORD" "new" "coyote" "--push" "${other_flags[@]}"
             
             #new opennic
             other_flags=( "--project" "--push" )
@@ -469,19 +419,6 @@ _sgutil_completions()
             other_flags=( "" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--remove" "${other_flags[@]}"
             
-            #program coyote
-            other_flags=( "--device" "--project" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--commit" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--project" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--device" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--device" "--project" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "${other_flags[@]}"
-
             #program opennic
             other_flags=( "--device" "--project" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "opennic" "--commit" "${other_flags[@]}"
@@ -507,16 +444,6 @@ _sgutil_completions()
 
             other_flags=( "--device" "--project" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "vitis" "--xclbin" "${other_flags[@]}"
-
-            #run coyote
-            other_flags=( "--device" "--project" )
-            command_completion_7 "$cur" "$COMP_CWORD" "run" "coyote" "--commit" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--project" )
-            command_completion_7 "$cur" "$COMP_CWORD" "run" "coyote" "--device" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--device" )
-            command_completion_7 "$cur" "$COMP_CWORD" "run" "coyote" "--project" "${other_flags[@]}"
 
             #run opennic
             other_flags=( "--config" "--device" "--project" )
@@ -603,46 +530,6 @@ _sgutil_completions()
 
             #other_flags=( "--commit" "--config" )
             #command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--project" "--platform" "${other_flags[@]}"
-
-            #program coyote --commit
-            other_flags=( "--project" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--commit" "--device" "${other_flags[@]}"
-            
-            other_flags=( "--device" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--commit" "--project" "${other_flags[@]}"
-
-            other_flags=( "--device" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--commit" "--remote" "${other_flags[@]}"
-            
-            #program coyote --device
-            other_flags=( "--project" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--commit" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--project" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--device" "--remote" "${other_flags[@]}"
-
-            #program coyote --project
-            other_flags=( "--device" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--commit" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--device" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--device" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--project" "--remote" "${other_flags[@]}"
-
-            #program coyote --remote
-            other_flags=( "--device" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--commit" "${other_flags[@]}"
-            
-            other_flags=( "--commit" "--project" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--device" "${other_flags[@]}"
-
-            other_flags=( "--commit" "--device" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "coyote" "--remote" "--project" "${other_flags[@]}"
 
             #program opennic --commit
             other_flags=( "--project" "--remote" )

@@ -30,7 +30,6 @@
     bitstreams: false
     build: false
     common: false
-    coyote: false
     directories: false
     enable: false
     examine: false
@@ -248,24 +247,6 @@
     #    mode: "0644"
     #  when: all and not version_stat.stat.exists
 
-    #copying templates
-    #coyote
-    - name: managing coyote template
-      block:
-        - name: managing coyote template
-          debug:
-            msg: ""
-        - name: deleting coyote template
-          file:
-            path: "{{ sgrt_base_path }}/templates/coyote"
-            state: absent
-          register: coyote_templates
-        #- name: copying coyote template
-        #  copy:
-        #    src: "../templates/coyote"
-        #    dest: "{{ sgrt_base_path }}/templates"
-        #    mode: "0755"
-      when: all or (templates and coyote)
     #hip
     - name: managing hip template
       block:
@@ -327,7 +308,6 @@
         mode: "0755"
       when: all or build
       loop:
-        - coyote
         - hip
         - opennic
         - vitis
@@ -474,7 +454,6 @@
         mode: "0755"
       when: all or new
       loop:
-        - coyote
         - hip
         - opennic
         - vitis
@@ -486,7 +465,6 @@
         mode: "0755"
       when: all or program
       loop:
-        - coyote
         - driver
         - fpga_chmod
         - opennic
@@ -533,7 +511,6 @@
         mode: "0755"
       when: all or run
       loop:
-        - coyote
         - hip
         - opennic
         - vitis
@@ -605,7 +582,6 @@
         mode: "0755"
       when: all or validate
       loop:
-        - coyote
         - docker
         - hip
         - opennic
@@ -613,38 +589,6 @@
         - vitis-ai
 
     #copying workflows
-    #coyote
-    - name: copying coyote workflow
-      block:
-        - name: copying coyote workflow
-          debug:
-            msg: ""
-        - name: new
-          copy:
-            src: "../cli/new/coyote.sh"
-            dest: "{{ cli_path }}/new/coyote"
-            mode: "0755"
-        - name: build
-          copy:
-            src: "../cli/build/coyote.sh"
-            dest: "{{ cli_path }}/build/coyote"
-            mode: "0755"
-        - name: program
-          copy:
-            src: "../cli/program/coyote.sh"
-            dest: "{{ cli_path }}/program/coyote"
-            mode: "0755"
-        - name: run
-          copy:
-            src: "../cli/run/coyote.sh"
-            dest: "{{ cli_path }}/run/coyote"
-            mode: "0755"
-        - name: validate
-          copy:
-            src: "../cli/validate/coyote.sh"
-            dest: "{{ cli_path }}/validate/coyote"
-            mode: "0755"
-      when: all or coyote
     #hip
     - name: copying hip workflow
       block:
@@ -774,6 +718,17 @@
         - VIVADO_DEVICES_MAX
         - ONIC_BITSTREAM_NAME
         - WORKFLOWS_PATH
+    #coyote
+    - name: deleting coyote workflow
+      file:
+        path: "{{ cli_path }}/{{ item }}/coyote"
+        state: absent
+      loop:
+        - new
+        - build
+        - program
+        - run
+        - validate
     #include folder
     - name: deleting include folder
       file:
@@ -801,6 +756,7 @@
         - new
         - build
         - run
+        - validate
     #program
     - name: deleting program scripts
       file:
