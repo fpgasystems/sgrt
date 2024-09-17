@@ -565,7 +565,6 @@
         - hip
         - opennic
         - vitis
-        - vitis-ai
 
     #copying workflows
     #hip
@@ -746,3 +745,8 @@
         - build
         - program
         - run
+    #vitis-ai
+    - name: deleting vitis-ai validation
+      file:
+        path: "{{ cli_path }}/validate/vitis-ai"
+        state: absent

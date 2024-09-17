@@ -155,7 +155,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 validate)
-                    COMPREPLY=($(compgen -W "docker hip opennic vitis vitis-ai --help" -- ${cur}))
+                    COMPREPLY=($(compgen -W "docker hip opennic vitis --help" -- ${cur}))
                     ;;
             esac
             ;;
@@ -302,9 +302,6 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--commit --device --fec --help" -- ${cur}))
                             ;;
                         vitis) 
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
-                            ;;
-                        vitis-ai) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
                     esac

@@ -1477,8 +1477,7 @@ validate_help() {
     echo "   docker          - Validates Docker installation on the server."
     echo ""
     echo "   opennic         - Validates OpenNIC on the selected FPGA/ACAP."
-    echo "   vitis           - Validates Vitis workflow on the selected FPGA/ACAP." 
-    echo "   vitis-ai        - Validates Vitis AI workflow on the selected FPGA????????/ACAP." 
+    echo "   vitis           - Validates Vitis workflow on the selected FPGA/ACAP."
     echo ""
     echo "   hip             - Validates HIP on the selected GPU." 
     echo "" 
@@ -1525,20 +1524,6 @@ validate_vitis_help() {
       echo "${bold}$CLI_NAME validate vitis [flags] [--help]${normal}"
       echo ""
       echo "Validates Vitis workflow on the selected FPGA/ACAP."
-      echo ""
-      echo "FLAGS:"
-      echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
-      echo ""
-      echo "   -h, --help      - Help to use Vitis validation."
-      echo ""
-      exit 1
-}
-
-validate_vitis_ai_help() {
-      echo ""
-      echo "${bold}$CLI_NAME validate vitis-ai [flags] [--help]${normal}"
-      echo ""
-      echo "Validates Vitis AI workflow on the selected FPGA????????/ACAP."
       echo ""
       echo "FLAGS:"
       echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
@@ -2443,10 +2428,6 @@ case "$command" in
         $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --fec $fec_option --version $vivado_version
         ;;
       vitis)
-        valid_flags="-d --device -h --help"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
-      vitis-ai)
         valid_flags="-d --device -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
