@@ -281,23 +281,6 @@
             dest: "{{ sgrt_base_path }}/templates"
             mode: "0755"
       when: all or (templates and opennic)
-    #vitis  
-    - name: managing vitis template
-      block:
-        - name: managing vitis template
-          debug:
-            msg: ""
-        - name: deleting vitis template
-          file:
-            path: "{{ sgrt_base_path }}/templates/vitis"
-            state: absent
-          register: vitis_templates
-        - name: copying vitis template
-          copy:
-            src: "../templates/vitis"
-            dest: "{{ sgrt_base_path }}/templates"
-            mode: "0755"
-      when: all or (templates and vitis)
 
     #copying scripts 
     #build
@@ -310,7 +293,6 @@
       loop:
         - hip
         - opennic
-        - vitis
     #common
     - name: copying common scripts
       copy:
@@ -456,7 +438,6 @@
       loop:
         - hip
         - opennic
-        - vitis
     #program
     - name: copying program scripts
       copy:
@@ -473,7 +454,6 @@
         - remote
         - reset
         - revert
-        - vitis
         - vivado
     - name: copying program tcl
       copy:
@@ -513,7 +493,6 @@
       loop:
         - hip
         - opennic
-        - vitis
     #set
     - name: copying set scripts
       copy:
@@ -651,29 +630,9 @@
     #vitis
     - name: copying vitis workflow
       block:
-        - name: copying vitis workflow
+        - name: copying vitis workflow (validate stays)
           debug:
             msg: ""
-        - name: new
-          copy:
-            src: "../cli/new/vitis.sh"
-            dest: "{{ cli_path }}/new/vitis"
-            mode: "0755"
-        - name: build
-          copy:
-            src: "../cli/build/vitis.sh"
-            dest: "{{ cli_path }}/build/vitis"
-            mode: "0755"
-        - name: program
-          copy:
-            src: "../cli/program/vitis.sh"
-            dest: "{{ cli_path }}/program/vitis"
-            mode: "0755"
-        - name: run
-          copy:
-            src: "../cli/run/vitis.sh"
-            dest: "{{ cli_path }}/run/vitis"
-            mode: "0755"
         - name: validate
           copy:
             src: "../cli/validate/vitis.sh"
@@ -777,3 +736,13 @@
       file:
         path: "{{ sgrt_base_path }}/VERSION"
         state: absent
+    #vitis
+    - name: deleting vitis workflow (validate stays)
+      file:
+        path: "{{ cli_path }}/{{ item }}/vitis"
+        state: absent
+      loop:
+        - new
+        - build
+        - program
+        - run

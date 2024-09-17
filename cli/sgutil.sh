@@ -917,7 +917,6 @@ build_help() {
     echo "ARGUMENTS:"
     echo "   hip             - Generates HIP binaries for your projects."
     echo "   opennic         - Generates OpenNIC's bitstreams and drivers."
-    echo "   vitis           - Uses acap_fpga_xclbin to generate XCLBIN binaries for Vitis workflow." #Vitis .xo kernels and .xclbin binaries generation.
     #echo "   vivado (soon)   - Generates .bit bitstreams and .ko drivers for Vivado workflow." #Compiles a bitstream and a driver.
     echo ""
     echo "   -h, --help      - Help to use this command."
@@ -943,22 +942,6 @@ build_opennic_help() {
     is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
     $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME $is_cpu
     exit
-}
-
-build_vitis_help() {
-    echo ""
-    echo "${bold}$CLI_NAME build vitis [flags] [--help]${normal}"
-    echo ""
-    echo "Uses acap_fpga_xclbin to generate XCLBIN binaries for Vitis workflow."
-    echo ""
-    echo "FLAGS:"
-    echo "   -p, --project   - Specifies your Vitis project name."
-    echo "   -t, --target    - Binary compilation target (host, sw_emu, hw_emu, hw)."
-    #echo "   -x, --xclbin    - The name of the XCLBIN to be compiled."
-    echo ""
-    echo "   -h, --help      - Help to build a binary."
-    echo ""
-    exit 1
 }
 
 build_vivado_help() {
@@ -1270,7 +1253,6 @@ new_help() {
     echo "ARGUMENTS:"
     echo "   hip             - Creates a new project using HIP Hello, world! template."
     echo "   opennic         - Creates a new project using OpenNIC Hello, world! template."
-    echo "   vitis           - Creates a new project using Vitis Hello, world! template." 
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -1301,20 +1283,6 @@ new_opennic_help() {
     exit
 }
 
-new_vitis_help() {
-    echo ""
-    echo "${bold}$CLI_NAME new vitis [--help]${normal}"
-    echo ""
-    echo "Creates a new project using Vitis Hello, world! template."
-    echo ""
-    echo "FLAGS"
-    echo "   This command has no flags."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
-}
-
 # program ------------------------------------------------------------------------------------------------------------------------
 
 program_help() {
@@ -1328,7 +1296,6 @@ program_help() {
     echo "   opennic         - Programs OpenNIC to a given FPGA."
     echo "   reset           - Resets a given FPGA/ACAP."
     echo "   revert          - Returns the specified FPGA to the Vitis workflow."
-    echo "   vitis           - Programs a Vitis binary to a given FPGA/ACAP."
     echo "   vivado          - Programs a Vivado bitstream to a given FPGA."
     echo ""
     echo "   -h, --help      - Help to use this command."
@@ -1361,23 +1328,6 @@ program_vivado_help() {
     exit
 }
 
-program_vitis_help() {
-    echo ""
-    echo "${bold}$CLI_NAME program vitis [flags] [--help]${normal}"
-    echo ""
-    echo "Programs a Vitis binary to a given FPGA/ACAP."
-    echo ""
-    echo "FLAGS:"
-    echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
-    echo "   -p, --project   - Specifies your Vitis project name."
-    echo "   -r, --remote    - Local or remote deployment."
-    echo "   -x, --xclbin    - Vitis binary name to be programmed on the device."
-    echo ""
-    echo "   -h, --help      - Help to program a binary."
-    echo ""
-    exit 1
-}
-
 # reboot -------------------------------------------------------------------------------------------------------
 
 reboot_help() {
@@ -1404,7 +1354,6 @@ run_help() {
     echo ""
     echo "ARGUMENTS:"
     echo "   opennic         - Runs OpenNIC on a given FPGA."
-    echo "   vitis           - Runs a Vitis FPGA-binary on a given FPGA/ACAP."
     echo ""
     echo "   hip             - Runs your HIP application on a given GPU."
     echo ""
@@ -1431,23 +1380,6 @@ run_hip_help() {
 run_opennic_help() {
     $CLI_PATH/help/run_opennic $CLI_PATH $CLI_NAME
     exit
-}
-
-run_vitis_help() {
-    echo ""
-    echo "${bold}$CLI_NAME run vitis [flags] [--help]${normal}"
-    echo ""
-    echo "Runs a Vitis FPGA-binary on a given FPGA/ACAP."
-    echo ""
-    echo "FLAGS:"
-    #echo "   -d, --device    - FPGA Device Index (see $CLI_NAME examine)."
-    echo "   -c, --config    - Specifies a configuration of your choice."
-    echo "   -p, --project   - Specifies your Vitis project name."
-    echo "   -t, --target    - Binary compilation target (sw_emu, hw_emu, hw)."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
 }
 
 # set ------------------------------------------------------------------------------------------------------------------------
@@ -1722,10 +1654,6 @@ case "$command" in
         $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version --all $is_cpu
         echo ""
         ;;
-      vitis) 
-        valid_flags="-p --project -t --target -h --help" #-x --xclbin 
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
       *)
         build_help
       ;;  
@@ -1952,13 +1880,6 @@ case "$command" in
   
         #run
         $CLI_PATH/new/opennic --commit $commit_name_shell $commit_name_driver --project $new_name --push $push_option
-        ;;
-      vitis)
-        if [ "$#" -ne 2 ]; then
-          new_vitis_help
-          exit 1
-        fi
-        $CLI_PATH/new/vitis
         ;;
       *)
         new_help
@@ -2219,10 +2140,6 @@ case "$command" in
         #run
         $CLI_PATH/program/vivado --bitstream $bitstream_name --device $device_index --version $vivado_version
         ;;
-      vitis)
-        valid_flags="-d --device -p --project -r --remote -x --xclbin -h --help"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
       *)
         program_help
       ;;
@@ -2310,10 +2227,6 @@ case "$command" in
 
         #run
         $CLI_PATH/run/opennic --commit $commit_name --config $config_index --device $device_index --project $project_name 
-        ;;
-      vitis) 
-        valid_flags="-c --config -p --project -t --target -h --help" #-d --device 
-        command_run $command_arguments_flags"@"$valid_flags
         ;;
       *)
         run_help
