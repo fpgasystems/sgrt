@@ -45,7 +45,7 @@ else
                 echo ""
 
                 #remove module
-                echo "${bold}Removing ${driver_name_base%.ko} driver:${normal}"
+                echo "${bold}Removing ${driver_name_base%.ko} module:${normal}"
                 echo ""
                 echo "sudo rmmod ${driver_name_base%.ko}"
                 echo ""
@@ -89,7 +89,7 @@ if [ "$insert_driver" = "1" ]; then
     cp -f $driver_name $MY_DRIVERS_PATH
 
     #echo ""
-    echo "${bold}Inserting $driver_name_base driver:${normal}"
+    echo "${bold}Inserting $driver_name_base module:${normal}"
     echo ""
 
     #replace commas with spaces

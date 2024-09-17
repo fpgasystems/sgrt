@@ -1927,7 +1927,7 @@ case "$command" in
             cd $MY_DRIVERS_PATH
             
             #remove module
-            echo "${bold}Removing ${driver_name_base%.ko} driver:${normal}"
+            echo "${bold}Removing ${driver_name_base%.ko} module:${normal}"
             echo ""
             echo "sudo rmmod ${driver_name_base%.ko}"
             echo ""
