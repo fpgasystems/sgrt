@@ -18,14 +18,11 @@
     ansible_python_interpreter: /usr/bin/python3
     #paths definition
     sgrt_base_path: /opt/sgrt
-    api_path: "{{ sgrt_base_path }}/api"
     cli_path: "{{ sgrt_base_path }}/cli"
     cli_name: sgutil
     templates_path: "{{ sgrt_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
-    #api installation
-    api: false
     #cli installation
     bitstreams: false
     build: false
@@ -43,10 +40,11 @@
     run: false
     set: false
     sgutil: true 
-    templates: false
     update: false
     validate: false
     vitis: false
+    #templates
+    templates: false
     #release
     #    1. Merge a development branch into main.
     #    2. Login to a server (i.e., hacc-box-01), run "sgutil update," and capture COMMIT and COMMIT_DATE. Remeber that "sgutil update" is only for sudo users.
@@ -65,12 +63,6 @@
       loop:
         #base
         - "{{ sgrt_base_path }}"
-        - "{{ sgrt_base_path }}/templates"
-        #api
-        - "{{ api_path }}"
-        - "{{ api_path }}/common"
-        - "{{ api_path }}/device"
-        - "{{ api_path }}/host"
         #cli  
         - "{{ cli_path }}"
         - "{{ cli_path }}/build"
@@ -85,60 +77,9 @@
         - "{{ cli_path }}/run"
         - "{{ cli_path }}/set"
         - "{{ cli_path }}/validate"
+        #templates
+        - "{{ templates_path }}"
 
-    #api
-    - name: copying includes
-      copy:
-        src: "../api/{{ item }}"
-        dest: "{{ api_path }}/{{ item }}"
-        mode: "0755"
-      when: all or api
-      loop:
-        - api.hpp
-    #common    
-    - name: copying common functions
-      copy:
-        src: "../api/common/{{ item }}"
-        dest: "{{ api_path }}/common/{{ item }}"
-        mode: "0755"
-      when: all or api
-      loop:
-        - sgutil_get.hpp
-        - sgutil_get.cpp
-    #device    
-    - name: copying device functions
-      copy:
-        src: "../api/device/{{ item }}"
-        dest: "{{ api_path }}/device/{{ item }}"
-        mode: "0755"
-      when: all or api
-      loop:
-        - device.hpp
-    #host
-    - name: copying host functions
-      copy:
-        src: "../api/host/{{ item }}"
-        dest: "{{ api_path }}/host/{{ item }}"
-        mode: "0755"
-      when: all or api
-      loop:
-        - create_data.hpp
-        - create_data.cpp
-        - get_config_parameter.hpp
-        - get_config_parameter.cpp
-        - get_config.hpp
-        - get_config.cpp
-        - get_project_path.hpp
-        - get_project_path.cpp
-        - get_sp.hpp
-        - get_sp.cpp
-        - get_target.hpp
-        - get_target.cpp
-        - open.hpp
-        - open.cpp
-        - write.hpp
-        - write.cpp
-        
     #cli
     #bitstreams
     - name: copying bitstreams 
@@ -524,10 +465,6 @@
             src: "../cli/{{ cli_name }}_completion.sh"
             dest: /usr/share/bash-completion/completions/{{ cli_name }}
             mode: 0755
-        - name: export API_PATH
-          lineinfile:
-            path: "/etc/bash.bashrc"
-            line: "export API_PATH={{ api_path }}"
         - name: export CLI_PATH
           lineinfile:
             path: "/etc/bash.bashrc"
@@ -638,14 +575,10 @@
     
     #deleting files
     #api
-    - name: deleting includes
+    - name: deleting api
       file:
-        path: "{{ api_path }}/{{ item }}"
+        path: "{{ sgrt_base_path }}/api"
         state: absent
-      loop:
-        - device.hpp
-        - host.hpp
-        - host.cpp # I believe that was an error
     #build
     - name: deleting build scripts
       file:
