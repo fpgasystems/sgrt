@@ -1377,7 +1377,6 @@ set_help() {
     echo "   keys            - Creates your RSA key pairs and adds to authorized_keys and known_hosts."
     echo "   license         - Configures a set of verified license servers for Xilinx tools."
     echo "   mtu             - Sets a valid MTU value to your host networking interface."
-    #echo "   write           - Assigns writing permissions on a given device."
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -1942,7 +1941,7 @@ case "$command" in
         ;;
       opennic)
         #check on flags
-        valid_flags="-c --commit -d --device -p --project --remote -h --help"
+        valid_flags="-c --commit -d --device -p --project -r --remote -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
