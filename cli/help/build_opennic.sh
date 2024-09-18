@@ -15,8 +15,7 @@ echo ""
 echo "Generates OpenNIC's bitstreams and drivers."
 echo ""
 echo "FLAGS:"
-echo "       --commit    - GitHub commit ID for shell (default: ${bold}$ONIC_SHELL_COMMIT${normal})."
-#echo "       --config    - Configuration index."
+echo "   -c, --commit    - GitHub commit ID for shell (default: ${bold}$ONIC_SHELL_COMMIT${normal})."
 if [ "$is_cpu" = "1" ]; then
     echo "       --platform  - Xilinx platform (according to ${bold}$CLI_NAME get platform${normal})."
 fi

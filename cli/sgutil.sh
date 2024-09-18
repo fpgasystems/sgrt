@@ -294,17 +294,17 @@ config_check() {
   fi
 }
 
-#cpu_check() {
-#  local CLI_PATH=$1
-#  local hostname=$2
-#  cpu_server=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
-#  if [ "$cpu_server" = "0" ]; then
-#      echo ""
-#      echo $CHECK_ON_VIRTUALIZED_ERR_MSG
-#      echo ""
-#      exit 1
-#  fi
-#}
+cpu_check() {
+  local CLI_PATH=$1
+  local hostname=$2
+  cpu_server=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  if [ "$cpu_server" = "0" ]; then
+      echo ""
+      echo $CHECK_ON_VIRTUALIZED_ERR_MSG
+      echo ""
+      exit 1
+  fi
+}
 
 device_dialog() {
   local CLI_PATH=$1
@@ -502,6 +502,18 @@ gh_check() {
     echo $CHECK_ON_GH_ERR_MSG
     echo ""
     exit 1
+  fi
+}
+
+gpu_check() {
+  local CLI_PATH=$1
+  local hostname=$2
+  gpu_server=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+  if [ "$gpu_server" = "0" ]; then
+      echo ""
+      echo $CHECK_ON_VIRTUALIZED_ERR_MSG
+      echo ""
+      exit 1
   fi
 }
 
@@ -1558,26 +1570,27 @@ case "$command" in
     cli_release
     ;;
   build)
-    #checks
-    if [ "$arguments" = "opennic" ]; then
-      #cpu_check "$CLI_PATH" "$hostname"
-      vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-      vivado_check "$VIVADO_PATH" "$vivado_version"
-      vivado_developers_check "$USER"
-      gh_check "$CLI_PATH"
-    fi
-
     case "$arguments" in
       -h|--help)
         build_help
         ;;
-      hip) 
+      hip)
+        #checks
+
         valid_flags="-p --project -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
-      opennic) 
+      opennic)
+        #check on groups
+        vivado_developers_check "$USER"
+        
+        #check on software
+        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        vivado_check "$VIVADO_PATH" "$vivado_version"
+        gh_check "$CLI_PATH"
+
         #check on flags
-        valid_flags="--commit --platform --project -h --help" 
+        valid_flags="-c --commit --platform --project -h --help" 
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -1586,7 +1599,7 @@ case "$command" in
         #only CPU (build) servers can build both the bitstream and driver
         is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
 
-        #checks (command line)
+        #checks on command line
         if [ ! "$flags_array" = "" ]; then
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
           platform_check "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "${flags_array[@]}"
@@ -1736,19 +1749,10 @@ case "$command" in
       ;;
     esac
     ;;
-  new)
+  new)  
     #create workflow directory
-    if [ "$arguments" = "hip" ] || [ "$arguments" = "opennic" ]; then
-      #create directory
-      mkdir -p "$MY_PROJECTS_PATH/$arguments"
-    fi
-
-    #checks
-    if [ "$arguments" = "opennic" ]; then
-      vivado_developers_check "$USER"
-      gh_check "$CLI_PATH"
-    fi
-
+    mkdir -p "$MY_PROJECTS_PATH/$arguments"
+  
     case "$arguments" in
       -h|--help)
         new_help
@@ -1761,6 +1765,12 @@ case "$command" in
         $CLI_PATH/new/hip
         ;;
       opennic)
+        #check on groups
+        vivado_developers_check "$USER"
+        
+        #check on software
+        gh_check "$CLI_PATH"
+
         #check on flags
         valid_flags="-c --commit --project --push -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
@@ -1853,30 +1863,14 @@ case "$command" in
     esac
     ;;
   program)
-    #checks (1/3)
-    if [ "$arguments" = "opennic" ] || [ "$arguments" = "reset" ] || [ "$arguments" = "revert" ] || [ "$arguments" = "vivado" ]; then
-      virtualized_check "$CLI_PATH" "$hostname"
-      fpga_check "$CLI_PATH" "$hostname"
-      vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-      vivado_check "$VIVADO_PATH" "$vivado_version"
-    fi
-
-    #checks (2/3)
-    if [ "$arguments" = "opennic" ]; then
-      vivado_developers_check "$USER"
-      gh_check "$CLI_PATH"
-    fi
-
-    #checks (3/3)
-    if [ "$arguments" = "driver" ] || [ "$arguments" = "vivado" ]; then
-      vivado_developers_check "$USER"
-    fi
-    
     case "$arguments" in
       -h|--help)
         program_help
         ;;
       driver)
+        #check on groups
+        vivado_developers_check "$USER"
+
         #check on flags
         valid_flags="-i --insert -p --params -r --remove -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
@@ -1940,6 +1934,18 @@ case "$command" in
         $CLI_PATH/program/driver --insert $driver_name --params $params_string
         ;;
       opennic)
+        #check on server
+        virtualized_check "$CLI_PATH" "$hostname"
+        fpga_check "$CLI_PATH" "$hostname"
+        
+        #check on groups
+        vivado_developers_check "$USER"
+        
+        #check on software
+        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        vivado_check "$VIVADO_PATH" "$vivado_version"
+        gh_check "$CLI_PATH"
+      
         #check on flags
         valid_flags="-c --commit -d --device -p --project -r --remote -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
@@ -1985,7 +1991,15 @@ case "$command" in
         #run
         $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
         ;;
-      reset) 
+      reset)
+        #check on server
+        virtualized_check "$CLI_PATH" "$hostname"
+        fpga_check "$CLI_PATH" "$hostname"
+
+        #check on software  
+        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        vivado_check "$VIVADO_PATH" "$vivado_version"
+
         #check on flags
         valid_flags="-d --device -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
@@ -2011,6 +2025,14 @@ case "$command" in
         $CLI_PATH/program/reset --device $device_index --version $vivado_version
         ;;
       revert)
+        #check on server
+        virtualized_check "$CLI_PATH" "$hostname"
+        fpga_check "$CLI_PATH" "$hostname"
+
+        #check on software  
+        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        vivado_check "$VIVADO_PATH" "$vivado_version"
+
         #check on flags
         valid_flags="-d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
         flags_check $command_arguments_flags"@"$valid_flags
@@ -2061,6 +2083,17 @@ case "$command" in
         $CLI_PATH/program/revert --device $device_index --version $vivado_version
         ;;
       vivado)
+        #check on server
+        virtualized_check "$CLI_PATH" "$hostname"
+        fpga_check "$CLI_PATH" "$hostname"
+
+        #check on groups
+        vivado_developers_check "$USER"
+
+        #check on software  
+        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        vivado_check "$VIVADO_PATH" "$vivado_version"
+
         #check on flags
         valid_flags="-b --bitstream -d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
         flags_check $command_arguments_flags"@"$valid_flags
@@ -2126,40 +2159,37 @@ case "$command" in
     esac
     ;;
   run)
-
-    #checks (1/3)
-    #if [ "$arguments" = "opennic" ] || [ "$arguments" = "reset" ] || [ "$arguments" = "revert" ] || [ "$arguments" = "vivado" ]; then
-    #  #virtualized_check "$CLI_PATH" "$hostname"
-    #  fpga_check "$CLI_PATH" "$hostname"
-    #  #vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-    #  #vivado_check "$VIVADO_PATH" "$vivado_version"
-    #fi
-
-    #checks (2/3)
-    if [ "$arguments" = "opennic" ]; then
-      fpga_check "$CLI_PATH" "$hostname"
-      vivado_developers_check "$USER"
-      gh_check "$CLI_PATH"
-    fi
-
     case "$arguments" in
       -h|--help)
         run_help
         ;;
       hip) 
+        #check on server
+        gpu_check "$CLI_PATH" "$hostname"
+
+        #check on flags
         valid_flags="-d --device -p --project -h --help" 
         command_run $command_arguments_flags"@"$valid_flags
         ;;
-      opennic) 
+      opennic)
+        #check on server
+        fpga_check "$CLI_PATH" "$hostname"
+        
+        #check on groups
+        vivado_developers_check "$USER"
+        
+        #check on software
+        gh_check "$CLI_PATH"
+
         #check on flags
         valid_flags="--commit --config -d --device -p --project -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
-        #constants
-        CONFIG_PREFIX="host_config_"
-
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
+
+        #constants
+        CONFIG_PREFIX="host_config_"
 
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
@@ -2169,6 +2199,17 @@ case "$command" in
           config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
         fi
 
+        #early onic workflow check
+        if [ "$device_found" = "1" ]; then
+          workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+          if [ ! "$workflow" = "opennic" ]; then
+              echo ""
+              echo "$CHECK_ON_WORKFLOW_ERR_MSG"
+              echo ""
+              exit
+          fi
+        fi
+        
         #dialogs
         commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
         echo ""
@@ -2238,10 +2279,6 @@ case "$command" in
         valid_flags="-v --value -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
-      #write) 
-      #  valid_flags="-i --index -h --help"
-      #  command_run $command_arguments_flags"@"$valid_flags
-      #  ;;
       *)
         set_help
       ;;  
@@ -2276,19 +2313,7 @@ case "$command" in
     ;;
   validate)
     #create workflow directory
-    if [ "$arguments" = "hip" ] || [ "$arguments" = "opennic" ]; then
-      mkdir -p "$MY_PROJECTS_PATH/$arguments"
-    fi
-
-    #checks
-    if [ "$arguments" = "opennic" ]; then
-      virtualized_check "$CLI_PATH" "$hostname"
-      fpga_check "$CLI_PATH" "$hostname"
-      vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
-      vivado_check "$VIVADO_PATH" "$vivado_version"
-      vivado_developers_check "$USER"
-      gh_check "$CLI_PATH"
-    fi
+    mkdir -p "$MY_PROJECTS_PATH/$arguments"
 
     case "$arguments" in
       docker)
@@ -2300,6 +2325,18 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
+        #check on server
+        virtualized_check "$CLI_PATH" "$hostname"
+        fpga_check "$CLI_PATH" "$hostname"
+
+        #check on groups
+        vivado_developers_check "$USER"
+
+        #check on software
+        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        vivado_check "$VIVADO_PATH" "$vivado_version"
+        gh_check "$CLI_PATH"
+
         #check on flags
         valid_flags="-c --commit -d --device -f --fec -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
