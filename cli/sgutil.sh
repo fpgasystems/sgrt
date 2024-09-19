@@ -1564,7 +1564,7 @@ fi
 
 #help 
 if [ "$command_arguments_flags" = "$command $arguments -h " ]; then
-  "${command}_${arguments}_help"
+  "${command}_${arguments}_help" 2>/dev/null
 fi
 
 #command and arguments switch
