@@ -1,5 +1,16 @@
 #!/bin/bash
 
+#get hostname
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+
+#check on server
+is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+is_virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
+
 command_completion_5() {
     CURRENT_WORD=$1
     COMP_CWORD=$2
@@ -82,12 +93,6 @@ command_completion_9() {
     fi
 }
 
-#get hostname
-url="${HOSTNAME}"
-hostname="${url%%.*}"
-
-is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
-
 _sgutil_completions()
 {
     local cur
@@ -120,7 +125,11 @@ _sgutil_completions()
 
     case ${COMP_CWORD} in
         1)
-            COMPREPLY=($(compgen -W "build enable examine get new program reboot run set update validate --help --release" -- ${cur}))
+            if [ "$is_cpu" = "1" ]; then
+                COMPREPLY=($(compgen -W "build enable examine get new program reboot run set update validate --help --release" -- ${cur}))
+            else
+                COMPREPLY=($(compgen -W "build        examine get new program reboot run set update validate --help --release" -- ${cur}))
+            fi
             ;;
         2)
             case ${COMP_WORDS[COMP_CWORD-1]} in

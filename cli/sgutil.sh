@@ -28,10 +28,31 @@ UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
 XILINX_PLATFORMS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_PLATFORMS_PATH)
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 
+#get hostname
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+
 #derived
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 REPO_URL="https://github.com/fpgasystems/$REPO_NAME.git"
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
+
+#check on server
+is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+is_virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
+
+#check on groups
+is_vivado_developer=""
+is_hip_developer=""
+
+#dynamic cli
+show_opennic_validation=""
+show_hip_validation=""
+
+show_validate=""
 
 #get devices number
 if [ -s "$DEVICES_LIST" ]; then
@@ -40,31 +61,29 @@ if [ -s "$DEVICES_LIST" ]; then
   multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 fi
 
-#get hostname
-url="${HOSTNAME}"
-hostname="${url%%.*}"
-
 #help
 cli_help() {
-  echo "
-${bold}$CLI_NAME [commands] [arguments [flags]] [--help] [--release]${normal}
-
-COMMANDS:
-   build           - Creates binaries, bitstreams, and drivers for your accelerated applications.
-   enable          - Enables your favorite development and deployment tools.
-   examine         - Status of the system and devices.
-   get             - Devices and host information.
-   new             - Creates a new project of your choice.
-   program         - Download the acceleration program to a given FPGA.
-   reboot          - Reboots the server (warm boot).
-   run             - Executes the accelerated application on a given device.
-   set             - Devices and host configuration.
-   update          - Updates $CLI_NAME to its latest version.
-   validate        - Validates the basic HACC infrastructure functionality.
-
-   -h, --help      - Help to use $CLI_NAME.
-   -r, --release   - Reports $CLI_NAME release.
-"
+  echo ""
+  echo "${bold}$CLI_NAME [commands] [arguments [flags]] [--help] [--release]${normal}"
+  echo ""
+  echo "COMMANDS:"
+  echo "    build           - Creates binaries, bitstreams, and drivers for your accelerated applications."
+  if [ "$is_cpu" = "1" ]; then
+  echo "    enable          - Enables your favorite development and deployment tools."
+  fi
+  echo "    examine         - Status of the system and devices."
+  echo "    get             - Devices and host information."
+  echo "    new             - Creates a new project of your choice."
+  echo "    program         - Download the acceleration program to a given FPGA."
+  echo "    reboot          - Reboots the server (warm boot)."
+  echo "    run             - Executes the accelerated application on a given device."
+  echo "    set             - Devices and host configuration."
+  echo "    update          - Updates $CLI_NAME to its latest version."
+  echo "    validate        - Validates the basic HACC infrastructure functionality."
+  echo ""
+  echo "    -h, --help      - Help to use $CLI_NAME."
+  echo "    -r, --release   - Reports $CLI_NAME release."
+  echo ""
   exit 1
 }
 
@@ -72,7 +91,7 @@ cli_release() {
     release=$(cat $SGRT_PATH/COMMIT)
     release_date=$(cat $SGRT_PATH/COMMIT_DATE)
     echo ""
-    echo "Release (commit_ID)  : $release ($release_date)"
+    echo "Release (commit_ID) : $release ($release_date)"
     echo ""
     exit 1
 }
@@ -929,7 +948,6 @@ build_help() {
     echo "ARGUMENTS:"
     echo "   hip             - Generates HIP binaries for your projects."
     echo "   opennic         - Generates OpenNIC's bitstreams and drivers."
-    #echo "   vivado (soon)   - Generates .bit bitstreams and .ko drivers for Vivado workflow." #Compiles a bitstream and a driver.
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
@@ -951,27 +969,15 @@ build_hip_help() {
 }
 
 build_opennic_help() {
-    is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
-    $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME $is_cpu
+    $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME $($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
     exit
 }
 
 # enable ------------------------------------------------------------------------------------------------------------------------
 
 enable_help() {
-    echo ""
-    echo "${bold}$CLI_NAME enable [arguments [flags]] [--help]${normal}"
-    echo ""
-    echo "Enables your favorite development and deployment tools on your server."
-    echo ""
-    echo "ARGUMENTS:"
-    echo "   vitis           - Enables Vitis SDK (Software Development Kit) and Vitis_HLS (High-Level Synthesis)."
-    echo "   vivado          - Enables Vivado HDI (Hardware Design and Implementation)."
-    echo "   xrt             - Enables Xilinx Runtime (XRT)."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
+  $CLI_PATH/help/enable $CLI_NAME $($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  exit
 }
 
 enable_vitis_help() {
@@ -1596,9 +1602,6 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
-        #only CPU (build) servers can build both the bitstream and driver
-        is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
-
         #checks on command line
         if [ ! "$flags_array" = "" ]; then
           commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
@@ -1608,7 +1611,7 @@ case "$command" in
 
         #additional forbidden combination
         if [ "$is_cpu" = "0" ] && [ "$platform_found" = "1" ]; then
-          build_opennic_help
+          build_opennic_help $is_cpu
         fi
 
         #dialogs
@@ -1639,6 +1642,11 @@ case "$command" in
     esac
     ;;
   enable)
+    #check on server
+    if [ "$is_cpu" = "0" ]; then
+        exit
+    fi
+
     case "$arguments" in
       -h|--help)
         enable_help
