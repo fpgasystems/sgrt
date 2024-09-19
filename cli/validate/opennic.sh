@@ -5,8 +5,8 @@ CLI_NAME="sgutil"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --fec $fec_option --version $vivado_version
-#example: /opt/sgrt/cli/validate/opennic --commit            8077751             1cf2578 --device             1 --fec 1           --version          2022.2
+#usage:       $CLI_PATH/sgutil validate opennic --commit $commit_name_shell $commit_name_driver --device $device_index --fec $fec_option --version $vivado_version
+#example: /opt/sgrt/cli/sgutil validate opennic --commit            8077751             1cf2578 --device             1 --fec 1           --version          2022.2
 
 check_connectivity() {
     local interface="$1"

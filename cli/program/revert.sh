@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/program/revert --device $device_index --version $vivado_version
-#example: /opt/sgrt/cli/program/revert --device             1 --version          2022.2
+#usage:       $CLI_PATH/sgutil program revert --device $device_index --version $vivado_version
+#example: /opt/sgrt/cli/sgutil program revert --device             1 --version          2022.2
 
 #inputs
 device_index=$2

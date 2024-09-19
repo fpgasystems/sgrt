@@ -5,8 +5,8 @@ CLI_NAME="sgutil"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/program/reset --device $device_index --version $vivado_version
-#example: /opt/sgrt/cli/program/reset --device             1 --version          2022.2
+#usage:       $CLI_PATH/sgutil program reset --device $device_index --version $vivado_version
+#example: /opt/sgrt/cli/sgutil program reset --device             1 --version          2022.2
 
 #inputs
 device_index=$2

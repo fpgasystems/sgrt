@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/program/vivado --bitstream         $bitstream_name --device $device_index --version $vivado_version
-#example: /opt/sgrt/cli/program/vivado --bitstream    path_to_my_shell.bit --device             1 --version          2022.1
+#usage:       $CLI_PATH/sgutil program vivado --bitstream         $bitstream_name --device $device_index --version $vivado_version
+#example: /opt/sgrt/cli/sgutil program vivado --bitstream    path_to_my_shell.bit --device             1 --version          2022.1
 
 #inputs
 bitstream_name=$2
