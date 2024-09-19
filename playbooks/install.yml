@@ -11,6 +11,7 @@
     #- hacc_boxes
     - hacc-box-01.inf.ethz.ch
     - alveo-u55c-01.inf.ethz.ch
+    - alveo-u55c-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -27,7 +28,7 @@
     #cli installation
     bitstreams: false
     build: false
-    common: false
+    common: true
     directories: false
     enable: false
     examine: false
@@ -266,6 +267,7 @@
         - is_fpga
         - is_gpu
         - is_member
+        - is_sudo
         - is_virtualized
         - mkdir
         - new_dialog
