@@ -1577,7 +1577,7 @@ case "$command" in
         ;;
       hip)
         #check on server (relates to sgutil_completion)
-        if [ "$is_cpu" = "0" ] && [ "$is_gpu" = "0" ]; then
+        if [ "$is_cpu" != "1" ] && [ "$is_gpu" != "1" ]; then
             exit 1
         fi
 
