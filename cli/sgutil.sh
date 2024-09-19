@@ -68,16 +68,22 @@ cli_help() {
   echo "    examine         - Status of the system and devices."
   echo "    get             - Devices and host information."
   echo "    new             - Creates a new project of your choice."
+  if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
   echo "    program         - Download the acceleration program to a given FPGA."
+  fi
   if [ "$is_vivado_developer" = "1" ]; then
   echo "    reboot          - Reboots the server (warm boot)."
   fi
+  if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
   echo "    run             - Executes the accelerated application on a given device."
+  fi
   echo "    set             - Devices and host configuration."
   if [ "$is_sudo" = "1" ]; then
   echo "    update          - Updates $CLI_NAME to its latest version."
   fi
+  if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
   echo "    validate        - Validates the basic HACC infrastructure functionality."
+  fi
   echo ""
   echo "    -h, --help      - Help to use $CLI_NAME."
   echo "    -r, --release   - Reports $CLI_NAME release."
