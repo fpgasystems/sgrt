@@ -17,7 +17,7 @@ echo ""
 echo "FLAGS:"
 echo "   -c, --commit    - GitHub commit ID for shell (default: ${bold}$ONIC_SHELL_COMMIT${normal})."
 if [ "$is_cpu" = "1" ]; then
-    echo "       --platform  - Xilinx platform (according to ${bold}$CLI_NAME get platform${normal})."
+echo "       --platform  - Xilinx platform (according to ${bold}$CLI_NAME get platform${normal})."
 fi
 echo "       --project   - Specifies your OpenNIC project name."
 echo ""
