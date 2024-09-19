@@ -6,8 +6,8 @@ normal=$(tput sgr0)
 CLI_NAME=$1
 is_acap=$2
 is_cpu=$3
-is_fpga=$3
-is_gpu=$4
+is_fpga=$4
+is_gpu=$5
 
 echo ""
 echo "${bold}$CLI_NAME build [arguments [flags]] [--help]${normal}"

@@ -945,7 +945,11 @@ xrt_shell_check() {
 # build ------------------------------------------------------------------------------------------------------------------------
 
 build_help() {
-    $CLI_PATH/help/build $CLI_NAME $($CLI_PATH/common/is_acap $CLI_PATH $hostname) $($CLI_PATH/common/is_cpu $CLI_PATH $hostname) $($CLI_PATH/common/is_fpga $CLI_PATH $hostname) $($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+    is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+    is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+    is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+    is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+    $CLI_PATH/help/build $CLI_NAME $is_acap $is_cpu $is_fpga $is_gpu 
     exit
 }
 
