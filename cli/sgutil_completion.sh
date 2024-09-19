@@ -152,21 +152,10 @@ _sgutil_completions()
                 commands="${commands} reboot"
             fi
 
-            # Convert the commands string to an array, remove duplicates, and sort
             commands_array=($commands)
             commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
-
-            # Join the array back into a space-separated string
             commands_string=$(echo "${commands_array[@]}")
-
-            # Generate autocompletion options
             COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
-
-            #if [ "$is_cpu" = "1" ]; then
-            #COMPREPLY=($(compgen -W "build enable examine get new program reboot run set update validate --help --release" -- ${cur}))
-            #else
-            #COMPREPLY=($(compgen -W "build        examine get new program reboot run set update validate --help --release" -- ${cur}))
-            #fi
             ;;
         2)
             case ${COMP_WORDS[COMP_CWORD-1]} in
