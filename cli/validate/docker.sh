@@ -20,7 +20,7 @@ fi
 
 #check for docker_developers (containerroot)
 member=$($CLI_PATH/common/is_member $USER containerroot)
-if [ "$member" = "false" ]; then
+if [ "$member" = "0" ]; then
     echo ""
     echo "Sorry, ${bold}$USER!${normal} You are not granted to use this command."
     echo ""

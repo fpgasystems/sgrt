@@ -21,7 +21,7 @@ else
 fi
 
 if getent group $groupname | grep -q "\b${username}\b"; then
-    echo "true"
+    echo "1"
 else
-    echo "false"
+    echo "0"
 fi

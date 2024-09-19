@@ -5,7 +5,7 @@ normal=$(tput sgr0)
 
 #check for vivado_developers
 member=$($CLI_PATH/common/is_member $USER vivado_developers)
-if [ "$member" = "false" ]; then
+if [ "$member" = "0" ]; then
     echo ""
     echo "Sorry, ${bold}$USER!${normal} You are not granted to use this command."
     echo ""
