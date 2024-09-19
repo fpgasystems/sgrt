@@ -68,7 +68,7 @@ cli_help() {
   echo "    examine         - Status of the system and devices."
   echo "    get             - Devices and host information."
   echo "    new             - Creates a new project of your choice."
-  if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
+  if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
   echo "    program         - Download the acceleration program to a given FPGA."
   fi
   if [ "$is_sudo" = "1" ] || ([ "$is_cpu" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
@@ -964,7 +964,10 @@ build_hip_help() {
 }
 
 build_opennic_help() {
-    $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME $($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+    is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+    is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+    is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+    $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga
     exit
 }
 
