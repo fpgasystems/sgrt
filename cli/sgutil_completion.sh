@@ -123,18 +123,36 @@ _sgutil_completions()
         return 0
     fi
 
+    #template: if [ "$is_acap" = "X" ] || [ "$is_cpu" = "1" ] ||  [ "$is_fpga" = "X" ] || [ "$is_gpu" = "X" ]; then
+
     case ${COMP_CWORD} in
         1)
             if [ "$is_cpu" = "1" ]; then
-                COMPREPLY=($(compgen -W "build enable examine get new program reboot run set update validate --help --release" -- ${cur}))
+            COMPREPLY=($(compgen -W "build enable examine get new program reboot run set update validate --help --release" -- ${cur}))
             else
-                COMPREPLY=($(compgen -W "build        examine get new program reboot run set update validate --help --release" -- ${cur}))
+            COMPREPLY=($(compgen -W "build        examine get new program reboot run set update validate --help --release" -- ${cur}))
             fi
             ;;
         2)
             case ${COMP_WORDS[COMP_CWORD-1]} in
                 build)
-                    COMPREPLY=($(compgen -W "hip opennic --help" -- ${cur}))
+                    commands="--help"
+                    if [ "$is_acap" = "1" ]; then
+                        commands="${commands} opennic"
+                    fi
+                    if [ "$is_cpu" = "1" ]; then
+                        commands="${commands} hip opennic"
+                    fi
+                    if [ "$is_fpga" = "1" ]; then
+                        commands="${commands} opennic"
+                    fi
+                    if [ "$is_gpu" = "1" ]; then
+                        commands="${commands} hip"
+                    fi
+                    commands_array=($commands)
+                    commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
+                    commands_string=$(echo "${commands_array[@]}")
+                    COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
                 enable)
                     COMPREPLY=($(compgen -W "vitis vivado xrt --help" -- ${cur}))

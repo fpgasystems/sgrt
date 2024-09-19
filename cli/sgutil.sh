@@ -940,18 +940,8 @@ xrt_shell_check() {
 # build ------------------------------------------------------------------------------------------------------------------------
 
 build_help() {
-    echo ""
-    echo "${bold}$CLI_NAME build [arguments [flags]] [--help]${normal}"
-    echo ""
-    echo "Creates binaries, bitstreams, and drivers for your accelerated applications."
-    echo ""
-    echo "ARGUMENTS:"
-    echo "   hip             - Generates HIP binaries for your projects."
-    echo "   opennic         - Generates OpenNIC's bitstreams and drivers."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
+    $CLI_PATH/help/build $CLI_NAME $($CLI_PATH/common/is_acap $CLI_PATH $hostname) $($CLI_PATH/common/is_cpu $CLI_PATH $hostname) $($CLI_PATH/common/is_fpga $CLI_PATH $hostname) $($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+    exit
 }
 
 build_hip_help() {
@@ -1581,12 +1571,20 @@ case "$command" in
         build_help
         ;;
       hip)
-        #checks
+        #check on server (this relates to sgutil_completion)
+        if [ "$is_cpu" = "0" ] && [ "$is_gpu" = "0" ]; then
+            exit
+        fi
 
         valid_flags="-p --project -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
+        #check on server (this relates to sgutil_completion)
+        if [ "$is_acap" = "0" ] && [ "$is_cpu" = "0" ] && [ "$is_fpga" = "0" ]; then
+            exit
+        fi
+
         #check on groups
         vivado_developers_check "$USER"
         
@@ -1642,7 +1640,7 @@ case "$command" in
     esac
     ;;
   enable)
-    #check on server
+    #check on server (this relates to sgutil_completion)
     if [ "$is_cpu" = "0" ]; then
         exit
     fi
