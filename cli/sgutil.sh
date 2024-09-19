@@ -71,7 +71,7 @@ cli_help() {
   if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
   echo "    program         - Download the acceleration program to a given FPGA."
   fi
-  if [ "$is_vivado_developer" = "1" ]; then
+  if [ "$is_sudo" = "1" ] || ([ "$is_cpu" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
   echo "    reboot          - Reboots the server (warm boot)."
   fi
   if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
@@ -899,7 +899,7 @@ vivado_check() {
 vivado_developers_check() {
   local username=$1
   member=$($CLI_PATH/common/is_member $username vivado_developers)
-  if [ "$member" = "false" ]; then
+  if [ "$member" = "0" ]; then
       echo ""
       echo $CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG
       echo ""

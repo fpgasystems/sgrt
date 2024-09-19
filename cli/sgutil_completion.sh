@@ -146,9 +146,9 @@ _sgutil_completions()
 
             # Check on groups
             if [ "$is_sudo" = "1" ]; then
-                commands="${commands} update"
+                commands="${commands} reboot update"
             fi
-            if [ "$is_vivado_developer" = "1" ]; then
+            if [ "$is_cpu" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
                 commands="${commands} reboot"
             fi
 
