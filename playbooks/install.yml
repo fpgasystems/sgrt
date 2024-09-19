@@ -340,6 +340,7 @@
       when: all or help
       loop:
         - build_opennic
+        - build
         - enable
         - examine
         - get_network
