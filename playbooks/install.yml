@@ -36,7 +36,7 @@
     help: true
     hip: false
     new: false
-    opennic: true
+    opennic: false
     program: false
     reboot: false
     run: false
@@ -341,6 +341,7 @@
         mode: "0755"
       when: all or help
       loop:
+        - build_hip
         - build_opennic
         - build
         - enable
