@@ -950,17 +950,10 @@ build_help() {
 }
 
 build_hip_help() {
-    echo ""
-    echo "${bold}$CLI_NAME build hip [flags] [--help]${normal}"
-    echo ""
-    echo "Generates HIP binaries for your projects."
-    echo ""
-    echo "FLAGS:"
-    echo "   -p, --project   - Specifies your HIP project name."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
+    is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+    is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+    $CLI_PATH/help/build_hip $CLI_NAME $is_cpu $is_gpu
+    exit
 }
 
 build_opennic_help() {
