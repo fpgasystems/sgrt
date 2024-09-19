@@ -11,6 +11,10 @@ is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
 is_virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
 
+#check on groups
+is_sudo=$($CLI_PATH/common/is_sudo $USER)
+is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+
 command_completion_5() {
     CURRENT_WORD=$1
     COMP_CWORD=$2
@@ -123,15 +127,46 @@ _sgutil_completions()
         return 0
     fi
 
-    #template: if [ "$is_acap" = "X" ] || [ "$is_cpu" = "1" ] ||  [ "$is_fpga" = "X" ] || [ "$is_gpu" = "X" ]; then
-
     case ${COMP_CWORD} in
         1)
-            if [ "$is_cpu" = "1" ]; then
-            COMPREPLY=($(compgen -W "build enable examine get new program reboot run set update validate --help --release" -- ${cur}))
-            else
-            COMPREPLY=($(compgen -W "build        examine get new program reboot run set update validate --help --release" -- ${cur}))
+            #check on server
+            commands="examine get set --help --release"
+            if [ "$is_acap" = "1" ]; then
+                commands="${commands} build new program run validate"
             fi
+            if [ "$is_cpu" = "1" ]; then
+                commands="${commands} build enable examine new"
+            fi
+            if [ "$is_fpga" = "1" ]; then
+                commands="${commands} build new program run validate"
+            fi
+            if [ "$is_gpu" = "1" ]; then
+                commands="${commands} build new run validate"
+            fi
+
+            # Check on groups
+            if [ "$is_sudo" = "1" ]; then
+                commands="${commands} update"
+            fi
+            if [ "$is_vivado_developer" = "1" ]; then
+                commands="${commands} reboot"
+            fi
+
+            # Convert the commands string to an array, remove duplicates, and sort
+            commands_array=($commands)
+            commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
+
+            # Join the array back into a space-separated string
+            commands_string=$(echo "${commands_array[@]}")
+
+            # Generate autocompletion options
+            COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
+
+            #if [ "$is_cpu" = "1" ]; then
+            #COMPREPLY=($(compgen -W "build enable examine get new program reboot run set update validate --help --release" -- ${cur}))
+            #else
+            #COMPREPLY=($(compgen -W "build        examine get new program reboot run set update validate --help --release" -- ${cur}))
+            #fi
             ;;
         2)
             case ${COMP_WORDS[COMP_CWORD-1]} in

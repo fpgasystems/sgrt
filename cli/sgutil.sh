@@ -45,14 +45,8 @@ is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
 is_virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
 
 #check on groups
-is_vivado_developer=""
-is_hip_developer=""
-
-#dynamic cli
-show_opennic_validation=""
-show_hip_validation=""
-
-show_validate=""
+is_sudo=$($CLI_PATH/common/is_sudo $USER)
+is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 
 #get devices number
 if [ -s "$DEVICES_LIST" ]; then
@@ -75,10 +69,14 @@ cli_help() {
   echo "    get             - Devices and host information."
   echo "    new             - Creates a new project of your choice."
   echo "    program         - Download the acceleration program to a given FPGA."
+  if [ "$is_vivado_developer" = "1" ]; then
   echo "    reboot          - Reboots the server (warm boot)."
+  fi
   echo "    run             - Executes the accelerated application on a given device."
   echo "    set             - Devices and host configuration."
+  if [ "$is_sudo" = "1" ]; then
   echo "    update          - Updates $CLI_NAME to its latest version."
+  fi
   echo "    validate        - Validates the basic HACC infrastructure functionality."
   echo ""
   echo "    -h, --help      - Help to use $CLI_NAME."
@@ -871,7 +869,9 @@ virtualized_check() {
 }
 
 sudo_check() {
-  if ! sudo -n true 2>/dev/null; then
+  local username=$1
+  is_sudo=$($CLI_PATH/common/is_sudo $username)
+  if [ "$is_sudo" = "0" ]; then
     echo ""
     echo $CHECK_ON_SUDO_ERR_MSG
     echo ""
@@ -2300,7 +2300,7 @@ case "$command" in
           update_help
           exit 1
         fi
-        sudo_check
+        sudo_check $USER
 
         #get update.sh
         cd $UPDATES_PATH
