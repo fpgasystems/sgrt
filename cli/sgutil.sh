@@ -1576,11 +1576,8 @@ case "$command" in
         build_help
         ;;
       hip)
-        #check on server (combinations this relate to sgutil_completion)
+        #check on server (relates to sgutil_completion)
         if [ "$is_cpu" = "0" ] && [ "$is_gpu" = "0" ]; then
-            echo ""
-            echo $CHECK_ON_HOSTNAME_ERR_MSG
-            echo ""
             exit 1
         fi
 
@@ -1588,11 +1585,8 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
-        #check on server (combinations this relate to sgutil_completion)
+        #check on server (relates to sgutil_completion)
         if [ "$is_acap" = "0" ] && [ "$is_cpu" = "0" ] && [ "$is_fpga" = "0" ]; then
-            echo ""
-            echo $CHECK_ON_HOSTNAME_ERR_MSG
-            echo ""
             exit 1
         fi
 
@@ -1651,11 +1645,8 @@ case "$command" in
     esac
     ;;
   enable)
-    #check on server (combinations this relate to sgutil_completion)
+    #check on server (relates to sgutil_completion)
     if [ "$is_cpu" = "0" ]; then
-      echo ""
-      echo $CHECK_ON_HOSTNAME_ERR_MSG
-      echo ""
       exit 1
     fi
 
@@ -2170,11 +2161,8 @@ case "$command" in
         reboot_help
         ;;
       *)
-        #check on server (this relates to cli_help)
+        #check on server (relates to cli_help)
         if [ "$is_sudo" != "1" ] && ! ([ "$is_cpu" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
-          echo ""
-          echo $CHECK_ON_HOSTNAME_ERR_MSG
-          echo ""
           exit 1
         fi
         #fpga_check "$CLI_PATH" "$hostname"
