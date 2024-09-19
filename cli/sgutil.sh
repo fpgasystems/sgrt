@@ -1562,6 +1562,11 @@ if [[ $(echo "$command_arguments_flags" | grep "\-\-help\b" | wc -l) = 1 ]]; the
   #echo "fifth: $command_arguments_flags"
 fi
 
+#help 
+if [ "$command_arguments_flags" = "$command $arguments -h " ]; then
+  "${command}_${arguments}_help"
+fi
+
 #command and arguments switch
 case "$command" in
   -h|--help)
@@ -1614,7 +1619,7 @@ case "$command" in
 
         #additional forbidden combination
         if [ "$is_cpu" = "0" ] && [ "$platform_found" = "1" ]; then
-          build_opennic_help $is_cpu
+          build_opennic_help
         fi
 
         #dialogs
