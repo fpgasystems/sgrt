@@ -150,14 +150,13 @@ CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
 CHECK_ON_DRIVER_ERR_MSG="Please, choose a valid driver name."
 CHECK_ON_DRIVER_PARAMS_ERR_MSG="Please, choose a valid list of module parameters." 
 CHECK_ON_FEC_ERR_MSG="Please, choose a valid FEC option."
-CHECK_ON_FPGA_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to your GitHub account."
+CHECK_ON_HOSTNAME_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
 CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
 CHECK_ON_PUSH_ERR_MSG="Please, choose a valid push option."
 CHECK_ON_REMOTE_ERR_MSG="Please, choose a valid deploy option."
 CHECK_ON_SUDO_ERR_MSG="Sorry, this command requires sudo capabilities."
-CHECK_ON_VIRTUALIZED_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
 CHECK_ON_WORKFLOW_ERR_MSG="Please, program your device first."
@@ -323,7 +322,7 @@ cpu_check() {
   cpu_server=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
   if [ "$cpu_server" = "0" ]; then
       echo ""
-      echo $CHECK_ON_VIRTUALIZED_ERR_MSG
+      echo $CHECK_ON_HOSTNAME_ERR_MSG
       echo ""
       exit 1
   fi
@@ -511,7 +510,7 @@ fpga_check() {
   fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
       echo ""
-      echo $CHECK_ON_FPGA_ERR_MSG
+      echo $CHECK_ON_HOSTNAME_ERR_MSG
       echo ""
       exit 1
   fi
@@ -534,7 +533,7 @@ gpu_check() {
   gpu_server=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   if [ "$gpu_server" = "0" ]; then
       echo ""
-      echo $CHECK_ON_VIRTUALIZED_ERR_MSG
+      echo $CHECK_ON_HOSTNAME_ERR_MSG
       echo ""
       exit 1
   fi
@@ -868,7 +867,7 @@ virtualized_check() {
   virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
   if [ "$virtualized" = "1" ]; then
       echo ""
-      echo $CHECK_ON_VIRTUALIZED_ERR_MSG
+      echo $CHECK_ON_HOSTNAME_ERR_MSG
       echo ""
       exit 1
   fi
@@ -1577,18 +1576,24 @@ case "$command" in
         build_help
         ;;
       hip)
-        #check on server (this relates to sgutil_completion)
+        #check on server (combinations this relate to sgutil_completion)
         if [ "$is_cpu" = "0" ] && [ "$is_gpu" = "0" ]; then
-            exit
+            echo ""
+            echo $CHECK_ON_HOSTNAME_ERR_MSG
+            echo ""
+            exit 1
         fi
 
         valid_flags="-p --project -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
-        #check on server (this relates to sgutil_completion)
+        #check on server (combinations this relate to sgutil_completion)
         if [ "$is_acap" = "0" ] && [ "$is_cpu" = "0" ] && [ "$is_fpga" = "0" ]; then
-            exit
+            echo ""
+            echo $CHECK_ON_HOSTNAME_ERR_MSG
+            echo ""
+            exit 1
         fi
 
         #check on groups
@@ -1646,9 +1651,12 @@ case "$command" in
     esac
     ;;
   enable)
-    #check on server (this relates to sgutil_completion)
+    #check on server (combinations this relate to sgutil_completion)
     if [ "$is_cpu" = "0" ]; then
-        exit
+      echo ""
+      echo $CHECK_ON_HOSTNAME_ERR_MSG
+      echo ""
+      exit 1
     fi
 
     case "$arguments" in
@@ -2162,6 +2170,23 @@ case "$command" in
         reboot_help
         ;;
       *)
+        #check on server (this relates to cli_help)
+        if [ "$is_sudo" != "1" ] && ! ([ "$is_cpu" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
+          echo ""
+          echo $CHECK_ON_HOSTNAME_ERR_MSG
+          echo ""
+          exit 1
+        fi
+        #fpga_check "$CLI_PATH" "$hostname"
+        
+        #check on groups
+        #sudo_check "$USER"
+        #vivado_developers_check "$USER"
+        #if [ "$is_sudo" = "0" ] || ([ "$is_cpu" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
+        #  exit
+        #fi
+
+
         if [ "$#" -ne 1 ]; then
           reboot_help
           exit 1
