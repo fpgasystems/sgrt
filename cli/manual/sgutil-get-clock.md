@@ -8,7 +8,7 @@
 
 <code>sgutil get clock [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives FPGA Clock Information.
+  &nbsp; &nbsp; Clock Information.
 </p>
 
 ### Flags

@@ -5,7 +5,7 @@ Back to sgutil get
 
 sgutil get servers [--help]
 
-  &nbsp; &nbsp; Retreives the list of servers you can use SSH to connect to.
+  &nbsp; &nbsp; List of servers you can use SSH to connect to.
 
 
 ### Flags

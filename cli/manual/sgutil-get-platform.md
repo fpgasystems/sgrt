@@ -8,7 +8,7 @@
 
 <code>sgutil get platform [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives FPGA platform names.
+  &nbsp; &nbsp; Platform names.
 </p>
 
 ### Flags

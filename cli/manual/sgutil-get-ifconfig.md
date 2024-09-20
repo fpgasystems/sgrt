@@ -8,7 +8,7 @@
 
 <code>sgutil get ifconfig [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives host networking information. 
+  &nbsp; &nbsp; Host networking information. 
 </p>
 
 ### Flags

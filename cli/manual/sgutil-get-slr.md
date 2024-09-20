@@ -8,7 +8,7 @@
 
 <code>sgutil get slr [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives FPGA Resource Availability and Memory Information per SLR.
+  &nbsp; &nbsp; Resource Availability and Memory Information per SLR.
 </p>
 
 ### Flags

@@ -8,7 +8,7 @@
 
 <code>sgutil get name [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives FPGA device names.
+  &nbsp; &nbsp; Device names.
 </p>
 
 ### Flags

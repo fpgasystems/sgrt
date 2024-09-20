@@ -5,7 +5,7 @@ Back to sgutil get
 
 sgutil get bdf [flags] [--help]
 
-  &nbsp; &nbsp; Retreives FPGA Bus Device Function.
+  &nbsp; &nbsp; Bus Device Function.
 
 
 ### Flags

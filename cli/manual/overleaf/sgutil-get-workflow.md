@@ -5,7 +5,7 @@ Back to sgutil get
 
 sgutil get workflow [flags] [--help]
 
-  &nbsp; &nbsp; Retreives FPGA current workflow.
+  &nbsp; &nbsp; Current workflow.
 
 
 ### Flags

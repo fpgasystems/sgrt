@@ -8,7 +8,7 @@
 
 <code>sgutil get network [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives networking information for adaptive devices.
+  &nbsp; &nbsp; Networking information for adaptive devices.
 </p>
 
 ### Flags

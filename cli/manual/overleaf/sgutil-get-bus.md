@@ -5,7 +5,7 @@ Back to sgutil get
 
 sgutil get bus [flags] [--help]
 
-  &nbsp; &nbsp; Retreives GPU PCI Bus ID.
+  &nbsp; &nbsp; GPU PCI Bus ID.
 
 
 ### Flags

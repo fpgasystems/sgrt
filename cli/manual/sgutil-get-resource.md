@@ -8,7 +8,7 @@
 
 <code>sgutil get resource [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives FPGA Resource Availability.
+  &nbsp; &nbsp; Resource Availability.
 </p>
 
 ### Flags

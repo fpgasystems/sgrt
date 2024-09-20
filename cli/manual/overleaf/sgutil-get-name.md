@@ -5,7 +5,7 @@ Back to sgutil get
 
 sgutil get name [flags] [--help]
 
-  &nbsp; &nbsp; Retreives FPGA device names.
+  &nbsp; &nbsp; Device names.
 
 
 ### Flags

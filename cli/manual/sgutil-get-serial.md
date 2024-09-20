@@ -8,7 +8,7 @@
 
 <code>sgutil get serial [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives FPGA serial numbers.
+  &nbsp; &nbsp; Serial numbers.
 </p>
 
 ### Flags

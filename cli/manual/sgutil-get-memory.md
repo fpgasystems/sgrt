@@ -8,7 +8,7 @@
 
 <code>sgutil get memory [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives FPGA Memory Information.
+  &nbsp; &nbsp; Memory Information.
 </p>
 
 ### Flags

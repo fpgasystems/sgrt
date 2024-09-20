@@ -5,7 +5,7 @@ Back to sgutil get
 
 sgutil get ifconfig [--help]
 
-  &nbsp; &nbsp; Retreives host networking information. 
+  &nbsp; &nbsp; Host networking information. 
 
 
 ### Flags

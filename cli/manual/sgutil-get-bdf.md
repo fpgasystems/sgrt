@@ -8,7 +8,7 @@
 
 <code>sgutil get bdf [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives FPGA Bus Device Function.
+  &nbsp; &nbsp; Bus Device Function.
 </p>
 
 ### Flags

@@ -5,7 +5,7 @@ Back to sgutil get
 
 sgutil get network [flags] [--help]
 
-  &nbsp; &nbsp; Retreives FPGA networking information. 
+  &nbsp; &nbsp; Networking information. 
 
 
 ### Flags

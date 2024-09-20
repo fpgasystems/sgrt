@@ -5,7 +5,7 @@ Back to sgutil get
 
 sgutil get serial [flags] [--help]
 
-  &nbsp; &nbsp; Retreives FPGA serial numbers.
+  &nbsp; &nbsp; Serial numbers.
 
 
 ### Flags

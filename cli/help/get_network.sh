@@ -9,7 +9,7 @@ CLI_NAME=$2
 echo ""
 echo "${bold}$CLI_NAME get network [flags] [--help]${normal}"
 echo ""
-echo "Retreives networking information for adaptive devices."
+echo "Networking information for adaptive devices."
 echo ""
 echo "FLAGS:"
 echo "   -d, --device    - Device Index (according to $CLI_NAME examine)."

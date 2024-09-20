@@ -8,7 +8,7 @@
 
 <code>sgutil get workflow [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives FPGA current workflow.
+  &nbsp; &nbsp; Current workflow.
 </p>
 
 ### Flags

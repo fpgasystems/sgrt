@@ -5,7 +5,7 @@ Back to sgutil get
 
 sgutil get platform [flags] [--help]
 
-  &nbsp; &nbsp; Retreives FPGA platform names.
+  &nbsp; &nbsp; Platform names.
 
 
 ### Flags

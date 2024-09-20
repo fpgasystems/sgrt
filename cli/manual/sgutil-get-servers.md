@@ -8,7 +8,7 @@
 
 <code>sgutil get servers [--help]</code>
 <p>
-  &nbsp; &nbsp; Retreives the list of servers you can use SSH to connect to.
+  &nbsp; &nbsp; List of servers you can use SSH to connect to.
 </p>
 
 ### Flags
