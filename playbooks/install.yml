@@ -344,6 +344,9 @@
         - build_hip
         - build_opennic
         - build
+        - enable_vitis
+        - enable_vivado
+        - enable_xrt
         - enable
         - examine
         - get_network
