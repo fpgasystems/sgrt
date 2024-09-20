@@ -1326,17 +1326,11 @@ program_vivado_help() {
 # reboot -------------------------------------------------------------------------------------------------------
 
 reboot_help() {
-    echo ""
-    echo "${bold}$CLI_NAME reboot [--help]${normal}"
-    echo ""
-    echo "Reboots the server (warm boot)."
-    echo ""
-    echo "ARGUMENTS:"
-    echo "   This command has no arguments."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
+  is_sudo=$($CLI_PATH/common/is_sudo $USER)
+  is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  $CLI_PATH/help/reboot $CLI_NAME $is_sudo $is_vivado_developer $is_cpu
+  exit
 }
 
 # run ------------------------------------------------------------------------------------------------------------------------

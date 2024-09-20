@@ -28,13 +28,13 @@
     #cli installation
     bitstreams: false
     build: false
-    common: true
+    common: false
     directories: false
     enable: false
     examine: false
     get: false
     help: true
-    hip: false
+    hip: true
     new: false
     opennic: false
     program: false
@@ -353,6 +353,7 @@
         - program_reset
         - program_revert
         - program_vivado
+        - reboot
         - run_opennic
         - set_keys
         - validate_opennic
