@@ -185,7 +185,27 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 get)
-                    COMPREPLY=($(compgen -W "bdf clock bus name ifconfig memory network platform resource serial slr servers syslog workflow --help" -- ${cur}))
+                    commands="ifconfig servers --help"
+                    if [ "$is_acap" = "1" ]; then
+                        commands="${commands} bdf clock name memory network platform resource serial slr workflow"
+                    fi
+                    if [ "$is_cpu" = "1" ]; then
+                        commands="${commands} ifconfig servers"
+                    fi
+                    if [ "$is_fpga" = "1" ]; then
+                        commands="${commands} bdf clock name memory network platform resource serial slr workflow"
+                    fi
+                    if [ "$is_gpu" = "1" ]; then
+                        commands="${commands} bus"
+                    fi 
+                    if [ "$is_vivado_developer" = "1" ]; then
+                        commands="${commands} syslog"
+                    fi 
+                    commands_array=($commands)
+                    commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
+                    commands_string=$(echo "${commands_array[@]}")
+                    COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
+                    #COMPREPLY=($(compgen -W "bdf clock bus name ifconfig memory network platform resource serial slr servers syslog workflow --help" -- ${cur}))
                     ;;
                 new)
                     COMPREPLY=($(compgen -W "hip opennic --help" -- ${cur}))
