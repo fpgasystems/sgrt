@@ -121,6 +121,7 @@
         - COLOR_CPU
         - COLOR_FPGA
         - COLOR_GPU
+        - COLOR_OFF
         - COLOR_XILINX
         - CPU_SERVERS_LIST
         - FPGA_SERVERS_LIST
