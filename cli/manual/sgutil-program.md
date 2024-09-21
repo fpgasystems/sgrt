@@ -8,7 +8,7 @@
 
 <code>sgutil program [arguments [flags]] [--help]</code>
 <p>
-  &nbsp; &nbsp; Download the acceleration program to a given FPGA.
+  &nbsp; &nbsp; Download the acceleration program to a given device.
 </p>
 
 ### Arguments

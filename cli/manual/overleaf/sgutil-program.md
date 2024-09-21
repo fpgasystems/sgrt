@@ -5,7 +5,7 @@ Back to CLI
 
 sgutil program [arguments [flags]] [--help]
 
-  &nbsp; &nbsp; Download the acceleration program to a given FPGA.
+  &nbsp; &nbsp; Download the acceleration program to a given device.
 
 
 ### Arguments
