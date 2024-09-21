@@ -32,7 +32,7 @@
     directories: false
     enable: false
     examine: false
-    get: false
+    get: true
     help: true
     hip: true
     new: false
@@ -117,6 +117,11 @@
       when: all and constants_contents.matched == 0
       loop:
         - ACAP_SERVERS_LIST
+        - COLOR_ACAP
+        - COLOR_CPU
+        - COLOR_FPGA
+        - COLOR_GPU
+        - COLOR_XILINX
         - CPU_SERVERS_LIST
         - FPGA_SERVERS_LIST
         - GITHUB_CLI_PATH
