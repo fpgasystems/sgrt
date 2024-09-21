@@ -350,6 +350,7 @@
         - enable
         - examine
         - get_network
+        - get
         - new_opennic
         - program_driver
         - program_opennic
