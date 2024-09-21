@@ -185,7 +185,7 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 get)
-                    commands="ifconfig servers --help"
+                    commands="ifconfig servers topo --help"
                     if [ "$is_acap" = "1" ]; then
                         commands="${commands} bdf clock name memory network platform resource serial slr workflow"
                     fi
@@ -299,6 +299,9 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         syslog) 
+                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            ;;
+                        topo) 
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
                         workflow) 

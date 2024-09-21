@@ -36,7 +36,7 @@
     help: true
     hip: true
     new: false
-    opennic: false
+    opennic: true
     program: false
     reboot: false
     run: false
@@ -338,6 +338,7 @@
         - slr
         - servers
         - syslog
+        - topo
         - workflow
     #help
     - name: copying help scripts
@@ -356,6 +357,7 @@
         - enable
         - examine
         - get_network
+        - get_topo
         - get
         - new_opennic
         - program_driver

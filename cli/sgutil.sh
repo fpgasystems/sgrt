@@ -69,7 +69,7 @@ cli_help() {
   echo "    get             - Devices and host information."
   echo "    new             - Creates a new project of your choice."
   if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
-  echo "    program         - Download the acceleration program to a given FPGA."
+  echo "    program         - Download the acceleration program to a given device."
   fi
   if [ "$is_sudo" = "1" ] || ([ "$is_cpu" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
   echo "    reboot          - Reboots the server (warm boot)."
@@ -1122,6 +1122,11 @@ get_servers_help() {
   exit
 }
 
+get_topo_help() {
+  $CLI_PATH/help/get_topo $CLI_NAME
+  exit
+}
+
 get_workflow_help() {  
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
@@ -1173,7 +1178,7 @@ program_help() {
     echo ""
     echo "${bold}$CLI_NAME program [arguments [flags]] [--help]${normal}"
     echo ""
-    echo "Download the acceleration program to a given FPGA."
+    echo "Download the acceleration program to a given device."
     echo ""
     echo "ARGUMENTS:"
     echo "   driver          - Inserts a driver or module into the Linux kernel."
@@ -1636,6 +1641,10 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       syslog)
+        valid_flags="-h --help"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      topo)
         valid_flags="-h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
