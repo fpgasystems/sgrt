@@ -28,7 +28,7 @@
     #cli installation
     bitstreams: false
     build: false
-    common: false
+    common: true
     directories: false
     enable: false
     examine: false
@@ -282,6 +282,7 @@
         - platform_dialog
         - platform_dialog_check
         - port_dialog_check
+        - print_legend
         - project_dialog
         - project_dialog_check
         - push_dialog
