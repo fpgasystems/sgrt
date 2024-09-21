@@ -8,13 +8,13 @@
 
 <code>sgutil get bus [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; GPU PCI Bus ID.
+  &nbsp; &nbsp; GPU PCI Bus IDs.
 </p>
 
 ### Flags
 <code>-d, --device <string></code>
 <p>
-  &nbsp; &nbsp; GPU Device Index (according to sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 </p>
 
 <code>-h, --help <string></code>

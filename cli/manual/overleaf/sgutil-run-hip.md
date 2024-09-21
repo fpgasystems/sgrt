@@ -11,7 +11,7 @@ sgutil run hip [flags] [--help]
 ### Flags
 -d, --device 
 
-  &nbsp; &nbsp; GPU Device Index (according to sgutil examine).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 
 
 -p, --project
