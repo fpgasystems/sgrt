@@ -5,7 +5,7 @@ Back to sgutil program
 
 sgutil program vivado [flags] [--help]
 
-  &nbsp; &nbsp; Programs a Vivado bitstream to a given FPGA.
+  &nbsp; &nbsp; Programs a Vivado bitstream to a given device.
 
 
 ### Flags

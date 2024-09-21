@@ -8,7 +8,7 @@
 
 <code>sgutil program vivado [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Programs a Vivado bitstream to a given FPGA.
+  &nbsp; &nbsp; Programs a Vivado bitstream to a given device.
 </p>
 
 ### Flags

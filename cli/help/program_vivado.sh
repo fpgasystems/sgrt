@@ -8,7 +8,7 @@ CLI_NAME=$1
 echo ""
 echo "${bold}$CLI_NAME program vivado [flags] [--help]${normal}"
 echo ""
-echo "Programs a Vivado bitstream to a given FPGA."
+echo "Programs a Vivado bitstream to a given device."
 echo ""
 echo "FLAGS:"
 echo "   -b, --bitstream - Full path to the .bit bitstream to be programmed." 

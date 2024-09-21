@@ -8,7 +8,7 @@
 
 <code>sgutil program opennic [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Programs OpenNIC to an adaptive device.
+  &nbsp; &nbsp; Programs OpenNIC to a given device.
 </p>
 
 ### Flags
