@@ -15,9 +15,9 @@ hostname="${url%%.*}"
 #check on build server
 cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
 if [ "$cpu" = "1" ]; then
-    echo ""
-    ls -l $XILINX_PLATFORMS_PATH/ | grep '^d' | awk '{print $NF}'
-    echo ""
+#    echo ""
+#    ls -l $XILINX_PLATFORMS_PATH/ | grep '^d' | awk '{print $NF}'
+#    echo ""
     exit
 fi
 

@@ -130,18 +130,7 @@ elif [ "$parameter" = "ifconfig" ]; then
     echo "   -h, --help      - Help to use this command."
     echo ""
 elif [ "$parameter" = "platform" ]; then
-    if [ "$is_cpu" = "1" ]; then
-        echo ""
-        echo "${bold}$CLI_NAME get platform [--help]${normal}"
-        echo ""
-        echo "Platform names."
-        echo ""
-        echo "FLAGS:"
-        echo "   This command has no flags."
-        echo ""
-        echo "   -h, --help      - Help to use this command."
-        echo ""
-    elif [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
+    if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
         echo ""
         echo "${bold}$CLI_NAME get platform [flags] [--help]${normal}"
         echo ""
