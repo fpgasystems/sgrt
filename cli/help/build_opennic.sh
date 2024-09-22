@@ -11,19 +11,24 @@ is_fpga=$5
 
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 
+COLOR_ON2=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_XILINX)
+COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
+
 if [ "$is_acap" = "1" ] || [ "$is_cpu" = "1" ] || [ "$is_fpga" = "1" ]; then
     echo ""
-    echo "${bold}$CLI_NAME build opennic [flags] [--help]${normal}"
+    echo -e "${bold}${COLOR_ON2}$CLI_NAME build opennic [flags] [--help]${COLOR_OFF}${normal}"
     echo ""
-    echo "Generates OpenNIC's bitstreams and drivers."
+    echo -e "${COLOR_ON2}Generates OpenNIC's bitstreams and drivers.${COLOR_OFF}"
     echo ""
     echo "FLAGS:"
-    echo "   -c, --commit    - GitHub commit ID for shell (default: ${bold}$ONIC_SHELL_COMMIT${normal})."
+    echo "   ${bold}-c, --commit${normal}    - GitHub commit ID for shell (default: ${bold}$ONIC_SHELL_COMMIT${normal})."
     if [ "$is_cpu" = "1" ]; then
-    echo "       --platform  - Xilinx platform (according to ${bold}$CLI_NAME get platform${normal})."
+    echo "       ${bold}--platform${normal}  - Xilinx platform (according to ${bold}$CLI_NAME get platform${normal})."
     fi
-    echo "       --project   - Specifies your OpenNIC project name."
+    echo "       ${bold}--project${normal}   - Specifies your OpenNIC project name."
     echo ""
-    echo "   -h, --help      - Help to use this command."
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
+    echo ""
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "0" "1" "0"
     echo ""
 fi
