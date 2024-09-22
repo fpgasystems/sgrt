@@ -28,15 +28,15 @@
     #cli installation
     bitstreams: false
     build: false
-    common: true
+    common: false
     directories: false
     enable: false
     examine: false
-    get: true
+    get: false
     help: true
-    hip: true
+    hip: false
     new: false
-    opennic: true
+    opennic: false
     program: false
     reboot: false
     run: false
@@ -119,9 +119,11 @@
         - ACAP_SERVERS_LIST
         - COLOR_ACAP
         - COLOR_CPU
+        - COLOR_FAILED
         - COLOR_FPGA
         - COLOR_GPU
         - COLOR_OFF
+        - COLOR_PASSED
         - COLOR_XILINX
         - CPU_SERVERS_LIST
         - FPGA_SERVERS_LIST
