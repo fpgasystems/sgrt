@@ -8,7 +8,7 @@
 
 <code>sgutil get hip [--help]</code>
 <p>
-  &nbsp; &nbsp; Creates a new project using HIP Hello, world! template.
+  &nbsp; &nbsp; Portable single-source ROCm applications for GPUs.
 </p>
 <!-- The number of parallel client threads to run is four by default. -->
 

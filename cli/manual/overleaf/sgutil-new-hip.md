@@ -5,7 +5,7 @@ Back to sgutil new
 
 sgutil get hip [--help]
 
-  &nbsp; &nbsp; Creates a new project using HIP Hello, world! template.
+  &nbsp; &nbsp; Portable single-source ROCm applications for GPUs.
 
 
 

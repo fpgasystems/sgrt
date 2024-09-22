@@ -8,7 +8,7 @@
 
 <code>sgutil new opennic [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Creates a new project using OpenNIC Hello, world! template.
+  &nbsp; &nbsp; Smart Network Interface Card (SmartNIC) applications with OpenNIC.
 </p>
 
 ### Flags

@@ -1155,10 +1155,16 @@ new_help() {
     echo "Creates a new project of your choice."
     echo ""
     echo "ARGUMENTS:"
-    echo "   hip             - Creates a new project using HIP Hello, world! template."
-    echo "   opennic         - Creates a new project using OpenNIC Hello, world! template."
+    if [ "$is_gpu" = "1" ] || [ "$is_fpga" = "1" ]; then
+    echo -e "   ${COLOR_ON5}hip${COLOR_OFF}             - Portable single-source ROCm applications for GPUs."
+    fi
+    if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
+    echo -e "   ${COLOR_ON2}opennic${COLOR_OFF}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
+    fi
     echo ""
     echo "   -h, --help      - Help to use this command."
+    echo ""
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga $is_gpu
     echo ""
     exit 1
 }
@@ -1167,7 +1173,7 @@ new_hpi_help() {
     echo ""
     echo "${bold}$CLI_NAME new hip [--help]${normal}"
     echo ""
-    echo "Creates a new project using HIP Hello, world! template."
+    echo "Portable single-source ROCm applications for GPUs."
     echo ""
     echo "FLAGS"
     echo "   This command has no flags."

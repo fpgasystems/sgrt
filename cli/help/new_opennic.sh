@@ -11,7 +11,7 @@ ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 echo ""
 echo "${bold}$CLI_NAME new opennic [flags] [--help]${normal}"
 echo ""
-echo "Creates a new project using OpenNIC Hello, world! template."
+echo "Smart Network Interface Card (SmartNIC) applications with OpenNIC."
 echo ""
 echo "FLAGS"
 echo "   -c, --commit    - GitHub shell and driver commit IDs (default: ${bold}$ONIC_SHELL_COMMIT,$ONIC_DRIVER_COMMIT${normal})."
