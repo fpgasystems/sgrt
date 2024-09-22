@@ -1149,43 +1149,33 @@ get_workflow_help() {
 # new ------------------------------------------------------------------------------------------------------------------------
 
 new_help() {
-    echo ""
-    echo "${bold}$CLI_NAME new [arguments] [--help]${normal}"
-    echo ""
-    echo "Creates a new project of your choice."
-    echo ""
-    echo "ARGUMENTS:"
-    if [ "$is_gpu" = "1" ] || [ "$is_fpga" = "1" ]; then
-    echo -e "   ${COLOR_ON5}hip${COLOR_OFF}             - Portable single-source ROCm applications for GPUs."
-    fi
-    if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
-    echo -e "   ${COLOR_ON2}opennic${COLOR_OFF}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
-    fi
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga $is_gpu
-    echo ""
-    exit 1
+  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+  is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "--help" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  exit
 }
 
-new_hpi_help() {
-    echo ""
-    echo "${bold}$CLI_NAME new hip [--help]${normal}"
-    echo ""
-    echo "Portable single-source ROCm applications for GPUs."
-    echo ""
-    echo "FLAGS"
-    echo "   This command has no flags."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
-    exit 1
+new_hip_help() {
+  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+  is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "hip" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  exit
 }
 
 new_opennic_help() {
-    $CLI_PATH/help/new_opennic $CLI_PATH $CLI_NAME
-    exit
+  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+  is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  exit
 }
 
 # program ------------------------------------------------------------------------------------------------------------------------
@@ -1683,7 +1673,7 @@ case "$command" in
         ;;
       hip)
         if [ "$#" -ne 2 ]; then
-          new_hpi_help
+          new_hip_help
           exit 1
         fi
         $CLI_PATH/new/hip

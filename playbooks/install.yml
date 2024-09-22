@@ -361,6 +361,7 @@
         - get_topo
         - get
         - new_opennic
+        - new
         - program_driver
         - program_opennic
         - program_reset
