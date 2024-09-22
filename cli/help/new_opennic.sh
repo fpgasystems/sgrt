@@ -19,5 +19,5 @@ echo "       --project   - Specifies your OpenNIC project name."
 echo "       --push      - Pushes your OpenNIC project to your GitHub account." 
 echo ""
 echo "   -h, --help      - Help to use this command."
-echo ""
+#echo ""
 #exit 1

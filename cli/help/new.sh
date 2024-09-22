@@ -36,6 +36,8 @@ if [ "$parameter" = "--help" ]; then
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga $is_gpu
+    echo ""
 elif [ "$parameter" = "hip" ]; then
     if [ "$is_gpu" = "1" ]; then
     echo ""
@@ -53,7 +55,3 @@ elif [ "$parameter" = "opennic" ]; then
     $CLI_PATH/help/new_opennic $CLI_PATH $CLI_NAME
     echo ""
 fi
-
-#print legend
-$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga $is_gpu
-echo ""
