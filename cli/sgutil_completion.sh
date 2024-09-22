@@ -311,6 +311,9 @@ _sgutil_completions()
                     ;;
                 new) 
                     case ${COMP_WORDS[COMP_CWORD-1]} in
+                        hip)
+                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            ;;
                         opennic)
                             COMPREPLY=($(compgen -W "--commit --project --push --help" -- ${cur}))
                             ;;
