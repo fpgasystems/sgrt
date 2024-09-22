@@ -4,14 +4,16 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 CLI_NAME=$1
+COLOR_XILINX=$2
+COLOR_OFF=$3
 
 echo "" #this one is needed
-echo "${bold}$CLI_NAME program revert [flags] [--help]${normal}"
+echo -e "${bold}${COLOR_XILINX}$CLI_NAME program revert [flags] [--help]${COLOR_OFF}${normal}"
 echo ""
-echo "Returns a device to its default fabric setup."
+echo -e "${COLOR_XILINX}Returns a device to its default fabric setup.${COLOR_OFF}"
 echo ""
 echo "FLAGS:"
-echo "   -d, --device    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
 echo ""
-echo "   -h, --help      - Help to revert a device."
+echo "   ${bold}-h, --help${normal}      - Help to revert a device."
 echo ""

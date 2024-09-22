@@ -1225,14 +1225,14 @@ program_reset_help() {
 
 program_revert_help() {
   if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
-    $CLI_PATH/help/program_revert $CLI_NAME
+    $CLI_PATH/help/program_revert $CLI_NAME $COLOR_ON2 $COLOR_OFF
     exit
   fi
 }
 
 program_vivado_help() {
   if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
-    $CLI_PATH/help/program_vivado $CLI_NAME
+    $CLI_PATH/help/program_vivado $CLI_NAME $COLOR_ON2 $COLOR_OFF
     exit
   fi
 }
