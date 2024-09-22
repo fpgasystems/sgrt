@@ -30,6 +30,9 @@ vivado_version=$9
 #constants
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
+COLOR_FAILED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_FAILED)
+COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
+COLOR_PASSED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_PASSED)
 CPU_SERVERS_LIST="$CLI_PATH/constants/CPU_SERVERS_LIST"
 DEPLOY_OPTION="0"
 DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
@@ -241,14 +244,14 @@ if [[ $connected = "1" ]]; then
         fec_option=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")
 
         #print
-        echo -e "\e[32mOpenNIC validated on ${bold}$hostname (device $device_index)${normal}\e[32m with ${bold}RS_FEC_ENABLED=$fec_option!${normal}\e[0m"
+        echo -e "${COLOR_PASSED}OpenNIC validated on ${bold}$hostname (device $device_index)${normal}${COLOR_PASSED} with ${bold}RS_FEC_ENABLED=$fec_option!${normal}${COLOR_OFF}"
         echo ""
     else 
-        echo -e "\e[31mOpenNIC failed on ${bold}$hostname (device $device_index)${normal}\e[31m with ${bold}RS_FEC_ENABLED=$fec_option!${normal}\e[0m"
+        echo -e "${COLOR_PASSED}OpenNIC failed on ${bold}$hostname (device $device_index)${normal}${COLOR_FAILED} with ${bold}RS_FEC_ENABLED=$fec_option!${normal}${COLOR_OFF}"
         echo ""
     fi
 else
-    echo -e "\e[31mOpenNIC failed on ${bold}$hostname (device $device_index)${normal}\e[31m with ${bold}RS_FEC_ENABLED=$fec_option!${normal}\e[0m"
+    echo -e "${COLOR_FAILED}OpenNIC failed on ${bold}$hostname (device $device_index)${normal}${COLOR_FAILED} with ${bold}RS_FEC_ENABLED=$fec_option!${normal}${COLOR_OFF}"
     echo ""
 fi
 
