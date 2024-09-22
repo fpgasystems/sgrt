@@ -8,7 +8,7 @@
 
 <code>sgutil program [arguments [flags]] [--help]</code>
 <p>
-  &nbsp; &nbsp; Download the acceleration program to a given device.
+  &nbsp; &nbsp; Driver and bitstream programming.
 </p>
 
 ### Arguments

@@ -5,18 +5,20 @@ normal=$(tput sgr0)
 
 CLI_PATH=$1
 CLI_NAME=$2
+COLOR_XILINX=$3
+COLOR_OFF=$4
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 
 echo ""
-echo "${bold}$CLI_NAME program opennic [flags] [--help]${normal}"
+echo -e "${bold}${COLOR_XILINX}$CLI_NAME program opennic [flags] [--help]${COLOR_OFF}${normal}"
 echo ""
-echo "Programs OpenNIC to an adaptive device."
+echo -e "${COLOR_XILINX}Programs OpenNIC to a given device.${COLOR_OFF}"
 echo ""
 echo "FLAGS:"
-echo "   -c, --commit    - GitHub commit ID for shell (default: ${bold}$ONIC_SHELL_COMMIT${normal})."
-echo "   -d, --device    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
-echo "   -p, --project   - Specifies your OpenNIC project name." 
-echo "   -r, --remote    - Local or remote deployment."
+echo "   ${bold}-c, --commit${normal}    - GitHub commit ID for shell (default: ${bold}$ONIC_SHELL_COMMIT${normal})."
+echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+echo "   ${bold}-p, --project${normal}   - Specifies your OpenNIC project name." 
+echo "   ${bold}-r, --remote${normal}    - Local or remote deployment."
 echo ""
-echo "   -h, --help      - Help to use this command."
+echo "   ${bold}-h, --help${normal}      - Help to use this command."
 echo ""

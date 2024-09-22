@@ -69,32 +69,32 @@ cli_help() {
   echo "${bold}$CLI_NAME [commands] [arguments [flags]] [--help] [--release]${normal}"
   echo ""
   echo "COMMANDS:"
-  echo "    build          - Creates binaries, bitstreams, and drivers for your accelerated applications."
+  echo "    ${bold}build${normal}          - Creates binaries, bitstreams, and drivers for your accelerated applications."
   if [ "$is_cpu" = "1" ]; then
-  echo "    enable         - Enables your favorite development and deployment tools."
+  echo "    ${bold}enable${normal}         - Enables your favorite development and deployment tools."
   fi
-  echo "    examine        - Status of the system and devices."
-  echo "    get            - Devices and host information."
-  echo "    new            - Creates a new project of your choice."
+  echo "    ${bold}examine${normal}        - Status of the system and devices."
+  echo "    ${bold}get${normal}            - Devices and host information."
+  echo "    ${bold}new${normal}            - Creates a new project of your choice."
   if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
-  echo -e "    ${COLOR_ON2}program${COLOR_OFF}        - Download the acceleration program to a given device."
+  echo "    ${bold}program${normal}        - Driver and bitstream programming."
   fi
   if [ "$is_sudo" = "1" ] || ([ "$is_cpu" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
-  echo "    reboot         - Reboots the server (warm boot)."
+  echo "    ${bold}reboot${normal}         - Reboots the server (warm boot)."
   fi
   if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
-  echo "    run            - Executes the accelerated application on a given device."
+  echo "    ${bold}run${normal}            - Executes the accelerated application on a given device."
   fi
-  echo "    set            - Devices and host configuration."
+  echo "    ${bold}set${normal}            - Devices and host configuration."
   if [ "$is_sudo" = "1" ]; then
-  echo "    update         - Updates $CLI_NAME to its latest version."
+  echo "    ${bold}update${normal}         - Updates $CLI_NAME to its latest version."
   fi
   if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
-  echo "    validate       - Validates the basic HACC infrastructure functionality."
+  echo "    ${bold}validate${normal}       - Validates the basic HACC infrastructure functionality."
   fi
   echo ""
-  echo "    -h, --help     - Help to use $CLI_NAME."
-  echo "    -r, --release  - Reports $CLI_NAME release."
+  echo "    ${bold}-h, --help${normal}     - Help to use $CLI_NAME."
+  echo "    ${bold}-r, --release${normal}  - Reports $CLI_NAME release."
   echo ""
   $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga $is_gpu
   echo ""
@@ -1181,46 +1181,60 @@ new_opennic_help() {
 # program ------------------------------------------------------------------------------------------------------------------------
 
 program_help() {
+  if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME program [arguments [flags]] [--help]${normal}"
     echo ""
-    echo "Download the acceleration program to a given device."
+    echo "Driver and bitstream programming."
     echo ""
     echo "ARGUMENTS:"
-    echo "   driver          - Inserts a driver or module into the Linux kernel."
-    echo "   opennic         - Programs OpenNIC to a given device."
-    echo "   reset           - Performs a 'HOT Reset' on a Vitis device."
-    echo "   revert          - Returns a device to its default fabric setup."
-    echo "   vivado          - Programs a Vivado bitstream to a given device."
+    echo "   ${bold}driver${normal}          - Inserts or removes a driver or module into the Linux kernel."
+    echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         ${COLOR_ON2}- Programs OpenNIC to a given device.${COLOR_OFF}"
+    echo -e "   ${bold}${COLOR_ON2}reset${COLOR_OFF}${normal}           ${COLOR_ON2}- Performs a 'HOT Reset' on a Vitis device.${COLOR_OFF}"
+    echo -e "   ${bold}${COLOR_ON2}revert${COLOR_OFF}${normal}          ${COLOR_ON2}- Returns a device to its default fabric setup.${COLOR_OFF}"
+    echo -e "   ${bold}${COLOR_ON2}vivado${COLOR_OFF}${normal}          ${COLOR_ON2}- Programs a Vivado bitstream to a given device.${COLOR_OFF}"
     echo ""
-    echo "   -h, --help      - Help to use this command."
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    exit 1
+    #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga $is_gpu
+    #echo ""
+  fi
+  exit
 }
 
 program_driver_help() {
+  if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
     $CLI_PATH/help/program_driver $CLI_NAME
-    exit
+  fi
+  exit
 }
 
 program_opennic_help() {
-    $CLI_PATH/help/program_opennic $CLI_PATH $CLI_NAME
-    exit
+  if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
+    $CLI_PATH/help/program_opennic $CLI_PATH $CLI_NAME $COLOR_ON2 $COLOR_OFF
+  fi
+  exit
 }
 
 program_reset_help() {
-    $CLI_PATH/help/program_reset $CLI_NAME
+  if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
+    $CLI_PATH/help/program_reset $CLI_NAME $COLOR_ON2 $COLOR_OFF
     exit
+  fi
 }
 
 program_revert_help() {
+  if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
     $CLI_PATH/help/program_revert $CLI_NAME
-    exit 
+    exit
+  fi
 }
 
 program_vivado_help() {
+  if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
     $CLI_PATH/help/program_vivado $CLI_NAME
     exit
+  fi
 }
 
 # reboot -------------------------------------------------------------------------------------------------------
