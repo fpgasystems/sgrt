@@ -27,8 +27,10 @@ new_name=$5
 push_option=$7
 
 #constants
+ACAP_SERVERS_LIST="$CLI_PATH/constants/ACAP_SERVERS_LIST"
 BUILD_SERVERS_LIST="$CLI_PATH/constants/BUILD_SERVERS_LIST"
 FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
+GPU_SERVERS_LIST="$CLI_PATH/constants/GPU_SERVERS_LIST"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="opennic"
 
@@ -76,8 +78,8 @@ chmod +x $DIR/config_delete
 #get interface name
 mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
 
-#read CPU and FPGA_SERVERS_LIST excluding the current hostname
-IFS=$'\n' read -r -d '' -a remote_servers < <(cat "$BUILD_SERVERS_LIST" "$FPGA_SERVERS_LIST" | grep -v "^$hostname$" && printf '\0')
+#read SERVERS_LISTS excluding the current hostname
+IFS=$'\n' read -r -d '' -a remote_servers < <(cat "$ACAP_SERVERS_LIST" "$BUILD_SERVERS_LIST" "$FPGA_SERVERS_LIST" "$GPU_SERVERS_LIST" | grep -v "^$hostname$" | sort -u && printf '\0')
 
 #get target host
 target_host=""
