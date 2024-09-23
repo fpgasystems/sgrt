@@ -96,7 +96,17 @@ cli_help() {
   echo "    ${bold}-h, --help${normal}     - Help to use $CLI_NAME."
   echo "    ${bold}-r, --release${normal}  - Reports $CLI_NAME release."
   echo ""
-  $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga $is_gpu
+  #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga $is_gpu
+  if [ "$is_build" = "1" ]; then
+  echo "                     ${bold}This is a build server${normal}"
+  elif [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
+    if [ "$is_virtualized" = "1" ]; then
+      echo "                     ${bold}This is a virtualized deployment server${normal}"
+    else
+      echo "                     ${bold}This is a deployment server${normal}"
+    fi
+  
+  fi
   echo ""
   exit 1
 }
