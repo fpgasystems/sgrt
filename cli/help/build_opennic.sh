@@ -8,10 +8,11 @@ CLI_NAME=$2
 is_acap=$3
 is_build=$4 
 is_fpga=$5
+is_vivado_developer=$6
 
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 
-if [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; then
+if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
     echo ""
     echo "${bold}$CLI_NAME build opennic [flags] [--help]${normal}"
     echo ""

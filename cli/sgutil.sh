@@ -969,7 +969,8 @@ build_help() {
     is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
     is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
     is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-    $CLI_PATH/help/build $CLI_NAME $is_acap $is_build $is_fpga $is_gpu 
+    is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+    $CLI_PATH/help/build $CLI_NAME $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
     exit
 }
 
@@ -989,7 +990,8 @@ build_opennic_help() {
     is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
     is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
     is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-    $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga
+    is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+    $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga $is_vivado_developer
     exit
 }
 

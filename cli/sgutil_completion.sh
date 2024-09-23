@@ -161,13 +161,16 @@ _sgutil_completions()
             case ${COMP_WORDS[COMP_CWORD-1]} in
                 build)
                     commands="c --help"
-                    if [ "$is_acap" = "1" ]; then
+                    if [ "$is_acap" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
                         commands="${commands} opennic"
                     fi
                     if [ "$is_build" = "1" ]; then
-                        commands="${commands} hip opennic"
+                        commands="${commands} hip"
+                        if [ "$is_vivado_developer" = "1" ]; then
+                            commands="${commands} opennic"
+                        fi
                     fi
-                    if [ "$is_fpga" = "1" ]; then
+                    if [ "$is_fpga" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
                         commands="${commands} opennic"
                     fi
                     if [ "$is_gpu" = "1" ]; then
@@ -241,10 +244,10 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--project --help" -- ${cur}))
                             ;;
                         opennic)
-                            if [ "$is_build" = "0" ]; then
+                            if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
                                 #platform is not offered
                                 COMPREPLY=($(compgen -W "--commit --project --help" -- ${cur}))
-                            else
+                            elif [ "$is_vivado_developer" = "1" ]; then
                                 COMPREPLY=($(compgen -W "--commit --platform --project --help" -- ${cur}))
                             fi
                             ;;
