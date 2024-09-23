@@ -36,7 +36,7 @@
     help: true
     hip: false
     new: false
-    opennic: false
+    opennic: true
     program: false
     reboot: false
     run: false
@@ -117,6 +117,7 @@
       when: all and constants_contents.matched == 0
       loop:
         - ACAP_SERVERS_LIST
+        - BUILD_SERVERS_LIST
         - COLOR_ACAP
         - COLOR_CPU
         - COLOR_FAILED
@@ -271,6 +272,7 @@
         - gh_commit_check
         - git_clone_opennic
         - is_acap
+        - is_build
         - is_cpu
         - is_fpga
         - is_gpu
