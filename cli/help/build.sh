@@ -5,7 +5,7 @@ normal=$(tput sgr0)
 
 CLI_NAME=$1
 is_acap=$2
-is_cpu=$3
+is_build=$3
 is_fpga=$4
 is_gpu=$5
 
@@ -19,10 +19,10 @@ echo ""
 echo "Creates binaries, bitstreams, and drivers for your accelerated applications."
 echo ""
 echo "ARGUMENTS:"
-if                         [ "$is_cpu" = "1" ] ||                         [ "$is_gpu" = "1" ]; then
+if                         [ "$is_build" = "1" ] ||                         [ "$is_gpu" = "1" ]; then
 echo -e "   ${bold}${COLOR_ON5}hip${normal}${COLOR_OFF}             ${COLOR_ON5}- Generates HIP binaries for your projects.${COLOR_OFF}"  
 fi
-if [ "$is_acap" = "1" ] || [ "$is_cpu" = "1" ] || [ "$is_fpga" = "1" ]                       ; then
+if [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]                       ; then
 echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         ${COLOR_ON2}- Generates OpenNIC's bitstreams and drivers.${COLOR_OFF}"
 fi
 echo ""
@@ -30,7 +30,7 @@ echo "   ${bold}-h, --help${normal}      - Help to use this command."
 echo ""
 
 #legend
-if [ "$is_cpu" = "1" ] || [ "$is_gpu" = "1" ]; then
+if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
 $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap "0" $is_fpga $is_gpu
 elif [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]                       ; then
 $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap "0" $is_fpga "0"

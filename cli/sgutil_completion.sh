@@ -6,7 +6,7 @@ hostname="${url%%.*}"
 
 #check on server
 is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
 is_virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
@@ -134,7 +134,7 @@ _sgutil_completions()
             if [ "$is_acap" = "1" ]; then
                 commands="${commands} build new program run validate"
             fi
-            if [ "$is_cpu" = "1" ]; then
+            if [ "$is_build" = "1" ]; then
                 commands="${commands} build enable examine new"
             fi
             if [ "$is_fpga" = "1" ]; then
@@ -148,7 +148,7 @@ _sgutil_completions()
             if [ "$is_sudo" = "1" ]; then
                 commands="${commands} reboot update"
             fi
-            if [ "$is_cpu" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
+            if [ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]; then
                 commands="${commands} reboot"
             fi
 
@@ -164,7 +164,7 @@ _sgutil_completions()
                     if [ "$is_acap" = "1" ]; then
                         commands="${commands} opennic"
                     fi
-                    if [ "$is_cpu" = "1" ]; then
+                    if [ "$is_build" = "1" ]; then
                         commands="${commands} hip opennic"
                     fi
                     if [ "$is_fpga" = "1" ]; then
@@ -189,7 +189,7 @@ _sgutil_completions()
                     if [ "$is_acap" = "1" ]; then
                         commands="${commands} bdf clock name memory network platform resource serial slr workflow"
                     fi
-                    if [ "$is_cpu" = "1" ]; then
+                    if [ "$is_build" = "1" ]; then
                         commands="${commands} ifconfig servers"
                     fi
                     if [ "$is_fpga" = "1" ]; then
@@ -238,7 +238,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--project --help" -- ${cur}))
                             ;;
                         opennic)
-                            if [ "$is_cpu" = "0" ]; then
+                            if [ "$is_build" = "0" ]; then
                                 #platform is not offered
                                 COMPREPLY=($(compgen -W "--commit --project --help" -- ${cur}))
                             else
@@ -394,7 +394,7 @@ _sgutil_completions()
             #Example: sgutil program coyote --device 1 -- (there are five words)
 
             #build
-            if [ "$is_cpu" = "0" ]; then
+            if [ "$is_build" = "0" ]; then
                 #platform is not offered
                 other_flags=( "--commit" "--project" )
                 command_completion_5 "$cur" "$COMP_CWORD" "build" "opennic" "${other_flags[@]}"

@@ -7,7 +7,7 @@ CLI_PATH=$1
 CLI_NAME=$2
 parameter=$3
 is_acap=$4
-is_cpu=$5
+is_build=$5
 is_fpga=$6
 is_gpu=$7
 is_vivado_developer=$8
@@ -21,7 +21,7 @@ COLOR_ON5=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_GPU)
 COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 
 if [ "$parameter" = "--help" ]; then
-    if [ "$is_acap" = "1" ] || [ "$is_cpu" = "1" ] || [ "$is_fpga" = "1" ]; then
+    if [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; then
         echo ""
         echo "${bold}$CLI_NAME get [arguments [flags]] [--help]${normal}"
         echo ""
@@ -52,7 +52,7 @@ if [ "$parameter" = "--help" ]; then
         echo ""
         echo "   -h, --help      - Help to use this command."
         echo ""
-        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga $is_gpu
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga $is_gpu
         echo ""
     fi
 elif [ "$parameter" = "bdf" ]; then

@@ -39,7 +39,7 @@ VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
 #check on server
 is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
 is_virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
@@ -70,7 +70,7 @@ cli_help() {
   echo ""
   echo "COMMANDS:"
   echo "    ${bold}build${normal}          - Creates binaries, bitstreams, and drivers for your accelerated applications."
-  if [ "$is_cpu" = "1" ]; then
+  if [ "$is_build" = "1" ]; then
   echo "    ${bold}enable${normal}         - Enables your favorite development and deployment tools."
   fi
   echo "    ${bold}examine${normal}        - Status of the system and devices."
@@ -79,7 +79,7 @@ cli_help() {
   if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
   echo "    ${bold}program${normal}        - Driver and bitstream programming."
   fi
-  if [ "$is_sudo" = "1" ] || ([ "$is_cpu" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
+  if [ "$is_sudo" = "1" ] || ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
   echo "    ${bold}reboot${normal}         - Reboots the server (warm boot)."
   fi
   if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
@@ -96,7 +96,7 @@ cli_help() {
   echo "    ${bold}-h, --help${normal}     - Help to use $CLI_NAME."
   echo "    ${bold}-r, --release${normal}  - Reports $CLI_NAME release."
   echo ""
-  $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga $is_gpu
+  $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga $is_gpu
   echo ""
   exit 1
 }
@@ -326,11 +326,11 @@ config_check() {
   fi
 }
 
-cpu_check() {
+build_check() {
   local CLI_PATH=$1
   local hostname=$2
-  cpu_server=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
-  if [ "$cpu_server" = "0" ]; then
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+  if [ "$is_build" = "0" ]; then
       echo ""
       echo $CHECK_ON_HOSTNAME_ERR_MSG
       echo ""
@@ -605,7 +605,7 @@ new_check(){
 platform_dialog() {
   local CLI_PATH=$1
   local XILINX_PLATFORMS_PATH=$2
-  local is_cpu=$3
+  local is_build=$3
   #local WORKFLOW=$3 #arguments and workflow are the same (i.e. opennic)
   shift 3
   local flags_array=("$@")
@@ -613,7 +613,7 @@ platform_dialog() {
   platform_found=""
   platform_name=""
 
-  if [ "$is_cpu" = "0" ]; then
+  if [ "$is_build" = "0" ]; then
     platform_found="1"
     platform_name="none"
   else
@@ -956,47 +956,47 @@ xrt_shell_check() {
 
 build_help() {
     is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-    is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+    is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
     is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
     is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-    $CLI_PATH/help/build $CLI_NAME $is_acap $is_cpu $is_fpga $is_gpu 
+    $CLI_PATH/help/build $CLI_NAME $is_acap $is_build $is_fpga $is_gpu 
     exit
 }
 
 build_hip_help() {
-    is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+    is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
     is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-    $CLI_PATH/help/build_hip $CLI_NAME $is_cpu $is_gpu
+    $CLI_PATH/help/build_hip $CLI_NAME $is_build $is_gpu
     exit
 }
 
 build_opennic_help() {
     is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-    is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+    is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
     is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-    $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga
+    $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga
     exit
 }
 
 # enable ------------------------------------------------------------------------------------------------------------------------
 
 enable_help() {
-  $CLI_PATH/help/enable $CLI_NAME $($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  $CLI_PATH/help/enable $CLI_NAME $($CLI_PATH/common/is_build $CLI_PATH $hostname)
   exit
 }
 
 enable_vitis_help() {
-  $CLI_PATH/help/enable_vitis $CLI_NAME $($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  $CLI_PATH/help/enable_vitis $CLI_NAME $($CLI_PATH/common/is_build $CLI_PATH $hostname)
   exit
 }
 
 enable_vivado_help() {    
-  $CLI_PATH/help/enable_vivado $CLI_NAME $($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  $CLI_PATH/help/enable_vivado $CLI_NAME $($CLI_PATH/common/is_build $CLI_PATH $hostname)
   exit
 }
 
 enable_xrt_help() {
-  $CLI_PATH/help/enable_xrt $CLI_NAME $($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  $CLI_PATH/help/enable_xrt $CLI_NAME $($CLI_PATH/common/is_build $CLI_PATH $hostname)
   exit
 }
 
@@ -1011,65 +1011,65 @@ examine_help() {
 
 get_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "--help" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "--help" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit
 }
 
 get_bdf_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bdf" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bdf" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit
 }
 
 get_bus_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bus" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bus" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit 
 }
 
 get_clock_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "clock" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "clock" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit
 }
 
 get_ifconfig_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "ifconfig" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "ifconfig" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit    
 }
 
 get_memory_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "memory" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "memory" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit
 }
 
 get_name_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "name" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "name" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit  
 }
 
@@ -1080,55 +1080,55 @@ get_network_help() {
 
 get_platform_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "platform" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "platform" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit 
 }
 
 get_resource_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "resource" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "resource" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit    
 }
 
 get_serial_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "serial" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "serial" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit  
 }
 
 get_slr_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "slr" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "slr" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit  
 }
 
 get_syslog_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "syslog" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "syslog" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit  
 }
 
 get_servers_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "servers" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "servers" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit
 }
 
@@ -1139,10 +1139,10 @@ get_topo_help() {
 
 get_workflow_help() {  
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "workflow" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "workflow" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit
 }
 
@@ -1150,31 +1150,31 @@ get_workflow_help() {
 
 new_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "--help" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "--help" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit
 }
 
 new_hip_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "hip" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "hip" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit
 }
 
 new_opennic_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_cpu $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   exit
 }
 
@@ -1196,7 +1196,7 @@ program_help() {
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga "0"
     echo ""
   fi
   exit
@@ -1212,7 +1212,7 @@ program_driver_help() {
 program_opennic_help() {
   if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
     $CLI_PATH/help/program_opennic $CLI_PATH $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga "0"
     echo ""
   fi
   exit
@@ -1221,7 +1221,7 @@ program_opennic_help() {
 program_reset_help() {
   if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
     $CLI_PATH/help/program_reset $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga "0"
     echo ""
     exit
   fi
@@ -1230,7 +1230,7 @@ program_reset_help() {
 program_revert_help() {
   if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
     $CLI_PATH/help/program_revert $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga "0"
     echo ""
     exit
   fi
@@ -1239,7 +1239,7 @@ program_revert_help() {
 program_vivado_help() {
   if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
     $CLI_PATH/help/program_vivado $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga "0"
     echo ""
     exit
   fi
@@ -1250,8 +1250,8 @@ program_vivado_help() {
 reboot_help() {
   is_sudo=$($CLI_PATH/common/is_sudo $USER)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  is_cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
-  $CLI_PATH/help/reboot $CLI_NAME $is_sudo $is_vivado_developer $is_cpu
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+  $CLI_PATH/help/reboot $CLI_NAME $is_sudo $is_vivado_developer $is_build
   exit
 }
 
@@ -1498,7 +1498,7 @@ case "$command" in
         ;;
       hip)
         #check on server (relates to sgutil_completion)
-        if [ "$is_cpu" != "1" ] && [ "$is_gpu" != "1" ]; then
+        if [ "$is_build" != "1" ] && [ "$is_gpu" != "1" ]; then
             exit 1
         fi
 
@@ -1507,7 +1507,7 @@ case "$command" in
         ;;
       opennic)
         #check on server (relates to sgutil_completion)
-        if [ "$is_acap" = "0" ] && [ "$is_cpu" = "0" ] && [ "$is_fpga" = "0" ]; then
+        if [ "$is_acap" = "0" ] && [ "$is_build" = "0" ] && [ "$is_fpga" = "0" ]; then
             exit 1
         fi
 
@@ -1534,7 +1534,7 @@ case "$command" in
         fi
 
         #additional forbidden combination
-        if [ "$is_cpu" = "0" ] && [ "$platform_found" = "1" ]; then
+        if [ "$is_build" = "0" ] && [ "$platform_found" = "1" ]; then
           build_opennic_help
         fi
 
@@ -1554,10 +1554,10 @@ case "$command" in
             cd "$current_path"
         fi
         commit_name_driver=$(cat $MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/ONIC_DRIVER_COMMIT)
-        platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "$is_cpu" "${flags_array[@]}"
+        platform_dialog "$CLI_PATH" "$XILINX_PLATFORMS_PATH" "$is_build" "${flags_array[@]}"
         
         #run
-        $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version --all $is_cpu
+        $CLI_PATH/build/opennic --commit $commit_name $commit_name_driver --platform $platform_name --project $project_name --version $vivado_version --all $is_build
         echo ""
         ;;
       *)
@@ -1567,7 +1567,7 @@ case "$command" in
     ;;
   enable)
     #check on server (relates to sgutil_completion)
-    if [ "$is_cpu" = "0" ]; then
+    if [ "$is_build" = "0" ]; then
       exit 1
     fi
 
@@ -2087,19 +2087,10 @@ case "$command" in
         ;;
       *)
         #check on server (relates to cli_help)
-        if [ "$is_sudo" != "1" ] && ! ([ "$is_cpu" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
+        if [ "$is_sudo" != "1" ] && ! ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
           exit 1
         fi
-        #fpga_check "$CLI_PATH" "$hostname"
         
-        #check on groups
-        #sudo_check "$USER"
-        #vivado_developers_check "$USER"
-        #if [ "$is_sudo" = "0" ] || ([ "$is_cpu" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
-        #  exit
-        #fi
-
-
         if [ "$#" -ne 1 ]; then
           reboot_help
           exit 1

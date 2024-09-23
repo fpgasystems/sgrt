@@ -7,7 +7,7 @@ CLI_PATH=$1
 CLI_NAME=$2
 parameter=$3
 is_acap=$4
-is_cpu=$5
+is_build=$5
 is_fpga=$6
 is_gpu=$7
 is_vivado_developer=$8
@@ -36,7 +36,7 @@ if [ "$parameter" = "--help" ]; then
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_cpu $is_fpga $is_gpu
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga $is_gpu
     echo ""
 elif [ "$parameter" = "hip" ]; then
     if [ "$is_gpu" = "1" ]; then

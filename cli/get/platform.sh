@@ -13,8 +13,8 @@ url="${HOSTNAME}"
 hostname="${url%%.*}"
 
 #check on build server
-cpu=$($CLI_PATH/common/is_cpu $CLI_PATH $hostname)
-if [ "$cpu" = "1" ]; then
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+if [ "$is_build" = "1" ]; then
 #    echo ""
 #    ls -l $XILINX_PLATFORMS_PATH/ | grep '^d' | awk '{print $NF}'
 #    echo ""

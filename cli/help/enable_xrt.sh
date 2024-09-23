@@ -4,9 +4,9 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 CLI_NAME=$1
-is_cpu=$2
+is_build=$2
 
-if [ "$is_cpu" = "1" ]; then
+if [ "$is_build" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME enable xrt [--help]${normal}"
     echo ""
