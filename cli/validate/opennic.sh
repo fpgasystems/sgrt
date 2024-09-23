@@ -215,15 +215,8 @@ after=${after%:}
 #use comm to find the "extra" OpenNIC
 eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
 
-#read CPU and FPGA_SERVERS_LIST excluding the current hostname
+#read SERVERS_LISTS excluding the current hostname
 IFS=$'\n' read -r -d '' -a remote_servers < <(cat "$ACAP_SERVERS_LIST" "$BUILD_SERVERS_LIST" "$FPGA_SERVERS_LIST" "$GPU_SERVERS_LIST" | grep -v "^$hostname$" | sort -u && printf '\0')
-
-# Now print each server in the list
-echo "List of unique remote servers:"
-for server in "${remote_servers[@]}"; do
-    echo "$server"
-done
-
 
 #set target host
 target_host=""
