@@ -8,7 +8,7 @@ normal=$(tput sgr0)
 #example: /opt/sgrt/cli/sgutil set keys
 
 #combine CPU, ACAP and FPGA lists removing duplicates
-mapfile -t SERVER_LIST < <(sort -u "$CLI_PATH/constants/CPU_SERVERS_LIST" "$CLI_PATH/constants/ACAP_SERVERS_LIST" "$CLI_PATH/constants/FPGA_SERVERS_LIST")
+mapfile -t SERVER_LIST < <(sort -u "$CLI_PATH/constants/ACAP_SERVERS_LIST" "$CLI_PATH/constants/BUILD_SERVERS_LIST" "$CLI_PATH/constants/FPGA_SERVERS_LIST" "$CLI_PATH/constants/GPU_SERVERS_LIST")
 
 echo "${bold}sgutil set keys${normal}"
 echo "" 
