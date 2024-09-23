@@ -973,6 +973,11 @@ build_help() {
     exit
 }
 
+build_c_help() {
+    $CLI_PATH/help/build_c $CLI_NAME
+    exit
+}
+
 build_hip_help() {
     is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
     is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
@@ -1505,6 +1510,10 @@ case "$command" in
     case "$arguments" in
       -h|--help)
         build_help
+        ;;
+      c)
+        valid_flags="-s --source -h --help"
+        command_run $command_arguments_flags"@"$valid_flags
         ;;
       hip)
         #check on server (relates to sgutil_completion)

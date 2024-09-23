@@ -19,6 +19,7 @@ echo ""
 echo "Creates binaries, bitstreams, and drivers for your accelerated applications."
 echo ""
 echo "ARGUMENTS:"
+echo "   ${bold}c${normal}               - Generates C and C++ binaries."
 if                         [ "$is_build" = "1" ] ||                         [ "$is_gpu" = "1" ]; then
 echo -e "   ${bold}${COLOR_ON5}hip${normal}${COLOR_OFF}             ${COLOR_ON5}- Generates HIP binaries for your projects.${COLOR_OFF}"  
 fi

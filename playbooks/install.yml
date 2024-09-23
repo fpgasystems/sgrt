@@ -11,7 +11,8 @@
     #- hacc_boxes
     - hacc-box-01.inf.ethz.ch
     - alveo-u55c-01.inf.ethz.ch
-    - alveo-u55c-02.inf.ethz.ch
+    #- alveo-u55c-02.inf.ethz.ch
+    - alveo-u250-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -27,13 +28,13 @@
     all: false
     #cli installation
     bitstreams: false
-    build: false
+    build: true
     common: true
     directories: false
     enable: false
     examine: false
     get: false
-    help: false
+    help: true
     hip: false
     new: false
     opennic: false
@@ -226,6 +227,7 @@
         mode: "0755"
       when: all or build
       loop:
+        - c
         - hip
         - opennic
     #common
@@ -351,6 +353,7 @@
         mode: "0755"
       when: all or help
       loop:
+        - build_c
         - build_hip
         - build_opennic
         - build

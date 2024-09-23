@@ -160,7 +160,7 @@ _sgutil_completions()
         2)
             case ${COMP_WORDS[COMP_CWORD-1]} in
                 build)
-                    commands="--help"
+                    commands="c --help"
                     if [ "$is_acap" = "1" ]; then
                         commands="${commands} opennic"
                     fi
@@ -234,6 +234,9 @@ _sgutil_completions()
             case ${COMP_WORDS[COMP_CWORD-2]} in
                 build)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
+                        c)
+                            COMPREPLY=($(compgen -W "--source --help" -- ${cur}))
+                            ;;
                         hip)
                             COMPREPLY=($(compgen -W "--project --help" -- ${cur}))
                             ;;
