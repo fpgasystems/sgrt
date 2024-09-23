@@ -30,10 +30,10 @@ vivado_version=$9
 #constants
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
+BUILD_SERVERS_LIST="$CLI_PATH/constants/BUILD_SERVERS_LIST"
 COLOR_FAILED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_FAILED)
 COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 COLOR_PASSED=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_PASSED)
-CPU_SERVERS_LIST="$CLI_PATH/constants/CPU_SERVERS_LIST"
 DEPLOY_OPTION="0"
 DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
 FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
@@ -214,7 +214,7 @@ after=${after%:}
 eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
 
 #read CPU and FPGA_SERVERS_LIST excluding the current hostname
-IFS=$'\n' read -r -d '' -a remote_servers < <(cat "$CPU_SERVERS_LIST" "$FPGA_SERVERS_LIST" | grep -v "^$hostname$" && printf '\0')
+IFS=$'\n' read -r -d '' -a remote_servers < <(cat "$BUILD_SERVERS_LIST" "$FPGA_SERVERS_LIST" | grep -v "^$hostname$" && printf '\0')
 
 #set target host
 target_host=""
