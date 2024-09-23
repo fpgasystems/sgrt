@@ -28,15 +28,15 @@
     #cli installation
     bitstreams: false
     build: false
-    common: false
+    common: true
     directories: false
     enable: false
     examine: false
     get: false
-    help: true
+    help: false
     hip: false
     new: false
-    opennic: true
+    opennic: false
     program: false
     reboot: false
     run: false
@@ -126,7 +126,6 @@
         - COLOR_OFF
         - COLOR_PASSED
         - COLOR_XILINX
-        - CPU_SERVERS_LIST
         - FPGA_SERVERS_LIST
         - GITHUB_CLI_PATH
         - GPU_SERVERS_LIST
@@ -273,7 +272,6 @@
         - git_clone_opennic
         - is_acap
         - is_build
-        - is_cpu
         - is_fpga
         - is_gpu
         - is_member
@@ -603,6 +601,7 @@
       loop:
         - check_on_vivado
         - remote_dialog
+        - is_cpu
     #constants
     - name: deleting constants
       file:
@@ -618,6 +617,7 @@
         - VITIS_COMMIT
         - MPICH_PATH
         - COYOTE_COMMIT
+        - CPU_SERVERS_LIST
     #coyote
     - name: deleting coyote workflow
       file:
