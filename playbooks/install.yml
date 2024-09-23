@@ -240,6 +240,7 @@
       loop:
         - address_to_hex
         - bitstream_dialog_check
+        - cfile_dialog_check
         - chown
         - compare_files
         - commit_dialog_check
