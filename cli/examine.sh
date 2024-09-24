@@ -12,6 +12,11 @@ DEVICE_TYPE_NAME_STR_LENGTH=20
 SERIAL_NUMBER_STR_LENGTH=13
 NETWORKING_STR_LENGTH=35
 
+#legend
+COLOR_ON2=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_XILINX)
+COLOR_ON5=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_GPU)
+COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
+
 split_addresses (){
   #input parameters
   str_ip=$1
@@ -35,13 +40,13 @@ split_addresses (){
 }
 
 print_reconfigurable_devices_header (){
-  echo "${bold}Device Index : Upstream port (BDF) : Device Type (Name)   : Serial Number : Networking                          : Workflow${normal}"
-  echo "${bold}--------------------------------------------------------------------------------------------------------------------------${normal}"
+  echo -e "${bold}${COLOR_ON2}Device Index : Upstream port (BDF) : Device Type (Name)   : Serial Number : Networking                          : Workflow${COLOR_OFF}${normal}"
+  echo -e "${bold}${COLOR_ON2}--------------------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
 }
 
 print_gpu_devices_header (){
-  echo "${bold}Device Index : PCI BUS : Device Type (GPU ID) : Serial Number : Unique ID${normal}"
-  echo "${bold}--------------------------------------------------------------------------------------------------------------------------${normal}"
+  echo -e "${bold}${COLOR_ON5}Device Index : PCI BUS : Device Type (GPU ID) : Serial Number : Unique ID${COLOR_OFF}${normal}"
+  echo -e "${bold}${COLOR_ON5}--------------------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
 }
 
 #CPU server (both lists are empty)
@@ -58,11 +63,15 @@ if ! ([[ -s "$DEVICE_LIST_FPGA" ]] && [[ -s "$DEVICE_LIST_GPU" ]]); then
   echo ""
 fi
 
+#declare string
+legend=""
+
 #reconfigurable devices
 if [[ -s "$DEVICE_LIST_FPGA" ]]; then
   #print if the first fpga/acap is valid
   device_1=$(head -n 1 "$DEVICE_LIST_FPGA")
   upstream_port_1=$(echo "$device_1" | awk '{print $2}')
+  legend="${legend}${bold}${COLOR_ON2}Adaptive Devices${COLOR_OFF}${normal}"
   if [[ -n "$(lspci | grep $upstream_port_1)" ]]; then
     #run xbutil examine
     echo ""
@@ -113,6 +122,7 @@ if [[ -s "$DEVICE_LIST_GPU" ]]; then
   #print if the first fpga/acap is valid
   device_1=$(head -n 1 "$DEVICE_LIST_GPU")
   bus_1=$(echo "$device_1" | awk '{print $2}')
+  legend="${legend} ${bold}${COLOR_ON5}GPUs${COLOR_OFF}${normal}"
   if [[ -n "$(lspci | grep $bus_1)" ]]; then
     print_gpu_devices_header
     #get number of gpu devices present
@@ -133,4 +143,10 @@ if [[ -s "$DEVICE_LIST_GPU" ]]; then
     done
     echo ""
   fi
+fi
+
+#print legend
+if [[ -n "$legend" ]]; then
+  echo -e "$legend"
+  echo ""
 fi
