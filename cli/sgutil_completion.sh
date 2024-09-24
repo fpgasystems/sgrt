@@ -127,21 +127,31 @@ _sgutil_completions()
         return 0
     fi
 
+    #evaluate integrations
+    gpu_integrations=$($CLI_PATH/common/enable_integrations "gpu" $is_acap $is_build $is_fpga $is_vivado_developer)
+    vivado_integrations=$($CLI_PATH/common/enable_integrations "vivado" $is_acap $is_build $is_fpga $is_vivado_developer)
+
     case ${COMP_CWORD} in
         1)
             #check on server
             commands="examine get set --help --release"
             if [ "$is_acap" = "1" ]; then
-                commands="${commands} build new program run validate"
+                commands="${commands} build"
             fi
             if [ "$is_build" = "1" ]; then
                 commands="${commands} build enable examine new"
             fi
             if [ "$is_fpga" = "1" ]; then
-                commands="${commands} build new program run validate"
+                commands="${commands} build"
             fi
             if [ "$is_gpu" = "1" ]; then
+                commands="${commands} build"
+            fi
+            if [ "$gpu_integrations" = "1" ]; then
                 commands="${commands} build new run validate"
+            fi
+            if [ "$vivado_integrations" = "1" ]; then
+                commands="${commands} build new program run validate"
             fi
 
             # Check on groups
@@ -161,20 +171,26 @@ _sgutil_completions()
             case ${COMP_WORDS[COMP_CWORD-1]} in
                 build)
                     commands="c --help"
-                    if [ "$is_acap" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
-                        commands="${commands} opennic"
-                    fi
-                    if [ "$is_build" = "1" ]; then
+                    #if [ "$is_acap" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+                    #    commands="${commands} opennic"
+                    #fi
+                    #if [ "$is_build" = "1" ]; then
+                    #    commands="${commands} hip"
+                    #    if [ "$is_vivado_developer" = "1" ]; then
+                    #        commands="${commands} opennic"
+                    #    fi
+                    #fi
+                    #if [ "$is_fpga" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+                    #    commands="${commands} opennic"
+                    #fi
+                    #if [ "$is_gpu" = "1" ]; then
+                    #    commands="${commands} hip"
+                    #fi
+                    if [ "$gpu_integrations" = "1" ]; then
                         commands="${commands} hip"
-                        if [ "$is_vivado_developer" = "1" ]; then
-                            commands="${commands} opennic"
-                        fi
                     fi
-                    if [ "$is_fpga" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+                    if [ "$vivado_integrations" = "1" ]; then
                         commands="${commands} opennic"
-                    fi
-                    if [ "$is_gpu" = "1" ]; then
-                        commands="${commands} hip"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
@@ -212,20 +228,26 @@ _sgutil_completions()
                     ;;
                 new)
                     commands="--help"
-                    if [ "$is_acap" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
-                        commands="${commands} opennic"
-                    fi
-                    if [ "$is_build" = "1" ]; then
+                    #if [ "$is_acap" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+                    #    commands="${commands} opennic"
+                    #fi
+                    #if [ "$is_build" = "1" ]; then
+                    #    commands="${commands} hip"
+                    #    if [ "$is_vivado_developer" = "1" ]; then
+                    #        commands="${commands} opennic"
+                    #    fi
+                    #fi
+                    #if [ "$is_fpga" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+                    #    commands="${commands} opennic"
+                    #fi
+                    #if [ "$is_gpu" = "1" ]; then
+                    #    commands="${commands} hip"
+                    #fi
+                    if [ "$gpu_integrations" = "1" ]; then
                         commands="${commands} hip"
-                        if [ "$is_vivado_developer" = "1" ]; then
-                            commands="${commands} opennic"
-                        fi
                     fi
-                    if [ "$is_fpga" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+                    if [ "$vivado_integrations" = "1" ]; then
                         commands="${commands} opennic"
-                    fi
-                    if [ "$is_gpu" = "1" ]; then
-                        commands="${commands} hip"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
