@@ -28,8 +28,8 @@
     all: false
     #cli installation
     bitstreams: false
-    build: true
-    common: true
+    build: false
+    common: false
     directories: false
     enable: false
     examine: false
@@ -366,7 +366,6 @@
         - get_network
         - get_topo
         - get
-        - new_opennic
         - new
         - program_driver
         - program_opennic
@@ -651,6 +650,7 @@
       loop:
         - opennic_validate
         - update
+        - new_opennic
     #mpi
     - name: deleting mpi workflow
       file:
