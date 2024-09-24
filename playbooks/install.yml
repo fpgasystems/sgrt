@@ -254,6 +254,7 @@
         - device_dialog_gpu
         - device_list_check
         - driver_dialog_check
+        - enable_integrations
         - fec_dialog_check
         - get_devices_acap_fpga_coyote
         - get_config_param
