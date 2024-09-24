@@ -63,6 +63,10 @@ if [ -s "$DEVICES_LIST" ]; then
   multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 fi
 
+#evaluate integrations
+gpu_integrations=$($CLI_PATH/common/enable_integrations "gpu" $is_acap $is_build $is_fpga $is_vivado_developer)
+vivado_integrations=$($CLI_PATH/common/enable_integrations "vivado" $is_acap $is_build $is_fpga $is_vivado_developer)
+
 #help
 cli_help() {
   echo ""
@@ -75,7 +79,9 @@ cli_help() {
   fi
   echo "    ${bold}examine${normal}        - Status of the system and devices."
   echo "    ${bold}get${normal}            - Devices and host information."
+  if [ "$gpu_integrations" = "1" ] || [ "$vivado_integrations" = "1" ]; then
   echo "    ${bold}new${normal}            - Creates a new project of your choice."
+  fi
   if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
   echo "    ${bold}program${normal}        - Driver and bitstream programming."
   fi
@@ -1750,6 +1756,11 @@ case "$command" in
         new_help
         ;;
       hip)
+         #check on server (relates to sgutil_completion)
+        if [ "$is_build" != "1" ] && [ "$is_gpu" != "1" ]; then
+            exit 1
+        fi
+
         if [ "$#" -ne 2 ]; then
           new_hip_help
           exit 1
