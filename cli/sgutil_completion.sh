@@ -148,10 +148,13 @@ _sgutil_completions()
                 commands="${commands} build"
             fi
             if [ "$gpu_integrations" = "1" ]; then
-                commands="${commands} build new run validate"
+                commands="${commands} build new"
             fi
             if [ "$vivado_integrations" = "1" ]; then
                 commands="${commands} build new"
+            fi
+            if [ ! "$is_build" = "1" ] && [ "$gpu_integrations" = "1" ]; then
+                commands="${commands} run validate"
             fi
             if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
                 commands="${commands} program run validate"

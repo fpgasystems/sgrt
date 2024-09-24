@@ -88,7 +88,7 @@ cli_help() {
   if [ "$is_sudo" = "1" ] || ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
   echo "    ${bold}reboot${normal}         - Reboots the server (warm boot)."
   fi
-  if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && ([ "$gpu_integrations" = "1" ] || [ "$vivado_integrations" = "1" ]); then
   echo "    ${bold}run${normal}            - Executes the accelerated application on a given device."
   fi
   echo "    ${bold}set${normal}            - Devices and host configuration."
@@ -1286,42 +1286,52 @@ reboot_help() {
 # run ------------------------------------------------------------------------------------------------------------------------
 
 run_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && ([ "$gpu_integrations" = "1" ] || [ "$vivado_integrations" = "1" ]); then
     echo ""
     echo "${bold}$CLI_NAME run [arguments [flags]] [--help]${normal}"
     echo ""
     echo "Executes your accelerated application."
     echo ""
     echo "ARGUMENTS:"
-    echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs OpenNIC on a given FPGA."
-    echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Runs your HIP application on a given GPU."
+    if [ "$gpu_integrations" = "1" ]; then
+      echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Runs your HIP application on a given device."
+    fi
+    if [ "$vivado_integrations" = "1" ]; then
+      echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs OpenNIC on a given device."
+    fi
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga $is_gpu
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" $vivado_integrations $gpu_integrations
     echo ""
   fi  
   exit
 }
 
 run_hip_help() {
+  if [ ! "$is_build" = "1" ] && [ "$gpu_integrations" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME run hip [flags] [--help]${normal}"
     echo ""
-    echo "Runs your HIP application on a given GPU."
+    echo "Runs your HIP application on a given device."
     echo ""
     echo "FLAGS"
-    echo "   -d, --device    - Device Index (according to $CLI_NAME examine)."
-    echo "   -p, --project   - Specifies your HIP project name."
+    echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+    echo "   ${bold}-p, --project${normal}   - Specifies your HIP project name."
     echo ""
-    echo "   -h, --help      - Help to use this command."
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    exit 1
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "yes"
+    echo ""
+  fi
+  exit
 }
 
 run_opennic_help() {
   if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
     $CLI_PATH/help/run_opennic $CLI_PATH $CLI_NAME
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+    echo ""
   fi
   exit
 }
