@@ -1090,7 +1090,13 @@ get_name_help() {
 }
 
 get_network_help() {
-  $CLI_PATH/help/get_network $CLI_PATH $CLI_NAME
+  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
+    $CLI_PATH/help/get_network $CLI_PATH $CLI_NAME
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+    echo ""
+  fi
   exit
 }
 
