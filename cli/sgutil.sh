@@ -96,7 +96,6 @@ cli_help() {
   echo "    ${bold}-h, --help${normal}     - Help to use $CLI_NAME."
   echo "    ${bold}-r, --release${normal}  - Reports $CLI_NAME release."
   echo ""
-  #$CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga $is_gpu
   if [ "$is_build" = "1" ]; then
   echo "                     ${bold}This is a build server${normal}"
   elif [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
@@ -1213,7 +1212,7 @@ program_help() {
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
     echo ""
   fi
   exit
@@ -1229,7 +1228,7 @@ program_driver_help() {
 program_opennic_help() {
   if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
     $CLI_PATH/help/program_opennic $CLI_PATH $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
     echo ""
   fi
   exit
@@ -1238,7 +1237,7 @@ program_opennic_help() {
 program_reset_help() {
   if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
     $CLI_PATH/help/program_reset $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
     echo ""
     exit
   fi
@@ -1247,7 +1246,7 @@ program_reset_help() {
 program_revert_help() {
   if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
     $CLI_PATH/help/program_revert $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
     echo ""
     exit
   fi
@@ -1256,7 +1255,7 @@ program_revert_help() {
 program_vivado_help() {
   if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
     $CLI_PATH/help/program_vivado $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
     echo ""
     exit
   fi

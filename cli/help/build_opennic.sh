@@ -27,6 +27,6 @@ if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" =
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "0" "1" "0" "yes"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "0" "yes"
     echo ""
 fi

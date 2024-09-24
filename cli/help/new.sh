@@ -36,7 +36,7 @@ if [ "$parameter" = "--help" ]; then
     echo ""
     echo "   -h, --help      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga $is_gpu
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga $is_gpu
     echo ""
 elif [ "$parameter" = "hip" ]; then
     if [ "$is_gpu" = "1" ]; then
