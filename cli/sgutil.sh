@@ -82,7 +82,7 @@ cli_help() {
   if [ "$gpu_integrations" = "1" ] || [ "$vivado_integrations" = "1" ]; then
   echo "    ${bold}new${normal}            - Creates a new project of your choice."
   fi
-  if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
   echo "    ${bold}program${normal}        - Driver and bitstream programming."
   fi
   if [ "$is_sudo" = "1" ] || ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
@@ -1217,10 +1217,10 @@ program_help() {
     echo ""
     echo "ARGUMENTS:"
     echo "   ${bold}driver${normal}          - Inserts or removes a driver or module into the Linux kernel."
-    echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         ${COLOR_ON2}- Programs OpenNIC to a given device.${COLOR_OFF}"
-    echo -e "   ${bold}${COLOR_ON2}reset${COLOR_OFF}${normal}           ${COLOR_ON2}- Performs a 'HOT Reset' on a Vitis device.${COLOR_OFF}"
-    echo -e "   ${bold}${COLOR_ON2}revert${COLOR_OFF}${normal}          ${COLOR_ON2}- Returns a device to its default fabric setup.${COLOR_OFF}"
-    echo -e "   ${bold}${COLOR_ON2}vivado${COLOR_OFF}${normal}          ${COLOR_ON2}- Programs a Vivado bitstream to a given device.${COLOR_OFF}"
+    echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Programs OpenNIC to a given device."
+    echo -e "   ${bold}${COLOR_ON2}reset${COLOR_OFF}${normal}           - Performs a 'HOT Reset' on a Vitis device."
+    echo -e "   ${bold}${COLOR_ON2}revert${COLOR_OFF}${normal}          - Returns a device to its default fabric setup."
+    echo -e "   ${bold}${COLOR_ON2}vivado${COLOR_OFF}${normal}          - Programs a Vivado bitstream to a given device."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""

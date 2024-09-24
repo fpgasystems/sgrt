@@ -151,7 +151,10 @@ _sgutil_completions()
                 commands="${commands} build new run validate"
             fi
             if [ "$vivado_integrations" = "1" ]; then
-                commands="${commands} build new program run validate"
+                commands="${commands} build new"
+            fi
+            if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
+                commands="${commands} program run validate"
             fi
 
             # Check on groups
