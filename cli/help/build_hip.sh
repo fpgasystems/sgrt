@@ -18,6 +18,6 @@ if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "yes"
     echo ""
 fi
