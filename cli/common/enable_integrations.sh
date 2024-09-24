@@ -4,7 +4,8 @@ workflow=$1
 is_acap=$2
 is_build=$3
 is_fpga=$4
-is_vivado_developer=$5
+is_gpu=$5
+is_vivado_developer=$6
 
 #integrations
 gpu_integrations="0"

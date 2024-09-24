@@ -128,8 +128,8 @@ _sgutil_completions()
     fi
 
     #evaluate integrations
-    gpu_integrations=$($CLI_PATH/common/enable_integrations "gpu" $is_acap $is_build $is_fpga $is_vivado_developer)
-    vivado_integrations=$($CLI_PATH/common/enable_integrations "vivado" $is_acap $is_build $is_fpga $is_vivado_developer)
+    gpu_integrations=$($CLI_PATH/common/enable_integrations "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+    vivado_integrations=$($CLI_PATH/common/enable_integrations "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 
     case ${COMP_CWORD} in
         1)
@@ -231,21 +231,6 @@ _sgutil_completions()
                     ;;
                 new)
                     commands="--help"
-                    #if [ "$is_acap" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
-                    #    commands="${commands} opennic"
-                    #fi
-                    #if [ "$is_build" = "1" ]; then
-                    #    commands="${commands} hip"
-                    #    if [ "$is_vivado_developer" = "1" ]; then
-                    #        commands="${commands} opennic"
-                    #    fi
-                    #fi
-                    #if [ "$is_fpga" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
-                    #    commands="${commands} opennic"
-                    #fi
-                    #if [ "$is_gpu" = "1" ]; then
-                    #    commands="${commands} hip"
-                    #fi
                     if [ "$gpu_integrations" = "1" ]; then
                         commands="${commands} hip"
                     fi
@@ -259,13 +244,30 @@ _sgutil_completions()
                     #COMPREPLY=($(compgen -W "hip opennic --help" -- ${cur}))
                     ;;
                 program)
-                    COMPREPLY=($(compgen -W "driver opennic reset revert vivado --help" -- ${cur}))
+                    commands="--help"
+                    if [ "$vivado_integrations" = "1" ]; then
+                        commands="${commands} driver opennic reset revert vivado"
+                    fi
+                    commands_array=($commands)
+                    commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
+                    commands_string=$(echo "${commands_array[@]}")
+                    COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
                 reboot)
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 run)
-                    COMPREPLY=($(compgen -W "hip opennic --help" -- ${cur}))
+                    commands="--help"
+                    if [ "$gpu_integrations" = "1" ]; then
+                        commands="${commands} hip"
+                    fi
+                    if [ "$vivado_integrations" = "1" ]; then
+                        commands="${commands} opennic"
+                    fi
+                    commands_array=($commands)
+                    commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
+                    commands_string=$(echo "${commands_array[@]}")
+                    COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
                 set)
                     COMPREPLY=($(compgen -W "gh keys license mtu --help" -- ${cur})) #write
