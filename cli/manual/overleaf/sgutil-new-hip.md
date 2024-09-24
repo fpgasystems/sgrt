@@ -5,7 +5,7 @@ Back to sgutil new
 
 sgutil get hip [--help]
 
-  &nbsp; &nbsp; Portable single-source ROCm applications for GPUs.
+  &nbsp; &nbsp; Portable single-source ROCm applications.
 
 
 

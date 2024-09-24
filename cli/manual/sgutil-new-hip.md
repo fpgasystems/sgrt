@@ -8,7 +8,7 @@
 
 <code>sgutil get hip [--help]</code>
 <p>
-  &nbsp; &nbsp; Portable single-source ROCm applications for GPUs.
+  &nbsp; &nbsp; Portable single-source ROCm applications.
 </p>
 <!-- The number of parallel client threads to run is four by default. -->
 
