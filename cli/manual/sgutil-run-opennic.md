@@ -8,7 +8,7 @@
 
 <code>sgutil run opennic [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Runs OpenNIC on an adaptive device.
+  &nbsp; &nbsp; Runs OpenNIC on a given device.
 </p>
 
 ### Flags

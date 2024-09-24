@@ -5,7 +5,7 @@ Back to sgutil run
 
 sgutil run hip [flags] [--help]
 
-  &nbsp; &nbsp; Runs your HIP application on a given GPU.
+  &nbsp; &nbsp; Runs your HIP application on a given device.
 
 
 ### Flags
