@@ -12,6 +12,10 @@ is_fpga=$6
 is_gpu=$7
 is_vivado_developer=$8
 
+#constants
+ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
+ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
+
 #legend
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
 COLOR_ON2=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_XILINX)
@@ -27,31 +31,47 @@ if [ "$parameter" = "--help" ]; then
     echo "Creates a new project of your choice."
     echo ""
     echo "ARGUMENTS:"
-    if [ "$is_gpu" = "1" ] || [ "$is_fpga" = "1" ]; then
-    echo -e "   ${COLOR_ON5}hip${COLOR_OFF}             - Portable single-source ROCm applications for GPUs."
+    if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Portable single-source ROCm applications."
     fi
-    if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
-    echo -e "   ${COLOR_ON2}opennic${COLOR_OFF}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
+    if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+    echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
     fi
     echo ""
-    echo "   -h, --help      - Help to use this command."
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga $is_gpu
     echo ""
 elif [ "$parameter" = "hip" ]; then
-    if [ "$is_gpu" = "1" ]; then
-    echo ""
-    echo "${bold}$CLI_NAME new hip [--help]${normal}"
-    echo ""
-    echo "Portable single-source ROCm applications for GPUs."
-    echo ""
-    echo "FLAGS"
-    echo "   This command has no flags."
-    echo ""
-    echo "   -h, --help      - Help to use this command."
-    echo ""
+    if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
+        echo ""
+        echo "${bold}$CLI_NAME new hip [--help]${normal}"
+        echo ""
+        echo "Portable single-source ROCm applications."
+        echo ""
+        echo "FLAGS"
+        echo "   This command has no flags."
+        echo ""
+        echo "   -h, --help      - Help to use this command."
+        echo ""
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $is_gpu "yes"
+        echo ""
     fi
 elif [ "$parameter" = "opennic" ]; then
-    $CLI_PATH/help/new_opennic $CLI_PATH $CLI_NAME
-    echo ""
+    if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+        echo ""
+        echo "${bold}$CLI_NAME new opennic [flags] [--help]${normal}"
+        echo ""
+        echo "Smart Network Interface Card (SmartNIC) applications with OpenNIC."
+        echo ""
+        echo "FLAGS:"
+        echo "   -c, --commit    - GitHub shell and driver commit IDs (default: ${bold}$ONIC_SHELL_COMMIT,$ONIC_DRIVER_COMMIT${normal})."
+        echo "       --project   - Specifies your OpenNIC project name." 
+        echo "       --push      - Pushes your OpenNIC project to your GitHub account." 
+        echo ""
+        echo "   -h, --help      - Help to use this command."
+        echo ""
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "0" "yes"
+        echo ""
+    fi
 fi
