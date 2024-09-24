@@ -16,20 +16,6 @@ is_vivado_developer=$8
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 
-#integrations
-#gpu_integrations="0"
-#vivado_integrations="0"
-
-#gpu
-#if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
-#    gpu_integrations="1"
-#fi
-
-#vivado
-#if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
-#    vivado_integrations="1"
-#fi
-
 #evaluate integrations
 gpu_integrations=$($CLI_PATH/common/enable_integrations "gpu" $is_acap $is_build $is_fpga $is_vivado_developer)
 vivado_integrations=$($CLI_PATH/common/enable_integrations "vivado" $is_acap $is_build $is_fpga $is_vivado_developer)
