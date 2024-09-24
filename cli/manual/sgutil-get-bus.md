@@ -8,7 +8,7 @@
 
 <code>sgutil get bus [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; GPU PCI Bus IDs.
+  &nbsp; &nbsp; Peripheral Component Interconnect (PCI) identifiers.
 </p>
 
 ### Flags
