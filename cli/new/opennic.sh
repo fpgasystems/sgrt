@@ -6,7 +6,7 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 #usage:       $CLI_PATH/sgutil new opennic --commit $comit_name_shell $comit_name_driver --project   $new_name --push $push_option
-#example: /opt/sgrt/cli/sgutil new opennic --commit           807775             1cf2578 --project hello_world --push            0
+#example: /opt/sgrt/cli/sgutil new opennic --commit            807775            1cf2578 --project hello_world --push            0
 
 check_connectivity() {
     local interface="$1"
