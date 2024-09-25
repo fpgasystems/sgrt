@@ -17,21 +17,19 @@ vivado_integrations="0"
 vitis_integrations="0"
 
 #return
-if [ "$workflow" = "gpu" ]; then
+if [ "$workflow" = "build_gpu" ]; then
     #gpu
     if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
         gpu_integrations="1"
     fi
     echo "$gpu_integrations"
-elif [ "$workflow" = "vivado" ]; then
+elif [ "$workflow" = "build_vivado" ]; then
     #vivado
     if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
         vivado_integrations="1"
     fi
     echo "$vivado_integrations"
-elif [ "$workflow" = "vitis" ]; then
-    is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-    is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+elif [ "$workflow" = "build_vitis" ]; then
     if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
         vitis_integrations="1"
     fi

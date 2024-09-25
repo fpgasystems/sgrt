@@ -64,9 +64,9 @@ if [ -s "$DEVICES_LIST" ]; then
 fi
 
 #evaluate integrations
-gpu_integrations=$($CLI_PATH/common/enable_integrations "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
-vivado_integrations=$($CLI_PATH/common/enable_integrations "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
-vitis_integrations=$($CLI_PATH/common/enable_integrations "vitis" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+gpu_integrations=$($CLI_PATH/common/enable_integrations "build_gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+vivado_integrations=$($CLI_PATH/common/enable_integrations "build_vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+vitis_integrations=$($CLI_PATH/common/enable_integrations "build_vitis" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 
 #help
 cli_help() {
