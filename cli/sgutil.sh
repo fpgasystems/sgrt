@@ -1345,12 +1345,14 @@ set_help() {
     echo "Devices and host configuration."
     echo ""
     echo "ARGUMENTS:"
-    echo "   gh              - Enables GitHub CLI on your host (default path: ${bold}$GITHUB_CLI_PATH${normal})."
-    echo "   keys            - Creates your RSA key pairs and adds to authorized_keys and known_hosts."
-    echo "   license         - Configures a set of verified license servers for Xilinx tools."
-    echo "   mtu             - Sets a valid MTU value to your host networking interface."
+    echo "   ${bold}gh${normal}              - Enables GitHub CLI on your host (default path: ${bold}$GITHUB_CLI_PATH${normal})."
+    echo "   ${bold}keys${normal}            - Creates your RSA key pairs and adds to authorized_keys and known_hosts."
+    if [ "$is_vivado_developer" = "1" ]; then
+    echo "   ${bold}license${normal}         - Configures a set of verified license servers for Xilinx tools."
+    echo "   ${bold}mtu${normal}             - Sets a valid MTU value to your host networking interface."
+    fi
     echo ""
-    echo "   -h, --help      - Help to use this command."
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
     exit 1
 }
@@ -1375,6 +1377,7 @@ set_keys_help() {
 }
 
 set_license_help() {
+  if [ "$is_vivado_developer" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME set license [--help]${normal}"
     echo ""
@@ -1383,23 +1386,26 @@ set_license_help() {
     echo "FLAGS:"
     echo "   This command has no flags."
     echo ""
-    echo "   -h, --help      - Help to use this command."
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    exit 1
+  fi
+  exit
 }
 
 set_mtu_help() {
+  if [ "$is_vivado_developer" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME set mtu [flags] [--help]${normal}"
     echo ""
     echo "Sets a valid MTU value to your host networking interface."
     echo ""
     echo "FLAGS:"
-    echo "   -v, --value     - Maximum Transmission Unit (MTU) value (in bytes)."
+    echo "   ${bold}-v, --value${normal}     - Maximum Transmission Unit (MTU) value (in bytes)."
     echo ""
-    echo "   -h, --help      - Help to use this command."
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    exit 1
+  fi
+  exit
 }
 
 # update ------------------------------------------------------------------------------------------------------------------------
@@ -1771,7 +1777,7 @@ case "$command" in
         new_help
         ;;
       hip)
-         #check on server (relates to sgutil_completion)
+        #check on server (relates to sgutil_completion)
         if [ "$is_build" != "1" ] && [ "$is_gpu" != "1" ]; then
             exit 1
         fi
@@ -2296,6 +2302,21 @@ case "$command" in
           set_license_help
           exit 1
         fi
+
+        #relates to sgutil_completion (opposite condition)
+        if [ "$is_vivado_developer" = "0" ]; then
+            exit 1
+        fi
+
+        #check for vivado_developers
+        member=$($CLI_PATH/common/is_member $USER vivado_developers)
+        if [ "$member" = "0" ]; then
+            echo ""
+            echo "Sorry, ${bold}$USER!${normal} You are not granted to use this command."
+            echo ""
+            exit
+        fi
+
         eval "$CLI_PATH/set/license-msg"
         ;;
       mtu) 

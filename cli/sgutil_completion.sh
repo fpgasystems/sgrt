@@ -273,7 +273,15 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
                     ;;
                 set)
-                    COMPREPLY=($(compgen -W "gh keys license mtu --help" -- ${cur})) #write
+                    commands="gh keys --help"
+                    if [ "$is_vivado_developer" = "1" ]; then
+                        commands="${commands} license mtu"
+                    fi
+                    commands_array=($commands)
+                    commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
+                    commands_string=$(echo "${commands_array[@]}")
+                    COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
+                    #COMPREPLY=($(compgen -W "gh keys license mtu --help" -- ${cur})) #write
                     ;;
                 update)
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
