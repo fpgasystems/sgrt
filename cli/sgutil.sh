@@ -1411,6 +1411,7 @@ set_mtu_help() {
 # update ------------------------------------------------------------------------------------------------------------------------
 
 update_help() {
+  if [ "$is_sudo" = "1" ]; then
     #$CLI_PATH/help/update $CLI_NAME
     echo ""
     echo "${bold}$CLI_NAME update [--help]${normal}"
@@ -1420,9 +1421,10 @@ update_help() {
     echo "ARGUMENTS"
     echo "   This command has no arguments."
     echo ""
-    echo "   -h, --help      - Help to use this command."
+    echo "   ${bold}-h, --help${bold}      - Help to use this command."
     echo ""
-    exit
+  fi
+  exit
 }
 
 # validate -----------------------------------------------------------------------------------------------------------------------
@@ -2338,6 +2340,12 @@ case "$command" in
           update_help
           exit 1
         fi
+
+        #relates to sgutil_completion
+        if [ "$is_sudo" = "0" ]; then
+          exit
+        fi
+
         sudo_check $USER
 
         #get update.sh

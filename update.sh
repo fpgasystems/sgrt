@@ -15,6 +15,15 @@ chmod_x() {
     done
 }
 
+#check on sudo
+is_sudo=$($CLI_PATH/common/is_sudo $USER)
+if [ "$is_sudo" = "0" ]; then
+    echo ""
+    echo "Sorry, ${bold}$USER!${normal} You are not granted to use this command."
+    echo ""
+    exit
+fi
+
 #constants
 REPO_NAME="sgrt"
 UPDATES_PATH=$($CLI_PATH/common/get_constant $CLI_PATH UPDATES_PATH)
