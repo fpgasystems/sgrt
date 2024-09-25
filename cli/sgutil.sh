@@ -96,9 +96,7 @@ cli_help() {
   if [ "$is_sudo" = "1" ]; then
   echo "    ${bold}update${normal}         - Updates $CLI_NAME to its latest version."
   fi
-  if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
   echo "    ${bold}validate${normal}       - Validates the basic HACC infrastructure functionality."
-  fi
   echo ""
   echo "    ${bold}-h, --help${normal}     - Help to use $CLI_NAME."
   echo "    ${bold}-r, --release${normal}  - Reports $CLI_NAME release."
@@ -2397,10 +2395,20 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       hip)
+        #relates to sgutil_completion (opposite condition)
+        if [ "$is_build" = "1" ] || [ "$gpu_integrations" = "0" ]; then
+          exit
+        fi
+
         valid_flags="-d --device -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
+        #relates to sgutil_completion (opposite condition)
+        if [ "$is_build" = "1" ] || [ "$vivado_integrations" = "0" ]; then
+          exit
+        fi
+
         #check on server
         virtualized_check "$CLI_PATH" "$hostname"
         fpga_check "$CLI_PATH" "$hostname"
@@ -2530,6 +2538,10 @@ case "$command" in
         $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --fec $fec_option --version $vivado_version
         ;;
       vitis)
+        #relates to sgutil_completion (opposite condition)
+        if [ "$is_build" = "1" ] || [ "$vitis_integrations" = "0" ]; then
+          exit
+        fi
         valid_flags="-d --device -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;

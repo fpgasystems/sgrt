@@ -135,7 +135,7 @@ _sgutil_completions()
     case ${COMP_CWORD} in
         1)
             #check on server
-            commands="examine get set --help --release"
+            commands="examine get set validate --help --release"
             if [ "$is_acap" = "1" ]; then
                 commands="${commands} build"
             fi
@@ -155,10 +155,10 @@ _sgutil_completions()
                 commands="${commands} build new"
             fi
             if [ ! "$is_build" = "1" ] && [ "$gpu_integrations" = "1" ]; then
-                commands="${commands} run validate"
+                commands="${commands} run"
             fi
             if [[ ! "$is_build" = "1" ]] && ([[ "$vitis_integrations" = "1" ]] || [[ "$vivado_integrations" = "1" ]]); then
-                commands="${commands} program run validate"
+                commands="${commands} program run"
             fi
 
             # Check on groups
