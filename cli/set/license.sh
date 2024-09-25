@@ -3,6 +3,11 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+# Check if the user is part of the 'vivado_developers' group
+if ! id -nG "$USER" | grep -qw "vivado_developers"; then
+    return 1
+fi
+
 # Specify list of servers
 file_path="$CLI_PATH/constants/XILINXD_LICENSE_FILE"
 
