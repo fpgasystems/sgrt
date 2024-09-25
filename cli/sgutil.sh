@@ -66,7 +66,7 @@ fi
 #evaluate integrations
 gpu_integrations=$($CLI_PATH/common/enable_integrations "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 vivado_integrations=$($CLI_PATH/common/enable_integrations "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
-vitis_integrations=$($CLI_PATH/common/enable_integrations "vitis" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+#vitis_integrations=$($CLI_PATH/common/enable_integrations "vitis" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 
 #help
 cli_help() {
@@ -1442,7 +1442,8 @@ validate_help() {
       echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected FPGA."
       print_1="1"
     fi
-    if [ ! "$is_build" = "1" ] && [ "$vitis_integrations" = "1" ]; then
+    #if [ ! "$is_build" = "1" ] && [ "$vitis_integrations" = "1" ]; then
+    if [ ! "$is_build" = "1" ] && ( [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] ); then
       echo -e "   ${bold}${COLOR_ON2}vitis${COLOR_OFF}${normal}           - Validates Vitis workflow on the selected FPGA."
       print_1="1"
     fi
@@ -1500,7 +1501,8 @@ validate_opennic_help() {
 }
 
 validate_vitis_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vitis_integrations" = "1" ]; then
+  #if [ ! "$is_build" = "1" ] && [ "$vitis_integrations" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && ( [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] ); then
     echo ""
     echo "${bold}$CLI_NAME validate vitis [flags] [--help]${normal}"
     echo ""
@@ -2540,7 +2542,8 @@ case "$command" in
         ;;
       vitis)
         #relates to sgutil_completion (opposite condition)
-        if [ "$is_build" = "1" ] || [ "$vitis_integrations" = "0" ]; then
+        #if [ "$is_build" = "1" ] || [ "$vitis_integrations" = "0" ]; then
+        if [[ "$is_build" = "1" ]] || ([[ "$is_acap" = "0" ]] && [[ "$is_fpga" = "0" ]]); then
           exit
         fi
         valid_flags="-d --device -h --help"

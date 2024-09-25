@@ -130,7 +130,7 @@ _sgutil_completions()
     #evaluate integrations
     gpu_integrations=$($CLI_PATH/common/enable_integrations "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
     vivado_integrations=$($CLI_PATH/common/enable_integrations "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
-    vitis_integrations=$($CLI_PATH/common/enable_integrations "vitis" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+    #vitis_integrations=$($CLI_PATH/common/enable_integrations "vitis" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 
     case ${COMP_CWORD} in
         1)
@@ -157,7 +157,8 @@ _sgutil_completions()
             if [ ! "$is_build" = "1" ] && [ "$gpu_integrations" = "1" ]; then
                 commands="${commands} run"
             fi
-            if [[ ! "$is_build" = "1" ]] && ([[ "$vitis_integrations" = "1" ]] || [[ "$vivado_integrations" = "1" ]]); then
+            #if [[ ! "$is_build" = "1" ]] && ([[ "$vitis_integrations" = "1" ]] || [[ "$vivado_integrations" = "1" ]]); then
+            if [[ ! "$is_build" = "1" ]] && [[ "$vivado_integrations" = "1" ]]; then
                 commands="${commands} program run"
             fi
 
@@ -292,7 +293,8 @@ _sgutil_completions()
                     if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
                         commands="${commands} opennic"
                     fi
-                    if [ ! "$is_build" = "1" ] && [ "$vitis_integrations" = "1" ]; then
+                    #if [ ! "$is_build" = "1" ] && [ "$vitis_integrations" = "1" ]; then
+                    if [ ! "$is_build" = "1" ] && ( [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] ); then
                         commands="${commands} vitis"
                     fi
                     if [ ! "$is_build" = "1" ] && [ "$gpu_integrations" = "1" ]; then
