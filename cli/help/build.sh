@@ -18,8 +18,12 @@ COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 #build_commands="c"
 
 #integrations
-gpu_integrations="0"
-vivado_integrations="0"
+#gpu_integrations="0"
+#vivado_integrations="0"
+
+#evaluate integrations
+gpu_integrations=$($CLI_PATH/common/enable_integrations "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+vivado_integrations=$($CLI_PATH/common/enable_integrations "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 
 #print help
 echo ""
@@ -29,13 +33,15 @@ echo "Creates binaries, bitstreams, and drivers for your accelerated application
 echo ""
 echo "ARGUMENTS:"
 echo "   ${bold}c${normal}               - Generates C and C++ binaries."
-if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
-    echo -e "   ${bold}${COLOR_ON5}hip${normal}${COLOR_OFF}             ${COLOR_ON5}- Generates HIP binaries for your projects.${COLOR_OFF}"  
-    gpu_integrations="1"
+#if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
+if [ "$gpu_integrations" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON5}hip${normal}${COLOR_OFF}             - Generates HIP binaries for your projects."  
+    #gpu_integrations="1"
 fi
-if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
-    echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         ${COLOR_ON2}- Generates OpenNIC's bitstreams and drivers.${COLOR_OFF}"
-    vivado_integrations="1"
+#if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+if [ "$vivado_integrations" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Generates OpenNIC's bitstreams and drivers."
+    #vivado_integrations="1"
 fi
 echo ""
 echo "   ${bold}-h, --help${normal}      - Help to use this command."
