@@ -15,7 +15,9 @@ XILINXD_LICENSE_FILE=$(IFS=:; echo "${lines[*]}")
 # Set the environment variable
 if printenv | grep -q XILINXD_LICENSE_FILE; then
     echo ""
-    echo "The ${bold}XILINXD_LICENSE_FILE=$XILINXD_LICENSE_FILE${normal} is already defined!"
+    echo "The ${bold}XILINXD_LICENSE_FILE${normal} is already defined:"
+    echo ""
+    echo $XILINXD_LICENSE_FILE
     echo ""
 else
     export XILINXD_LICENSE_FILE
