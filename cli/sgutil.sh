@@ -66,6 +66,7 @@ fi
 #evaluate integrations
 gpu_integrations=$($CLI_PATH/common/enable_integrations "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 vivado_integrations=$($CLI_PATH/common/enable_integrations "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+vitis_integrations=$($CLI_PATH/common/enable_integrations "vitis" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 
 #help
 cli_help() {
@@ -1421,7 +1422,7 @@ update_help() {
     echo "ARGUMENTS"
     echo "   This command has no arguments."
     echo ""
-    echo "   ${bold}-h, --help${bold}      - Help to use this command."
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
   fi
   exit
@@ -1429,69 +1430,92 @@ update_help() {
 
 # validate -----------------------------------------------------------------------------------------------------------------------
 validate_help() {
+    print_1="0"
+    print_2="0"
     echo ""
     echo "${bold}$CLI_NAME validate [arguments [flags]] [--help]${normal}"
     echo ""
     echo "Validates the basic HACC infrastructure functionality."
     echo ""
     echo "ARGUMENTS:"
-    echo "   docker          - Validates Docker installation on the server."
-    echo ""
-    echo "   opennic         - Validates OpenNIC on the selected FPGA."
-    echo "   vitis           - Validates Vitis workflow on the selected FPGA."
-    echo ""
-    echo "   hip             - Validates HIP on the selected GPU." 
+    echo "   ${bold}docker${normal}          - Validates Docker installation on the server."
+    if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
+      echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected FPGA."
+      print_1="1"
+    fi
+    if [ ! "$is_build" = "1" ] && [ "$vitis_integrations" = "1" ]; then
+      echo -e "   ${bold}${COLOR_ON2}vitis${COLOR_OFF}${normal}           - Validates Vitis workflow on the selected FPGA."
+      print_1="1"
+    fi
+    if [ ! "$is_build" = "1" ] && [ "$gpu_integrations" = "1" ]; then
+      echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Validates HIP on the selected GPU." 
+      print_2="1"
+    fi
     echo "" 
-    echo "   -h, --help      - Help to use this command."
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    exit 1
-}
-
-validate_docker_help() {
-      echo ""
-      echo "${bold}$CLI_NAME validate docker [--help]${normal}"
-      echo ""
-      echo "Validates Docker installation on the server."
-      echo ""
-      echo "FLAGS:"
-      echo "   This command has no flags."
-      echo ""
-      echo "   -h, --help      - Help to use this command."
-      echo ""
-      exit 1
-}
-
-validate_hip_help() {
-      echo ""
-      echo "${bold}$CLI_NAME validate hip [flags] [--help]${normal}"
-      echo ""
-      echo "Validates HIP on the selected GPU."
-      echo ""
-      echo "FLAGS:"
-      echo "   -d, --device    - Device Index (according to $CLI_NAME examine)."
-      echo ""
-      echo "   -h, --help      - Help to use HIP validation."
-      echo ""
-      exit 1
-}
-
-validate_opennic_help() {
-    $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" $print_1 $print_2
+    echo ""
     exit
 }
 
+validate_docker_help() {
+  echo ""
+  echo "${bold}$CLI_NAME validate docker [--help]${normal}"
+  echo ""
+  echo "Validates Docker installation on the server."
+  echo ""
+  echo "FLAGS:"
+  echo "   This command has no flags."
+  echo ""
+  echo "   ${bold}-h, --help${normal}      - Help to use this command."
+  echo ""
+  exit 1
+}
+
+validate_hip_help() {
+  if [ ! "$is_build" = "1" ] && [ "$gpu_integrations" = "1" ]; then
+    echo ""
+    echo "${bold}$CLI_NAME validate hip [flags] [--help]${normal}"
+    echo ""
+    echo "Validates HIP on the selected GPU."
+    echo ""
+    echo "FLAGS:"
+    echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+    echo ""
+    echo "   ${bold}-h, --help${normal}      - Help to use HIP validation."
+    echo ""
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "yes"
+    echo ""
+  fi
+  exit
+}
+
+validate_opennic_help() {
+  if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
+    $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "1" "0" "yes"
+    echo ""
+  fi
+  exit
+}
+
 validate_vitis_help() {
-      echo ""
-      echo "${bold}$CLI_NAME validate vitis [flags] [--help]${normal}"
-      echo ""
-      echo "Validates Vitis workflow on the selected FPGA."
-      echo ""
-      echo "FLAGS:"
-      echo "   -d, --device    - Device Index (according to $CLI_NAME examine)."
-      echo ""
-      echo "   -h, --help      - Help to use Vitis validation."
-      echo ""
-      exit 1
+  if [ ! "$is_build" = "1" ] && [ "$vitis_integrations" = "1" ]; then
+    echo ""
+    echo "${bold}$CLI_NAME validate vitis [flags] [--help]${normal}"
+    echo ""
+    echo "Validates Vitis workflow on the selected FPGA."
+    echo ""
+    echo "FLAGS:"
+    echo "   -d, --device    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+    echo ""
+    echo "   -h, --help      - Help to use Vitis validation."
+    echo ""
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "1" "0" "yes"
+    echo ""
+  fi
+  exit
 }
 
 # read all input parameters (@)

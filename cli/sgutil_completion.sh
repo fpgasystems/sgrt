@@ -130,6 +130,7 @@ _sgutil_completions()
     #evaluate integrations
     gpu_integrations=$($CLI_PATH/common/enable_integrations "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
     vivado_integrations=$($CLI_PATH/common/enable_integrations "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+    vitis_integrations=$($CLI_PATH/common/enable_integrations "vitis" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 
     case ${COMP_CWORD} in
         1)
@@ -156,7 +157,7 @@ _sgutil_completions()
             if [ ! "$is_build" = "1" ] && [ "$gpu_integrations" = "1" ]; then
                 commands="${commands} run validate"
             fi
-            if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
+            if [[ ! "$is_build" = "1" ]] && ([[ "$vitis_integrations" = "1" ]] || [[ "$vivado_integrations" = "1" ]]); then
                 commands="${commands} program run validate"
             fi
 
@@ -287,7 +288,21 @@ _sgutil_completions()
                     COMPREPLY=($(compgen -W "--help" -- ${cur}))
                     ;;
                 validate)
-                    COMPREPLY=($(compgen -W "docker hip opennic vitis --help" -- ${cur}))
+                    commands="docker --help"
+                    if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
+                        commands="${commands} opennic"
+                    fi
+                    if [ ! "$is_build" = "1" ] && [ "$vitis_integrations" = "1" ]; then
+                        commands="${commands} vitis"
+                    fi
+                    if [ ! "$is_build" = "1" ] && [ "$gpu_integrations" = "1" ]; then
+                        commands="${commands} hip"
+                    fi
+                    commands_array=($commands)
+                    commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
+                    commands_string=$(echo "${commands_array[@]}")
+                    COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
+                    #COMPREPLY=($(compgen -W "docker hip opennic vitis --help" -- ${cur}))
                     ;;
             esac
             ;;

@@ -6,7 +6,6 @@ normal=$(tput sgr0)
 CLI_PATH=$1
 CLI_NAME=$2
 is_acap=$3
-#is_build=$4
 is_fpga=$4
 is_gpu=$5
 in_black=$6
