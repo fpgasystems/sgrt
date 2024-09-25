@@ -5,7 +5,7 @@ normal=$(tput sgr0)
 
 CLI_NAME=$1
 
-#echo ""
+echo ""
 echo "${bold}$CLI_NAME set keys [--help]${normal}"
 echo ""
 echo "Creates your RSA key pairs and adds to authorized_keys and known_hosts."
