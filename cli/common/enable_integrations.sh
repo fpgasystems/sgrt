@@ -5,6 +5,7 @@ is_acap=$2
 is_build=$3
 is_fpga=$4
 is_gpu=$5
+is_gpu_developer="1"
 is_vivado_developer=$6
 
 #get hostname
@@ -17,19 +18,20 @@ vivado_integrations="0"
 vitis_integrations="0"
 
 #return
-if [ "$workflow" = "build_gpu" ]; then
+if [ "$workflow" = "gpu" ]; then
     #gpu
-    if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
+    #if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
+    if [ "$is_gpu_developer" = "1" ] && { [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; }; then
         gpu_integrations="1"
     fi
     echo "$gpu_integrations"
-elif [ "$workflow" = "build_vivado" ]; then
+elif [ "$workflow" = "vivado" ]; then
     #vivado
     if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
         vivado_integrations="1"
     fi
     echo "$vivado_integrations"
-elif [ "$workflow" = "build_vitis" ]; then
+elif [ "$workflow" = "vitis" ]; then
     if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
         vitis_integrations="1"
     fi
