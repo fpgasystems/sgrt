@@ -17,6 +17,6 @@ if [ "$is_sudo" = "1" ] || ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = 
     echo "ARGUMENTS:"
     echo "   This command has no arguments."
     echo ""
-    echo "   -h, --help      - Help to use this command."
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
 fi
