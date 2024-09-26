@@ -128,9 +128,9 @@ _sgutil_completions()
     fi
 
     #evaluate integrations
-    gpu_integrations=$($CLI_PATH/common/enable_integrations "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
-    vivado_integrations=$($CLI_PATH/common/enable_integrations "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
-    #vitis_integrations=$($CLI_PATH/common/enable_integrations "vitis" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+    gpu_integrations=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+    vivado_integrations=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+    #vitis_integrations=$($CLI_PATH/common/is_enabled "vitis" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 
     case ${COMP_CWORD} in
         1)

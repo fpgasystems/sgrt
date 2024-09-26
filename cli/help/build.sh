@@ -22,8 +22,8 @@ COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 #vivado_integrations="0"
 
 #evaluate integrations
-gpu_integrations=$($CLI_PATH/common/enable_integrations "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
-vivado_integrations=$($CLI_PATH/common/enable_integrations "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+gpu_integrations=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+vivado_integrations=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 
 #print help
 echo ""

@@ -7,12 +7,12 @@
     #- alveo_u55c
     #- versal_v80
     #- versal_vck5000
-    - hacc_build
+    - hacc_build 
     #- hacc_boxes
     - hacc-box-01.inf.ethz.ch
     - alveo-u55c-01.inf.ethz.ch
     #- alveo-u55c-02.inf.ethz.ch
-    - alveo-u250-01.inf.ethz.ch
+    #- alveo-u250-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -29,12 +29,12 @@
     #cli installation
     bitstreams: false
     build: false
-    common: false
+    common: true
     directories: false
     enable: false
     examine: false
     get: false
-    help: true
+    help: false
     hip: false
     new: false
     opennic: false
@@ -254,7 +254,6 @@
         - device_dialog_gpu
         - device_list_check
         - driver_dialog_check
-        - enable_integrations
         - fec_dialog_check
         - get_devices_acap_fpga_coyote
         - get_config_param
@@ -276,6 +275,7 @@
         - git_clone_opennic
         - is_acap
         - is_build
+        - is_enabled
         - is_fpga
         - is_gpu
         - is_member
@@ -606,6 +606,7 @@
         - check_on_vivado
         - remote_dialog
         - is_cpu
+        - enable_integrations
     #constants
     - name: deleting constants
       file:

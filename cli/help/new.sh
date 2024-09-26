@@ -17,8 +17,8 @@ ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 
 #evaluate integrations
-gpu_integrations=$($CLI_PATH/common/enable_integrations "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
-vivado_integrations=$($CLI_PATH/common/enable_integrations "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+gpu_integrations=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+vivado_integrations=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 
 #legend
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
