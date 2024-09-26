@@ -15,6 +15,7 @@ arguments=$2
 #constants
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
+IS_GPU_DEVELOPER="1"
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
@@ -64,8 +65,8 @@ if [ -s "$DEVICES_LIST" ]; then
 fi
 
 #evaluate integrations
-gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_fpga $is_gpu "1" $is_vivado_developer)
-vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_fpga $is_gpu "1" $is_vivado_developer)
+gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer)
+vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer)
 
 #help
 cli_help() {
@@ -1607,8 +1608,8 @@ case "$command" in
         ;;
       hip)
         #check on server (relates to sgutil_completion)
-        if [ "$is_build" = "0" ] && [ "$gpu_enabled" != "1" ]; then
-            exit 1
+        if [ "$IS_GPU_DEVELOPER" = "0" ]; then
+          exit 1
         fi
 
         valid_flags="-p --project -h --help"
@@ -1616,8 +1617,8 @@ case "$command" in
         ;;
       opennic)
         #check on server (relates to sgutil_completion)
-        if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then #[ "$is_acap" = "0" ] && [ "$is_build" = "0" ] && [ "$is_fpga" = "0" ]; then
-            exit 1
+        if [ "$is_vivado_developer" = "0" ]; then #[ "$is_acap" = "0" ] && [ "$is_build" = "0" ] && [ "$is_fpga" = "0" ]; then
+          exit 1
         fi
 
         #check on groups
