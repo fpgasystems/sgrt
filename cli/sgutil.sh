@@ -1285,7 +1285,7 @@ reboot_help() {
 # run ------------------------------------------------------------------------------------------------------------------------
 
 run_help() {
-  if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
+  if [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then #[ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
     echo ""
     echo "${bold}$CLI_NAME run [arguments [flags]] [--help]${normal}"
     echo ""
@@ -1308,7 +1308,7 @@ run_help() {
 }
 
 run_hip_help() {
-  if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
+  if [ "$gpu_enabled" = "1" ]; then #if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME run hip [flags] [--help]${normal}"
     echo ""
@@ -1327,7 +1327,7 @@ run_hip_help() {
 }
 
 run_opennic_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ "$vivado_enabled" = "1" ]; then #if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/run_opennic $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
     echo ""
@@ -2288,7 +2288,7 @@ case "$command" in
         reboot_help
         ;;
       *)
-        #check on server (relates to cli_help)
+        #check on server (relates to sgutil_completion)
         if [ "$is_sudo" != "1" ] && ! ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
           exit 1
         fi
@@ -2306,7 +2306,12 @@ case "$command" in
       -h|--help)
         run_help
         ;;
-      hip) 
+      hip)
+        #check on server (relates to sgutil_completion)
+        if [ "$gpu_enabled" = "0" ]; then
+          exit
+        fi
+
         #check on server
         gpu_check "$CLI_PATH" "$hostname"
 
@@ -2315,6 +2320,11 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
+        #check on server (relates to sgutil_completion)
+        if [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         #check on server
         fpga_check "$CLI_PATH" "$hostname"
         
