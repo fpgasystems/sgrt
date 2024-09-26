@@ -224,7 +224,7 @@ _sgutil_completions()
                     if [ "$is_gpu" = "1" ]; then
                         commands="${commands} bus"
                     fi 
-                    if [ "$is_vivado_developer" = "1" ]; then
+                    if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
                         commands="${commands} syslog"
                     fi 
                     commands_array=($commands)

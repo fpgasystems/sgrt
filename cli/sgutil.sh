@@ -79,7 +79,6 @@ cli_help() {
   fi
   echo "    ${bold}examine${normal}        - Status of the system and devices."
   echo "    ${bold}get${normal}            - Devices and host information."
-  #if [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
   if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
   echo "    ${bold}new${normal}            - Creates a new project of your choice."
   fi
@@ -1731,22 +1730,47 @@ case "$command" in
         get_help
         ;;
       bdf)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       clock)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       bus)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
+          exit
+        fi
+
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       memory)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       name)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
@@ -1755,22 +1779,47 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       network)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         valid_flags="-h --help -d --device -p --port"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       platform)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       resource)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       serial)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       slr)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
@@ -1779,6 +1828,11 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       syslog)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_build" = "1" ] || [ "$is_vivado_developer" = "0" ]; then
+          exit
+        fi
+
         valid_flags="-h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
@@ -1787,6 +1841,11 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       workflow)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
