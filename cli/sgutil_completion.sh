@@ -128,8 +128,8 @@ _sgutil_completions()
     fi
 
     #evaluate integrations
-    gpu_integrations=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
-    vivado_integrations=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+    gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+    vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
     #vitis_integrations=$($CLI_PATH/common/is_enabled "vitis" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 
     case ${COMP_CWORD} in
@@ -148,17 +148,17 @@ _sgutil_completions()
             if [ "$is_gpu" = "1" ]; then
                 commands="${commands} build"
             fi
-            if [ "$gpu_integrations" = "1" ]; then
+            if [ "$gpu_enabled" = "1" ]; then
                 commands="${commands} build new"
             fi
-            if [ "$vivado_integrations" = "1" ]; then
+            if [ "$vivado_enabled" = "1" ]; then
                 commands="${commands} build new"
             fi
-            if [ ! "$is_build" = "1" ] && [ "$gpu_integrations" = "1" ]; then
+            if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
                 commands="${commands} run"
             fi
-            #if [[ ! "$is_build" = "1" ]] && ([[ "$vitis_integrations" = "1" ]] || [[ "$vivado_integrations" = "1" ]]); then
-            if [[ ! "$is_build" = "1" ]] && [[ "$vivado_integrations" = "1" ]]; then
+            #if [[ ! "$is_build" = "1" ]] && ([[ "$vitis_integrations" = "1" ]] || [[ "$vivado_enabled" = "1" ]]); then
+            if [[ ! "$is_build" = "1" ]] && [[ "$vivado_enabled" = "1" ]]; then
                 commands="${commands} program run"
             fi
 
@@ -194,10 +194,10 @@ _sgutil_completions()
                     #if [ "$is_gpu" = "1" ]; then
                     #    commands="${commands} hip"
                     #fi
-                    if [ "$gpu_integrations" = "1" ]; then
+                    if [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
                     fi
-                    if [ "$vivado_integrations" = "1" ]; then
+                    if [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
                     fi
                     commands_array=($commands)
@@ -236,10 +236,10 @@ _sgutil_completions()
                     ;;
                 new)
                     commands="--help"
-                    if [ "$gpu_integrations" = "1" ]; then
+                    if [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
                     fi
-                    if [ "$vivado_integrations" = "1" ]; then
+                    if [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
                     fi
                     commands_array=($commands)
@@ -250,7 +250,7 @@ _sgutil_completions()
                     ;;
                 program)
                     commands="--help"
-                    if [ "$vivado_integrations" = "1" ]; then
+                    if [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} driver opennic reset revert vivado"
                     fi
                     commands_array=($commands)
@@ -263,10 +263,10 @@ _sgutil_completions()
                     ;;
                 run)
                     commands="--help"
-                    if [ "$gpu_integrations" = "1" ]; then
+                    if [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
                     fi
-                    if [ "$vivado_integrations" = "1" ]; then
+                    if [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
                     fi
                     commands_array=($commands)
@@ -290,14 +290,14 @@ _sgutil_completions()
                     ;;
                 validate)
                     commands="docker --help"
-                    if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
+                    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
                     fi
                     #if [ ! "$is_build" = "1" ] && [ "$vitis_integrations" = "1" ]; then
                     if [ ! "$is_build" = "1" ] && ( [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] ); then
                         commands="${commands} vitis"
                     fi
-                    if [ ! "$is_build" = "1" ] && [ "$gpu_integrations" = "1" ]; then
+                    if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
                     fi
                     commands_array=($commands)

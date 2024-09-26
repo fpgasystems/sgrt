@@ -18,12 +18,12 @@ COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 #build_commands="c"
 
 #integrations
-#gpu_integrations="0"
-#vivado_integrations="0"
+#gpu_enabled="0"
+#vivado_enabled="0"
 
 #evaluate integrations
-gpu_integrations=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
-vivado_integrations=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 
 #print help
 echo ""
@@ -34,35 +34,35 @@ echo ""
 echo "ARGUMENTS:"
 echo "   ${bold}c${normal}               - Generates C and C++ binaries."
 #if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
-if [ "$gpu_integrations" = "1" ]; then
+if [ "$gpu_enabled" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON5}hip${normal}${COLOR_OFF}             - Generates HIP binaries for your projects."  
-    #gpu_integrations="1"
+    #gpu_enabled="1"
 fi
 #if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
-if [ "$vivado_integrations" = "1" ]; then
+if [ "$vivado_enabled" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Generates OpenNIC's bitstreams and drivers."
-    #vivado_integrations="1"
+    #vivado_enabled="1"
 fi
 echo ""
 echo "   ${bold}-h, --help${normal}      - Help to use this command."
 echo ""
 
 #legend
-if [ "$gpu_integrations" = "1" ] && [ "$vivado_integrations" = "1" ]; then
+if [ "$gpu_enabled" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     if [ "$is_build" = "1" ]; then
         $CLI_PATH/common/print_legend "$CLI_PATH" "$CLI_NAME" "1" "1" "1"
     else
         $CLI_PATH/common/print_legend "$CLI_PATH" "$CLI_NAME" "$is_acap" "$is_fpga" "$is_gpu"
     fi
     #echo ""
-elif [ "$gpu_integrations" = "0" ] && [ "$vivado_integrations" = "1" ]; then
+elif [ "$gpu_enabled" = "0" ] && [ "$vivado_enabled" = "1" ]; then
     if [ "$is_build" = "1" ]; then
         $CLI_PATH/common/print_legend "$CLI_PATH" "$CLI_NAME" "1" "1" "0"
     else
         $CLI_PATH/common/print_legend "$CLI_PATH" "$CLI_NAME" "$is_acap" "$is_fpga" "0"
     fi
     #echo ""
-elif [ "$gpu_integrations" = "1" ] && [ "$vivado_integrations" = "0" ]; then
+elif [ "$gpu_enabled" = "1" ] && [ "$vivado_enabled" = "0" ]; then
     if [ "$is_build" = "1" ]; then
         $CLI_PATH/common/print_legend "$CLI_PATH" "$CLI_NAME" "0" "0" "1"
     else

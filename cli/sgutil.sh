@@ -64,8 +64,8 @@ if [ -s "$DEVICES_LIST" ]; then
 fi
 
 #evaluate integrations
-gpu_integrations=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
-vivado_integrations=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 #vitis_integrations=$($CLI_PATH/common/is_enabled "vitis" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
 
 #help
@@ -80,16 +80,16 @@ cli_help() {
   fi
   echo "    ${bold}examine${normal}        - Status of the system and devices."
   echo "    ${bold}get${normal}            - Devices and host information."
-  if [ "$gpu_integrations" = "1" ] || [ "$vivado_integrations" = "1" ]; then
+  if [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
   echo "    ${bold}new${normal}            - Creates a new project of your choice."
   fi
-  if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
   echo "    ${bold}program${normal}        - Driver and bitstream programming."
   fi
   if [ "$is_sudo" = "1" ] || ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
   echo "    ${bold}reboot${normal}         - Reboots the server (warm boot)."
   fi
-  if [ ! "$is_build" = "1" ] && ([ "$gpu_integrations" = "1" ] || [ "$vivado_integrations" = "1" ]); then
+  if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
   echo "    ${bold}run${normal}            - Executes the accelerated application on a given device."
   fi
   echo "    ${bold}set${normal}            - Devices and host configuration."
@@ -1285,30 +1285,30 @@ reboot_help() {
 # run ------------------------------------------------------------------------------------------------------------------------
 
 run_help() {
-  if [ ! "$is_build" = "1" ] && ([ "$gpu_integrations" = "1" ] || [ "$vivado_integrations" = "1" ]); then
+  if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
     echo ""
     echo "${bold}$CLI_NAME run [arguments [flags]] [--help]${normal}"
     echo ""
     echo "Executes your accelerated application."
     echo ""
     echo "ARGUMENTS:"
-    if [ "$gpu_integrations" = "1" ]; then
+    if [ "$gpu_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Runs your HIP application on a given device."
     fi
-    if [ "$vivado_integrations" = "1" ]; then
+    if [ "$vivado_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Runs OpenNIC on a given device."
     fi
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" $vivado_integrations $gpu_integrations
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" $vivado_enabled $gpu_enabled
     echo ""
   fi  
   exit
 }
 
 run_hip_help() {
-  if [ ! "$is_build" = "1" ] && [ "$gpu_integrations" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME run hip [flags] [--help]${normal}"
     echo ""
@@ -1327,7 +1327,7 @@ run_hip_help() {
 }
 
 run_opennic_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/run_opennic $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
     echo ""
@@ -1438,7 +1438,7 @@ validate_help() {
     echo ""
     echo "ARGUMENTS:"
     echo "   ${bold}docker${normal}          - Validates Docker installation on the server."
-    if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
+    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected FPGA."
       print_1="1"
     fi
@@ -1447,7 +1447,7 @@ validate_help() {
       echo -e "   ${bold}${COLOR_ON2}vitis${COLOR_OFF}${normal}           - Validates Vitis workflow on the selected FPGA."
       print_1="1"
     fi
-    if [ ! "$is_build" = "1" ] && [ "$gpu_integrations" = "1" ]; then
+    if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Validates HIP on the selected GPU." 
       print_2="1"
     fi
@@ -1474,7 +1474,7 @@ validate_docker_help() {
 }
 
 validate_hip_help() {
-  if [ ! "$is_build" = "1" ] && [ "$gpu_integrations" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME validate hip [flags] [--help]${normal}"
     echo ""
@@ -1492,7 +1492,7 @@ validate_hip_help() {
 }
 
 validate_opennic_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_integrations" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "1" "0" "yes"
     echo ""
@@ -2399,7 +2399,7 @@ case "$command" in
         ;;
       hip)
         #relates to sgutil_completion (opposite condition)
-        if [ "$is_build" = "1" ] || [ "$gpu_integrations" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
           exit
         fi
 
@@ -2408,7 +2408,7 @@ case "$command" in
         ;;
       opennic)
         #relates to sgutil_completion (opposite condition)
-        if [ "$is_build" = "1" ] || [ "$vivado_integrations" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
         fi
 
