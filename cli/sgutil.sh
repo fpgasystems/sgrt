@@ -1607,7 +1607,7 @@ case "$command" in
         ;;
       hip)
         #check on server (relates to sgutil_completion)
-        if [ "$is_build" != "1" ] && [ "$is_gpu" != "1" ]; then
+        if [ "$is_build" = "0" ] && [ "$gpu_enabled" != "1" ]; then
             exit 1
         fi
 
@@ -1616,7 +1616,7 @@ case "$command" in
         ;;
       opennic)
         #check on server (relates to sgutil_completion)
-        if [ "$is_acap" = "0" ] && [ "$is_build" = "0" ] && [ "$is_fpga" = "0" ]; then
+        if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then #[ "$is_acap" = "0" ] && [ "$is_build" = "0" ] && [ "$is_fpga" = "0" ]; then
             exit 1
         fi
 
@@ -1864,7 +1864,7 @@ case "$command" in
         ;;
       hip)
         #check on server (relates to sgutil_completion)
-        if [ "$is_build" != "1" ] && [ "$is_gpu" != "1" ]; then
+        if [ ! "$is_build" = "1" ] && [ ! "$gpu_enabled" = "1" ]; then
             exit 1
         fi
 
@@ -1875,6 +1875,11 @@ case "$command" in
         $CLI_PATH/new/hip
         ;;
       opennic)
+        #check on server (relates to sgutil_completion)
+        if [ ! "$is_build" = "1" ] && [ ! "$vivado_enabled" = "1" ]; then
+            exit 1
+        fi
+
         #check on groups
         vivado_developers_check "$USER"
         

@@ -178,25 +178,10 @@ _sgutil_completions()
             case ${COMP_WORDS[COMP_CWORD-1]} in
                 build)
                     commands="c --help"
-                    #if [ "$is_acap" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
-                    #    commands="${commands} opennic"
-                    #fi
-                    #if [ "$is_build" = "1" ]; then
-                    #    commands="${commands} hip"
-                    #    if [ "$is_vivado_developer" = "1" ]; then
-                    #        commands="${commands} opennic"
-                    #    fi
-                    #fi
-                    #if [ "$is_fpga" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
-                    #    commands="${commands} opennic"
-                    #fi
-                    #if [ "$is_gpu" = "1" ]; then
-                    #    commands="${commands} hip"
-                    #fi
-                    if [ "$gpu_enabled" = "1" ]; then
+                    if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
                     fi
-                    if [ "$vivado_enabled" = "1" ]; then
+                    if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
                     fi
                     commands_array=($commands)
