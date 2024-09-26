@@ -15,6 +15,6 @@ if [ "$is_build" = "1" ]; then
     echo "FLAGS:"
     echo "   This command has no flags."
     echo ""
-    echo "   -h, --help      - Help to use this command."
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
 fi

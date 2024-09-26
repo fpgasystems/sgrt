@@ -13,11 +13,11 @@ if [ "$is_build" = "1" ]; then
     echo "Enables your favorite development and deployment tools on your server."
     echo ""
     echo "ARGUMENTS:"
-    echo "   vitis           - Enables Vitis SDK (Software Development Kit) and Vitis_HLS (High-Level Synthesis)."
-    echo "   vivado          - Enables Vivado HDI (Hardware Design and Implementation)."
-    echo "   xrt             - Enables Xilinx Runtime (XRT)."
+    echo "   ${bold}vitis${normal}           - Enables Vitis SDK (Software Development Kit) and Vitis_HLS (High-Level Synthesis)."
+    echo "   ${bold}vivado${normal}          - Enables Vivado HDI (Hardware Design and Implementation)."
+    echo "   ${bold}xrt${normal}             - Enables Xilinx Runtime (XRT)."
     echo ""
-    echo "   -h, --help      - Help to use this command."
+    echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
     exit 1
 fi
