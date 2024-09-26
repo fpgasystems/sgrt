@@ -1208,7 +1208,7 @@ new_opennic_help() {
 # program ------------------------------------------------------------------------------------------------------------------------
 
 program_help() {
-  if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME program [arguments [flags]] [--help]${normal}"
     echo ""
@@ -1230,14 +1230,14 @@ program_help() {
 }
 
 program_driver_help() {
-  if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_driver $CLI_NAME
   fi
   exit
 }
 
 program_opennic_help() {
-  if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_opennic $CLI_PATH $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
     echo ""
@@ -1246,7 +1246,7 @@ program_opennic_help() {
 }
 
 program_reset_help() {
-  if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_reset $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
     echo ""
@@ -1255,7 +1255,7 @@ program_reset_help() {
 }
 
 program_revert_help() {
-  if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_revert $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
     echo ""
@@ -1264,7 +1264,7 @@ program_revert_help() {
 }
 
 program_vivado_help() {
-  if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_vivado_developer" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_vivado $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
     echo ""
