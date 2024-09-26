@@ -10,15 +10,16 @@ is_acap=$4
 is_build=$5
 is_fpga=$6
 is_gpu=$7
-is_vivado_developer=$8
+is_gpu_developer=$8
+is_vivado_developer=$9
 
 #constants
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 
 #evaluate integrations
-gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_fpga $is_gpu "1" $is_vivado_developer)
-vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_fpga $is_gpu "1" $is_vivado_developer)
+#gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_fpga $is_gpu $is_gpu_developer $is_vivado_developer)
+#vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_fpga $is_gpu $is_gpu_developer $is_vivado_developer)
 
 #legend
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
@@ -30,7 +31,7 @@ COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 
 #so far the only integrations are GPU or Vivado
 #if [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
-if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+if [ "$is_build" = "1" ] || [ "$is_gpu_developer" = "1" ] || [ "$is_vivado_developer" = "1" ]; then
     if [ "$parameter" = "--help" ]; then
         echo ""
         echo "${bold}$CLI_NAME new [arguments] [--help]${normal}"
@@ -38,22 +39,23 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         echo "Creates a new project of your choice."
         echo ""
         echo "ARGUMENTS:"
-        if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
+        if [ "$is_gpu_developer" = "1" ]; then #[ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Portable single-source ROCm applications."
         fi
-        if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+        if [ "$is_vivado_developer" = "1" ]; then #[ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
         echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
         fi
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
-        if [ "$gpu_enabled" = "1" ] && [ "$vivado_enabled" = "1" ]; then
-            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1"
-        elif [ "$gpu_enabled" = "1" ]; then
-            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1"
-        elif [ "$vivado_enabled" = "1" ]; then
-            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "0"
-        fi        
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" $is_vivado_developer $is_gpu_developer
+        #if [ "$gpu_enabled" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+        #    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1"
+        #elif [ "$gpu_enabled" = "1" ]; then
+        #    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1"
+        #elif [ "$vivado_enabled" = "1" ]; then
+        #    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "0"
+        #fi        
         echo ""
     elif [ "$parameter" = "hip" ]; then
         if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then

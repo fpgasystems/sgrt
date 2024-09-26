@@ -1181,7 +1181,7 @@ new_help() {
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "--help" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "--help" $is_acap $is_build $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer
   exit
 }
 
@@ -1191,7 +1191,7 @@ new_hip_help() {
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "hip" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "hip" $is_acap $is_build $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer
   exit
 }
 
@@ -1201,7 +1201,7 @@ new_opennic_help() {
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_build $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer
   exit
 }
 
@@ -1865,7 +1865,7 @@ case "$command" in
         ;;
       hip)
         #check on server (relates to sgutil_completion)
-        if [ ! "$is_build" = "1" ] && [ ! "$gpu_enabled" = "1" ]; then
+        if [ ! "$gpu_enabled" = "0" ]; then
             exit 1
         fi
 
@@ -1877,7 +1877,7 @@ case "$command" in
         ;;
       opennic)
         #check on server (relates to sgutil_completion)
-        if [ ! "$is_build" = "1" ] && [ ! "$vivado_enabled" = "1" ]; then
+        if [ ! "$vivado_enabled" = "0" ]; then
             exit 1
         fi
 

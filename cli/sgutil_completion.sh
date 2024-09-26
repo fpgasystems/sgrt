@@ -221,10 +221,10 @@ _sgutil_completions()
                     ;;
                 new)
                     commands="--help"
-                    if [ "$gpu_enabled" = "1" ]; then
+                    if [ "$IS_GPU_DEVELOPER" = "1" ]; then
                         commands="${commands} hip"
                     fi
-                    if [ "$vivado_enabled" = "1" ]; then
+                    if [ "$is_vivado_developer" = "1" ]; then
                         commands="${commands} opennic"
                     fi
                     commands_array=($commands)
