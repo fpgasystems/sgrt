@@ -1208,7 +1208,7 @@ new_opennic_help() {
 # program ------------------------------------------------------------------------------------------------------------------------
 
 program_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ "$vivado_enabled" = "1" ]; then #[ ! "$is_build" = "1" ] && 
     echo ""
     echo "${bold}$CLI_NAME program [arguments [flags]] [--help]${normal}"
     echo ""
@@ -1230,14 +1230,14 @@ program_help() {
 }
 
 program_driver_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ "$vivado_enabled" = "1" ]; then #[ ! "$is_build" = "1" ] && 
     $CLI_PATH/help/program_driver $CLI_NAME
   fi
   exit
 }
 
 program_opennic_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ "$vivado_enabled" = "1" ]; then #[ ! "$is_build" = "1" ] && 
     $CLI_PATH/help/program_opennic $CLI_PATH $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
     echo ""
@@ -1246,7 +1246,7 @@ program_opennic_help() {
 }
 
 program_reset_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ "$vivado_enabled" = "1" ]; then #[ ! "$is_build" = "1" ] && 
     $CLI_PATH/help/program_reset $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
     echo ""
@@ -1255,7 +1255,7 @@ program_reset_help() {
 }
 
 program_revert_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ "$vivado_enabled" = "1" ]; then #[ ! "$is_build" = "1" ] && 
     $CLI_PATH/help/program_revert $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
     echo ""
@@ -1264,7 +1264,7 @@ program_revert_help() {
 }
 
 program_vivado_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ "$vivado_enabled" = "1" ]; then #[ ! "$is_build" = "1" ] && 
     $CLI_PATH/help/program_vivado $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
     echo ""
@@ -1984,6 +1984,11 @@ case "$command" in
         program_help
         ;;
       driver)
+        #check on server (relates to sgutil_completion)
+        if [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         #check on groups
         vivado_developers_check "$USER"
 
@@ -2050,6 +2055,11 @@ case "$command" in
         $CLI_PATH/program/driver --insert $driver_name --params $params_string
         ;;
       opennic)
+        #check on server (relates to sgutil_completion)
+        if [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         #check on server
         virtualized_check "$CLI_PATH" "$hostname"
         fpga_check "$CLI_PATH" "$hostname"
@@ -2108,6 +2118,11 @@ case "$command" in
         $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
         ;;
       reset)
+        #check on server (relates to sgutil_completion)
+        if [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         #check on server
         virtualized_check "$CLI_PATH" "$hostname"
         fpga_check "$CLI_PATH" "$hostname"
@@ -2141,6 +2156,11 @@ case "$command" in
         $CLI_PATH/program/reset --device $device_index --version $vivado_version
         ;;
       revert)
+        #check on server (relates to sgutil_completion)
+        if [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         #check on server
         virtualized_check "$CLI_PATH" "$hostname"
         fpga_check "$CLI_PATH" "$hostname"
@@ -2199,6 +2219,11 @@ case "$command" in
         $CLI_PATH/program/revert --device $device_index --version $vivado_version
         ;;
       vivado)
+        #check on server (relates to sgutil_completion)
+        if [ "$vivado_enabled" = "0" ]; then
+          exit
+        fi
+
         #check on server
         virtualized_check "$CLI_PATH" "$hostname"
         fpga_check "$CLI_PATH" "$hostname"
