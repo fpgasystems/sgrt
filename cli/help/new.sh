@@ -17,8 +17,8 @@ ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 
 #evaluate integrations
-gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
-vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_fpga $is_gpu "1" $is_vivado_developer)
+vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_fpga $is_gpu "1" $is_vivado_developer)
 
 #legend
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
@@ -29,7 +29,8 @@ COLOR_ON5=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_GPU)
 COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 
 #so far the only integrations are GPU or Vivado
-if [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+#if [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     if [ "$parameter" = "--help" ]; then
         echo ""
         echo "${bold}$CLI_NAME new [arguments] [--help]${normal}"

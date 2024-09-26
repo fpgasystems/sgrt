@@ -64,9 +64,8 @@ if [ -s "$DEVICES_LIST" ]; then
 fi
 
 #evaluate integrations
-gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
-vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
-#vitis_integrations=$($CLI_PATH/common/is_enabled "vitis" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer)
+gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_fpga $is_gpu "1" $is_vivado_developer)
+vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_fpga $is_gpu "1" $is_vivado_developer)
 
 #help
 cli_help() {
@@ -80,7 +79,8 @@ cli_help() {
   fi
   echo "    ${bold}examine${normal}        - Status of the system and devices."
   echo "    ${bold}get${normal}            - Devices and host information."
-  if [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+  #if [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+  if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
   echo "    ${bold}new${normal}            - Creates a new project of your choice."
   fi
   if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
