@@ -1348,6 +1348,8 @@ set_help() {
     echo "   ${bold}keys${normal}            - Creates your RSA key pairs and adds to authorized_keys and known_hosts."
     if [ "$is_vivado_developer" = "1" ]; then
     echo "   ${bold}license${normal}         - Configures a set of verified license servers for Xilinx tools."
+    fi
+    if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
     echo "   ${bold}mtu${normal}             - Sets a valid MTU value to your host networking interface."
     fi
     echo ""
@@ -1392,7 +1394,7 @@ set_license_help() {
 }
 
 set_mtu_help() {
-  if [ "$is_vivado_developer" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME set mtu [flags] [--help]${normal}"
     echo ""
@@ -2422,14 +2424,14 @@ case "$command" in
         eval "$CLI_PATH/set/keys"
         ;;
       license) 
-        if [ "$#" -ne 2 ]; then
-          set_license_help
-          exit 1
-        fi
-
         #relates to sgutil_completion (opposite condition)
         if [ "$is_vivado_developer" = "0" ]; then
             exit 1
+        fi
+        
+        if [ "$#" -ne 2 ]; then
+          set_license_help
+          exit 1
         fi
 
         #check for vivado_developers
@@ -2443,7 +2445,12 @@ case "$command" in
 
         eval "$CLI_PATH/set/license-msg"
         ;;
-      mtu) 
+      mtu)
+        #relates to sgutil_completion (opposite condition)
+        if [ "$is_build" = "1" ] || [ "$is_vivado_developer" = "0" ]; then
+            exit 1
+        fi
+
         valid_flags="-v --value -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;

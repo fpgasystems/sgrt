@@ -262,7 +262,10 @@ _sgutil_completions()
                 set)
                     commands="gh keys --help"
                     if [ "$is_vivado_developer" = "1" ]; then
-                        commands="${commands} license mtu"
+                        commands="${commands} license"
+                    fi
+                    if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+                        commands="${commands} mtu"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
@@ -426,11 +429,8 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--help" -- ${cur})) 
                             ;;
                         mtu)
-                            COMPREPLY=($(compgen -W "--help" -- ${cur})) 
+                            COMPREPLY=($(compgen -W "--value --help" -- ${cur})) 
                             ;;
-                        #write)
-                        #    COMPREPLY=($(compgen -W "--index --help" -- ${cur})) 
-                        #    ;;
                     esac
                     ;;
                 validate)
