@@ -1865,7 +1865,7 @@ case "$command" in
         ;;
       hip)
         #check on server (relates to sgutil_completion)
-        if [ ! "$gpu_enabled" = "0" ]; then
+        if [ "$IS_GPU_DEVELOPER" = "0" ]; then
             exit 1
         fi
 
@@ -1877,7 +1877,7 @@ case "$command" in
         ;;
       opennic)
         #check on server (relates to sgutil_completion)
-        if [ ! "$vivado_enabled" = "0" ]; then
+        if [ "$is_vivado_developer" = "0" ]; then
             exit 1
         fi
 
