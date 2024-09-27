@@ -47,11 +47,7 @@ read -a flags <<< "$@"
 mtu_found="0"
 mtu_value=""
 if [ "$flags" = "" ]; then
-    #mtu_found="1"
-    #mtu_value=$MTU_DEFAULT
-    echo ""
-    echo "$CHECK_ON_MTU_ERR_MSG"
-    echo ""
+    $CLI_PATH/sgutil set mtu -h
     exit
 else
     if [[ " ${flags[0]} " =~ " -v " ]] || [[ " ${flags[0]} " =~ " --value " ]]; then
@@ -62,7 +58,19 @@ fi
 
 #forbidden combinations
 if [ "$mtu_found" = "1" ] && [ "$mtu_value" = "" ]; then
-    $CLI_PATH/sgutil set mtu -h
+    #$CLI_PATH/sgutil set mtu -h
+    #exit
+    echo ""
+    echo "$CHECK_ON_MTU_ERR_MSG"
+    echo ""
+    exit
+fi
+
+# Check if MTU_VALUE is a valid integer and within the valid range
+if ! [[ "$mtu_value" =~ ^[0-9]+$ ]] || [ "$mtu_value" -lt "$MTU_MIN" ] || [ "$mtu_value" -gt "$MTU_MAX" ]; then
+    echo ""
+    echo "$CHECK_ON_MTU_ERR_MSG"
+    echo ""
     exit
 fi
 
@@ -85,5 +93,4 @@ if [ "$mtu_found" = "1" ]; then
     echo ""
     echo "$mellanox_name MTU was set to $mtu_value bytes!"
     echo ""
-
 fi
