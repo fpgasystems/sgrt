@@ -1,16 +1,19 @@
 #!/bin/bash
 
+CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
 #constants
-CLI_PATH="$(dirname "$(dirname "$0")")"
-MTU_MIN=1500
-MTU_MAX=9000
-MTU_DEFAULT=1576 # (1576 - 40) / 64 = 24
-IPV6_HEADER_SIZE=40
-PAYLOAD_MULTIPLES=64
+#MTU_MIN=1500
+#MTU_MAX=9000
+#MTU_DEFAULT=1576 # (1576 - 40) / 64 = 24
 CHECK_ON_MTU_ERR_MSG="Please, choose a valid MTU value."
+IPV6_HEADER_SIZE=40
+MTU_DEFAULT=$($CLI_PATH/common/get_constant $CLI_PATH MTU_DEFAULT)
+MTU_MAX=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MAX)
+MTU_MIN=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MIN)
+PAYLOAD_MULTIPLES=64
 
 #get hostname
 #url="${HOSTNAME}"
