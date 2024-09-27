@@ -16,6 +16,9 @@ arguments=$2
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
 IS_GPU_DEVELOPER="1"
+MTU_DEFAULT=$($CLI_PATH/common/get_constant $CLI_PATH MTU_DEFAULT)
+MTU_MAX=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MAX)
+MTU_MIN=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MIN)
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
@@ -1401,7 +1404,7 @@ set_mtu_help() {
     echo "Sets a valid MTU value to your host networking interface."
     echo ""
     echo "FLAGS:"
-    echo "   ${bold}-v, --value${normal}     - Maximum Transmission Unit (MTU) value (in bytes)."
+    echo "   ${bold}-v, --value${normal}     - Maximum Transmission Unit (MTU) value between ${bold}$MTU_MIN${normal} and ${bold}$MTU_MAX${normal} bytes."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
