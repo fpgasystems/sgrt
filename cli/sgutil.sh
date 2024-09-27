@@ -1444,7 +1444,6 @@ validate_help() {
       echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected FPGA."
       print_1="1"
     fi
-    #if [ ! "$is_build" = "1" ] && [ "$vitis_integrations" = "1" ]; then
     if [ ! "$is_build" = "1" ] && ( [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] ); then
       echo -e "   ${bold}${COLOR_ON2}vitis${COLOR_OFF}${normal}           - Validates Vitis workflow on the selected FPGA."
       print_1="1"
@@ -1511,9 +1510,9 @@ validate_vitis_help() {
     echo "Validates Vitis workflow on the selected FPGA."
     echo ""
     echo "FLAGS:"
-    echo "   -d, --device    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+    echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
     echo ""
-    echo "   -h, --help      - Help to use Vitis validation."
+    echo "   ${bold}-h, --help${normal}      - Help to use Vitis validation."
     echo ""
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "1" "0" "yes"
     echo ""
