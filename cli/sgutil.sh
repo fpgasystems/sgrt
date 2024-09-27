@@ -2465,14 +2465,14 @@ case "$command" in
         update_help
         ;;
       *)
+        #relates to sgutil_completion (opposite condition)
+        if [ "$is_sudo" = "0" ]; then
+          exit
+        fi
+        
         if [ "$#" -ne 1 ]; then
           update_help
           exit 1
-        fi
-
-        #relates to sgutil_completion
-        if [ "$is_sudo" = "0" ]; then
-          exit
         fi
 
         sudo_check $USER
