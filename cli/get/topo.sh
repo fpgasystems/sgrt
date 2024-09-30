@@ -117,7 +117,12 @@ for ((i=0; i<numa_nodes; i++)); do
                 echo ""
                 echo -e "    ${bold}${COLOR_ON2}Adaptive devices${COLOR_OFF}${normal}"
             fi
-            echo "    $j: $upstream_port"
+
+            #get other parameters
+            device_type=$($CLI_PATH/get/get_fpga_device_param $j device_type)
+
+            #print
+            echo "    $j: $upstream_port ($device_type)"
         fi
     done
     
