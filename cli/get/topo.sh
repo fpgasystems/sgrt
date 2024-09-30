@@ -58,8 +58,6 @@ if [ -s "$NETWORK_DEVICES_LIST" ]; then
     MAX_NETWORK_DEVICES=$($CLI_PATH/common/get_max_devices "nic" $NETWORK_DEVICES_LIST)
 fi
 
-echo "MAX_NETWORK_DEVICES: $MAX_NETWORK_DEVICES"
-
 #remove first
 sudo $CLI_PATH/common/rm $TMP_PATH/lstopo_output
 
