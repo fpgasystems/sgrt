@@ -98,6 +98,26 @@ for ((i=0; i<numa_nodes; i++)); do
     echo "    CPU min MHz: $cpu_min_mhz" #>> $file_name
     echo "    Frequency boost: $freq_boost" #>> $file_name
     echo "    Memory: $memory" #>> $file_name
+
+    echo "CLI_PATH: $CLI_PATH"    
+
+
+    #adaptive devices
+    for ((i=1; i<=MAX_ADAPTABLE_DEVICES; i++)); do
+        upstream_port=$($CLI_PATH/get/get_fpga_device_param $i upstream_port)
+        numa_node=$(get_numa_node "$upstream_port")
+
+        #print list
+        if [ ! "$numa_node" = "" ]; then  # Correct spacing and string comparison
+            if [ "$i" = "1" ]; then  # Safer with quotes
+                echo "Adaptive devices"
+            fi
+            echo "$i: $upstream_port"
+        fi
+    done
+    
+
+
      #>> $file_name
 done
 echo ""
