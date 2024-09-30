@@ -5,11 +5,40 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 #constants
-#MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
+MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 
 #derived
 ADAPTABLE_DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 GPU_DEVICES_LIST="$CLI_PATH/devices_gpu"
+TMP_PATH=$(echo "$MY_DRIVERS_PATH" | awk -F'/' '{print "/"$2}')
+
+function get_numa_node() {
+    local pci_device="$1"
+    local lstopo_output="$TMP_PATH/lstopo_output"  # Replace this with the actual file or command to get the output.
+
+    # Check if the PCI device exists in the output
+    if ! grep -q "PCI $pci_device" "$lstopo_output"; then
+        echo "PCI device $pci_device not found."
+        return 1
+    fi
+
+    # Extract the part of the file from the PCI device upwards
+    local section=$(tac "$lstopo_output" | sed -n "/PCI $pci_device/,/NUMANode L#[0-9]/p" | tac)
+
+    # Find which NUMA node is closest
+    local numa_node=$(echo "$section" | grep -m1 -o 'NUMANode L#[01]')
+
+    numa_node_value="${numa_node#*#}"
+    echo "$numa_node_value"
+
+}
+
+# Example usage:
+# get_numa_node "81:00.0"
+
+
+
+
 
 #get devices lists
 MAX_ADAPTABLE_DEVICES=""
@@ -26,11 +55,11 @@ fi
 echo "MAX_ADAPTABLE_DEVICES: $MAX_ADAPTABLE_DEVICES"
 echo "MAX_GPU_DEVICES: $MAX_GPU_DEVICES"
 
-#set temporal writing directory
-#TMP_PATH=$(echo "$MY_DRIVERS_PATH" | awk -F'/' '{print "/"$2}')
+#remove first
+sudo $CLI_PATH/common/rm $TMP_PATH/lstopo_output
 
-#remove all previous files
-#sudo $CLI_PATH/common/rm $TMP_PATH/numa_*
+#create temporal output
+lstopo 2>/dev/null > $TMP_PATH/lstopo_output
 
 # Capture the number of NUMA nodes
 numa_nodes=$(lscpu | grep -i "NUMA node(s)" | awk '{print $NF}')
@@ -72,3 +101,12 @@ for ((i=0; i<numa_nodes; i++)); do
      #>> $file_name
 done
 echo ""
+
+numa_1=$(get_numa_node "81:00.0")
+numa_1_bis=$(get_numa_node "81:00.1")
+
+numa_2=$(get_numa_node "63:00.0")
+
+echo "numa_1: $numa_1"
+echo "numa_1_bis: $numa_1_bis"
+echo "numa_2: $numa_2"
