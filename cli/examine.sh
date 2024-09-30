@@ -50,21 +50,24 @@ print_gpu_devices_header (){
 }
 
 #CPU server (both lists are empty)
-if ! ([[ -s "$DEVICE_LIST_FPGA" ]] && [[ -s "$DEVICE_LIST_GPU" ]]); then
-  echo ""
-  echo "System Configuration"
-  echo "OS Name              : $(uname -s)"
-  echo "Release              : $(uname -r)"
-  echo "Version              : $(uname -v)"
-  echo "Machine              : $(uname -m)"
-  echo "CPU Cores            : $(nproc)"
-  echo "Memory               : $(free -m | awk 'NR==2{print $2}') MB"
-  echo "Distribution         : $(lsb_release -d | awk -F ':\t' '{print $2}' | sed 's/^[ \t]*//')"
-  echo ""
-fi
+#if ! ([[ -s "$DEVICE_LIST_FPGA" ]] && [[ -s "$DEVICE_LIST_GPU" ]]); then
+#  echo ""
+#  echo "System Configuration"
+#  echo "OS Name              : $(uname -s)"
+#  echo "Release              : $(uname -r)"
+#  echo "Version              : $(uname -v)"
+#  echo "Machine              : $(uname -m)"
+#  echo "CPU Cores            : $(nproc)"
+#  echo "Memory               : $(free -m | awk 'NR==2{print $2}') MB"
+#  echo "Distribution         : $(lsb_release -d | awk -F ':\t' '{print $2}' | sed 's/^[ \t]*//')"
+#  echo ""
+#fi
 
 #declare string
 legend=""
+
+#run get topo
+$CLI_PATH/get/topo
 
 #reconfigurable devices
 if [[ -s "$DEVICE_LIST_FPGA" ]]; then
@@ -74,9 +77,13 @@ if [[ -s "$DEVICE_LIST_FPGA" ]]; then
   legend="${legend}${bold}${COLOR_ON2}Adaptive Devices${COLOR_OFF}${normal}"
   if [[ -n "$(lspci | grep $upstream_port_1)" ]]; then
     #run xbutil examine
-    echo ""
-    $XRT_PATH/bin/xbutil examine
-    echo ""
+    #echo ""
+    #$XRT_PATH/bin/xbutil examine
+    
+    #run get topo
+    #$CLI_PATH/get/topo
+    
+    #echo ""
     print_reconfigurable_devices_header
     #get number of fpga and acap devices present
     MAX_RECONF_DEVICES=$(grep -E "fpga|acap|asoc" $DEVICE_LIST_FPGA | wc -l)
