@@ -1,3 +1,0 @@
-1 vadd vadd_1 in1:HBM[0] in2:HBM[1] out:HBM[0]
-       vadd_2 in1:HBM[0] in2:HBM[1] out:HBM[0]
-2 vsub vsub_1 in1:HBM[0] in2:HBM[1] out:HBM[0]
