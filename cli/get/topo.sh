@@ -105,7 +105,6 @@ for ((i=0; i<numa_nodes; i++)); do
     echo "    Frequency boost: $freq_boost" #>> $file_name
     echo "    Memory: $memory" #>> $file_name
     
-    #echo "CLI_PATH: $CLI_PATH"    
     #adaptive devices
     for ((j=1; j<=MAX_ADAPTABLE_DEVICES; j++)); do
         upstream_port=$($CLI_PATH/get/get_fpga_device_param $j upstream_port)
@@ -125,7 +124,25 @@ for ((i=0; i<numa_nodes; i++)); do
             echo "    $j: $upstream_port ($device_type)"
         fi
     done
-    
-     #>> $file_name
+
+    #gpus
+    for ((j=1; j<=MAX_GPU_DEVICES; j++)); do
+        bus=$($CLI_PATH/get/get_gpu_device_param $j bus)
+        numa_node=$(get_numa_node "$bus")
+
+        #print list
+        if [ "$numa_node" = "$i" ]; then  # Correct spacing and string comparison
+            if [ "$j" = "1" ]; then  # Safer with quotes
+                echo ""
+                echo -e "    ${bold}${COLOR_ON5}GPUs${COLOR_OFF}${normal}"
+            fi
+
+            #get other parameters
+            device_type=$($CLI_PATH/get/get_gpu_device_param $j device_type)
+
+            #print
+            echo "    $j: $bus ($device_type)"
+        fi
+    done
 done
 echo ""
