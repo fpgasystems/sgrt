@@ -45,6 +45,7 @@ function get_numa_node() {
 #get devices lists
 MAX_ADAPTABLE_DEVICES=""
 MAX_GPU_DEVICES=""
+MAX_NETWORK_DEVICES=""
 if [ -s "$ADAPTABLE_DEVICES_LIST" ]; then
     source "$CLI_PATH/common/device_list_check" "$ADAPTABLE_DEVICES_LIST"
     MAX_ADAPTABLE_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap|asoc" $ADAPTABLE_DEVICES_LIST)

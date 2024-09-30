@@ -6,6 +6,7 @@ normal=$(tput sgr0)
 #constants
 CLI_PATH="$(dirname "$0")"
 XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
+DEVICE_LIST_NETWORK="$CLI_PATH/devices_network"
 DEVICE_LIST_FPGA="$CLI_PATH/devices_acap_fpga"
 DEVICE_LIST_GPU="$CLI_PATH/devices_gpu"
 DEVICE_TYPE_NAME_STR_LENGTH=20
@@ -13,7 +14,10 @@ SERIAL_NUMBER_STR_LENGTH=13
 NETWORKING_STR_LENGTH=35
 
 #legend
+COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
 COLOR_ON2=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_XILINX)
+COLOR_ON3=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_ACAP)
+COLOR_ON4=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_FPGA)
 COLOR_ON5=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_GPU)
 COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 
@@ -39,6 +43,11 @@ split_addresses (){
   fi
 }
 
+print_nic_devices_header (){
+  echo -e "${bold}${COLOR_ON1}Device Index : BDF     : Device Type (Name)   : Networking                          : Connectivity${COLOR_OFF}${normal}"
+  echo -e "${bold}${COLOR_ON1}--------------------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
+}
+
 print_reconfigurable_devices_header (){
   echo -e "${bold}${COLOR_ON2}Device Index : Upstream port (BDF) : Device Type (Name)   : Serial Number : Networking                          : Workflow${COLOR_OFF}${normal}"
   echo -e "${bold}${COLOR_ON2}--------------------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
@@ -55,13 +64,53 @@ legend=""
 #run get topo
 $CLI_PATH/get/topo
 
+#nics
+if [[ -s "$DEVICE_LIST_NETWORK" ]]; then
+  #print if the first gpu is valid
+  device_1=$(head -n 1 "$DEVICE_LIST_NETWORK")
+  bdf_1=$(echo "$device_1" | awk '{print $2}')
+  if [[ -n "$(lspci | grep $bdf_1)" ]]; then
+    legend="${legend}${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal}"
+    print_nic_devices_header
+    #get number of fpga and acap devices present
+    MAX_NETWORK_DEVICES=$(grep -E "nic" $DEVICE_LIST_NETWORK | wc -l)
+    #loop over reconfigurable devices
+    for ((i=1; i<=$MAX_NETWORK_DEVICES; i++)); do
+      id=$($CLI_PATH/get/get_nic_device_param $i id)
+      #print table
+      if [ -n "$id" ]; then  
+        bdf=$($CLI_PATH/get/get_nic_device_param $i bdf)
+        device_type=$($CLI_PATH/get/get_nic_device_param $i device_type)
+        device_name=$($CLI_PATH/get/get_nic_device_param $i device_name)
+        ip=$($CLI_PATH/get/get_nic_device_param $i IP)
+        mac=$($CLI_PATH/get/get_nic_device_param $i MAC)
+        #adjust device type and name string length
+        aux="$device_type ($device_name)"
+        diff=$(( $DEVICE_TYPE_NAME_STR_LENGTH - ${#aux} ))
+        device_type_name="$aux$(printf '%*s' $diff)"
+        #split ip
+        add_0=$(split_addresses $ip $mac 0)
+        add_1=$(split_addresses $ip $mac 1)
+        #adjust networking string length
+        diff=$(( $NETWORKING_STR_LENGTH - ${#add_0} ))
+        add_0="$add_0$(printf '%*s' $diff)"
+        add_1="$add_1$(printf '%*s' $diff)"
+        #print row
+        echo "$id            : $bdf : $device_type_name : $add_0 : mellanox-0"
+        echo "                                                $add_1"
+      fi
+    done
+    echo ""
+  fi
+fi
+
 #reconfigurable devices
 if [[ -s "$DEVICE_LIST_FPGA" ]]; then
   #print if the first fpga/acap is valid
   device_1=$(head -n 1 "$DEVICE_LIST_FPGA")
   upstream_port_1=$(echo "$device_1" | awk '{print $2}')
-  legend="${legend}${bold}${COLOR_ON2}Adaptive Devices${COLOR_OFF}${normal}"
   if [[ -n "$(lspci | grep $upstream_port_1)" ]]; then
+    legend="${legend} ${bold}${COLOR_ON2}Adaptive Devices${COLOR_OFF}${normal}"
     print_reconfigurable_devices_header
     #get number of fpga and acap devices present
     MAX_RECONF_DEVICES=$(grep -E "fpga|acap|asoc" $DEVICE_LIST_FPGA | wc -l)
@@ -104,11 +153,11 @@ fi
 
 #GPU devices
 if [[ -s "$DEVICE_LIST_GPU" ]]; then
-  #print if the first fpga/acap is valid
+  #print if the first gpu is valid
   device_1=$(head -n 1 "$DEVICE_LIST_GPU")
   bus_1=$(echo "$device_1" | awk '{print $2}')
-  legend="${legend} ${bold}${COLOR_ON5}GPUs${COLOR_OFF}${normal}"
   if [[ -n "$(lspci | grep $bus_1)" ]]; then
+    legend="${legend} ${bold}${COLOR_ON5}GPUs${COLOR_OFF}${normal}"
     print_gpu_devices_header
     #get number of gpu devices present
     MAX_GPU_DEVICES=$(grep -E "gpu" $DEVICE_LIST_GPU | wc -l)
