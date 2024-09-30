@@ -33,7 +33,7 @@
     directories: false
     enable: false
     examine: false
-    get: false
+    get: true
     help: false
     hip: false
     new: false
@@ -41,8 +41,8 @@
     program: false
     reboot: false
     run: false
-    set: true
-    sgutil: true 
+    set: false
+    sgutil: false 
     update: false
     validate: false
     vitis: false
@@ -338,6 +338,7 @@
         - clock
         - get_fpga_device_param
         - get_gpu_device_param
+        - get_nic_device_param
         - ifconfig
         - memory
         - name
