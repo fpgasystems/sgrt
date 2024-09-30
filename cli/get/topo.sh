@@ -22,7 +22,7 @@ COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 
 function get_numa_node() {
     local pci_device="$1"
-    local lstopo_output="$TMP_PATH/lstopo_output"  # Replace this with the actual file or command to get the output.
+    local lstopo_output="$TMP_PATH/lstopo_output"
 
     # Check if the PCI device exists in the output
     if ! grep -q "PCI $pci_device" "$lstopo_output"; then
@@ -40,13 +40,6 @@ function get_numa_node() {
     echo "$numa_node_value"
 
 }
-
-# Example usage:
-# get_numa_node "81:00.0"
-
-
-
-
 
 #get devices lists
 MAX_ADAPTABLE_DEVICES=""
@@ -80,12 +73,12 @@ cpu_mhz=$(lscpu | grep -i "CPU MHz" | awk -F: '{print $2}' | xargs)
 cpu_max_mhz=$(lscpu | grep -i "CPU max MHz" | awk -F: '{print $2}' | xargs)
 cpu_min_mhz=$(lscpu | grep -i "CPU min MHz" | awk -F: '{print $2}' | xargs)
 
-echo "" #> $file_name
-echo "$model_name" #>> $file_name
-echo "CPU(s): $cpu_count" #>> $file_name
-echo "On-line CPU(s) list: $online_cpus" #>> $file_name
-echo "Thread(s) per core: $threads_per_core" #>> $file_name
-echo "Core(s) per socket: $cores_per_socket" #>> $file_name
+echo ""
+echo "${bold}$model_name${normal}"
+echo "CPU(s): $cpu_count"
+echo "On-line CPU(s) list: $online_cpus"
+echo "Thread(s) per core: $threads_per_core"
+echo "Core(s) per socket: $cores_per_socket"
 
 # Loop through each NUMA node and create a corresponding file
 for ((i=0; i<numa_nodes; i++)); do
@@ -93,17 +86,13 @@ for ((i=0; i<numa_nodes; i++)); do
     numa_cpus=$(lscpu | grep -i "NUMA node${i} CPU(s)" | awk -F: '{print $2}' | xargs)
     memory=$(lstopo 2>/dev/null | grep -i "NUMANode L#$i" | awk -F'[()]' '{print $2}' | awk '{print $NF}')
 
-    # Create a file for each NUMA node
-    #file_name="$TMP_PATH/numa_$((i+1))"
-    
-    echo "" #>> $file_name
-    #echo "NUMA node $(( i + 1 )) CPU(s): $numa_cpus" #>> $file_name
-    echo "NUMA node $i CPU(s): $numa_cpus" #>> $file_name
-    echo "    CPU MHz: $cpu_mhz" #>> $file_name
-    echo "    CPU max MHz: $cpu_max_mhz" #>> $file_name
-    echo "    CPU min MHz: $cpu_min_mhz" #>> $file_name
-    echo "    Frequency boost: $freq_boost" #>> $file_name
-    echo "    Memory: $memory" #>> $file_name
+    echo ""
+    echo "${bold}NUMA node $i CPU(s): $numa_cpus${normal}"
+    echo "    CPU MHz: $cpu_mhz"
+    echo "    CPU max MHz: $cpu_max_mhz"
+    echo "    CPU min MHz: $cpu_min_mhz"
+    echo "    Frequency boost: $freq_boost"
+    echo "    Memory: $memory"
     
     #adaptive devices
     for ((j=1; j<=MAX_ADAPTABLE_DEVICES; j++)); do
@@ -111,8 +100,8 @@ for ((i=0; i<numa_nodes; i++)); do
         numa_node=$(get_numa_node "$upstream_port")
 
         #print list
-        if [ "$numa_node" = "$i" ]; then  # Correct spacing and string comparison
-            if [ "$j" = "1" ]; then  # Safer with quotes
+        if [ "$numa_node" = "$i" ]; then
+            if [ "$j" = "1" ]; then
                 echo ""
                 echo -e "    ${bold}${COLOR_ON2}Adaptive devices${COLOR_OFF}${normal}"
             fi
@@ -131,8 +120,8 @@ for ((i=0; i<numa_nodes; i++)); do
         numa_node=$(get_numa_node "$bus")
 
         #print list
-        if [ "$numa_node" = "$i" ]; then  # Correct spacing and string comparison
-            if [ "$j" = "1" ]; then  # Safer with quotes
+        if [ "$numa_node" = "$i" ]; then 
+            if [ "$j" = "1" ]; then
                 echo ""
                 echo -e "    ${bold}${COLOR_ON5}GPUs${COLOR_OFF}${normal}"
             fi
