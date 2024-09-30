@@ -12,6 +12,14 @@ ADAPTABLE_DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 GPU_DEVICES_LIST="$CLI_PATH/devices_gpu"
 TMP_PATH=$(echo "$MY_DRIVERS_PATH" | awk -F'/' '{print "/"$2}')
 
+#legend
+COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
+COLOR_ON2=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_XILINX)
+COLOR_ON3=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_ACAP)
+COLOR_ON4=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_FPGA)
+COLOR_ON5=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_GPU)
+COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
+
 function get_numa_node() {
     local pci_device="$1"
     local lstopo_output="$TMP_PATH/lstopo_output"  # Replace this with the actual file or command to get the output.
@@ -52,9 +60,6 @@ if [ -s "$GPU_DEVICES_LIST" ]; then
     MAX_GPU_DEVICES=$($CLI_PATH/common/get_max_devices "gpu" $GPU_DEVICES_LIST)
 fi
 
-echo "MAX_ADAPTABLE_DEVICES: $MAX_ADAPTABLE_DEVICES"
-echo "MAX_GPU_DEVICES: $MAX_GPU_DEVICES"
-
 #remove first
 sudo $CLI_PATH/common/rm $TMP_PATH/lstopo_output
 
@@ -92,41 +97,30 @@ for ((i=0; i<numa_nodes; i++)); do
     #file_name="$TMP_PATH/numa_$((i+1))"
     
     echo "" #>> $file_name
-    echo "NUMA node $(( i + 1 )) CPU(s): $numa_cpus" #>> $file_name
+    #echo "NUMA node $(( i + 1 )) CPU(s): $numa_cpus" #>> $file_name
+    echo "NUMA node $i CPU(s): $numa_cpus" #>> $file_name
     echo "    CPU MHz: $cpu_mhz" #>> $file_name
     echo "    CPU max MHz: $cpu_max_mhz" #>> $file_name
     echo "    CPU min MHz: $cpu_min_mhz" #>> $file_name
     echo "    Frequency boost: $freq_boost" #>> $file_name
     echo "    Memory: $memory" #>> $file_name
-
-    echo "CLI_PATH: $CLI_PATH"    
-
-
+    
+    #echo "CLI_PATH: $CLI_PATH"    
     #adaptive devices
-    for ((i=1; i<=MAX_ADAPTABLE_DEVICES; i++)); do
-        upstream_port=$($CLI_PATH/get/get_fpga_device_param $i upstream_port)
+    for ((j=1; j<=MAX_ADAPTABLE_DEVICES; j++)); do
+        upstream_port=$($CLI_PATH/get/get_fpga_device_param $j upstream_port)
         numa_node=$(get_numa_node "$upstream_port")
 
         #print list
-        if [ ! "$numa_node" = "" ]; then  # Correct spacing and string comparison
-            if [ "$i" = "1" ]; then  # Safer with quotes
-                echo "Adaptive devices"
+        if [ "$numa_node" = "$i" ]; then  # Correct spacing and string comparison
+            if [ "$j" = "1" ]; then  # Safer with quotes
+                echo ""
+                echo -e "    ${bold}${COLOR_ON2}Adaptive devices${COLOR_OFF}${normal}"
             fi
-            echo "$i: $upstream_port"
+            echo "    $j: $upstream_port"
         fi
     done
     
-
-
      #>> $file_name
 done
 echo ""
-
-numa_1=$(get_numa_node "81:00.0")
-numa_1_bis=$(get_numa_node "81:00.1")
-
-numa_2=$(get_numa_node "63:00.0")
-
-echo "numa_1: $numa_1"
-echo "numa_1_bis: $numa_1_bis"
-echo "numa_2: $numa_2"
