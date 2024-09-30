@@ -49,20 +49,6 @@ print_gpu_devices_header (){
   echo -e "${bold}${COLOR_ON5}--------------------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
 }
 
-#CPU server (both lists are empty)
-#if ! ([[ -s "$DEVICE_LIST_FPGA" ]] && [[ -s "$DEVICE_LIST_GPU" ]]); then
-#  echo ""
-#  echo "System Configuration"
-#  echo "OS Name              : $(uname -s)"
-#  echo "Release              : $(uname -r)"
-#  echo "Version              : $(uname -v)"
-#  echo "Machine              : $(uname -m)"
-#  echo "CPU Cores            : $(nproc)"
-#  echo "Memory               : $(free -m | awk 'NR==2{print $2}') MB"
-#  echo "Distribution         : $(lsb_release -d | awk -F ':\t' '{print $2}' | sed 's/^[ \t]*//')"
-#  echo ""
-#fi
-
 #declare string
 legend=""
 
@@ -76,14 +62,6 @@ if [[ -s "$DEVICE_LIST_FPGA" ]]; then
   upstream_port_1=$(echo "$device_1" | awk '{print $2}')
   legend="${legend}${bold}${COLOR_ON2}Adaptive Devices${COLOR_OFF}${normal}"
   if [[ -n "$(lspci | grep $upstream_port_1)" ]]; then
-    #run xbutil examine
-    #echo ""
-    #$XRT_PATH/bin/xbutil examine
-    
-    #run get topo
-    #$CLI_PATH/get/topo
-    
-    #echo ""
     print_reconfigurable_devices_header
     #get number of fpga and acap devices present
     MAX_RECONF_DEVICES=$(grep -E "fpga|acap|asoc" $DEVICE_LIST_FPGA | wc -l)
@@ -136,7 +114,7 @@ if [[ -s "$DEVICE_LIST_GPU" ]]; then
     MAX_GPU_DEVICES=$(grep -E "gpu" $DEVICE_LIST_GPU | wc -l)
     #loop over gpu devices
     for ((i=1; i<=$MAX_GPU_DEVICES; i++)); do
-      id=$($CLI_PATH/get/get_gpu_device_param $i id) #========================================> I need to update the function
+      id=$($CLI_PATH/get/get_gpu_device_param $i id)
       #print table
       if [ -n "$id" ]; then
         bus=$($CLI_PATH/get/get_gpu_device_param $i bus)
