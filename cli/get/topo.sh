@@ -10,6 +10,7 @@ MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 #derived
 ADAPTABLE_DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 GPU_DEVICES_LIST="$CLI_PATH/devices_gpu"
+NETWORK_DEVICES_LIST="$CLI_PATH/devices_network"
 TMP_PATH=$(echo "$MY_DRIVERS_PATH" | awk -F'/' '{print "/"$2}')
 
 #legend
@@ -52,6 +53,12 @@ if [ -s "$GPU_DEVICES_LIST" ]; then
     source "$CLI_PATH/common/device_list_check" "$GPU_DEVICES_LIST"
     MAX_GPU_DEVICES=$($CLI_PATH/common/get_max_devices "gpu" $GPU_DEVICES_LIST)
 fi
+if [ -s "$NETWORK_DEVICES_LIST" ]; then
+    source "$CLI_PATH/common/device_list_check" "$NETWORK_DEVICES_LIST"
+    MAX_NETWORK_DEVICES=$($CLI_PATH/common/get_max_devices "nic" $NETWORK_DEVICES_LIST)
+fi
+
+echo "MAX_NETWORK_DEVICES: $MAX_NETWORK_DEVICES"
 
 #remove first
 sudo $CLI_PATH/common/rm $TMP_PATH/lstopo_output
@@ -93,6 +100,26 @@ for ((i=0; i<numa_nodes; i++)); do
     echo "    CPU min MHz: $cpu_min_mhz"
     echo "    Frequency boost: $freq_boost"
     echo "    Memory: $memory"
+
+    #nics
+    for ((j=1; j<=MAX_NETWORK_DEVICES; j++)); do
+        bdf=$($CLI_PATH/get/get_nic_device_param $j bdf)
+        numa_node=$(get_numa_node "$bdf")
+
+        #print list
+        if [ "$numa_node" = "$i" ]; then 
+            if [ "$j" = "1" ]; then
+                echo ""
+                echo -e "    ${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal}"
+            fi
+
+            #get other parameters
+            device_name=$($CLI_PATH/get/get_nic_device_param $j device_name)
+
+            #print
+            echo "    $j: $bdf ($device_name)"
+        fi
+    done
     
     #adaptive devices
     for ((j=1; j<=MAX_ADAPTABLE_DEVICES; j++)); do
@@ -107,10 +134,10 @@ for ((i=0; i<numa_nodes; i++)); do
             fi
 
             #get other parameters
-            device_type=$($CLI_PATH/get/get_fpga_device_param $j device_type)
+            device_name=$($CLI_PATH/get/get_fpga_device_param $j device_name)
 
             #print
-            echo "    $j: $upstream_port ($device_type)"
+            echo "    $j: $upstream_port ($device_name)"
         fi
     done
 
@@ -127,10 +154,10 @@ for ((i=0; i<numa_nodes; i++)); do
             fi
 
             #get other parameters
-            device_type=$($CLI_PATH/get/get_gpu_device_param $j device_type)
+            #device_type=$($CLI_PATH/get/get_gpu_device_param $j device_type)
 
             #print
-            echo "    $j: $bus ($device_type)"
+            echo "    $j: $bus" #($device_type)
         fi
     done
 done
