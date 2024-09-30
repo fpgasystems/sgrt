@@ -7,6 +7,25 @@ normal=$(tput sgr0)
 #constants
 #MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
 
+#derived
+ADAPTABLE_DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
+GPU_DEVICES_LIST="$CLI_PATH/devices_gpu"
+
+#get devices lists
+MAX_ADAPTABLE_DEVICES=""
+MAX_GPU_DEVICES=""
+if [ -s "$ADAPTABLE_DEVICES_LIST" ]; then
+    source "$CLI_PATH/common/device_list_check" "$ADAPTABLE_DEVICES_LIST"
+    MAX_ADAPTABLE_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap|asoc" $ADAPTABLE_DEVICES_LIST)
+fi
+if [ -s "$GPU_DEVICES_LIST" ]; then
+    source "$CLI_PATH/common/device_list_check" "$GPU_DEVICES_LIST"
+    MAX_GPU_DEVICES=$($CLI_PATH/common/get_max_devices "gpu" $GPU_DEVICES_LIST)
+fi
+
+echo "MAX_ADAPTABLE_DEVICES: $MAX_ADAPTABLE_DEVICES"
+echo "MAX_GPU_DEVICES: $MAX_GPU_DEVICES"
+
 #set temporal writing directory
 #TMP_PATH=$(echo "$MY_DRIVERS_PATH" | awk -F'/' '{print "/"$2}')
 
@@ -26,9 +45,6 @@ freq_boost=$(lscpu | grep -i "Frequency boost" | awk -F: '{print $2}' | xargs)
 cpu_mhz=$(lscpu | grep -i "CPU MHz" | awk -F: '{print $2}' | xargs)
 cpu_max_mhz=$(lscpu | grep -i "CPU max MHz" | awk -F: '{print $2}' | xargs)
 cpu_min_mhz=$(lscpu | grep -i "CPU min MHz" | awk -F: '{print $2}' | xargs)
-
-#lstopo
-
 
 echo "" #> $file_name
 echo "$model_name" #>> $file_name
