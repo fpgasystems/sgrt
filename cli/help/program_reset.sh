@@ -8,9 +8,9 @@ COLOR_XILINX=$2
 COLOR_OFF=$3
 
 echo ""
-echo -e "${bold}${COLOR_XILINX}$CLI_NAME program reset [flags] [--help]${COLOR_OFF}${normal}"
+echo "${bold}$CLI_NAME program reset [flags] [--help]${normal}"
 echo ""
-echo -e "${COLOR_XILINX}Performs a 'HOT Reset' on a Vitis device.${COLOR_OFF}"
+echo "Performs a 'HOT Reset' on a Vitis device."
 echo ""
 echo "FLAGS:"
 echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."

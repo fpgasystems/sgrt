@@ -10,9 +10,9 @@ COLOR_OFF=$4
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 
 echo ""
-echo -e "${bold}${COLOR_XILINX}$CLI_NAME program opennic [flags] [--help]${COLOR_OFF}${normal}"
+echo "${bold}$CLI_NAME program opennic [flags] [--help]${normal}"
 echo ""
-echo -e "${COLOR_XILINX}Programs OpenNIC to a given device.${COLOR_OFF}"
+echo "Programs OpenNIC to a given device."
 echo ""
 echo "FLAGS:"
 echo "   ${bold}-c, --commit${normal}    - GitHub commit ID for shell (default: ${bold}$ONIC_SHELL_COMMIT${normal})."

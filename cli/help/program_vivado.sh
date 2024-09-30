@@ -8,9 +8,9 @@ COLOR_XILINX=$2
 COLOR_OFF=$3
 
 echo ""
-echo -e "${bold}${COLOR_XILINX}$CLI_NAME program vivado [flags] [--help]${COLOR_OFF}${normal}"
+echo "${bold}$CLI_NAME program vivado [flags] [--help]${normal}"
 echo ""
-echo -e "${COLOR_XILINX}Programs a Vivado bitstream to a given device.${COLOR_OFF}"
+echo "Programs a Vivado bitstream to a given device."
 echo ""
 echo "FLAGS:"
 echo "   ${bold}-b, --bitstream${normal} - Full path to the .bit bitstream to be programmed." 

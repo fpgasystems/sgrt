@@ -1242,7 +1242,7 @@ program_driver_help() {
 program_opennic_help() {
   if [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_opennic $CLI_PATH $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
     echo ""
   fi
   exit
@@ -1251,7 +1251,7 @@ program_opennic_help() {
 program_reset_help() {
   if [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_reset $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
     echo ""
     exit
   fi
@@ -1260,7 +1260,7 @@ program_reset_help() {
 program_revert_help() {
   if [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_revert $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
     echo ""
     exit
   fi
@@ -1269,7 +1269,7 @@ program_revert_help() {
 program_vivado_help() {
   if [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_vivado $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
     echo ""
     exit
   fi

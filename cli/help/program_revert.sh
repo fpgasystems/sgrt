@@ -8,9 +8,9 @@ COLOR_XILINX=$2
 COLOR_OFF=$3
 
 echo "" #this one is needed
-echo -e "${bold}${COLOR_XILINX}$CLI_NAME program revert [flags] [--help]${COLOR_OFF}${normal}"
+echo "${bold}$CLI_NAME program revert [flags] [--help]${normal}"
 echo ""
-echo -e "${COLOR_XILINX}Returns a device to its default fabric setup.${COLOR_OFF}"
+echo "Returns a device to its default fabric setup."
 echo ""
 echo "FLAGS:"
 echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
