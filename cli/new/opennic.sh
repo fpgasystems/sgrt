@@ -32,7 +32,17 @@ BUILD_SERVERS_LIST="$CLI_PATH/constants/BUILD_SERVERS_LIST"
 FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
 GPU_SERVERS_LIST="$CLI_PATH/constants/GPU_SERVERS_LIST"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
+NETWORKING_DEVICES_LIST="$CLI_PATH/devices_network"
+NETWORKING_DEVICE_INDEX="1"
+NETWORKING_PORT_INDEX="1"
 WORKFLOW="opennic"
+
+#get devices number
+if [ -s "$NETWORKING_DEVICES_LIST" ]; then
+  source "$CLI_PATH/common/device_list_check" "$NETWORKING_DEVICES_LIST"
+  MAX_DEVICES=$($CLI_PATH/common/get_max_devices "nic" $NETWORKING_DEVICES_LIST)
+  multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+fi
 
 #get hostname
 url="${HOSTNAME}"
@@ -77,6 +87,10 @@ chmod +x $DIR/config_delete
 
 #get interface name
 mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
+echo $mellanox_name
+
+mellanox_name=$($CLI_PATH/get/get_nic_config $NETWORKING_DEVICE_INDEX $NETWORKING_PORT_INDEX DEVICE)
+echo $mellanox_name
 
 #read SERVERS_LISTS excluding the current hostname
 IFS=$'\n' read -r -d '' -a remote_servers < <(cat "$ACAP_SERVERS_LIST" "$BUILD_SERVERS_LIST" "$FPGA_SERVERS_LIST" "$GPU_SERVERS_LIST" | grep -v "^$hostname$" | sort -u && printf '\0')
