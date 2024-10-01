@@ -6,14 +6,20 @@
 
 ## sgutil get ifconfig
 
-<code>sgutil get ifconfig [--help]</code>
+<code>sgutil get ifconfig [flags] [--help]</code>
 <p>
   &nbsp; &nbsp; Host networking information. 
 </p>
 
 ### Flags
+<code>-d, --device <string></code>
 <p>
-  &nbsp; &nbsp; This command has no flags.
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
+</p>
+
+<code>-p, --port <string></code>
+<p>
+  &nbsp; &nbsp; Specifies the port number for the network adapter.
 </p>
 
 <code>-h, --help <string></code>

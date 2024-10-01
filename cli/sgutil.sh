@@ -1780,7 +1780,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       ifconfig)
-        valid_flags="-h --help"
+        valid_flags="-d --device -p --port -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       network)

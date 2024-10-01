@@ -347,7 +347,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
                         ifconfig) 
-                            COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device --port --help" -- ${cur}))
                             ;;
                         network) 
                             COMPREPLY=($(compgen -W "--device --port --help" -- ${cur}))
@@ -470,6 +470,9 @@ _sgutil_completions()
             fi
 
             #get
+            other_flags=( "--device" "--port" )
+            command_completion_5 "$cur" "$COMP_CWORD" "get" "ifconfig" "${other_flags[@]}"
+
             other_flags=( "--device" "--port" )
             command_completion_5 "$cur" "$COMP_CWORD" "get" "network" "${other_flags[@]}"
 
