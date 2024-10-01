@@ -87,7 +87,8 @@ else
     #forbidden combinations (port)
     MAX_NUM_PORTS=$($CLI_PATH/get/get_fpga_device_param $device_index IP | grep -o '/' | wc -l)
     MAX_NUM_PORTS=$((MAX_NUM_PORTS + 1))
-    if ([ "$port_found" = "1" ] && [ "$port_index" = "" ]) || ([ "$port_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $port_index != 1 ))) || ([ "$port_found" = "1" ] && ([[ "$port_index" -gt "$MAX_NUM_PORTS" ]] || [[ "$port_index" -lt 1 ]])); then
+    #if ([ "$port_found" = "1" ] && [ "$port_index" = "" ]) || ([ "$port_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $port_index != 1 ))) || ([ "$port_found" = "1" ] && ([[ "$port_index" -gt "$MAX_NUM_PORTS" ]] || [[ "$port_index" -lt 1 ]])); then
+    if ([ "$port_found" = "1" ] && [ "$port_index" = "" ]) || ([ "$port_found" = "1" ] && ([[ "$port_index" -gt "$MAX_NUM_PORTS" ]] || [[ "$port_index" -lt 1 ]])); then
         $CLI_PATH/sgutil get network -h
         exit
     fi
