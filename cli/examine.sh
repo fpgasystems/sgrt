@@ -55,7 +55,7 @@ print_reconfigurable_devices_header (){
 
 print_gpu_devices_header (){
   echo -e "${bold}${COLOR_ON5}Device Index : PCI BUS : Device Type (GPU ID) : Serial Number : Unique ID${COLOR_OFF}${normal}"
-  echo -e "${bold}${COLOR_ON5}--------------------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
+  echo -e "${bold}${COLOR_ON5}------------------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
 }
 
 #declare string
