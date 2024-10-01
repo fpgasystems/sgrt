@@ -40,6 +40,11 @@ device_index=$1
 port_index=$2
 parameter=$3
 
+#reset
+iface=""
+STATE=""
+CONNECTION=""
+
 #get device addresses
 IP=$($CLI_PATH/get/get_nic_device_param $device_index IP)
 MAC=$($CLI_PATH/get/get_nic_device_param $device_index MAC)
@@ -51,21 +56,27 @@ elif [ "$port_index" = "2" ]; then
   MAC="${MAC#*/}"
 fi
 
+#convert to lowercase
+MAC=${MAC,,}
+iface=$(ifconfig | awk -v ip="$IP" -v mac="$MAC" '
+  /^[a-zA-Z0-9]+:/ { iface=$1 }
+  /inet / && $2==ip { ip_found=1 }
+  /ether / && $2==mac { mac_found=1 }
+  ip_found && mac_found { print iface; exit }
+  ' | sed 's/://')
+
 case "$parameter" in
     # id upstream_port root_port LinkCtl device_type device_name serial_number IP MAC  
     DEVICE)
-      #convert to lowercase
-      MAC=${MAC,,}
-      iface=$(ifconfig | awk -v ip="$IP" -v mac="$MAC" '
-        /^[a-zA-Z0-9]+:/ { iface=$1 }
-        /inet / && $2==ip { ip_found=1 }
-        /ether / && $2==mac { mac_found=1 }
-        ip_found && mac_found { print iface; exit }
-        ' | sed 's/://')
-      echo $iface
+      if [ ! "$iface" = "" ]; then
+        echo $iface
+      fi
       ;;
     STATE)
-      echo $MAC
+      if [ ! "$iface" = "" ]; then
+        STATE=$(nmcli dev | grep "$iface" | awk '{print $3}')
+        echo $STATE
+      fi
       ;;
     *)
       echo "Unknown parameter $parameter."
