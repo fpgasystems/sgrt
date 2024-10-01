@@ -32,7 +32,7 @@
     common: false
     directories: false
     enable: false
-    examine: false
+    examine: true
     get: true
     help: false
     hip: false
@@ -338,6 +338,7 @@
         - clock
         - get_fpga_device_param
         - get_gpu_device_param
+        - get_nic_config
         - get_nic_device_param
         - ifconfig
         - memory
