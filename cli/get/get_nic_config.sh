@@ -54,7 +54,15 @@ fi
 case "$parameter" in
     # id upstream_port root_port LinkCtl device_type device_name serial_number IP MAC  
     DEVICE)
-      echo $IP
+      #convert to lowercase
+      MAC=${MAC,,}
+      iface=$(ifconfig | awk -v ip="$IP" -v mac="$MAC" '
+        /^[a-zA-Z0-9]+:/ { iface=$1 }
+        /inet / && $2==ip { ip_found=1 }
+        /ether / && $2==mac { mac_found=1 }
+        ip_found && mac_found { print iface; exit }
+        ' | sed 's/://')
+      echo $iface
       ;;
     STATE)
       echo $MAC
