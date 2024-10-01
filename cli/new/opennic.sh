@@ -86,11 +86,7 @@ chmod +x $DIR/config_add
 chmod +x $DIR/config_delete
 
 #get interface name
-mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
-echo $mellanox_name
-
 mellanox_name=$($CLI_PATH/get/get_nic_config $NETWORKING_DEVICE_INDEX $NETWORKING_PORT_INDEX DEVICE)
-echo $mellanox_name
 
 #read SERVERS_LISTS excluding the current hostname
 IFS=$'\n' read -r -d '' -a remote_servers < <(cat "$ACAP_SERVERS_LIST" "$BUILD_SERVERS_LIST" "$FPGA_SERVERS_LIST" "$GPU_SERVERS_LIST" | grep -v "^$hostname$" | sort -u && printf '\0')
