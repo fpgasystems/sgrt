@@ -40,8 +40,6 @@ WORKFLOW="opennic"
 #get devices number
 if [ -s "$NETWORKING_DEVICES_LIST" ]; then
   source "$CLI_PATH/common/device_list_check" "$NETWORKING_DEVICES_LIST"
-  MAX_DEVICES=$($CLI_PATH/common/get_max_devices "nic" $NETWORKING_DEVICES_LIST)
-  multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
 fi
 
 #get hostname

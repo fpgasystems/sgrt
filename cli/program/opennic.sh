@@ -20,11 +20,19 @@ servers_family_list=${11}
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
+NETWORKING_DEVICES_LIST="$CLI_PATH/devices_network"
+NETWORKING_DEVICE_INDEX="1"
+NETWORKING_PORT_INDEX="1"
 WORKFLOW="opennic"
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 
 #derived
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
+
+#get devices number
+if [ -s "$NETWORKING_DEVICES_LIST" ]; then
+  source "$CLI_PATH/common/device_list_check" "$NETWORKING_DEVICES_LIST"
+fi
 
 #get hostname
 url="${HOSTNAME}"
@@ -85,7 +93,8 @@ after=${after%:}
 eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
 
 #get system mask
-mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
+#mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
+mellanox_name=$($CLI_PATH/get/get_nic_config $NETWORKING_DEVICE_INDEX $NETWORKING_PORT_INDEX DEVICE)
 netmask=$(ifconfig "$mellanox_name" | grep 'netmask' | awk '{print $4}')
 
 #get device mac address
