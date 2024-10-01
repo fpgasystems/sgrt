@@ -11,7 +11,7 @@ DEVICE_LIST_FPGA="$CLI_PATH/devices_acap_fpga"
 DEVICE_LIST_GPU="$CLI_PATH/devices_gpu"
 DEVICE_TYPE_NAME_STR_LENGTH=20
 SERIAL_NUMBER_STR_LENGTH=13
-NETWORKING_STR_LENGTH=35
+NETWORKING_STR_LENGTH=33
 
 #legend
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
@@ -44,13 +44,13 @@ split_addresses (){
 }
 
 print_nic_devices_header (){
-  echo -e "${bold}${COLOR_ON1}Device Index : BDF     : Device Type (Name)   : Networking                          : Device (state) ${COLOR_OFF}${normal}"
-  echo -e "${bold}${COLOR_ON1}--------------------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
+  echo -e "${bold}${COLOR_ON1}Device Index : BDF     : Device Type (Name)   : Networking                        : Device (state) ${COLOR_OFF}${normal}"
+  echo -e "${bold}${COLOR_ON1}------------------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
 }
 
 print_reconfigurable_devices_header (){
-  echo -e "${bold}${COLOR_ON2}Device Index : Upstream port (BDF) : Device Type (Name)   : Serial Number : Networking                          : Workflow${COLOR_OFF}${normal}"
-  echo -e "${bold}${COLOR_ON2}--------------------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
+  echo -e "${bold}${COLOR_ON2}Device Index : Upstream port (BDF) : Device Type (Name)   : Serial Number : Networking                        : Workflow${COLOR_OFF}${normal}"
+  echo -e "${bold}${COLOR_ON2}------------------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
 }
 
 print_gpu_devices_header (){
