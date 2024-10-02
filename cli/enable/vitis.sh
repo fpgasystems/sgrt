@@ -10,6 +10,12 @@ VITIS_PATH="$XILINX_TOOLS_PATH/Vitis"
 url="${HOSTNAME}"
 hostname="${url%%.*}"
 
+#early exit
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+if [ "$is_build" = "0" ]; then
+    (return 0 2>/dev/null) && return 1 || exit 1
+fi
+
 #inputs
 read -a flags <<< "$@"
 
