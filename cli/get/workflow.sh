@@ -1,7 +1,22 @@
 #!/bin/bash
 
+CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
+
+#early exit
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+IS_GPU_DEVELOPER="1"
+is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer)
+if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+    exit
+fi
 
 is_opennic(){
     local device_index=$1
@@ -32,7 +47,6 @@ is_opennic(){
 }
 
 #constants
-CLI_PATH="$(dirname "$(dirname "$0")")"
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 
 #get hostname
