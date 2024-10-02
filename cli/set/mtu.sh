@@ -11,6 +11,10 @@ normal=$(tput sgr0)
 interface_name=$2
 mtu_value=$4
 
+#constants
+MTU_MAX=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MAX)
+MTU_MIN=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MIN)
+
 calculate_closest_mtu() {
     local desired_mtu=$1
     local header_size=$2
@@ -32,13 +36,8 @@ mtu_value=$(calculate_closest_mtu $mtu_value $IPV6_HEADER_SIZE $PAYLOAD_MULTIPLE
 
 #verify MTU is between valid range
 if [ "$mtu_value" -lt "$MTU_MIN" ] || [ "$mtu_value" -gt "$MTU_MAX" ]; then
-    #mtu_value=$MTU_DEFAULT
     exit
 fi
-
-#get Mellanox name
-#mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
-#mellanox_name=$($CLI_PATH/get/get_nic_config $NETWORKING_DEVICE_INDEX $NETWORKING_PORT_INDEX DEVICE)
 
 #set mtu_value
 sudo ifconfig $interface_name mtu $mtu_value up
