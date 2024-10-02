@@ -32,8 +32,8 @@
     common: false
     directories: false
     enable: false
-    examine: true
-    get: true
+    examine: false
+    get: false
     help: false
     hip: false
     new: false
@@ -41,7 +41,7 @@
     program: false
     reboot: false
     run: false
-    set: false
+    set: true
     sgutil: false 
     update: false
     validate: false
@@ -300,6 +300,7 @@
         - ssh_key_add
         - target_dialog
         - target_dialog_check
+        - value_dialog_check
         - version_dialog
         - version_dialog_check
         - xclbin_dialog
