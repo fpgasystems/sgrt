@@ -2551,12 +2551,6 @@ case "$command" in
 
         #run
         $CLI_PATH/set/mtu --interface $interface_name --value $mtu_value
-
-        #echo "HEY I am here"
-        #exit
-
-        #command_run $command_arguments_flags"@"$valid_flags
-
         ;;
       *)
         set_help
