@@ -12,6 +12,11 @@
 </p>
 
 ### Flags
+<code>-i, --interface <string></code>
+<p>
+  &nbsp; &nbsp; Interface name (according to ifconfig).
+</p>
+
 <code>-v, --value <string></code>
 <p>
   &nbsp; &nbsp; Maximum Transmission Unit (MTU) value (in bytes).

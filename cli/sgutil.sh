@@ -179,6 +179,8 @@ CHECK_ON_DRIVER_PARAMS_ERR_MSG="Please, choose a valid list of module parameters
 CHECK_ON_FEC_ERR_MSG="Please, choose a valid FEC option."
 CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to your GitHub account."
 CHECK_ON_HOSTNAME_ERR_MSG="Sorry, this command is not available on $hostname."
+CHECK_ON_IFACE_ERR_MSG="Please, choose a valid interface name."
+CHECK_ON_VALUE_ERR_MSG="Please, choose a valid value."
 CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
 CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
 CHECK_ON_PUSH_ERR_MSG="Please, choose a valid push option."
@@ -566,6 +568,34 @@ gpu_check() {
   fi
 }
 
+iface_check() {
+  local CLI_PATH=$1
+  #local VALUE_MIN=$2
+  #local VALUE_MAX=$3
+  #local arguments=$4
+  #local multiple_devices=$5
+  #local MAX_DEVICES=$6
+  shift 1
+  local flags_array=("$@")
+  result="$("$CLI_PATH/common/iface_dialog_check" "${flags_array[@]}")"
+  interface_found=$(echo "$result" | sed -n '1p')
+  interface_name=$(echo "$result" | sed -n '2p')
+  #forbidden combinations
+  if [ "$interface_found" = "0" ] || ([ "$interface_found" = "1" ] && [ "$interface_name" = "" ]); then
+      echo ""
+      echo $CHECK_ON_IFACE_ERR_MSG
+      echo ""
+      exit
+  fi
+  #check if the interface is not present in the ifconfig output
+  if ! ifconfig | grep -q "^${interface_name}"; then
+      echo ""
+      echo $CHECK_ON_IFACE_ERR_MSG
+      echo ""
+      exit
+  fi
+}
+
 new_dialog() {
   local CLI_PATH=$1
   local MY_PROJECTS_PATH=$2
@@ -908,6 +938,34 @@ sudo_check() {
     echo $CHECK_ON_SUDO_ERR_MSG
     echo ""
     exit 1
+  fi
+}
+
+value_check() {
+  local CLI_PATH=$1
+  local VALUE_MIN=$2
+  local VALUE_MAX=$3
+  #local arguments=$4
+  #local multiple_devices=$5
+  #local MAX_DEVICES=$6
+  shift 3
+  local flags_array=("$@")
+  result="$("$CLI_PATH/common/value_dialog_check" "${flags_array[@]}")"
+  value_found=$(echo "$result" | sed -n '1p')
+  value=$(echo "$result" | sed -n '2p')
+  #forbidden combinations
+  if [ "$value_found" = "0" ] || ([ "$value_found" = "1" ] && [ "$value" = "" ]); then
+      echo ""
+      echo $CHECK_ON_VALUE_ERR_MSG
+      echo ""
+      exit
+  fi
+  # Check if MTU_VALUE is a valid integer and within the valid range
+  if ! [[ "$value" =~ ^[0-9]+$ ]] || [ "$value" -lt "$VALUE_MIN" ] || [ "$value" -gt "$VALUE_MAX" ]; then
+      echo ""
+      echo "$CHECK_ON_VALUE_ERR_MSG"
+      echo ""
+      exit
   fi
 }
 
@@ -1404,6 +1462,7 @@ set_mtu_help() {
     echo "Sets a valid MTU value to your host networking interface."
     echo ""
     echo "FLAGS:"
+    echo "   ${bold}-i, --interface${normal} - Interface name (according to ${bold}ifconfig${normal})."
     echo "   ${bold}-v, --value${normal}     - Maximum Transmission Unit (MTU) value between ${bold}$MTU_MIN${normal} and ${bold}$MTU_MAX${normal} bytes."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -2453,8 +2512,29 @@ case "$command" in
             exit 1
         fi
 
-        valid_flags="-v --value -h --help"
+        #check on groups
+        vivado_developers_check "$USER"
+
+        valid_flags="-i --interface -v --value -h --help"
+        #command_run $command_arguments_flags"@"$valid_flags
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #checks (command line)
+        if [ "$flags_array" = "" ]; then
+          set_mtu_help
+        else
+          value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "${flags_array[@]}"
+          iface_check "$CLI_PATH" "${flags_array[@]}"
+        fi
+
+        echo "HEY I am here"
+        exit
+
         command_run $command_arguments_flags"@"$valid_flags
+
         ;;
       *)
         set_help

@@ -429,7 +429,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--help" -- ${cur})) 
                             ;;
                         mtu)
-                            COMPREPLY=($(compgen -W "--value --help" -- ${cur})) 
+                            COMPREPLY=($(compgen -W "--interface --value --help" -- ${cur})) 
                             ;;
                     esac
                     ;;
@@ -496,6 +496,10 @@ _sgutil_completions()
 
             other_flags=( "--commit" "--config" "--device" "--project" )
             command_completion_5 "$cur" "$COMP_CWORD" "run" "opennic" "${other_flags[@]}"
+
+            #set
+            other_flags=( "--interface" "--value" )
+            command_completion_5 "$cur" "$COMP_CWORD" "set" "mtu" "${other_flags[@]}"
 
             #validate
             other_flags=( "--commit" "--device" "--fec" )
