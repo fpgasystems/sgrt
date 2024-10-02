@@ -945,14 +945,17 @@ value_check() {
   local CLI_PATH=$1
   local VALUE_MIN=$2
   local VALUE_MAX=$3
+  local STRING=$4
   #local arguments=$4
   #local multiple_devices=$5
   #local MAX_DEVICES=$6
-  shift 3
+  shift 4
   local flags_array=("$@")
   result="$("$CLI_PATH/common/value_dialog_check" "${flags_array[@]}")"
   value_found=$(echo "$result" | sed -n '1p')
   value=$(echo "$result" | sed -n '2p')
+  #add string after valid
+  CHECK_ON_VALUE_ERR_MSG=$(echo "$CHECK_ON_VALUE_ERR_MSG" | sed "s/\(valid\)/\1 $STRING/")
   #forbidden combinations
   if [ "$value_found" = "0" ] || ([ "$value_found" = "1" ] && [ "$value" = "" ]); then
       echo ""
@@ -2526,7 +2529,23 @@ case "$command" in
         if [ "$flags_array" = "" ]; then
           set_mtu_help
         else
-          value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "${flags_array[@]}"
+          #value
+          result="$("$CLI_PATH/common/value_dialog_check" "${flags_array[@]}")"
+          value_found=$(echo "$result" | sed -n '1p')
+          value=$(echo "$result" | sed -n '2p')
+          #iface
+          result="$("$CLI_PATH/common/iface_dialog_check" "${flags_array[@]}")"
+          interface_found=$(echo "$result" | sed -n '1p')
+          interface_name=$(echo "$result" | sed -n '2p')
+
+          #reversed order
+          if [ "$interface_found" = "1" ] && [ "$value_found" = "0" ]; then
+            iface_check "$CLI_PATH" "${flags_array[@]}"
+            value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
+          fi
+
+          #natural order
+          value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
           iface_check "$CLI_PATH" "${flags_array[@]}"
         fi
 
