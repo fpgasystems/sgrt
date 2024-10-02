@@ -276,6 +276,7 @@
         - gh_auth_status
         - gh_commit_check
         - git_clone_opennic
+        - iface_dialog_check
         - is_acap
         - is_build
         - is_enabled
