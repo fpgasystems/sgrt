@@ -33,8 +33,10 @@ if [ ${#servers[@]} -ne 0 ]; then
     for i in "${servers[@]}"
     do
         echo ""
-        ssh-keygen -R $i-mellanox-0
-        ssh-keyscan -H $i-mellanox-0 >> ~/.ssh/known_hosts #> /dev/null
+        ssh-keygen -R $i > /dev/null
+        #ssh-keygen -R $i-mellanox-0 > /dev/null
+        #ssh-keyscan -H $i-mellanox-0 >> ~/.ssh/known_hosts #> /dev/null
+        ssh-keyscan -H $i >> ~/.ssh/known_hosts #> /dev/null
         sleep 1
     done
     echo ""
