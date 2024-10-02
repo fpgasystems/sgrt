@@ -2531,15 +2531,15 @@ case "$command" in
         else
           #value
           result="$("$CLI_PATH/common/value_dialog_check" "${flags_array[@]}")"
-          value_found=$(echo "$result" | sed -n '1p')
-          value=$(echo "$result" | sed -n '2p')
+          mtu_value_found=$(echo "$result" | sed -n '1p')
+          mtu_value=$(echo "$result" | sed -n '2p')
           #iface
           result="$("$CLI_PATH/common/iface_dialog_check" "${flags_array[@]}")"
           interface_found=$(echo "$result" | sed -n '1p')
           interface_name=$(echo "$result" | sed -n '2p')
 
           #reversed order
-          if [ "$interface_found" = "1" ] && [ "$value_found" = "0" ]; then
+          if [ "$interface_found" = "1" ] && [ "$mtu_value_found" = "0" ]; then
             iface_check "$CLI_PATH" "${flags_array[@]}"
             value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
           fi
@@ -2549,10 +2549,13 @@ case "$command" in
           iface_check "$CLI_PATH" "${flags_array[@]}"
         fi
 
-        echo "HEY I am here"
-        exit
+        #run
+        $CLI_PATH/set/mtu --interface $interface_name --value $mtu_value
 
-        command_run $command_arguments_flags"@"$valid_flags
+        #echo "HEY I am here"
+        #exit
+
+        #command_run $command_arguments_flags"@"$valid_flags
 
         ;;
       *)
