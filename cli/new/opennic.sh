@@ -84,7 +84,7 @@ chmod +x $DIR/config_add
 chmod +x $DIR/config_delete
 
 #get interface name
-mellanox_name=$($CLI_PATH/get/get_nic_config $NETWORKING_DEVICE_INDEX $NETWORKING_PORT_INDEX DEVICE)
+interface_name=$($CLI_PATH/get/get_nic_config $NETWORKING_DEVICE_INDEX $NETWORKING_PORT_INDEX DEVICE)
 
 #read SERVERS_LISTS excluding the current hostname
 IFS=$'\n' read -r -d '' -a remote_servers < <(cat "$ACAP_SERVERS_LIST" "$BUILD_SERVERS_LIST" "$FPGA_SERVERS_LIST" "$GPU_SERVERS_LIST" | grep -v "^$hostname$" | sort -u && printf '\0')
@@ -94,7 +94,7 @@ target_host=""
 connected=""
 for server in "${remote_servers[@]}"; do
     # Check connectivity to the current server
-    if [[ "$(check_connectivity "$mellanox_name" "$server")" == "1" ]]; then
+    if [[ "$(check_connectivity "$interface_name" "$server")" == "1" ]]; then
         target_host="$server"
         break
     fi

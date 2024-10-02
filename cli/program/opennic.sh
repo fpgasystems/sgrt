@@ -93,9 +93,8 @@ after=${after%:}
 eno_onic=$(comm -13 <(echo "$before" | sort) <(echo "$after" | sort))
 
 #get system mask
-#mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
-mellanox_name=$($CLI_PATH/get/get_nic_config $NETWORKING_DEVICE_INDEX $NETWORKING_PORT_INDEX DEVICE)
-netmask=$(ifconfig "$mellanox_name" | grep 'netmask' | awk '{print $4}')
+interface_name=$($CLI_PATH/get/get_nic_config $NETWORKING_DEVICE_INDEX $NETWORKING_PORT_INDEX DEVICE)
+netmask=$(ifconfig "$interface_name" | grep 'netmask' | awk '{print $4}')
 
 #get device mac address
 MACs=$($CLI_PATH/get/get_fpga_device_param $device_index MAC)
