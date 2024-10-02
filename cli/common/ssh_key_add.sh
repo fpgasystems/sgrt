@@ -25,6 +25,9 @@ else
     echo ""
 fi
 
+#create if does not exist
+[ -f ~/.ssh/known_hosts ] || touch ~/.ssh/known_hosts
+
 if [ ${#servers[@]} -ne 0 ]; then
     ## add SSH (mellanox-0) fingerprints to local known_hosts
     echo "${bold}Adding fingerprints to known_hosts:${normal}"
