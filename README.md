@@ -26,7 +26,6 @@ SGRT includes a command-line interpreter (CLI) and an API, **both utilizing an i
 * [Developers guide](./developers-guide.md#developers-guide)
 * [Disclaimer](#disclaimer)
 * [Features](./features.md#features)
-* [HACC validation](./hacc-validation.md#hacc-validation)
 * [Installation](https://github.com/fpgasystems/sgrt_install#--systems-group-runtime-installation)
 * [License](#license)
 * [Known limitations](./known-limitations.md#known-limitations)
