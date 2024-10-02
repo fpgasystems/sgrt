@@ -7,6 +7,12 @@ normal=$(tput sgr0)
 #usage:       $CLI_PATH/sgutil build opennic --commit $commit_name_shell $commit_name_driver --platform                      $platform_name --project $project_name --version $vivado_version --all $all 
 #example: /opt/sgrt/cli/sgutil build opennic --commit            8077751             1cf2578 --platform xilinx_u55c_gen3x16_xdma_3_202210_1 --project   hello_world --version          2022.2 --all    1 
 
+#early exit
+is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+if [ "$is_vivado_developer" = "0" ]; then
+    exit 1
+fi
+
 #inputs
 commit_name=$2
 commit_name_driver=$3
