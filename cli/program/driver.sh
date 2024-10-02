@@ -7,9 +7,27 @@ normal=$(tput sgr0)
 #usage:       $CLI_PATH/sgutil program driver --insert $driver_name --params $params_string
 #example: /opt/sgrt/cli/sgutil program driver --insert      onic.ko --params RS_FEC_ENABLED=0
 
+#early exit
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+IS_GPU_DEVELOPER="1"
+is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer)
+if [ "$vivado_enabled" = "0" ]; then
+    exit
+fi
+
 #inputs
 driver_name=$2
 params_string=$4
+
+#all inputs must be provided (params_string can be empty)
+if [ "$driver_name" = "" ]; then
+    exit
+fi
 
 #constants
 MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
