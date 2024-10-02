@@ -4,24 +4,6 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#constants
-#MTU_MIN=1500
-#MTU_MAX=9000
-#MTU_DEFAULT=1576 # (1576 - 40) / 64 = 24
-CHECK_ON_MTU_ERR_MSG="Please, choose a valid MTU value."
-IPV6_HEADER_SIZE=40
-MTU_DEFAULT=$($CLI_PATH/common/get_constant $CLI_PATH MTU_DEFAULT)
-MTU_MAX=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MAX)
-MTU_MIN=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MIN)
-PAYLOAD_MULTIPLES=64
-
-#get hostname
-#url="${HOSTNAME}"
-#hostname="${url%%.*}"
-
-#get username
-#username=$USER
-
 calculate_closest_mtu() {
     local desired_mtu=$1
     local header_size=$2
@@ -33,6 +15,32 @@ calculate_closest_mtu() {
 
     echo $closest_mtu
 }
+
+#constants
+#MTU_MIN=1500
+#MTU_MAX=9000
+#MTU_DEFAULT=1576 # (1576 - 40) / 64 = 24
+CHECK_ON_MTU_ERR_MSG="Please, choose a valid MTU value."
+IPV6_HEADER_SIZE=40
+MTU_DEFAULT=$($CLI_PATH/common/get_constant $CLI_PATH MTU_DEFAULT)
+MTU_MAX=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MAX)
+MTU_MIN=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MIN)
+NETWORKING_DEVICES_LIST="$CLI_PATH/devices_network"
+NETWORKING_DEVICE_INDEX="1"
+NETWORKING_PORT_INDEX="1"
+PAYLOAD_MULTIPLES=64
+
+#get devices number
+if [ -s "$NETWORKING_DEVICES_LIST" ]; then
+  source "$CLI_PATH/common/device_list_check" "$NETWORKING_DEVICES_LIST"
+fi
+
+#get hostname
+#url="${HOSTNAME}"
+#hostname="${url%%.*}"
+
+#get username
+#username=$USER
 
 #check for vivado_developers
 member=$($CLI_PATH/common/is_member $USER vivado_developers)
@@ -87,7 +95,8 @@ if [ "$mtu_found" = "1" ]; then
     fi
 
     #get Mellanox name
-    mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
+    #mellanox_name=$(nmcli dev | grep mellanox-0 | awk '{print $1}')
+    mellanox_name=$($CLI_PATH/get/get_nic_config $NETWORKING_DEVICE_INDEX $NETWORKING_PORT_INDEX DEVICE)
 
     #set mtu_value
     sudo ifconfig $mellanox_name mtu $mtu_value up
