@@ -1,10 +1,16 @@
 #!/bin/bash
 
+CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+#early exit
+IS_GPU_DEVELOPER="1"
+if [ "$IS_GPU_DEVELOPER" = "0" ]; then
+    exit 1
+fi
+
 #constants
-CLI_PATH="$(dirname "$(dirname "$0")")"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="hip"
 
