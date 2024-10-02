@@ -40,9 +40,14 @@ if [ "$mtu_value" -lt "$MTU_MIN" ] || [ "$mtu_value" -gt "$MTU_MAX" ]; then
 fi
 
 #set mtu_value
-sudo ifconfig $interface_name mtu $mtu_value up
+sudo ifconfig $interface_name mtu $mtu_value up > /dev/null 2>&1
+
+# Verify if the MTU change was successful
+new_mtu=$(ifconfig $interface_name | grep -oP 'mtu \K\d+')
 
 #print message
-echo ""
-echo "$interface_name MTU was set to $mtu_value bytes!"
-echo ""
+if [ "$new_mtu" -eq "$mtu_value" ]; then
+    echo ""
+    echo "$interface_name MTU was set to $mtu_value bytes!"
+    echo ""
+fi
