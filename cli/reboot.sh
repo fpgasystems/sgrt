@@ -4,11 +4,9 @@ CLI_PATH="$(dirname "$0")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#get hostname
+#early exit
 url="${HOSTNAME}"
 hostname="${url%%.*}"
-
-#early exit
 is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
