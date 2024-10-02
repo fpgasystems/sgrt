@@ -32,6 +32,11 @@ commit_name_driver=$3
 new_name=$5
 push_option=$7
 
+#all inputs must be provided
+if [ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ] || [ "$new_name" = "" ] || [ "$push_option" = "" ]; then
+    exit
+fi
+
 #constants
 ACAP_SERVERS_LIST="$CLI_PATH/constants/ACAP_SERVERS_LIST"
 BUILD_SERVERS_LIST="$CLI_PATH/constants/BUILD_SERVERS_LIST"

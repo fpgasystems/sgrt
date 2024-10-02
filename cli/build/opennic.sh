@@ -21,6 +21,11 @@ project_name=$7
 vivado_version=$9
 all=${11}
 
+#all inputs must be provided
+if [ "$commit_name" = "" ] || [ "$commit_name_driver" = "" ] || [ "$platform_name" = "" ] || [ "$project_name" = "" ] || [ "$vivado_version" = "" ] || [ "$all" = "" ]; then
+    exit
+fi
+
 #constants
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
