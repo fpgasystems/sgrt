@@ -193,6 +193,7 @@ CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
 CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
 CHECK_ON_PUSH_ERR_MSG="Please, choose a valid push option."
 CHECK_ON_REMOTE_ERR_MSG="Please, choose a valid deploy option."
+CHECK_ON_REVERT_ERR_MSG="Please, revert your device first."
 CHECK_ON_SUDO_ERR_MSG="Sorry, this command requires sudo capabilities."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
@@ -2212,15 +2213,28 @@ case "$command" in
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
+          if [ ! "$workflow" = "vitis" ]; then
+              echo ""
+              echo $CHECK_ON_REVERT_ERR_MSG
+              echo ""
+              exit
+          fi
         fi
 
         xrt_check "$CLI_PATH"
         echo ""
-        
+
         #dialogs
         echo "${bold}$CLI_NAME $command $arguments${normal}"
         echo ""
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
+        if [ ! "$workflow" = "vitis" ]; then
+            echo $CHECK_ON_REVERT_ERR_MSG
+            echo ""
+            exit
+        fi
         xrt_shell_check "$CLI_PATH" "$device_index"
 
         #run
