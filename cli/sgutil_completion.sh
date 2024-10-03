@@ -159,7 +159,10 @@ _sgutil_completions()
             fi
             #if [[ ! "$is_build" = "1" ]] && ([[ "$vitis_integrations" = "1" ]] || [[ "$vivado_enabled" = "1" ]]); then
             if [[ ! "$is_build" = "1" ]] && [[ "$vivado_enabled" = "1" ]]; then
-                commands="${commands} program run"
+                commands="${commands} program"
+            fi
+            if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
+                commands="${commands} run"
             fi
 
             # Check on groups
