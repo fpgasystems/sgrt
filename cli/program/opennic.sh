@@ -5,8 +5,21 @@ CLI_NAME="sgutil"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil program opennic --commit $comit_id --device $device_index --project $project_name --remote $remote_option --version $vivado_version
-#example: /opt/sgrt/cli/sgutil program opennic --commit   8077751 --device             1 --project   hello_world --remote              0 --version          2022.1
+#usage:       $CLI_PATH/sgutil program opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option 
+#example: /opt/sgrt/cli/sgutil program opennic --commit      8077751 --device             1 --project   hello_world --version          2022.1 --remote              0 
+
+#early exit
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+IS_GPU_DEVELOPER="1"
+is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer)
+if [ "$vivado_enabled" = "0" ]; then
+    exit
+fi
 
 #inputs
 commit_name=$2
@@ -15,6 +28,11 @@ project_name=$6
 vivado_version=$8
 deploy_option=${10}
 servers_family_list=${11}
+
+#all inputs must be provided
+if [ "$commit_name" = "" ] || [ "$device_index" = "" ] || [ "$project_name" = "" ] || [ "$vivado_version" = "" ] || [ "$deploy_option" = "" ]; then
+    exit
+fi
 
 #constants
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
