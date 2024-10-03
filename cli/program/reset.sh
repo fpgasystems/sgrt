@@ -33,22 +33,6 @@ fi
 #constants
 XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
 
-#get workflow (print echo)
-workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
-
-#revert
-#if [ ! "$workflow" = "vitis" ]; then
-#    #echo "${bold}$CLI_NAME program revert${normal}"    
-#    #echo ""
-#    echo ""Please, revert your device first.""
-#    echo ""
-#    exit
-#fi
-#$CLI_PATH/program/revert -d $device_index --version $vivado_version
-#if [[ "$workflow" = "vivado" ]]; then
-#    echo ""
-#fi
-
 #get BDF (i.e., Bus:Device.Function) 
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 bdf="${upstream_port%?}1"
