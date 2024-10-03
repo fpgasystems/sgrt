@@ -5,8 +5,8 @@ CLI_NAME="sgutil"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil program reset --device $device_index --version $vivado_version
-#example: /opt/sgrt/cli/sgutil program reset --device             1 --version          2022.2
+#usage:       $CLI_PATH/sgutil program reset --device $device_index
+#example: /opt/sgrt/cli/sgutil program reset --device             1
 
 #early exit
 url="${HOSTNAME}"
@@ -23,10 +23,9 @@ fi
 
 #inputs
 device_index=$2
-vivado_version=$4
 
 #all inputs must be provided
-if [ "$device_index" = "" ] || [ "$vivado_version" = "" ]; then
+if [ "$device_index" = "" ]; then
     exit
 fi
 

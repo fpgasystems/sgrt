@@ -2238,7 +2238,7 @@ case "$command" in
         xrt_shell_check "$CLI_PATH" "$device_index"
 
         #run
-        $CLI_PATH/program/reset --device $device_index --version $vivado_version
+        $CLI_PATH/program/reset --device $device_index
         ;;
       revert)
         #check on server (relates to sgutil_completion)
