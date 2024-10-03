@@ -1239,10 +1239,8 @@ get_topo_help() {
 
 get_workflow_help() {  
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "workflow" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "workflow" $is_acap "-" $is_fpga "-" "-"
   exit
 }
 
@@ -1918,7 +1916,8 @@ case "$command" in
         ;;
       workflow)
         #check on server (relates to sgutil_completion)
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+        #if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
 
