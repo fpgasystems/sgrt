@@ -82,7 +82,11 @@ cli_help() {
   echo "    ${bold}enable${normal}         - Enables your favorite development and deployment tools."
   fi
   echo "    ${bold}examine${normal}        - Status of the system and devices."
+  if [ "$is_build" = "1" ]; then
+  echo "    ${bold}get${normal}            - Host information."
+  else
   echo "    ${bold}get${normal}            - Devices and host information."
+  fi
   if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
   echo "    ${bold}new${normal}            - Creates a new project of your choice."
   fi
@@ -95,7 +99,11 @@ cli_help() {
   if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
   echo "    ${bold}run${normal}            - Executes the accelerated application on a given device."
   fi
+  if [ "$is_build" = "1" ]; then
+  echo "    ${bold}set${normal}            - Host configuration."
+  else
   echo "    ${bold}set${normal}            - Devices and host configuration."
+  fi
   if [ "$is_sudo" = "1" ]; then
   echo "    ${bold}update${normal}         - Updates $CLI_NAME to its latest version."
   fi
