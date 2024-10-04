@@ -90,7 +90,8 @@ cli_help() {
   if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
   echo "    ${bold}new${normal}            - Creates a new project of your choice."
   fi
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  #if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
   echo "    ${bold}program${normal}        - Driver and bitstream programming."
   fi
   if [ "$is_sudo" = "1" ] || ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
@@ -1250,18 +1251,23 @@ new_opennic_help() {
 # program ------------------------------------------------------------------------------------------------------------------------
 
 program_help() {
-  if [ "$vivado_enabled" = "1" ]; then
+  #if [ "$vivado_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
     echo ""
     echo "${bold}$CLI_NAME program [arguments [flags]] [--help]${normal}"
     echo ""
     echo "Driver and bitstream programming."
     echo ""
     echo "ARGUMENTS:"
+    if [ "$is_vivado_developer" = "1" ]; then
     echo "   ${bold}driver${normal}          - Inserts or removes a driver or module into the Linux kernel."
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Programs OpenNIC to a given device."
+    fi
     echo -e "   ${bold}${COLOR_ON2}reset${COLOR_OFF}${normal}           - Performs a 'HOT Reset' on a Vitis device."
     echo -e "   ${bold}${COLOR_ON2}revert${COLOR_OFF}${normal}          - Returns a device to its default fabric setup."
+    if [ "$is_vivado_developer" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}vivado${COLOR_OFF}${normal}          - Programs a Vivado bitstream to a given device."
+    fi
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
@@ -1272,14 +1278,14 @@ program_help() {
 }
 
 program_driver_help() {
-  if [ "$vivado_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_driver $CLI_NAME
   fi
   exit
 }
 
 program_opennic_help() {
-  if [ "$vivado_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_opennic $CLI_PATH $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
     echo ""
@@ -1288,7 +1294,7 @@ program_opennic_help() {
 }
 
 program_reset_help() {
-  if [ "$vivado_enabled" = "1" ]; then
+  if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
     $CLI_PATH/help/program_reset $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
     echo ""
@@ -1297,7 +1303,7 @@ program_reset_help() {
 }
 
 program_revert_help() {
-  if [ "$vivado_enabled" = "1" ]; then
+  if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
     $CLI_PATH/help/program_revert $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
     echo ""
@@ -1306,7 +1312,7 @@ program_revert_help() {
 }
 
 program_vivado_help() {
-  if [ "$vivado_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_vivado $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
     echo ""
@@ -2032,7 +2038,8 @@ case "$command" in
         ;;
       driver)
         #check on server (relates to sgutil_completion)
-        if [ "$vivado_enabled" = "0" ]; then
+        #if [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
         fi
 
@@ -2100,7 +2107,7 @@ case "$command" in
         ;;
       opennic)
         #check on server (relates to sgutil_completion)
-        if [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
         fi
 
@@ -2163,7 +2170,7 @@ case "$command" in
         ;;
       reset)
         #check on server (relates to sgutil_completion)
-        if [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
 
@@ -2214,7 +2221,7 @@ case "$command" in
         ;;
       revert)
         #check on server (relates to sgutil_completion)
-        if [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
 
@@ -2277,7 +2284,7 @@ case "$command" in
         ;;
       vivado)
         #check on server (relates to sgutil_completion)
-        if [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
         fi
 

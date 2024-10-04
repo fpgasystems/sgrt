@@ -7,10 +7,27 @@ normal=$(tput sgr0)
 #usage:       $CLI_PATH/sgutil program vivado --bitstream         $bitstream_name --device $device_index --version $vivado_version
 #example: /opt/sgrt/cli/sgutil program vivado --bitstream    path_to_my_shell.bit --device             1 --version          2022.1
 
+#arly exit
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+    exit
+fi
+
 #inputs
 bitstream_name=$2
 device_index=$4
 vivado_version=$6
+
+#all inputs must be provided
+if [ "$bitstream_name" = "" ] || [ "$device_index" = "" ] || [ "$vivado_version" = "" ]; then
+    exit
+fi
 
 #constants
 SERVERADDR="localhost"

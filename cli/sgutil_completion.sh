@@ -157,7 +157,7 @@ _sgutil_completions()
             if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
                 commands="${commands} run"
             fi
-            if [[ ! "$is_build" = "1" ]] && [[ "$vivado_enabled" = "1" ]]; then
+            if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
                 commands="${commands} program"
             fi
             if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
@@ -229,9 +229,9 @@ _sgutil_completions()
                     #COMPREPLY=($(compgen -W "hip opennic --help" -- ${cur}))
                     ;;
                 program)
-                    commands="--help"
-                    if [ "$vivado_enabled" = "1" ]; then
-                        commands="${commands} driver opennic reset revert vivado"
+                    commands="reset revert --help"
+                    if [ "$is_vivado_developer" = "1" ]; then
+                        commands="${commands} driver opennic vivado"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))

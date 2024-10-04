@@ -7,9 +7,23 @@ normal=$(tput sgr0)
 #usage:       $CLI_PATH/sgutil program revert --device $device_index --version $vivado_version
 #example: /opt/sgrt/cli/sgutil program revert --device             1 --version          2022.2
 
+#early exit
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
+    exit
+fi
+
 #inputs
 device_index=$2
 vivado_version=$4
+
+#all inputs must be provided
+if [ "$device_index" = "" ] || [ "$vivado_version" = "" ]; then
+    exit
+fi
 
 #constants
 #MY_DRIVERS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_DRIVERS_PATH)
