@@ -1398,7 +1398,7 @@ set_help() {
     echo "   ${bold}license${normal}         - Configures a set of verified license servers for Xilinx tools."
     fi
     if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
-    echo "   ${bold}mtu${normal}             - Sets a valid MTU value to your host networking interface."
+    echo "   ${bold}mtu${normal}             - Sets a valid MTU value to a device."
     fi
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -1446,7 +1446,7 @@ set_mtu_help() {
     echo ""
     echo "${bold}$CLI_NAME set mtu [flags] [--help]${normal}"
     echo ""
-    echo "Sets a valid MTU value to your host networking interface."
+    echo "Sets a valid MTU value to a device."
     echo ""
     echo "FLAGS:"
     echo "   ${bold}-i, --interface${normal} - Interface name (according to ${bold}ifconfig${normal})."

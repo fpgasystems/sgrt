@@ -8,7 +8,7 @@
 
 <code>sgutil set mtu [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Sets a valid MTU value to your host networking interface.
+  &nbsp; &nbsp; Sets a valid MTU value to a device.
 </p>
 
 ### Flags
