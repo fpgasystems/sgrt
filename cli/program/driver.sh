@@ -13,7 +13,6 @@ hostname="${url%%.*}"
 is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-#vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_fpga "0" "0" $is_vivado_developer)
 vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 if [ "$vivado_enabled" = "0" ]; then
     exit
