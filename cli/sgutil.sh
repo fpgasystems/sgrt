@@ -38,6 +38,7 @@ hostname="${url%%.*}"
 
 #derived
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
+DEVICES_LIST_NETWORKING="$CLI_PATH/devices_network"
 REPO_URL="https://github.com/fpgasystems/$REPO_NAME.git"
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
@@ -65,6 +66,12 @@ if [ -s "$DEVICES_LIST" ]; then
   source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
   MAX_DEVICES=$($CLI_PATH/common/get_max_devices "fpga|acap|asoc" $DEVICES_LIST)
   multiple_devices=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES)
+fi
+
+if [ -s "$DEVICES_LIST_NETWORKING" ]; then
+  source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST_NETWORKING"
+  MAX_DEVICES_NETWORKING=$($CLI_PATH/common/get_max_devices "nic" $DEVICES_LIST_NETWORKING)
+  multiple_devices_networking=$($CLI_PATH/common/get_multiple_devices $MAX_DEVICES_NETWORKING)
 fi
 
 #evaluate integrations
@@ -1449,7 +1456,7 @@ set_mtu_help() {
     echo "Sets a valid MTU value to a device."
     echo ""
     echo "FLAGS:"
-    echo "   ${bold}-i, --interface${normal} - Interface name (according to ${bold}ifconfig${normal})."
+    echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
     echo "   ${bold}-v, --value${normal}     - Maximum Transmission Unit (MTU) value between ${bold}$MTU_MIN${normal} and ${bold}$MTU_MAX${normal} bytes."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -2515,7 +2522,7 @@ case "$command" in
         #check on groups
         vivado_developers_check "$USER"
 
-        valid_flags="-i --interface -v --value -h --help"
+        valid_flags="-d --device -v --value -h --help"
         #command_run $command_arguments_flags"@"$valid_flags
         flags_check $command_arguments_flags"@"$valid_flags
 
@@ -2530,24 +2537,24 @@ case "$command" in
           result="$("$CLI_PATH/common/value_dialog_check" "${flags_array[@]}")"
           mtu_value_found=$(echo "$result" | sed -n '1p')
           mtu_value=$(echo "$result" | sed -n '2p')
-          #iface
-          result="$("$CLI_PATH/common/iface_dialog_check" "${flags_array[@]}")"
-          interface_found=$(echo "$result" | sed -n '1p')
-          interface_name=$(echo "$result" | sed -n '2p')
+          #device
+          result="$("$CLI_PATH/common/device_dialog_check" "${flags_array[@]}")"
+          device_found=$(echo "$result" | sed -n '1p')
+          device_index=$(echo "$result" | sed -n '2p')
 
           #reversed order
-          if [ "$interface_found" = "1" ] && [ "$mtu_value_found" = "0" ]; then
-            iface_check "$CLI_PATH" "${flags_array[@]}"
+          if [ "$device_found" = "1" ] && [ "$mtu_value_found" = "0" ]; then
+            device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices_networking" "$MAX_DEVICES_NETWORKING" "${flags_array[@]}"
             value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
           fi
 
           #natural order
           value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
-          iface_check "$CLI_PATH" "${flags_array[@]}"
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices_networking" "$MAX_DEVICES_NETWORKING" "${flags_array[@]}"
         fi
 
         #run
-        $CLI_PATH/set/mtu --interface $interface_name --value $mtu_value
+        $CLI_PATH/set/mtu --device $device_index --value $mtu_value
         ;;
       *)
         set_help

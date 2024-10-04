@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil set mtu --interface $interface_name --value $mtu_value
-#example: /opt/sgrt/cli/sgutil set mtu --interface       enp35s0f0 --value       1982
+#usage:       $CLI_PATH/sgutil set mtu --device $device_index --value $mtu_value
+#example: /opt/sgrt/cli/sgutil set mtu --device       enp35s0f0 --value       1982
 
 #early exit
 url="${HOSTNAME}"
@@ -17,11 +17,11 @@ if [ "$is_build" = "1" ] || [ "$is_vivado_developer" = "0" ]; then
 fi
 
 #inputs
-interface_name=$2
+device_index=$2
 mtu_value=$4
 
 #all inputs must be provided
-if [ "$interface_name" = "" ] || [ "$mtu_value" = "" ]; then
+if [ "$device_index" = "" ] || [ "$mtu_value" = "" ]; then
     exit
 fi
 
@@ -52,6 +52,10 @@ mtu_value=$(calculate_closest_mtu $mtu_value $IPV6_HEADER_SIZE $PAYLOAD_MULTIPLE
 if [ "$mtu_value" -lt "$MTU_MIN" ] || [ "$mtu_value" -gt "$MTU_MAX" ]; then
     exit
 fi
+
+#get interface_name
+NETWORKING_PORT_INDEX="1"
+interface_name=$($CLI_PATH/get/get_nic_config $device_index $NETWORKING_PORT_INDEX DEVICE)
 
 #set mtu_value
 sudo ifconfig $interface_name mtu $mtu_value up > /dev/null 2>&1

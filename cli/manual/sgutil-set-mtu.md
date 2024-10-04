@@ -12,9 +12,9 @@
 </p>
 
 ### Flags
-<code>-i, --interface <string></code>
+<code>-d, --device <string></code>
 <p>
-  &nbsp; &nbsp; Interface name (according to ifconfig).
+  &nbsp; &nbsp; Device Index (according to sgutil examine).
 </p>
 
 <code>-v, --value <string></code>
