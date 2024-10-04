@@ -33,16 +33,16 @@
     directories: false
     enable: false
     examine: false
-    get: false
-    help: false
+    get: true
+    help: true
     hip: false
     new: false
-    opennic: false
-    program: false
+    opennic: true
+    program: true
     reboot: false
     run: false
-    set: true
-    sgutil: false 
+    set: false
+    sgutil: true 
     update: false
     validate: false
     vitis: false
@@ -279,7 +279,6 @@
         - iface_dialog_check
         - is_acap
         - is_build
-        - is_enabled
         - is_fpga
         - is_gpu
         - is_member
@@ -612,6 +611,7 @@
       loop:
         - check_on_vivado
         - remote_dialog
+        - is_enabled
         - is_cpu
         - enable_integrations
     #constants
