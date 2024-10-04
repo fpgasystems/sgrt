@@ -7,11 +7,28 @@ normal=$(tput sgr0)
 #usage:       $CLI_PATH/sgutil run opennic --commit $commit_name --config $config_index --device $device_index --project $project_name
 #example: /opt/sgrt/cli/sgutil run opennic --commit      8077751 --config             1 --device             1 --project   hello_world
 
+#early exit
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+    exit
+fi
+
 #inputs
 commit_name=$2
 config_index=$4
 device_index=$6
 project_name=$8
+
+#all inputs must be provided
+if [ "$commit_name" = "" ] || [ "$config_index" = "" ] || [ "$device_index" = "" ] || [ "$project_name" = "" ]; then
+    exit
+fi
 
 #constants
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)

@@ -1333,7 +1333,7 @@ reboot_help() {
 # run ------------------------------------------------------------------------------------------------------------------------
 
 run_help() {
-  if [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then #[ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
+  if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
     echo ""
     echo "${bold}$CLI_NAME run [arguments [flags]] [--help]${normal}"
     echo ""
@@ -1356,7 +1356,7 @@ run_help() {
 }
 
 run_hip_help() {
-  if [ "$gpu_enabled" = "1" ]; then #if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME run hip [flags] [--help]${normal}"
     echo ""
@@ -1375,7 +1375,7 @@ run_hip_help() {
 }
 
 run_opennic_help() {
-  if [ "$vivado_enabled" = "1" ]; then #if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/run_opennic $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
     echo ""
@@ -2375,7 +2375,7 @@ case "$command" in
         ;;
       hip)
         #check on server (relates to sgutil_completion)
-        if [ "$gpu_enabled" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
           exit
         fi
 
@@ -2388,7 +2388,7 @@ case "$command" in
         ;;
       opennic)
         #check on server (relates to sgutil_completion)
-        if [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
         fi
 

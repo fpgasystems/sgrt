@@ -1,18 +1,25 @@
 #!/bin/bash
 
+CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+#early exit
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+IS_GPU_DEVELOPER="1"
+is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
+if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
+    exit
+fi
+
 #constants
-CLI_PATH="$(dirname "$(dirname "$0")")"
 ROCM_PATH=$($CLI_PATH/common/get_constant $CLI_PATH ROCM_PATH)
 DEVICES_LIST="$CLI_PATH/devices_gpu"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="hip"
-
-#get hostname
-url="${HOSTNAME}"
-hostname="${url%%.*}"
 
 #verify hip workflow (based on installed software)
 test1=$(dkms status | grep amdgpu)
