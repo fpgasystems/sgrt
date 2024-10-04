@@ -200,15 +200,15 @@ _sgutil_completions()
                     ;;
                 get)
                     commands="ifconfig servers topo --help"
-                    if [ "$is_acap" = "1" ]; then
-                        commands="${commands} bdf clock name memory network platform resource serial slr workflow"
+                    if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
+                        commands="${commands} bdf clock memory name network platform resource serial slr workflow"
                     fi
-                    if [ "$is_build" = "1" ]; then
-                        commands="${commands} ifconfig servers"
-                    fi
-                    if [ "$is_fpga" = "1" ]; then
-                        commands="${commands} bdf clock name memory network platform resource serial slr workflow"
-                    fi
+                    #if [ "$is_build" = "1" ]; then
+                    #    commands="${commands} ifconfig servers"
+                    #fi
+                    #if [ "$is_fpga" = "1" ]; then
+                    #    commands="${commands} bdf clock name memory network platform resource serial slr workflow"
+                    #fi
                     if [ "$is_gpu" = "1" ]; then
                         commands="${commands} bus"
                     fi 

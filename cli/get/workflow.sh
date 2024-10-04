@@ -8,12 +8,7 @@ normal=$(tput sgr0)
 url="${HOSTNAME}"
 hostname="${url%%.*}"
 is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-#is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-#is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-#IS_GPU_DEVELOPER="1"
-#is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-#vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer)
 if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
     exit
 fi

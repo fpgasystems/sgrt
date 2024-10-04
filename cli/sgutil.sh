@@ -1115,55 +1115,48 @@ get_help() {
 
 get_bdf_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bdf" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bdf" $is_acap "-" $is_fpga "-" "-"
   exit
 }
 
 get_bus_help() {
-  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  #is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+  #is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bus" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bus" "-" "-" "-" $is_gpu "-"
   exit 
 }
 
 get_clock_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "clock" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "clock" $is_acap "-" $is_fpga "-" "-"
   exit
 }
 
 get_ifconfig_help() {
-  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "ifconfig" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  #is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+  #is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  #is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+  #$CLI_PATH/help/get $CLI_PATH $CLI_NAME "ifconfig" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "ifconfig" "-" "-" "-" "-" "-"
   exit    
 }
 
 get_memory_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "memory" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "memory" $is_acap "-" $is_fpga "-" "-"
   exit
 }
 
 get_name_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "name" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "name" $is_acap "-" $is_fpga "-" "-"
   exit  
 }
 
@@ -1180,55 +1173,48 @@ get_network_help() {
 
 get_platform_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "platform" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "platform" $is_acap "-" $is_fpga "-" "-"
   exit 
 }
 
 get_resource_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "resource" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "resource" $is_acap "-" $is_fpga "-" "-"
   exit    
 }
 
 get_serial_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "serial" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "serial" $is_acap "-" $is_fpga "-" "-"
   exit  
 }
 
 get_slr_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "slr" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "slr" $is_acap "-" $is_fpga "-" "-"
   exit  
 }
 
 get_syslog_help() {
-  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "syslog" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  #is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  #is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+  is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "syslog" "-" $is_build "-" "-" $is_vivado_developer
   exit  
 }
 
 get_servers_help() {
-  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "servers" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  #is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+  #is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  #is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "servers" "-" "-" "-" "-" "-"
   exit
 }
 
@@ -1805,16 +1791,7 @@ case "$command" in
         ;;
       bdf)
         #check on server (relates to sgutil_completion)
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
-          exit
-        fi
-
-        valid_flags="-h --help -d --device"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
-      clock)
-        #check on server (relates to sgutil_completion)
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
 
@@ -1823,25 +1800,16 @@ case "$command" in
         ;;
       bus)
         #check on server (relates to sgutil_completion)
-        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
+        if [ "$is_gpu" = "0" ]; then
           exit
         fi
 
         valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
-      memory)
+      clock)
         #check on server (relates to sgutil_completion)
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
-          exit
-        fi
-
-        valid_flags="-h --help -d --device"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
-      name)
-        #check on server (relates to sgutil_completion)
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
 
@@ -1852,9 +1820,27 @@ case "$command" in
         valid_flags="-d --device -p --port -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
+      memory)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
+          exit
+        fi
+
+        valid_flags="-h --help -d --device"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      name)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
+          exit
+        fi
+
+        valid_flags="-h --help -d --device"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
       network)
         #check on server (relates to sgutil_completion)
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
 
@@ -1863,7 +1849,7 @@ case "$command" in
         ;;
       platform)
         #check on server (relates to sgutil_completion)
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
 
@@ -1872,7 +1858,7 @@ case "$command" in
         ;;
       resource)
         #check on server (relates to sgutil_completion)
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
 
@@ -1881,16 +1867,7 @@ case "$command" in
         ;;
       serial)
         #check on server (relates to sgutil_completion)
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
-          exit
-        fi
-
-        valid_flags="-h --help -d --device"
-        command_run $command_arguments_flags"@"$valid_flags
-        ;;
-      slr)
-        #check on server (relates to sgutil_completion)
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
 
@@ -1899,6 +1876,15 @@ case "$command" in
         ;;
       servers)
         valid_flags="-h --help"
+        command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      slr)
+        #check on server (relates to sgutil_completion)
+        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
+          exit
+        fi
+
+        valid_flags="-h --help -d --device"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       syslog)

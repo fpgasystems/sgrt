@@ -7,14 +7,15 @@ normal=$(tput sgr0)
 #early exit
 url="${HOSTNAME}"
 hostname="${url%%.*}"
-is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+#is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+#is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+#is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-IS_GPU_DEVELOPER="1"
-is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer)
-if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
+#IS_GPU_DEVELOPER="1"
+#is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+#gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer)
+#gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
+if [ "$is_gpu" = "0" ]; then
     exit
 fi
 
