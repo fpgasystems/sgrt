@@ -15,8 +15,9 @@ if [[ "$is_build" = "1" ]] || ([[ "$is_acap" = "0" ]] && [[ "$is_fpga" = "0" ]])
 fi
 
 #constants
-XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
+CHECK_ON_REVERT_ERR_MSG="Please, revert your device first."
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
+XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
 
 #get username
 username=$USER
@@ -80,6 +81,14 @@ if [ "$flags" = "" ]; then
         device_found=$(echo "$result" | sed -n '1p')
         device_index=$(echo "$result" | sed -n '2p')
     fi
+    #check on workflow
+    workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
+    if [ ! "$workflow" = "vitis" ]; then
+        echo ""
+        echo $CHECK_ON_REVERT_ERR_MSG
+        echo ""
+        exit
+    fi
 else
     #device_dialog_check
     result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
@@ -88,6 +97,14 @@ else
     #forbidden combinations
     if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
         $CLI_PATH/sgutil validate vitis -h
+        exit
+    fi
+    #check on workflow
+    workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
+    if [ ! "$workflow" = "vitis" ]; then
+        echo ""
+        echo $CHECK_ON_REVERT_ERR_MSG
+        echo ""
         exit
     fi
     #header (2/2)
