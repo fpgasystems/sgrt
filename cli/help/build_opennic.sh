@@ -12,7 +12,11 @@ is_vivado_developer=$6
 
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 
-if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+#evaluate integrations
+vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+
+#if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME build opennic [flags] [--help]${normal}"
     echo ""

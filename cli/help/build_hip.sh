@@ -6,8 +6,12 @@ normal=$(tput sgr0)
 CLI_NAME=$1
 is_build=$2
 is_gpu=$3 
+is_gpu_developer=$4
 
-if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
+#evaluate integrations
+gpu_enabled=$([ "$is_gpu_developer" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
+
+if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
     echo ""
     echo "${bold}$CLI_NAME build hip [flags] [--help]${normal}"
     echo ""

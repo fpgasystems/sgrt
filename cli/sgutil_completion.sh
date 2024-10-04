@@ -12,8 +12,8 @@ is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
 is_virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
 
 #check on groups
-is_sudo=$($CLI_PATH/common/is_sudo $USER)
 IS_GPU_DEVELOPER="1"
+is_sudo=$($CLI_PATH/common/is_sudo $USER)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
 
 command_completion_5() {
@@ -129,8 +129,10 @@ _sgutil_completions()
     fi
 
     #evaluate integrations
-    gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer)
-    vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer)
+    #gpu_enabled=$($CLI_PATH/common/is_enabled "gpu" $is_acap $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer)
+    #vivado_enabled=$($CLI_PATH/common/is_enabled "vivado" $is_acap $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer)
+    gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
+    vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 
     case ${COMP_CWORD} in
         1)
@@ -181,10 +183,10 @@ _sgutil_completions()
             case ${COMP_WORDS[COMP_CWORD-1]} in
                 build)
                     commands="c --help"
-                    if [ "$IS_GPU_DEVELOPER" = "1" ]; then
+                    if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
                     fi
-                    if [ "$is_vivado_developer" = "1" ]; then
+                    if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
                     fi
                     commands_array=($commands)

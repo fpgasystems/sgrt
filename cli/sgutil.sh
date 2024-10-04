@@ -1047,7 +1047,7 @@ build_help() {
     is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
     is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
     is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-    $CLI_PATH/help/build $CLI_NAME $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+    $CLI_PATH/help/build $CLI_NAME $is_acap $is_build $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer
     exit
 }
 
@@ -1059,7 +1059,7 @@ build_c_help() {
 build_hip_help() {
     is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
     is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-    $CLI_PATH/help/build_hip $CLI_NAME $is_build $is_gpu
+    $CLI_PATH/help/build_hip $CLI_NAME $is_build $is_gpu $IS_GPU_DEVELOPER
     exit
 }
 
