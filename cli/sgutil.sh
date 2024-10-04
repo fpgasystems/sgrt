@@ -2564,7 +2564,7 @@ case "$command" in
         update_help
         ;;
       *)
-        #relates to sgutil_completion (opposite condition)
+        #early exit
         if [ "$is_sudo" = "0" ]; then
           exit
         fi
