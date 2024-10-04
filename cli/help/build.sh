@@ -3,6 +3,7 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+#inputs
 CLI_NAME=$1
 is_acap=$2
 is_build=$3
@@ -11,6 +12,7 @@ is_gpu=$5
 is_gpu_developer=$6
 is_vivado_developer=$7
 
+#legend
 COLOR_ON2=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_XILINX)
 COLOR_ON5=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_GPU)
 COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
