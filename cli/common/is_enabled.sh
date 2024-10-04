@@ -19,13 +19,15 @@ vivado_enabled="0"
 #return
 if [ "$workflow" = "gpu" ]; then
     #gpu
-    if [ "$is_gpu_developer" = "1" ] && [ "$is_gpu" = "1" ]; then #[ "$is_build" = "1" ] || 
+    #gpu_enabled=$([ "$is_gpu_developer" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
+    if [ "$is_gpu_developer" = "1" ] && [ "$is_gpu" = "1" ]; then 
         gpu_enabled="1"
     fi
     echo "$gpu_enabled"
 elif [ "$workflow" = "vivado" ]; then
     #vivado
-    if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then #[ "$is_build" = "1" ] ||
+    #vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+    if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then 
         vivado_enabled="1"
     fi
     echo "$vivado_enabled"
