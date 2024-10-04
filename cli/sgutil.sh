@@ -2489,7 +2489,7 @@ case "$command" in
         eval "$CLI_PATH/set/keys"
         ;;
       license) 
-        #relates to sgutil_completion (opposite condition)
+        #early exit
         if [ "$is_vivado_developer" = "0" ]; then
             exit 1
         fi
@@ -2511,7 +2511,7 @@ case "$command" in
         eval "$CLI_PATH/set/license-msg"
         ;;
       mtu)
-        #relates to sgutil_completion (opposite condition)
+        #early exit
         if [ "$is_build" = "1" ] || [ "$is_vivado_developer" = "0" ]; then
             exit 1
         fi

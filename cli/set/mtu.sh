@@ -7,9 +7,23 @@ normal=$(tput sgr0)
 #usage:       $CLI_PATH/sgutil set mtu --interface $interface_name --value $mtu_value
 #example: /opt/sgrt/cli/sgutil set mtu --interface       enp35s0f0 --value       1982
 
+#early exit
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+if [ "$is_build" = "1" ] || [ "$is_vivado_developer" = "0" ]; then
+    exit 1
+fi
+
 #inputs
 interface_name=$2
 mtu_value=$4
+
+#all inputs must be provided
+if [ "$interface_name" = "" ] || [ "$mtu_value" = "" ]; then
+    exit
+fi
 
 #constants
 MTU_MAX=$($CLI_PATH/common/get_constant $CLI_PATH MTU_MAX)
