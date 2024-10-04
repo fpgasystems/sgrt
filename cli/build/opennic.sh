@@ -8,8 +8,13 @@ normal=$(tput sgr0)
 #example: /opt/sgrt/cli/sgutil build opennic --commit            8077751             1cf2578 --platform xilinx_u55c_gen3x16_xdma_3_202210_1 --project   hello_world --version          2022.2 --all    1 
 
 #early exit
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-if [ "$is_vivado_developer" = "0" ]; then
+vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
     exit 1
 fi
 

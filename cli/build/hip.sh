@@ -5,8 +5,13 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 #early exit
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
 IS_GPU_DEVELOPER="1"
-if [ "$IS_GPU_DEVELOPER" = "0" ]; then
+gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
+if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
     exit 1
 fi
 
@@ -16,8 +21,8 @@ MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="hip"
 
 #get hostname
-url="${HOSTNAME}"
-hostname="${url%%.*}"
+#url="${HOSTNAME}"
+#hostname="${url%%.*}"
 
 #verify hip workflow (based on installed software)
 test1=$(dkms status | grep amdgpu)
