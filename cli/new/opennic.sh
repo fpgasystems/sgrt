@@ -40,17 +40,17 @@ fi
 #constants
 ACAP_SERVERS_LIST="$CLI_PATH/constants/ACAP_SERVERS_LIST"
 BUILD_SERVERS_LIST="$CLI_PATH/constants/BUILD_SERVERS_LIST"
+DEVICES_LIST_NETWORKING="$CLI_PATH/devices_network"
 FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
 GPU_SERVERS_LIST="$CLI_PATH/constants/GPU_SERVERS_LIST"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
-NETWORKING_DEVICES_LIST="$CLI_PATH/devices_network"
 NETWORKING_DEVICE_INDEX="1"
 NETWORKING_PORT_INDEX="1"
 WORKFLOW="opennic"
 
 #get devices number
-if [ -s "$NETWORKING_DEVICES_LIST" ]; then
-  source "$CLI_PATH/common/device_list_check" "$NETWORKING_DEVICES_LIST"
+if [ -s "$DEVICES_LIST_NETWORKING" ]; then
+  source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST_NETWORKING"
 fi
 
 #get hostname

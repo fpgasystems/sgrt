@@ -35,9 +35,9 @@ fi
 
 #constants
 BITSTREAM_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_NAME)
+DEVICES_LIST_NETWORKING="$CLI_PATH/devices_network"
 DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_NAME)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
-NETWORKING_DEVICES_LIST="$CLI_PATH/devices_network"
 NETWORKING_DEVICE_INDEX="1"
 NETWORKING_PORT_INDEX="1"
 WORKFLOW="opennic"
@@ -47,8 +47,8 @@ XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
 #get devices number
-if [ -s "$NETWORKING_DEVICES_LIST" ]; then
-  source "$CLI_PATH/common/device_list_check" "$NETWORKING_DEVICES_LIST"
+if [ -s "$DEVICES_LIST_NETWORKING" ]; then
+  source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST_NETWORKING"
 fi
 
 #get hostname
