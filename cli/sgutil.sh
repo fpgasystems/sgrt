@@ -1121,9 +1121,6 @@ get_bdf_help() {
 }
 
 get_bus_help() {
-  #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  #is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-  #is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bus" "-" "-" "-" $is_gpu "-"
   exit 
@@ -1137,11 +1134,6 @@ get_clock_help() {
 }
 
 get_ifconfig_help() {
-  #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  #is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-  #is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  #is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  #$CLI_PATH/help/get $CLI_PATH $CLI_NAME "ifconfig" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
   $CLI_PATH/help/get $CLI_PATH $CLI_NAME "ifconfig" "-" "-" "-" "-" "-"
   exit    
 }
@@ -1200,20 +1192,13 @@ get_slr_help() {
 }
 
 get_syslog_help() {
-  #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-  #is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  #is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
   $CLI_PATH/help/get $CLI_PATH $CLI_NAME "syslog" "-" $is_build "-" "-" $is_vivado_developer
   exit  
 }
 
 get_servers_help() {
-  #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  #is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-  #is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  #is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   $CLI_PATH/help/get $CLI_PATH $CLI_NAME "servers" "-" "-" "-" "-" "-"
   exit
 }

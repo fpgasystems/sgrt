@@ -203,12 +203,6 @@ _sgutil_completions()
                     if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
                         commands="${commands} bdf clock memory name network platform resource serial slr workflow"
                     fi
-                    #if [ "$is_build" = "1" ]; then
-                    #    commands="${commands} ifconfig servers"
-                    #fi
-                    #if [ "$is_fpga" = "1" ]; then
-                    #    commands="${commands} bdf clock name memory network platform resource serial slr workflow"
-                    #fi
                     if [ "$is_gpu" = "1" ]; then
                         commands="${commands} bus"
                     fi 
@@ -219,7 +213,6 @@ _sgutil_completions()
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
                     commands_string=$(echo "${commands_array[@]}")
                     COMPREPLY=($(compgen -W "${commands_string}" -- ${cur}))
-                    #COMPREPLY=($(compgen -W "bdf clock bus name ifconfig memory network platform resource serial slr servers syslog workflow --help" -- ${cur}))
                     ;;
                 new)
                     commands="--help"
