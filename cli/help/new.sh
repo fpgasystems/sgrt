@@ -3,6 +3,7 @@
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+#inputs
 CLI_PATH=$1
 CLI_NAME=$2
 parameter=$3
@@ -25,7 +26,11 @@ COLOR_ON4=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_FPGA)
 COLOR_ON5=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_GPU)
 COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 
-if [ "$is_build" = "1" ] || [ "$is_gpu_developer" = "1" ] || [ "$is_vivado_developer" = "1" ]; then
+#evaluate integrations
+gpu_enabled=$([ "$is_gpu_developer" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
+vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+
+if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     if [ "$parameter" = "--help" ]; then
         echo ""
         echo "${bold}$CLI_NAME new [arguments] [--help]${normal}"
@@ -45,7 +50,7 @@ if [ "$is_build" = "1" ] || [ "$is_gpu_developer" = "1" ] || [ "$is_vivado_devel
         $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" $is_vivado_developer $is_gpu_developer
         echo ""
     elif [ "$parameter" = "hip" ]; then
-        if [ "$is_build" = "1" ] || [ "$is_gpu" = "1" ]; then
+        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
             echo ""
             echo "${bold}$CLI_NAME new hip [--help]${normal}"
             echo ""
@@ -60,7 +65,7 @@ if [ "$is_build" = "1" ] || [ "$is_gpu_developer" = "1" ] || [ "$is_vivado_devel
             echo ""
         fi
     elif [ "$parameter" = "opennic" ]; then
-        if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
             echo ""
             echo "${bold}$CLI_NAME new opennic [flags] [--help]${normal}"
             echo ""
