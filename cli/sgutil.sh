@@ -1657,7 +1657,7 @@ case "$command" in
         echo ""
         ;;
       hip)
-        #check on server (relates to sgutil_completion)
+        #early exit
         #if [ "$IS_GPU_DEVELOPER" = "0" ]; then
         if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
           exit 1
@@ -1667,7 +1667,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
-        #check on server (relates to sgutil_completion)
+        #early exit
         #if [ "$is_vivado_developer" = "0" ]; then #[ "$is_acap" = "0" ] && [ "$is_build" = "0" ] && [ "$is_fpga" = "0" ]; then
         if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
           exit 1
@@ -1728,7 +1728,7 @@ case "$command" in
     esac
     ;;
   enable)
-    #check on server (relates to sgutil_completion)
+    #early exit
     if [ "$is_build" = "0" ]; then
       exit 1
     fi
@@ -1783,7 +1783,7 @@ case "$command" in
         get_help
         ;;
       bdf)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
@@ -1792,7 +1792,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       bus)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_gpu" = "0" ]; then
           exit
         fi
@@ -1801,7 +1801,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       clock)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
@@ -1814,7 +1814,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       memory)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
@@ -1823,7 +1823,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       name)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
@@ -1832,7 +1832,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       network)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
@@ -1841,7 +1841,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       platform)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
@@ -1850,7 +1850,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       resource)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
@@ -1859,7 +1859,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       serial)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
@@ -1872,7 +1872,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       slr)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
@@ -1881,7 +1881,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       syslog)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_build" = "1" ] || [ "$is_vivado_developer" = "0" ]; then
           exit
         fi
@@ -1894,7 +1894,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       workflow)
-        #check on server (relates to sgutil_completion)
+        #early exit
         #if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
         if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
@@ -1917,7 +1917,7 @@ case "$command" in
         new_help
         ;;
       hip)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
             exit 1
         fi
@@ -1929,7 +1929,7 @@ case "$command" in
         $CLI_PATH/new/hip
         ;;
       opennic)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
             exit 1
         fi
@@ -2037,7 +2037,7 @@ case "$command" in
         program_help
         ;;
       driver)
-        #check on server (relates to sgutil_completion)
+        #early exit
         #if [ "$vivado_enabled" = "0" ]; then
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
@@ -2106,7 +2106,7 @@ case "$command" in
         $CLI_PATH/program/driver --insert $driver_name --params $params_string
         ;;
       opennic)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
         fi
@@ -2169,7 +2169,7 @@ case "$command" in
         $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
         ;;
       reset)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
@@ -2220,7 +2220,7 @@ case "$command" in
         $CLI_PATH/program/reset --device $device_index
         ;;
       revert)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
           exit
         fi
@@ -2283,7 +2283,7 @@ case "$command" in
         $CLI_PATH/program/revert --device $device_index --version $vivado_version
         ;;
       vivado)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
         fi
@@ -2355,7 +2355,7 @@ case "$command" in
         reboot_help
         ;;
       *)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_sudo" != "1" ] && ! ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
           exit 1
         fi
@@ -2374,7 +2374,7 @@ case "$command" in
         run_help
         ;;
       hip)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
           exit
         fi
@@ -2387,7 +2387,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
-        #check on server (relates to sgutil_completion)
+        #early exit
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
         fi
