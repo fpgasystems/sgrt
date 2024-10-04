@@ -8,7 +8,7 @@
 
 <code>sgutil validate [arguments [flags]] [--help]</code>
 <p>
-  &nbsp; &nbsp; Validates the basic HACC infrastructure functionality.
+  &nbsp; &nbsp; Infrastructure functionality assessment.
 </p>
 
 ### Arguments

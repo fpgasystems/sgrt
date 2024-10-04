@@ -108,7 +108,7 @@ cli_help() {
   if [ "$is_sudo" = "1" ]; then
   echo "    ${bold}update${normal}         - Updates $CLI_NAME to its latest version."
   fi
-  echo "    ${bold}validate${normal}       - Validates the basic HACC infrastructure functionality."
+  echo "    ${bold}validate${normal}       - Infrastructure functionality assessment."
   echo ""
   echo "    ${bold}-h, --help${normal}     - Help to use $CLI_NAME."
   echo "    ${bold}-r, --release${normal}  - Reports $CLI_NAME release."
@@ -1480,31 +1480,28 @@ update_help() {
 # validate -----------------------------------------------------------------------------------------------------------------------
 
 validate_help() {
-    print_1="0"
-    print_2="0"
+    vitis_enabled="0"
     echo ""
     echo "${bold}$CLI_NAME validate [arguments [flags]] [--help]${normal}"
     echo ""
-    echo "Validates the basic HACC infrastructure functionality."
+    echo "Infrastructure functionality assessment."
     echo ""
     echo "ARGUMENTS:"
     echo "   ${bold}docker${normal}          - Validates Docker installation on the server."
     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
-      echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected FPGA."
-      print_1="1"
+    echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected FPGA."
     fi
-    if [ ! "$is_build" = "1" ] && ( [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] ); then
-      echo -e "   ${bold}${COLOR_ON2}vitis${COLOR_OFF}${normal}           - Validates Vitis workflow on the selected FPGA."
-      print_1="1"
+    if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+    echo -e "   ${bold}${COLOR_ON2}vitis${COLOR_OFF}${normal}           - Validates Vitis workflow on the selected FPGA."
+    vitis_enabled="1"
     fi
     if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
-      echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Validates HIP on the selected GPU." 
-      print_2="1"
+    echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Validates HIP on the selected GPU." 
     fi
     echo "" 
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" $print_1 $print_2
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $vitis_enabled $vivado_enabled $gpu_enabled
     echo ""
     exit
 }
@@ -1551,8 +1548,7 @@ validate_opennic_help() {
 }
 
 validate_vitis_help() {
-  #if [ ! "$is_build" = "1" ] && [ "$vitis_integrations" = "1" ]; then
-  if [ ! "$is_build" = "1" ] && ( [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] ); then
+  if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
     echo ""
     echo "${bold}$CLI_NAME validate vitis [flags] [--help]${normal}"
     echo ""
@@ -2601,7 +2597,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       hip)
-        #relates to sgutil_completion (opposite condition)
+        #early exit
         if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
           exit
         fi
@@ -2610,7 +2606,7 @@ case "$command" in
         command_run $command_arguments_flags"@"$valid_flags
         ;;
       opennic)
-        #relates to sgutil_completion (opposite condition)
+        #early exit
         if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
         fi
@@ -2744,11 +2740,11 @@ case "$command" in
         $CLI_PATH/validate/opennic --commit $commit_name_shell $commit_name_driver --device $device_index --fec $fec_option --version $vivado_version
         ;;
       vitis)
-        #relates to sgutil_completion (opposite condition)
-        #if [ "$is_build" = "1" ] || [ "$vitis_integrations" = "0" ]; then
+        #early exit
         if [[ "$is_build" = "1" ]] || ([[ "$is_acap" = "0" ]] && [[ "$is_fpga" = "0" ]]); then
           exit
         fi
+
         valid_flags="-d --device -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;

@@ -8,6 +8,18 @@ normal=$(tput sgr0)
 #usage:       $CLI_PATH/sgutil validate opennic --commit $commit_name_shell $commit_name_driver --device $device_index --fec $fec_option --version $vivado_version
 #example: /opt/sgrt/cli/sgutil validate opennic --commit            8077751             1cf2578 --device             1 --fec 1           --version          2022.2
 
+#early exit
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+    exit
+fi
+
 check_connectivity() {
     local interface="$1"
     local remote_server="$2"
@@ -26,6 +38,11 @@ commit_name_driver=$3
 device_index=$5
 fec_option=$7
 vivado_version=$9
+
+#all inputs must be provided
+if [ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ] || [ "$device_index" = "" ] || [ "$fec_option" = "" ] || [ "$vivado_version" = "" ]; then
+    exit
+fi
 
 #constants
 ACAP_SERVERS_LIST="$CLI_PATH/constants/ACAP_SERVERS_LIST"

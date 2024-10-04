@@ -5,7 +5,7 @@ Back to CLI
 
 sgutil validate [arguments [flags]] [--help]
 
-  &nbsp; &nbsp; Validates the basic HACC infrastructure functionality.
+  &nbsp; &nbsp; Infrastructure functionality assessment.
 
 
 ### Arguments

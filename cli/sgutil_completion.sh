@@ -273,15 +273,14 @@ _sgutil_completions()
                     ;;
                 validate)
                     commands="docker --help"
+                    if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
+                        commands="${commands} hip"
+                    fi
                     if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
                     fi
-                    #if [ ! "$is_build" = "1" ] && [ "$vitis_integrations" = "1" ]; then
-                    if [ ! "$is_build" = "1" ] && ( [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] ); then
+                    if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
                         commands="${commands} vitis"
-                    fi
-                    if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
-                        commands="${commands} hip"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))

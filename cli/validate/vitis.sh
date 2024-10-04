@@ -1,19 +1,25 @@
 #!/bin/bash
 
+CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+#early exit
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+if [[ "$is_build" = "1" ]] || ([[ "$is_acap" = "0" ]] && [[ "$is_fpga" = "0" ]]); then
+    exit
+fi
+
 #constants
-CLI_PATH="$(dirname "$(dirname "$0")")"
 XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 
 #get username
 username=$USER
-
-#get hostname
-url="${HOSTNAME}"
-hostname="${url%%.*}"
 
 #check on ACAP or FPGA servers (server must have at least one ACAP or one FPGA)
 acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
