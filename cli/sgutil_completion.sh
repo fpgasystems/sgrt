@@ -423,7 +423,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--help" -- ${cur})) 
                             ;;
                         mtu)
-                            COMPREPLY=($(compgen -W "--device --value --help" -- ${cur})) 
+                            COMPREPLY=($(compgen -W "--device --port --value --help" -- ${cur})) 
                             ;;
                     esac
                     ;;
@@ -492,7 +492,7 @@ _sgutil_completions()
             command_completion_5 "$cur" "$COMP_CWORD" "run" "opennic" "${other_flags[@]}"
 
             #set
-            other_flags=( "--device" "--value" )
+            other_flags=( "--device" "--port" "--value" )
             command_completion_5 "$cur" "$COMP_CWORD" "set" "mtu" "${other_flags[@]}"
 
             #validate
@@ -512,9 +512,6 @@ _sgutil_completions()
             #build opennic
             other_flags=( "--platform" "--project" )
             command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--commit" "${other_flags[@]}"
-
-            #other_flags=( "--commit" "--platform" "--project" )
-            #command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--config" "${other_flags[@]}"
             
             other_flags=( "--commit" "--project" )
             command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--platform" "${other_flags[@]}"
@@ -567,6 +564,16 @@ _sgutil_completions()
 
             other_flags=( "--commit" "--config" "--device" )
             command_completion_7 "$cur" "$COMP_CWORD" "run" "opennic" "--project" "${other_flags[@]}"
+
+            #set mtu
+            other_flags=( "--port" "--value" )
+            command_completion_7 "$cur" "$COMP_CWORD" "set" "mtu" "--device" "${other_flags[@]}"
+            
+            other_flags=( "--device" "--value" )
+            command_completion_7 "$cur" "$COMP_CWORD" "set" "mtu" "--port" "${other_flags[@]}"
+
+            other_flags=( "--device" "--port" )
+            command_completion_7 "$cur" "$COMP_CWORD" "set" "mtu" "--value" "${other_flags[@]}"
 
             #validate opennic
             other_flags=( "--device" "--fec" )

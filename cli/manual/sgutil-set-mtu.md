@@ -17,6 +17,11 @@
   &nbsp; &nbsp; Device Index (according to sgutil examine).
 </p>
 
+<code>-p, --port <string></code>
+<p>
+  &nbsp; &nbsp; Specifies the port number for the network adapter.
+</p>
+
 <code>-v, --value <string></code>
 <p>
   &nbsp; &nbsp; Maximum Transmission Unit (MTU) value (in bytes).

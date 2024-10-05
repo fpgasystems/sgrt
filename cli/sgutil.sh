@@ -198,6 +198,7 @@ CHECK_ON_HOSTNAME_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_IFACE_ERR_MSG="Please, choose a valid interface name."
 CHECK_ON_VALUE_ERR_MSG="Please, choose a valid value."
 CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
+CHECK_ON_PORT_ERR_MSG="Please, choose a valid port index."
 CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
 CHECK_ON_PUSH_ERR_MSG="Please, choose a valid push option."
 CHECK_ON_REMOTE_ERR_MSG="Please, choose a valid deploy option."
@@ -726,6 +727,30 @@ platform_check() {
       echo $CHECK_ON_PLATFORM_ERR_MSG
       echo ""
       exit 1
+  fi
+}
+
+port_check() {
+  local CLI_PATH=$1
+  local CLI_NAME=$2
+  local device_index=$3
+  shift 3
+  local flags_array=("$@")
+  result="$("$CLI_PATH/common/port_dialog_check" "${flags_array[@]}")"
+  port_found=$(echo "$result" | sed -n '1p')
+  port_index=$(echo "$result" | sed -n '2p')
+
+  #get number of ports
+  MAX_NUM_PORTS=$($CLI_PATH/get/get_nic_device_param $device_index IP | grep -o '/' | wc -l)
+  MAX_NUM_PORTS=$((MAX_NUM_PORTS + 1))
+
+  #forbidden combinations
+  if ([[ "$port_found" = "1" ]] && [[ -z "$port_index" ]]) || \
+     ([[ "$port_found" = "1" ]] && ([[ "$port_index" -gt "$MAX_NUM_PORTS" ]] || [[ "$port_index" -lt 1 ]])); then
+        echo ""
+        echo $CHECK_ON_PORT_ERR_MSG
+        echo ""
+        exit
   fi
 }
 
@@ -1405,10 +1430,12 @@ set_help() {
     echo "   ${bold}license${normal}         - Configures a set of verified license servers for Xilinx tools."
     fi
     if [ ! "$is_build" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
-    echo "   ${bold}mtu${normal}             - Sets a valid MTU value to a device."
+    echo -e "   ${bold}${COLOR_ON1}mtu${COLOR_OFF}${normal}             - Sets a valid MTU value to a device."
     fi
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
+    echo ""
+    echo -e "                     ${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal}"
     echo ""
     exit 1
 }
@@ -1457,9 +1484,12 @@ set_mtu_help() {
     echo ""
     echo "FLAGS:"
     echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+    echo "   ${bold}-p, --port${normal}      - Specifies the port number for the network adapter."
     echo "   ${bold}-v, --value${normal}     - Maximum Transmission Unit (MTU) value between ${bold}$MTU_MIN${normal} and ${bold}$MTU_MAX${normal} bytes."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
+    echo ""
+    echo "                     ${bold}NICs${normal}"
     echo ""
   fi
   exit
@@ -2522,7 +2552,7 @@ case "$command" in
         #check on groups
         vivado_developers_check "$USER"
 
-        valid_flags="-d --device -v --value -h --help"
+        valid_flags="-d --device -p --port -v --value -h --help"
         #command_run $command_arguments_flags"@"$valid_flags
         flags_check $command_arguments_flags"@"$valid_flags
 
@@ -2533,28 +2563,57 @@ case "$command" in
         if [ "$flags_array" = "" ]; then
           set_mtu_help
         else
-          #value
-          result="$("$CLI_PATH/common/value_dialog_check" "${flags_array[@]}")"
-          mtu_value_found=$(echo "$result" | sed -n '1p')
-          mtu_value=$(echo "$result" | sed -n '2p')
           #device
           result="$("$CLI_PATH/common/device_dialog_check" "${flags_array[@]}")"
           device_found=$(echo "$result" | sed -n '1p')
           device_index=$(echo "$result" | sed -n '2p')
+          #port
+          result="$("$CLI_PATH/common/port_dialog_check" "${flags_array[@]}")"
+          port_found=$(echo "$result" | sed -n '1p')
+          port_index=$(echo "$result" | sed -n '2p')
+          #value
+          result="$("$CLI_PATH/common/value_dialog_check" "${flags_array[@]}")"
+          mtu_value_found=$(echo "$result" | sed -n '1p')
+          mtu_value=$(echo "$result" | sed -n '2p')
+
+          echo "device_found and index: $device_found - $device_index"
+          echo "port_found and index: $port_found - $port_index"
+          echo "value_found and mtu: $mtu_value_found - $mtu_value"
 
           #reversed order
-          if [ "$device_found" = "1" ] && [ "$mtu_value_found" = "0" ]; then
-            device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices_networking" "$MAX_DEVICES_NETWORKING" "${flags_array[@]}"
-            value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
-          fi
+          #if [ "$device_found" = "1" ] && [ "$port_found" = "0" ] && [ "$mtu_value_found" = "0" ]; then
+          #  echo "I am here 1"
+          #  device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices_networking" "$MAX_DEVICES_NETWORKING" "${flags_array[@]}"
+          #  echo ""
+          #  echo $CHECK_ON_PORT_ERR_MSG
+          #  echo ""
+          #  exit
+          #  #port_check "$CLI_PATH" "$CLI_NAME" "$device_index" "${flags_array[@]}"
+          #  #value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
+          #fi
+
+          #if [ "$device_found" = "1" ] && [ "$port_found" = "1" ] && [ "$mtu_value_found" = "0" ]; then
+          #  echo "I am here 2"
+          #  device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices_networking" "$MAX_DEVICES_NETWORKING" "${flags_array[@]}"
+          #  port_check "$CLI_PATH" "$CLI_NAME" "$device_index" "${flags_array[@]}"
+          #  value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
+          #fi
+
+          #if [ "$device_found" = "0" ] && [ "$port_found" = "0" ] && [ "$mtu_value_found" = "1" ]; then
+          #  echo "I am here 3"
+          #  value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
+          #  device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices_networking" "$MAX_DEVICES_NETWORKING" "${flags_array[@]}"
+          #  port_check "$CLI_PATH" "$CLI_NAME" "$device_index" "${flags_array[@]}"
+          #fi
 
           #natural order
-          value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices_networking" "$MAX_DEVICES_NETWORKING" "${flags_array[@]}"
+          port_check "$CLI_PATH" "$CLI_NAME" "$device_index" "${flags_array[@]}"
+          value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
         fi
 
         #run
-        $CLI_PATH/set/mtu --device $device_index --value $mtu_value
+        $CLI_PATH/set/mtu --device $device_index --port $port_index --value $mtu_value
         ;;
       *)
         set_help

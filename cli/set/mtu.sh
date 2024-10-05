@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil set mtu --device $device_index --value $mtu_value
-#example: /opt/sgrt/cli/sgutil set mtu --device       enp35s0f0 --value       1982
+#usage:       $CLI_PATH/sgutil set mtu --device $device_index --port $port_index --value $mtu_value
+#example: /opt/sgrt/cli/sgutil set mtu --device     enp35s0f0 --port           1 --value       1982
 
 #early exit
 url="${HOSTNAME}"
@@ -18,7 +18,8 @@ fi
 
 #inputs
 device_index=$2
-mtu_value=$4
+port_index=$4
+mtu_value=$6
 
 #all inputs must be provided
 if [ "$device_index" = "" ] || [ "$mtu_value" = "" ]; then
@@ -54,18 +55,19 @@ if [ "$mtu_value" -lt "$MTU_MIN" ] || [ "$mtu_value" -gt "$MTU_MAX" ]; then
 fi
 
 #get interface_name
-NETWORKING_PORT_INDEX="1"
-interface_name=$($CLI_PATH/get/get_nic_config $device_index $NETWORKING_PORT_INDEX DEVICE)
+#NETWORKING_PORT_INDEX="1"
+interface_name=$($CLI_PATH/get/get_nic_config $device_index $port_index DEVICE)
+if [ ! "$interface_name" = "" ]; then
+    #set mtu_value
+    sudo ifconfig $interface_name mtu $mtu_value up > /dev/null 2>&1
 
-#set mtu_value
-sudo ifconfig $interface_name mtu $mtu_value up > /dev/null 2>&1
+    # Verify if the MTU change was successful
+    new_mtu=$(ifconfig $interface_name | grep -oP 'mtu \K\d+')
 
-# Verify if the MTU change was successful
-new_mtu=$(ifconfig $interface_name | grep -oP 'mtu \K\d+')
-
-#print message
-if [ "$new_mtu" -eq "$mtu_value" ]; then
-    echo ""
-    echo "$interface_name MTU was set to $mtu_value bytes!"
-    echo ""
+    #print message
+    if [ "$new_mtu" -eq "$mtu_value" ]; then
+        echo ""
+        echo "$interface_name MTU was set to $mtu_value bytes!"
+        echo ""
+    fi
 fi
