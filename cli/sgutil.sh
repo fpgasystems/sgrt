@@ -744,14 +744,19 @@ port_check() {
   MAX_NUM_PORTS=$($CLI_PATH/get/get_nic_device_param $device_index IP | grep -o '/' | wc -l)
   MAX_NUM_PORTS=$((MAX_NUM_PORTS + 1))
 
-  #forbidden combinations
-  if   [ "$port_found" = "0" ] || \
-     ([[ "$port_found" = "1" ]] && [[ -z "$port_index" ]]) || \
-     ([[ "$port_found" = "1" ]] && ([[ "$port_index" -gt "$MAX_NUM_PORTS" ]] || [[ "$port_index" -lt 1 ]])); then
-        echo ""
-        echo $CHECK_ON_PORT_ERR_MSG
-        echo ""
-        exit
+  if [ "$MAX_NUM_PORTS" = "1" ]; then #there is only one IP in the file (the character "/" does not appear)
+    port_found="1"
+    port_index="1"
+  else
+    #forbidden combinations
+    if   [ "$port_found" = "0" ] || \
+      ([[ "$port_found" = "1" ]] && [[ -z "$port_index" ]]) || \
+      ([[ "$port_found" = "1" ]] && ([[ "$port_index" -gt "$MAX_NUM_PORTS" ]] || [[ "$port_index" -lt 1 ]])); then
+          echo ""
+          echo $CHECK_ON_PORT_ERR_MSG
+          echo ""
+          exit
+    fi
   fi
 }
 
