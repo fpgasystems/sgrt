@@ -2582,36 +2582,22 @@ case "$command" in
           mtu_value_found=$(echo "$result" | sed -n '1p')
           mtu_value=$(echo "$result" | sed -n '2p')
 
-          echo "device_found and index: $device_found - $device_index"
-          echo "port_found and index: $port_found - $port_index"
-          echo "value_found and mtu: $mtu_value_found - $mtu_value"
-
-          #reversed order
-          #if [ "$device_found" = "1" ] && [ "$port_found" = "0" ] && [ "$mtu_value_found" = "0" ]; then
-          #  echo "I am here 1"
-          #  device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices_networking" "$MAX_DEVICES_NETWORKING" "${flags_array[@]}"
-          #  echo ""
-          #  echo $CHECK_ON_PORT_ERR_MSG
-          #  echo ""
-          #  exit
-          #  #port_check "$CLI_PATH" "$CLI_NAME" "$device_index" "${flags_array[@]}"
-          #  #value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
-          #fi
-
-          #if [ "$device_found" = "1" ] && [ "$port_found" = "1" ] && [ "$mtu_value_found" = "0" ]; then
-          #  echo "I am here 2"
-          #  device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices_networking" "$MAX_DEVICES_NETWORKING" "${flags_array[@]}"
-          #  port_check "$CLI_PATH" "$CLI_NAME" "$device_index" "${flags_array[@]}"
-          #  value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
-          #fi
-
-          #if [ "$device_found" = "0" ] && [ "$port_found" = "0" ] && [ "$mtu_value_found" = "1" ]; then
-          #  echo "I am here 3"
-          #  value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
-          #  device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices_networking" "$MAX_DEVICES_NETWORKING" "${flags_array[@]}"
-          #  port_check "$CLI_PATH" "$CLI_NAME" "$device_index" "${flags_array[@]}"
-          #fi
-
+          #device and port are binded
+          if [ "$device_found" = "1" ] && [ "$port_found" = "0" ] && [ "$mtu_value_found" = "0" ]; then
+            device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices_networking" "$MAX_DEVICES_NETWORKING" "${flags_array[@]}"
+          elif [ "$device_found" = "0" ] && [ "$port_found" = "1" ] && [ "$mtu_value_found" = "0" ]; then
+            echo ""
+            echo $CHECK_ON_DEVICE_ERR_MSG
+            echo ""
+            exit
+          elif [ "$device_found" = "0" ] && [ "$port_found" = "0" ] && [ "$mtu_value_found" = "1" ]; then
+            value_check "$CLI_PATH" "$MTU_MIN" "$MTU_MAX" "MTU" "${flags_array[@]}"
+            echo ""
+            echo $CHECK_ON_DEVICE_ERR_MSG
+            echo ""
+            exit
+          fi
+          
           #natural order
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices_networking" "$MAX_DEVICES_NETWORKING" "${flags_array[@]}"
           port_check "$CLI_PATH" "$CLI_NAME" "$device_index" "${flags_array[@]}"
