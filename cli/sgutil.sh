@@ -745,7 +745,8 @@ port_check() {
   MAX_NUM_PORTS=$((MAX_NUM_PORTS + 1))
 
   #forbidden combinations
-  if ([[ "$port_found" = "1" ]] && [[ -z "$port_index" ]]) || \
+  if   [ "$port_found" = "0" ] || \
+     ([[ "$port_found" = "1" ]] && [[ -z "$port_index" ]]) || \
      ([[ "$port_found" = "1" ]] && ([[ "$port_index" -gt "$MAX_NUM_PORTS" ]] || [[ "$port_index" -lt 1 ]])); then
         echo ""
         echo $CHECK_ON_PORT_ERR_MSG
