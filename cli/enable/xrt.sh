@@ -5,6 +5,7 @@ normal=$(tput sgr0)
 
 #constants
 #CLI_PATH="/opt/sgrt/cli" #"$(dirname "$(dirname "$0")")" # CLI_PATH is declared as an environment variable
+CHECK_ON_XRT_ERR_MSG="Please, choose a valid XRT version."
 LOCAL_PATH=$($CLI_PATH/common/get_constant $CLI_PATH LOCAL_PATH)
 XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
 #XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
@@ -77,7 +78,10 @@ else
         version_name=$(echo "$result" | sed -n '2p')
         #forbidden combinations
         if [ "$version_found" = "1" ] && ([ "$version_name" = "" ] || [ ! -d "$XILINX_OPT_PATH/xrt_$version_name" ]); then #-d "$VIVADO_PATH/$version_name"
-            $CLI_PATH/sgutil enable xrt -h
+            #$CLI_PATH/sgutil enable xrt -h
+            echo ""
+            echo $CHECK_ON_XRT_ERR_MSG
+            echo ""
             #exit
         else
             #set to true

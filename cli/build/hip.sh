@@ -16,6 +16,7 @@ if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
 fi
 
 #constants
+CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
 ROCM_PATH=$($CLI_PATH/common/get_constant $CLI_PATH ROCM_PATH)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="hip"
@@ -69,7 +70,10 @@ else
     project_name=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name" ]); then 
-        $CLI_PATH/sgutil build $WORKFLOW -h
+        #$CLI_PATH/sgutil build $WORKFLOW -h
+        echo ""
+        echo $CHECK_ON_PROJECT_ERR_MSG
+        echo ""
         exit
     fi
     #header (2/2)

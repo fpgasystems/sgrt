@@ -16,6 +16,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "0" ]; then
 fi
 
 #constants
+CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
 ROCM_PATH=$($CLI_PATH/common/get_constant $CLI_PATH ROCM_PATH)
 DEVICES_LIST="$CLI_PATH/devices_gpu"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
@@ -87,7 +88,10 @@ else
     project_name=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if [ "$project_found" = "1" ] && ([ "$project_name" = "" ] || [ ! -d "$MY_PROJECTS_PATH/$WORKFLOW/$project_name" ]); then 
-        $CLI_PATH/sgutil run $WORKFLOW -h
+        #$CLI_PATH/sgutil run $WORKFLOW -h
+        echo ""
+        echo $CHECK_ON_PROJECT_ERR_MSG
+        echo ""
         exit
     fi
     #device_dialog_check
@@ -96,7 +100,10 @@ else
     device_index=$(echo "$result" | sed -n '2p')
     #forbidden combinations
     if ([ "$device_found" = "1" ] && [ "$device_index" = "" ]) || ([ "$device_found" = "1" ] && [ "$multiple_devices" = "0" ] && (( $device_index != 1 ))) || ([ "$device_found" = "1" ] && ([[ "$device_index" -gt "$MAX_DEVICES" ]] || [[ "$device_index" -lt 1 ]])); then
-        $CLI_PATH/sgutil run hip -h
+        #$CLI_PATH/sgutil run hip -h
+        echo ""
+        echo "Please, choose a valid device index."
+        echo ""
         exit
     fi
     #header (2/2)

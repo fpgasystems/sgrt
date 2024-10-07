@@ -3,6 +3,7 @@ normal=$(tput sgr0)
 
 #constants
 #CLI_PATH="/opt/sgrt/cli" #"$(dirname "$(dirname "$0")")"
+CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH) # CLI_PATH is declared as an environment variable
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
@@ -55,7 +56,10 @@ else
         version_name=$(echo "$result" | sed -n '2p')
         #forbidden combinations
         if [ "$version_found" = "1" ] && ([ "$version_name" = "" ] || [ ! -d "$VIVADO_PATH/$version_name" ]); then 
-            $CLI_PATH/sgutil enable vivado -h
+            #$CLI_PATH/sgutil enable vivado -h
+            echo ""
+            echo $CHECK_ON_VIVADO_ERR_MSG
+            echo ""
             #exit
         else
             #set to true
