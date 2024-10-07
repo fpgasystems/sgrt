@@ -76,8 +76,6 @@ if [ $update = "1" ]; then
   rm -rf .git
   rm -fr ./cli/manual
   rm -f ./cli/manual.md
-  rm -fr ./api/manual
-  rm -f ./api/manual.md
   rm -rf docs
   rm -rf hacc-validation
   rm -f overleaf_export.sh
@@ -119,8 +117,6 @@ if [ $update = "1" ]; then
 
   #remove old version
   echo "${bold}Removing old version:${normal}"
-  sudo rm -rf $installation_path/api
-  sleep 1
   sudo rm -rf $installation_path/cli
   sleep 1
   sudo rm -rf $installation_path/templates
@@ -130,8 +126,6 @@ if [ $update = "1" ]; then
   
   #copy files (from /tmp/sgrt to /opt/sgrt)
   echo "${bold}Copying new version:${normal}"
-  sudo mv $UPDATES_PATH/$REPO_NAME/api $installation_path/api
-  sleep 1
   sudo mv $UPDATES_PATH/$REPO_NAME/cli $installation_path/cli
   sleep 1
   sudo mv $UPDATES_PATH/$REPO_NAME/templates $installation_path/templates
