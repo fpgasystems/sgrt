@@ -1,18 +1,16 @@
 ---
 
 - hosts: 
-    #- alveo_u250
-    #- alveo_u280
-    #- alveo_u50d
-    #- alveo_u55c
-    #- versal_v80
-    #- versal_vck5000
+    - alveo_u250
+    - alveo_u280
+    - alveo_u50d
+    - alveo_u55c
+    - versal_v80
+    - versal_vck5000
     - hacc_build 
-    #- hacc_boxes
-    - hacc-box-01.inf.ethz.ch
-    - alveo-u55c-01.inf.ethz.ch
-    #- alveo-u55c-02.inf.ethz.ch
-    #- alveo-u250-01.inf.ethz.ch
+    - hacc_boxes
+    #- hacc-box-01.inf.ethz.ch
+    #- alveo-u55c-01.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -25,7 +23,7 @@
     cli_name: sgutil
     templates_path: "{{ sgrt_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: false
+    all: true
     #cli installation
     bitstreams: false
     build: false
@@ -33,16 +31,16 @@
     directories: false
     enable: false
     examine: false
-    get: true
-    help: true
+    get: false
+    help: false
     hip: false
     new: false
-    opennic: true
-    program: true
+    opennic: false
+    program: false
     reboot: false
     run: false
     set: false
-    sgutil: true 
+    sgutil: false 
     update: false
     validate: false
     vitis: false
