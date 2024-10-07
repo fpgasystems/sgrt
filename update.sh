@@ -95,6 +95,8 @@ if [ $update = "1" ]; then
   sleep 1
   cp $CLI_PATH/devices_gpu $UPDATES_PATH/$REPO_NAME/backup_devices_gpu
   sleep 1
+  cp $CLI_PATH/devices_network $UPDATES_PATH/$REPO_NAME/backup_devices_network
+  sleep 1
   cp $CLI_PATH/platforminfo $UPDATES_PATH/$REPO_NAME/backup_platforminfo
   sleep 1
   cp -rf $CLI_PATH/constants $UPDATES_PATH/$REPO_NAME/backup_constants
@@ -141,6 +143,7 @@ if [ $update = "1" ]; then
   #overwrite device related info
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_acap_fpga $installation_path/cli/devices_acap_fpga
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_gpu $installation_path/cli/devices_gpu
+  sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_devices_network $installation_path/cli/devices_network
   sudo cp -r $UPDATES_PATH/$REPO_NAME/backup_platforminfo $installation_path/cli/platforminfo
   sleep 1
   #overwrite constants
