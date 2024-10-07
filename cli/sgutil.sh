@@ -2403,7 +2403,7 @@ case "$command" in
           reboot_help
           exit 1
         fi
-        $CLI_PATH/reboot
+        sudo $CLI_PATH/reboot
         ;;
     esac
     ;;

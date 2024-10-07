@@ -14,6 +14,10 @@ if [ "$is_sudo" != "1" ] && ! ([ "$is_build" = "0" ] && [ "$is_vivado_developer"
     exit 1
 fi
 
+#get username
+username=$(getent passwd ${SUDO_UID})
+username=${username%%:*}
+
 echo ""
 
 #Loop for countdown
@@ -24,7 +28,8 @@ done
 
 # Print the final message after countdown
 echo ""
-echo -e "\nSee you later, ${bold}$USER!${normal}"
+echo -e "\nSee you later, ${bold}$username!${normal}"
 echo ""
 
-sudo reboot
+#sudo reboot
+/sbin/reboot
