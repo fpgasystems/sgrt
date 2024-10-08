@@ -231,7 +231,10 @@ _sgutil_completions()
                 program)
                     commands="reset --help"
                     if [ "$is_vivado_developer" = "1" ]; then
-                        commands="${commands} driver opennic vivado"
+                        commands="${commands} driver vivado"
+                    fi
+                    if [ ! "$is_virtualized" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
+                        commands="${commands} opennic"
                     fi
                     if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
                         commands="${commands} revert"

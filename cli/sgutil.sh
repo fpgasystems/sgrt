@@ -1299,6 +1299,8 @@ program_help() {
     echo "ARGUMENTS:"
     if [ "$is_vivado_developer" = "1" ]; then
     echo "   ${bold}driver${normal}          - Inserts or removes a driver or module into the Linux kernel."
+    fi
+    if [ ! "$is_virtualized" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Programs OpenNIC to a given device."
     fi
     echo -e "   ${bold}${COLOR_ON2}reset${COLOR_OFF}${normal}           - Performs a 'HOT Reset' on a Vitis device."
@@ -1325,7 +1327,7 @@ program_driver_help() {
 }
 
 program_opennic_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_opennic $CLI_PATH $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
     echo ""
@@ -2148,7 +2150,7 @@ case "$command" in
         ;;
       opennic)
         #early exit
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$is_virtualized" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
         fi
 
