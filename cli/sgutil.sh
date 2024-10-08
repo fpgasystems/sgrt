@@ -2214,7 +2214,7 @@ case "$command" in
         fi
 
         #check on server
-        virtualized_check "$CLI_PATH" "$hostname"
+        #virtualized_check "$CLI_PATH" "$hostname"
         fpga_check "$CLI_PATH" "$hostname"
 
         #check on software  
@@ -2753,6 +2753,15 @@ case "$command" in
         if [ "$multiple_devices" = "0" ]; then
           device_found="1"
           device_index="1"
+          #bitstream check (the bitstream must be pre-compiled for validation)
+          FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
+          bitstream_path="$BITSTREAMS_PATH/$arguments/$commit_name_shell/${ONIC_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+          if ! [ -e "$bitstream_path" ]; then
+            echo ""
+            echo "$CHECK_ON_BITSTREAM_ERR_MSG"
+            echo ""
+            exit 1
+          fi
           echo ""
           echo "${bold}$CLI_NAME $command $arguments (shell and driver commit IDs: $commit_name_shell,$commit_name_driver)${normal}"
           echo ""
