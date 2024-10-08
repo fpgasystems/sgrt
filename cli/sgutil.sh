@@ -1302,7 +1302,9 @@ program_help() {
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Programs OpenNIC to a given device."
     fi
     echo -e "   ${bold}${COLOR_ON2}reset${COLOR_OFF}${normal}           - Performs a 'HOT Reset' on a Vitis device."
-    echo -e "   ${bold}${COLOR_ON2}revert${COLOR_OFF}${normal}          - Returns a device to its default fabric setup."
+    if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+      echo -e "   ${bold}${COLOR_ON2}revert${COLOR_OFF}${normal}          - Returns a device to its default fabric setup."
+    fi
     if [ "$is_vivado_developer" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}vivado${COLOR_OFF}${normal}          - Programs a Vivado bitstream to a given device."
     fi
@@ -1341,7 +1343,7 @@ program_reset_help() {
 }
 
 program_revert_help() {
-  if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
+  if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
     $CLI_PATH/help/program_revert $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
     echo ""
@@ -2260,7 +2262,7 @@ case "$command" in
         ;;
       revert)
         #early exit
-        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
+        if [ "$is_virtualized" = "1" ] || ( [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ] ); then
           exit
         fi
 

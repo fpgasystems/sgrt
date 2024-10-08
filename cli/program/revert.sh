@@ -12,7 +12,8 @@ url="${HOSTNAME}"
 hostname="${url%%.*}"
 is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
+is_virtualized=$($CLI_PATH/common/is_virtualized $CLI_PATH $hostname)
+if [ "$is_virtualized" = "1" ] || ( [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ] ); then
     exit
 fi
 

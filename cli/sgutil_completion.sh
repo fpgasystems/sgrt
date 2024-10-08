@@ -229,9 +229,12 @@ _sgutil_completions()
                     #COMPREPLY=($(compgen -W "hip opennic --help" -- ${cur}))
                     ;;
                 program)
-                    commands="reset revert --help"
+                    commands="reset --help"
                     if [ "$is_vivado_developer" = "1" ]; then
                         commands="${commands} driver opennic vivado"
+                    fi
+                    if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+                        commands="${commands} revert"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
