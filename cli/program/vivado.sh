@@ -40,9 +40,6 @@ VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 url="${HOSTNAME}"
 hostname="${url%%.*}"
 
-#get email
-email=$($CLI_PATH/common/get_email)
-
 echo "${bold}sgutil program vivado${normal}"
 echo ""
 
@@ -60,15 +57,16 @@ $VIVADO_PATH/$vivado_version/bin/vivado -nolog -nojournal -mode batch -source $C
 
 #check for virtualized and apply pci_hot_plug (is always needed as we reverted first)
 if [ "$virtualized" = "1" ] && [[ $(lspci | grep Xilinx | wc -l) = 2 ]]; then
+    #echo ""
+    #echo "${bold}The server needs to warm boot to operate in Vivado workflow. For this purpose:${normal}"
+    #echo ""
+    #echo "    Use the ${bold}go to baremetal${normal} button on the booking system, or"
+    #echo "    Contact ${bold}$email${normal} for support."
+    #echo ""
+    #Using the terms guest reboot and host reboot is also common, where guest refers to the VM and host refers to the hypervisor.
     echo ""
-    echo "${bold}The server needs to warm boot to operate in Vivado workflow. For this purpose:${normal}"
+    echo "${bold}The server needs a host reboot to operate in Vivado workflow.${normal}"
     echo ""
-    echo "    Use the ${bold}go to baremetal${normal} button on the booking system, or"
-    echo "    Contact ${bold}$email${normal} for support."
-    echo ""
-    #send email
-    echo "Subject: $USER requires to go to baremetal/warm boot ($hostname)" | sendmail $email
-    exit
 elif [ "$virtualized" = "0" ]; then 
     #get device params
     upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
