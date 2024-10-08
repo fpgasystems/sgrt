@@ -110,8 +110,8 @@ if [ "$all" = "1" ]; then
             echo ""
 
             #send email
-            user_email=$USER@ethz.ch
-            echo "Subject: Good news! sgutil build opennic (${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit) is done!" | sendmail $user_email
+            #user_email=$USER@ethz.ch
+            #echo "Subject: Good news! sgutil build opennic (${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit) is done!" | sendmail $user_email
         fi
     fi
 fi

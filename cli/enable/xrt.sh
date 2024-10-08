@@ -5,6 +5,7 @@ normal=$(tput sgr0)
 
 #constants
 #CLI_PATH="/opt/sgrt/cli" #"$(dirname "$(dirname "$0")")" # CLI_PATH is declared as an environment variable
+EMAIL=$($CLI_PATH/common/get_constant $CLI_PATH EMAIL)
 CHECK_ON_XRT_ERR_MSG="Please, choose a valid XRT version."
 LOCAL_PATH=$($CLI_PATH/common/get_constant $CLI_PATH LOCAL_PATH)
 XRT_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XRT_PATH)
@@ -112,7 +113,7 @@ else
             echo "The server needs special care to operate with XRT normally (Xilinx tools are not properly installed)."
             echo ""
             echo "${bold}An email has been sent to the person in charge;${normal} we will let you know when XRT is ready to use again."
-            echo "Subject: $hostname requires special attention ($username): Xilinx tools are not properly installed" | sendmail $email
+            echo "Subject: $hostname requires special attention ($username): Xilinx tools are not properly installed" | sendmail $EMAIL
         fi
     fi
 fi

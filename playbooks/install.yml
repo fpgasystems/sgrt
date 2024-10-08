@@ -7,7 +7,7 @@
     #- alveo_u55c
     #- versal_v80
     #- versal_vck5000
-    #- hacc_build 
+    - hacc_build 
     #- hacc_boxes
     - hacc-box-01.inf.ethz.ch
     - alveo-u250-01.inf.ethz.ch
@@ -29,7 +29,7 @@
     build: false
     common: false
     directories: false
-    enable: false
+    enable: true
     examine: false
     get: false
     help: false
@@ -262,7 +262,6 @@
         - get_config_string
         - get_constant
         - get_FDEV_NAME
-        - get_email
         - get_files
         - get_max_devices
         - get_multiple_devices
@@ -613,6 +612,7 @@
         - is_enabled
         - is_cpu
         - enable_integrations
+        - get_email
     #constants
     - name: deleting constants
       file:

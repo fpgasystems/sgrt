@@ -4,6 +4,7 @@ normal=$(tput sgr0)
 #constants
 #CLI_PATH="/opt/sgrt/cli" #"$(dirname "$(dirname "$0")")"
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
+EMAIL=$($CLI_PATH/common/get_constant $CLI_PATH EMAIL)
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH) # CLI_PATH is declared as an environment variable
 VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
@@ -86,7 +87,7 @@ else
             echo "The server needs special care to operate with Vivado normally (Xilinx tools are not properly installed)."
             echo ""
             echo "${bold}An email has been sent to the person in charge;${normal} we will let you know when Vivado is ready to use again."
-            echo "Subject: $hostname requires special attention ($username): Xilinx tools are not properly installed" | sendmail $email
+            echo "Subject: $hostname requires special attention ($username): Xilinx tools are not properly installed" | sendmail $EMAIL
         fi
     fi
 fi
