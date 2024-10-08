@@ -65,7 +65,7 @@ if [ "$virtualized" = "1" ] && [[ $(lspci | grep Xilinx | wc -l) = 2 ]]; then
     #echo ""
     #Using the terms guest reboot and host reboot is also common, where guest refers to the VM and host refers to the hypervisor.
     echo ""
-    echo "${bold}The server needs a host reboot to operate in Vivado workflow.${normal}"
+    echo "${bold}The hypervisor needs a host reboot to operate in Vivado workflow.${normal}"
     echo ""
 elif [ "$virtualized" = "0" ]; then 
     #get device params
