@@ -2332,7 +2332,7 @@ case "$command" in
         fi
 
         #check on server
-        virtualized_check "$CLI_PATH" "$hostname"
+        #virtualized_check "$CLI_PATH" "$hostname"
         fpga_check "$CLI_PATH" "$hostname"
 
         #check on groups
