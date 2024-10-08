@@ -1531,7 +1531,7 @@ validate_help() {
     echo ""
     echo "ARGUMENTS:"
     echo "   ${bold}docker${normal}          - Validates Docker installation on the server."
-    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+    if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected FPGA."
     fi
     if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
@@ -1582,7 +1582,7 @@ validate_hip_help() {
 }
 
 validate_opennic_help() {
-  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+  if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "1" "0" "yes"
     echo ""
@@ -2665,7 +2665,7 @@ case "$command" in
         ;;
       opennic)
         #early exit
-        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+        if [ "$is_build" = "1" ] || [ "$is_virtualized" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
         fi
 

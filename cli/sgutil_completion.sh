@@ -276,7 +276,7 @@ _sgutil_completions()
                     if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
                     fi
-                    if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
+                    if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
                     fi
                     if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
