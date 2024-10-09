@@ -4,13 +4,15 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 #inputs
-CLI_NAME=$1
-is_acap=$2
-is_build=$3
-is_fpga=$4
-is_gpu=$5
-is_gpu_developer=$6
-is_vivado_developer=$7
+CLI_PATH=$1
+CLI_NAME=$2
+is_acap=$3
+is_asoc=$4
+is_build=$5
+is_fpga=$6
+is_gpu=$7
+is_gpu_developer=$8
+is_vivado_developer=$9
 
 #legend
 COLOR_ON2=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_XILINX)
@@ -19,7 +21,7 @@ COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 
 #evaluate integrations
 gpu_enabled=$([ "$is_gpu_developer" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
-vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 
 #print help
 echo ""
@@ -38,5 +40,5 @@ fi
 echo ""
 echo "   ${bold}-h, --help${normal}      - Help to use this command."
 echo ""
-$CLI_PATH/common/print_legend "$CLI_PATH" "$CLI_NAME" "0" "$is_vivado_developer" "$is_gpu_developer"
+$CLI_PATH/common/print_legend "$CLI_PATH" "$CLI_NAME" "0" "0" "$vivado_enabled" "$gpu_enabled"
 echo ""

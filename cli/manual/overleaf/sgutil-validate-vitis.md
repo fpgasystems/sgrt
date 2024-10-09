@@ -5,7 +5,7 @@ Back to sgutil validate
 
 sgutil validate vitis [flags] [--help]
 
-  &nbsp; &nbsp; Validates Vitis workflow on the selected FPGA.
+  &nbsp; &nbsp; Validates Vitis workflow on the selected device.
 
 
 ### Flags

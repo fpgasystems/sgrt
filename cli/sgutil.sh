@@ -44,6 +44,7 @@ VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
 
 #check on server
 is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
 is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
@@ -76,7 +77,7 @@ fi
 
 #evaluate integrations
 gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
-vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 
 #help
 cli_help() {
@@ -98,7 +99,7 @@ cli_help() {
   echo "    ${bold}new${normal}            - Creates a new project of your choice."
   fi
   #if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
-  if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+  if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
   echo "    ${bold}program${normal}        - Driver and bitstream programming."
   fi
   if [ "$is_sudo" = "1" ] || ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
@@ -122,7 +123,7 @@ cli_help() {
   echo ""
   if [ "$is_build" = "1" ]; then
   echo "                     ${bold}This is a build server${normal}"
-  elif [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
+  elif [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ] || [ "$is_gpu" = "1" ]; then
     if [ "$is_virtualized" = "1" ]; then
       echo "                     ${bold}This is a virtualized deployment server${normal}"
     else
@@ -1082,11 +1083,12 @@ xrt_shell_check() {
 
 build_help() {
     is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+    is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
     is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
     is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
     is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
     is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-    $CLI_PATH/help/build $CLI_NAME $is_acap $is_build $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer
+    $CLI_PATH/help/build $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_build $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer
     exit
 }
 
@@ -1104,10 +1106,11 @@ build_hip_help() {
 
 build_opennic_help() {
     is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+    is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
     is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
     is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
     is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-    $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME $is_acap $is_build $is_fpga $is_vivado_developer
+    $CLI_PATH/help/build_opennic $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_build $is_fpga $is_vivado_developer
     exit
 }
 
@@ -1144,18 +1147,20 @@ examine_help() {
 
 get_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "--help" $is_acap $is_build $is_fpga $is_gpu $is_vivado_developer
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "--help" $is_acap $is_asoc $is_build $is_fpga $is_gpu $is_vivado_developer
   exit
 }
 
 get_bdf_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bdf" $is_acap "-" $is_fpga "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "bdf" $is_acap $is_asoc "-" $is_fpga "-" "-"
   exit
 }
 
@@ -1186,17 +1191,19 @@ get_memory_help() {
 
 get_name_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "name" $is_acap "-" $is_fpga "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "name" $is_acap $is_asoc "-" $is_fpga "-" "-"
   exit  
 }
 
 get_network_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
+  if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
     $CLI_PATH/help/get_network $CLI_PATH $CLI_NAME
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
   fi
   exit
@@ -1218,8 +1225,9 @@ get_resource_help() {
 
 get_serial_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "serial" $is_acap "-" $is_fpga "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "serial" $is_acap $is_asoc "-" $is_fpga "-" "-"
   exit  
 }
 
@@ -1249,8 +1257,9 @@ get_topo_help() {
 
 get_workflow_help() {  
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "workflow" $is_acap "-" $is_fpga "-" "-"
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "workflow" $is_acap $is_asoc "-" $is_fpga "-" "-"
   exit
 }
 
@@ -1258,31 +1267,33 @@ get_workflow_help() {
 
 new_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "--help" $is_acap $is_build $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "--help" $is_acap $is_asoc $is_build $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer
   exit
 }
 
 new_hip_help() {
-  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  #is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "hip" $is_acap $is_build $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer
+  #is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "hip" "0" "0" $is_build "0" $is_gpu $IS_GPU_DEVELOPER "0"
   exit
 }
 
 new_opennic_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
+  #is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_build $is_fpga $is_gpu $IS_GPU_DEVELOPER $is_vivado_developer
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_asoc $is_build $is_fpga "0" "0" $is_vivado_developer
   exit
 }
 
@@ -1290,7 +1301,7 @@ new_opennic_help() {
 
 program_help() {
   #if [ "$vivado_enabled" = "1" ]; then
-  if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+  if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
     echo ""
     echo "${bold}$CLI_NAME program [arguments [flags]] [--help]${normal}"
     echo ""
@@ -1303,8 +1314,10 @@ program_help() {
     if [ ! "$is_virtualized" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Programs OpenNIC to a given device."
     fi
+    if [ ! "$is_asoc" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}reset${COLOR_OFF}${normal}           - Performs a 'HOT Reset' on a Vitis device."
-    if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+    fi
+    if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
       echo -e "   ${bold}${COLOR_ON2}revert${COLOR_OFF}${normal}          - Returns a device to its default fabric setup."
     fi
     if [ "$is_vivado_developer" = "1" ]; then
@@ -1313,7 +1326,7 @@ program_help() {
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0"
     echo ""
   fi
   exit
@@ -1329,16 +1342,16 @@ program_driver_help() {
 program_opennic_help() {
   if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_opennic $CLI_PATH $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
   fi
   exit
 }
 
 program_reset_help() {
-  if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
+  if { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && [ ! "$is_asoc" = "1" ]; then
     $CLI_PATH/help/program_reset $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
     exit
   fi
@@ -1347,7 +1360,7 @@ program_reset_help() {
 program_revert_help() {
   if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
     $CLI_PATH/help/program_revert $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
     exit
   fi
@@ -1356,7 +1369,7 @@ program_revert_help() {
 program_vivado_help() {
   if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_vivado $CLI_NAME $COLOR_ON2 $COLOR_OFF
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
     exit
   fi
@@ -1391,7 +1404,7 @@ run_help() {
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" $vivado_enabled $gpu_enabled
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $gpu_enabled
     echo ""
   fi  
   exit
@@ -1410,7 +1423,7 @@ run_hip_help() {
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "yes"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
     echo ""
   fi
   exit
@@ -1419,7 +1432,7 @@ run_hip_help() {
 run_opennic_help() {
   if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/run_opennic $CLI_PATH $CLI_NAME
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
   fi
   exit
@@ -1536,10 +1549,10 @@ validate_help() {
     echo "ARGUMENTS:"
     echo "   ${bold}docker${normal}          - Validates Docker installation on the server."
     if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
-    echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected FPGA."
+    echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected device."
     fi
     if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
-    echo -e "   ${bold}${COLOR_ON2}vitis${COLOR_OFF}${normal}           - Validates Vitis workflow on the selected FPGA."
+    echo -e "   ${bold}${COLOR_ON2}vitis${COLOR_OFF}${normal}           - Validates Vitis workflow on the selected device."
     vitis_enabled="1"
     fi
     if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
@@ -1548,7 +1561,7 @@ validate_help() {
     echo "" 
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $vitis_enabled $vivado_enabled $gpu_enabled
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $vitis_enabled "0" $vivado_enabled $gpu_enabled
     echo ""
     exit
 }
@@ -1579,7 +1592,7 @@ validate_hip_help() {
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use HIP validation."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "yes"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
     echo ""
   fi
   exit
@@ -1588,7 +1601,7 @@ validate_hip_help() {
 validate_opennic_help() {
   if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "1" "0" "yes"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "0" "yes"
     echo ""
   fi
   exit
@@ -1599,14 +1612,14 @@ validate_vitis_help() {
     echo ""
     echo "${bold}$CLI_NAME validate vitis [flags] [--help]${normal}"
     echo ""
-    echo "Validates Vitis workflow on the selected FPGA."
+    echo "Validates Vitis workflow on the selected device."
     echo ""
     echo "FLAGS:"
     echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use Vitis validation."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "1" "0" "yes"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "0" "yes"
     echo ""
   fi
   exit
@@ -2213,7 +2226,7 @@ case "$command" in
         ;;
       reset)
         #early exit
-        if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
+        if { [[ "$is_acap" = "0" && "$is_fpga" = "0" ]]; } || [[ "$is_asoc" = "1" ]]; then
           exit
         fi
 

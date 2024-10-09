@@ -6,6 +6,7 @@ hostname="${url%%.*}"
 
 #check on server
 is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
 is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
@@ -130,7 +131,7 @@ _sgutil_completions()
 
     #evaluate integrations
     gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
-    vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+    vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 
     case ${COMP_CWORD} in
         1)
@@ -157,7 +158,7 @@ _sgutil_completions()
             if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
                 commands="${commands} run"
             fi
-            if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+            if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
                 commands="${commands} program"
             fi
             if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
@@ -203,6 +204,9 @@ _sgutil_completions()
                     if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
                         commands="${commands} bdf clock memory name network platform resource serial slr workflow"
                     fi
+                    if [ "$is_asoc" = "1" ]; then
+                        commands="${commands} bdf name network serial workflow"
+                    fi
                     if [ "$is_gpu" = "1" ]; then
                         commands="${commands} bus"
                     fi 
@@ -229,14 +233,17 @@ _sgutil_completions()
                     #COMPREPLY=($(compgen -W "hip opennic --help" -- ${cur}))
                     ;;
                 program)
-                    commands="reset --help"
+                    commands="--help"
                     if [ "$is_vivado_developer" = "1" ]; then
                         commands="${commands} driver vivado"
                     fi
                     if [ ! "$is_virtualized" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
                         commands="${commands} opennic"
                     fi
-                    if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+                    if [ ! "$is_asoc" = "1" ]; then
+                        commands="${commands} reset"
+                    fi
+                    if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
                         commands="${commands} revert"
                     fi
                     commands_array=($commands)

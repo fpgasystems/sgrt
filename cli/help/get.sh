@@ -7,10 +7,11 @@ CLI_PATH=$1
 CLI_NAME=$2
 parameter=$3
 is_acap=$4
-is_build=$5
-is_fpga=$6
-is_gpu=$7
-is_vivado_developer=$8
+is_asoc=$5
+is_build=$6
+is_fpga=$7
+is_gpu=$8
+is_vivado_developer=$9
 
 #legend
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
@@ -45,6 +46,12 @@ if [ "$parameter" = "--help" ]; then
         echo -e "   ${bold}${COLOR_ON2}serial${COLOR_OFF}${normal}          - Serial numbers."
         echo -e "   ${bold}${COLOR_ON2}slr${COLOR_OFF}${normal}             - Resource Availability and Memory Information per SLR."
         echo -e "   ${bold}${COLOR_ON2}workflow${COLOR_OFF}${normal}        - Current workflow."
+        elif [ "$is_asoc" = "1" ]; then
+        echo -e "   ${bold}${COLOR_ON2}bdf${COLOR_OFF}${normal}             - Bus Device Function."
+        echo -e "   ${bold}${COLOR_ON2}name${COLOR_OFF}${normal}            - Device names."
+        echo -e "   ${bold}${COLOR_ON2}network${COLOR_OFF}${normal}         - Networking information."
+        echo -e "   ${bold}${COLOR_ON2}serial${COLOR_OFF}${normal}          - Serial numbers."
+        echo -e "   ${bold}${COLOR_ON2}workflow${COLOR_OFF}${normal}        - Current workflow."
         fi
         if [ "$is_gpu" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON5}bus${COLOR_OFF}${normal}             - Peripheral Component Interconnect (PCI) identifiers."
@@ -52,11 +59,11 @@ if [ "$parameter" = "--help" ]; then
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
-        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga $is_gpu
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga $is_gpu
         echo ""
     fi
 elif [ "$parameter" = "bdf" ]; then
-    if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
+    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
         echo ""
         echo "${bold}$CLI_NAME get bdf [flags] [--help]${normal}"
         echo ""
@@ -67,7 +74,7 @@ elif [ "$parameter" = "bdf" ]; then
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
-        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
         echo ""
     fi
 elif [ "$parameter" = "bus" ]; then
@@ -82,7 +89,7 @@ elif [ "$parameter" = "bus" ]; then
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
-        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "yes"
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
         echo ""
     fi
 elif [ "$parameter" = "clock" ]; then
@@ -97,7 +104,7 @@ elif [ "$parameter" = "clock" ]; then
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
-        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
         echo ""
     fi
 elif [ "$parameter" = "memory" ]; then
@@ -112,11 +119,11 @@ elif [ "$parameter" = "memory" ]; then
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
-        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
         echo ""
     fi
 elif [ "$parameter" = "name" ]; then
-    if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
+    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
         echo ""
         echo "${bold}$CLI_NAME get name [flags] [--help]${normal}"
         echo ""
@@ -127,7 +134,7 @@ elif [ "$parameter" = "name" ]; then
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
-        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
         echo ""
     fi
 elif [ "$parameter" = "ifconfig" ]; then
@@ -154,7 +161,7 @@ elif [ "$parameter" = "platform" ]; then
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
-        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
         echo ""
     fi
 elif [ "$parameter" = "resource" ]; then
@@ -169,11 +176,11 @@ elif [ "$parameter" = "resource" ]; then
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
-        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
         echo ""
     fi
 elif [ "$parameter" = "serial" ]; then
-    if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
+    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
         echo ""
         echo "${bold}$CLI_NAME get serial [flags] [--help]${normal}"
         echo ""
@@ -184,7 +191,7 @@ elif [ "$parameter" = "serial" ]; then
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
-        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
         echo ""
     fi
 elif [ "$parameter" = "slr" ]; then
@@ -199,7 +206,7 @@ elif [ "$parameter" = "slr" ]; then
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
-        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
         echo ""
     fi
 elif [ "$parameter" = "servers" ]; then
@@ -227,7 +234,7 @@ elif [ "$parameter" = "syslog" ]; then
         echo ""
     fi
 elif [ "$parameter" = "workflow" ]; then
-    if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then  
+    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
         echo ""
         echo "${bold}$CLI_NAME get workflow [flags] [--help]${normal}"
         echo ""
@@ -238,7 +245,7 @@ elif [ "$parameter" = "workflow" ]; then
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
-        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_fpga "0" "yes"
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
         echo ""
     fi
 fi

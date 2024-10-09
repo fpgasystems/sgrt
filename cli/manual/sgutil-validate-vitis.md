@@ -8,7 +8,7 @@
 
 <code>sgutil validate vitis [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Validates Vitis workflow on the selected FPGA.
+  &nbsp; &nbsp; Validates Vitis workflow on the selected device.
 </p>
 
 ### Flags

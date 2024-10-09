@@ -12,8 +12,9 @@ normal=$(tput sgr0)
 url="${HOSTNAME}"
 hostname="${url%%.*}"
 is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
+if { [[ "$is_acap" = "0" && "$is_fpga" = "0" ]]; } || [[ "$is_asoc" = "1" ]]; then
     exit
 fi
 

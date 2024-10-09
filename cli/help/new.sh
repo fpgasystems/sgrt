@@ -8,11 +8,12 @@ CLI_PATH=$1
 CLI_NAME=$2
 parameter=$3
 is_acap=$4
-is_build=$5
-is_fpga=$6
-is_gpu=$7
-is_gpu_developer=$8
-is_vivado_developer=$9
+is_asoc=$5
+is_build=$6
+is_fpga=$7
+is_gpu=$8
+is_gpu_developer=$9
+is_vivado_developer=${10}
 
 #constants
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
@@ -28,7 +29,7 @@ COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 
 #evaluate integrations
 gpu_enabled=$([ "$is_gpu_developer" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
-vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 
 if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     if [ "$parameter" = "--help" ]; then
@@ -38,16 +39,16 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         echo "Creates a new project of your choice."
         echo ""
         echo "ARGUMENTS:"
-        if [ "$is_gpu_developer" = "1" ]; then
+        if [ "$gpu_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Portable single-source ROCm applications."
         fi
-        if [ "$is_vivado_developer" = "1" ]; then
+        if [ "$vivado_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
         fi
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
         echo ""
-        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" $is_vivado_developer $is_gpu_developer
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $gpu_enabled
         echo ""
     elif [ "$parameter" = "hip" ]; then
         if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
@@ -61,7 +62,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo ""
             echo "   ${bold}-h, --help${normal}      - Help to use this command."
             echo ""
-            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "yes"
+            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "0" "1" "yes"
             echo ""
         fi
     elif [ "$parameter" = "opennic" ]; then
@@ -78,7 +79,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo ""
             echo "   ${bold}-h, --help${normal}      - Help to use this command."
             echo ""
-            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "0" "yes"
+            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
             echo ""
         fi
     fi

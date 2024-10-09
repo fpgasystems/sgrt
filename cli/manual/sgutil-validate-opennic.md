@@ -8,7 +8,7 @@
 
 <code>sgutil validate opennic [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Validates OpenNIC on an adaptive device.
+  &nbsp; &nbsp; Validates OpenNIC on the selected device.
 </p>
 
 ### Flags

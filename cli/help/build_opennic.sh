@@ -6,14 +6,15 @@ normal=$(tput sgr0)
 CLI_PATH=$1
 CLI_NAME=$2
 is_acap=$3
-is_build=$4 
-is_fpga=$5
-is_vivado_developer=$6
+is_asoc=$4
+is_build=$5 
+is_fpga=$6
+is_vivado_developer=$7
 
 ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
 
 #evaluate integrations
-vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
 
 #if [ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; }; then
 if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
@@ -31,6 +32,6 @@ if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
-    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "0" "yes"
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
     echo ""
 fi

@@ -6,9 +6,10 @@ normal=$(tput sgr0)
 CLI_PATH=$1
 CLI_NAME=$2
 is_acap=$3
-is_fpga=$4
-is_gpu=$5
-in_black=$6
+is_asoc=$4
+is_fpga=$5
+is_gpu=$6
+in_black=$7
 
 #get colors
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
@@ -27,9 +28,9 @@ if [ "$in_black" = "yes" ]; then
 fi
 
 #print legend
-if ([ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_gpu" = "1" ]; then
+if ([ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]) && [ "$is_gpu" = "1" ]; then
 echo -e "                     ${bold}${COLOR_ON2}Adaptive Devices ${COLOR_ON5}GPUs${COLOR_OFF}${normal}"
-elif [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
+elif [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
 echo -e "                     ${bold}${COLOR_ON2}Adaptive Devices${COLOR_OFF}${normal}"
 elif [ "$is_gpu" = "1" ]; then
 echo -e "                     ${bold}${COLOR_ON5}GPUs${COLOR_OFF}${normal}"
