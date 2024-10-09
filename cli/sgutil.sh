@@ -1724,9 +1724,16 @@ case "$command" in
         ;;
       opennic)
         #early exit
-        #if [ "$is_vivado_developer" = "0" ]; then #[ "$is_acap" = "0" ] && [ "$is_build" = "0" ] && [ "$is_fpga" = "0" ]; then
         if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
           exit 1
+        fi
+
+        #temporal exit condition
+        if [ "$is_asoc" = "1" ]; then
+            echo ""
+            echo "Sorry, we are working on this!"
+            echo ""
+            exit
         fi
 
         #check on groups
@@ -1990,6 +1997,14 @@ case "$command" in
             exit 1
         fi
 
+        #temporal exit condition
+        if [ "$is_asoc" = "1" ]; then
+            echo ""
+            echo "Sorry, we are working on this!"
+            echo ""
+            exit
+        fi
+
         #check on groups
         vivado_developers_check "$USER"
         
@@ -2165,6 +2180,14 @@ case "$command" in
         #early exit
         if [ "$is_build" = "1" ] || [ "$is_virtualized" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
+        fi
+
+        #temporal exit condition
+        if [ "$is_asoc" = "1" ]; then
+            echo ""
+            echo "Sorry, we are working on this!"
+            echo ""
+            exit
         fi
 
         #check on server
@@ -2448,6 +2471,14 @@ case "$command" in
           exit
         fi
 
+        #temporal exit condition
+        if [ "$is_asoc" = "1" ]; then
+            echo ""
+            echo "Sorry, we are working on this!"
+            echo ""
+            exit
+        fi
+
         #check on server
         fpga_check "$CLI_PATH" "$hostname"
         
@@ -2684,6 +2715,14 @@ case "$command" in
         #early exit
         if [ "$is_build" = "1" ] || [ "$is_virtualized" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
+        fi
+
+        #temporal exit condition
+        if [ "$is_asoc" = "1" ]; then
+            echo ""
+            echo "Sorry, we are working on this!"
+            echo ""
+            exit
         fi
 
         #check on server

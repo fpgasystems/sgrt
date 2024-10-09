@@ -14,6 +14,17 @@ if [ "$is_vivado_developer" = "0" ]; then
     exit 1
 fi
 
+#temporal exit condition
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+if [ "$is_asoc" = "1" ]; then
+    echo ""
+    echo "Sorry, we are working on this!"
+    echo ""
+    exit
+fi
+
 check_connectivity() {
     local interface="$1"
     local remote_server="$2"

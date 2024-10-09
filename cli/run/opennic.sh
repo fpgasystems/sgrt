@@ -20,6 +20,14 @@ if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
     exit
 fi
 
+#temporal exit condition
+if [ "$is_asoc" = "1" ]; then
+    echo ""
+    echo "Sorry, we are working on this!"
+    echo ""
+    exit
+fi
+
 #inputs
 commit_name=$2
 config_index=$4
