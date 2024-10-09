@@ -8,8 +8,9 @@ normal=$(tput sgr0)
 url="${HOSTNAME}"
 hostname="${url%%.*}"
 is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
+if [ "$is_acap" = "0" ] && [ "$is_asoc" = "0" ] && [ "$is_fpga" = "0" ]; then
     exit
 fi
 
@@ -49,14 +50,14 @@ url="${HOSTNAME}"
 hostname="${url%%.*}"
 
 #check on ACAP or FPGA servers (server must have at least one ACAP or one FPGA)
-acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
-    echo ""
-    echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
-    echo ""
-    exit
-fi
+#acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+#fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+#if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
+#    echo ""
+#    echo "Sorry, this command is not available on ${bold}$hostname!${normal}"
+#    echo ""
+#    exit
+#fi
 
 #check on DEVICES_LIST
 source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"

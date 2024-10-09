@@ -22,7 +22,7 @@ COLOR_ON5=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_GPU)
 COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 
 if [ "$parameter" = "--help" ]; then
-    if [ "$is_acap" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; then
+    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_build" = "1" ] || [ "$is_fpga" = "1" ]; then
         echo ""
         echo "${bold}$CLI_NAME get [arguments [flags]] [--help]${normal}"
         echo ""
