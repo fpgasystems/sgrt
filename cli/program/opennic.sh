@@ -82,7 +82,7 @@ if [[ "$workflow" = "vivado" ]]; then
     echo "${bold}$CLI_NAME program revert${normal}"    
     echo ""
 fi
-$CLI_PATH/program/revert -d $device_index --version $vivado_version
+$CLI_PATH/program/revert -d $device_index --version $vivado_version --remote 0
 if [[ "$workflow" = "vivado" ]]; then
     echo ""
 fi

@@ -17,6 +17,11 @@
   &nbsp; &nbsp; Device Index (according to sgutil examine).
 </p>
 
+<code>-r, --remote <string></code>
+<p>
+  &nbsp; &nbsp; Local or remote deployment.
+</p>
+
 <code>-h, --help <string></code>
 <p>
   &nbsp; &nbsp; Help to revert a device.

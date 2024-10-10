@@ -407,7 +407,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
                         revert)
-                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device --remote --help" -- ${cur}))
                             ;;
                         vivado) 
                             COMPREPLY=($(compgen -W "--bitstream --device --remote --help" -- ${cur})) # --driver 
@@ -493,6 +493,9 @@ _sgutil_completions()
 
             other_flags=( "--commit" "--device" "--project" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "opennic" "${other_flags[@]}"
+
+            other_flags=( "--device" "--remote" )
+            command_completion_5 "$cur" "$COMP_CWORD" "program" "revert" "${other_flags[@]}"
 
             other_flags=( "--bitstream" "--remote" "--device" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "vivado" "${other_flags[@]}"

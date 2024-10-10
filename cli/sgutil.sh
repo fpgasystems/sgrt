@@ -2322,7 +2322,7 @@ case "$command" in
         vivado_check "$VIVADO_PATH" "$vivado_version"
 
         #check on flags
-        valid_flags="-d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
+        valid_flags="-d --device -r --remote -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -2335,6 +2335,7 @@ case "$command" in
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          remote_check "$CLI_PATH" "${flags_array[@]}"
         fi
         
         #dialogs
@@ -2366,9 +2367,11 @@ case "$command" in
           echo "${bold}$CLI_NAME $command $arguments${normal}"    
           echo ""
         fi
-        
+
+        remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
+
         #run
-        $CLI_PATH/program/revert --device $device_index --version $vivado_version
+        $CLI_PATH/program/revert --device $device_index --version $vivado_version --remote $deploy_option "${servers_family_list[@]}"
         ;;
       vivado)
         #early exit

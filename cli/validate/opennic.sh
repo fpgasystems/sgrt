@@ -288,7 +288,7 @@ fi
 echo "${bold}Reverting device and removing driver:${normal}"
 
 # Run revert in the background but attached to the current shell
-$CLI_PATH/program/revert -d $device_index --version $vivado_version > /dev/null 2>&1 &
+$CLI_PATH/program/revert -d $device_index --version $vivado_version --remote 0 > /dev/null 2>&1 &
 
 # Capture the PID of the background process
 revert_pid=$!
