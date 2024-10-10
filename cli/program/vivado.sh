@@ -32,6 +32,11 @@ if [ "$bitstream_name" = "" ] || [ "$device_index" = "" ] || [ "$vivado_version"
     exit
 fi
 
+#check on remote aboslute path
+if [ "$deploy_option" = "1" ] && [[ "$bitstream_name" == "./"* ]]; then
+    exit
+fi
+
 #constants
 SERVERADDR="localhost"
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
