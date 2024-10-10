@@ -203,6 +203,7 @@ CHECK_ON_PORT_ERR_MSG="Please, choose a valid port index."
 CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
 CHECK_ON_PUSH_ERR_MSG="Please, choose a valid push option."
 CHECK_ON_REMOTE_ERR_MSG="Please, choose a valid deploy option."
+CHECK_ON_REMOTE_FILE_ERR_MSG="Please, specify an absolute path for remote programming."
 CHECK_ON_REVERT_ERR_MSG="Please, revert your device first."
 CHECK_ON_SUDO_ERR_MSG="Sorry, this command requires sudo capabilities."
 CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
@@ -949,6 +950,8 @@ remote_dialog() {
         fi
     fi
   fi
+  #remove trailings
+  deploy_option=$(echo "$deploy_option" | sed '/^$/d' | xargs)
 }
 
 remote_check() {
@@ -2385,7 +2388,7 @@ case "$command" in
         vivado_check "$VIVADO_PATH" "$vivado_version"
 
         #check on flags
-        valid_flags="-b --bitstream -d --device -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
+        valid_flags="-b --bitstream -d --device -r --remote -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -2400,6 +2403,7 @@ case "$command" in
           exit
         else #if [ ! "$flags_array" = "" ]; then      
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          remote_check "$CLI_PATH" "${flags_array[@]}"
           #bitstream_dialog_check
           result="$("$CLI_PATH/common/bitstream_dialog_check" "${flags_array[@]}")"
           bitstream_found=$(echo "$result" | sed -n '1p')
@@ -2426,8 +2430,17 @@ case "$command" in
         fi
         echo ""
 
+        remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
+
+        #check on remote aboslute path
+        if [ "$deploy_option" = "1" ] && [[ "$bitstream_name" == "./"* ]]; then
+          echo $CHECK_ON_REMOTE_FILE_ERR_MSG
+          echo ""
+          exit
+        fi
+
         #run
-        $CLI_PATH/program/vivado --bitstream $bitstream_name --device $device_index --version $vivado_version
+        $CLI_PATH/program/vivado --bitstream $bitstream_name --device $device_index --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
         ;;
       *)
         program_help

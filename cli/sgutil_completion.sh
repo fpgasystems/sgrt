@@ -410,7 +410,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
                         vivado) 
-                            COMPREPLY=($(compgen -W "--bitstream --device --help" -- ${cur})) # --driver 
+                            COMPREPLY=($(compgen -W "--bitstream --device --remote --help" -- ${cur})) # --driver 
                             ;;
                     esac
                     ;;
@@ -494,7 +494,7 @@ _sgutil_completions()
             other_flags=( "--commit" "--device" "--project" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "opennic" "${other_flags[@]}"
 
-            other_flags=( "--bitstream" "--device" )
+            other_flags=( "--bitstream" "--remote" "--device" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "vivado" "${other_flags[@]}"
 
             #run
@@ -564,6 +564,16 @@ _sgutil_completions()
 
             other_flags=( "--commit" "--device" "--project" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "opennic" "--remote" "${other_flags[@]}"
+
+            #program vivado
+            other_flags=( "--device" "--remote" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--bitstream" "${other_flags[@]}"
+            
+            other_flags=( "--bitstream" "--remote" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--device" "${other_flags[@]}"
+
+            other_flags=( "--bitstream" "--device" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--remote" "${other_flags[@]}"
 
             #run opennic
             other_flags=( "--config" "--device" "--project" )

@@ -22,25 +22,10 @@
   &nbsp; &nbsp; Device Index (according to sgutil examine).
 </p>
 
-<!-- <code>    --driver <string></code>
+<code>-r, --remote <string></code>
 <p>
-  &nbsp; &nbsp; Driver (.ko) file path.
-</p> -->
-
-<!-- <code>-l, --ltx <string></code>
-<p>
-  &nbsp; &nbsp; Specifies a .ltx debug probes file.
+  &nbsp; &nbsp; Local or remote deployment.
 </p>
-
-<code>-n, --name <string></code>
-<p>
-  &nbsp; &nbsp; FPGA's device name. See <a href="https://github.com/fpgasystems/sgrt/blob/main/cli/manual/sgutil-get-device.md">sgutil get device</a>.
-</p>
-
-<code>-s, --serial <string></code>
-<p>
-  &nbsp; &nbsp; FPGA's serial number. See <a href="https://github.com/fpgasystems/sgrt/blob/main/cli/manual/sgutil-get-serial.md">sgutil get serial</a>.
-</p> -->
 
 <code>-h, --help <string></code>
 <p>
