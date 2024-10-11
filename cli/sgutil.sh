@@ -933,8 +933,6 @@ remote_dialog() {
     remote_check "$CLI_PATH" "${flags_array[@]}"
     #forgotten mandatory
     if [ "$deploy_option" = "1" ]; then
-      #echo "${bold}Connecting to remote servers:${normal}"
-      #echo ""
       result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
       servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
       servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
@@ -943,30 +941,11 @@ remote_dialog() {
         echo "Please, verify that you can ssh the targeted remote servers."
         echo ""
         exit
-      #else
-      #  for server in $servers_family_list; do
-      #    echo "$server"
-      #    sleep 0.75
-      #  done
       fi
     elif [ "$deploy_option_found" = "0" ]; then
-        deploy_option_found="1"
-        deploy_option="0"
-        #result=$($CLI_PATH/common/get_servers $CLI_PATH "$SERVER_LIST" $hostname $username)
-        #servers_family_list=$(echo "$result" | sed -n '1p' | sed -n '1p')
-        #servers_family_list_string=$(echo "$result" | sed -n '2p' | sed -n '1p')
-        #num_remote_servers=$(echo "$servers_family_list" | wc -w)
-        ##deployment_dialog
-        #deploy_option="0"
-        #if [ "$num_remote_servers" -ge 1 ]; then
-        #    #echo ""
-        #    echo $CHECK_ON_REMOTE_MSG
-        #    echo ""
-        #    echo "0) $hostname"
-        #    echo "1) $hostname, $servers_family_list_string"
-        #    deploy_option=$($CLI_PATH/common/deployment_dialog $servers_family_list_string)
-        #    echo ""
-        #fi
+      #no --remote flag means no remote programming
+      deploy_option_found="1"
+      deploy_option="0"
     fi
   fi
   #remove trailings
