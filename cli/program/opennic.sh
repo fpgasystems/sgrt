@@ -104,7 +104,7 @@ driver_name_base=$(basename "$DRIVER_NAME")
 
 #insert driver (only if not present)
 if ! lsmod | grep -q ${driver_name_base%.ko}; then
-    eval "$CLI_PATH/program/driver -i $DIR/$DRIVER_NAME -p RS_FEC_ENABLED=$rs_fec"
+    eval "$CLI_PATH/program/driver -i $DIR/$DRIVER_NAME -p RS_FEC_ENABLED=$rs_fec --remote 0"
 fi
 
 #this gives time the driver binds the device properly

@@ -2132,7 +2132,7 @@ case "$command" in
         vivado_developers_check "$USER"
 
         #check on flags
-        valid_flags="-i --insert -p --params -r --remove -h --help"
+        valid_flags="-i --insert -p --params --remote --remove -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -2187,8 +2187,22 @@ case "$command" in
         echo "${bold}$CLI_NAME $command $arguments${normal}"
         echo ""
 
+        remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
+
+        #check on remote aboslute path
+        if [ "$deploy_option" = "1" ] && [[ "$driver_name" == "./"* ]]; then
+          echo $CHECK_ON_REMOTE_FILE_ERR_MSG
+          echo ""
+          exit
+        fi
+
+        #check on params_string
+        if [ "$params_string" = "" ]; then
+          params_string="none"
+        fi
+
         #run
-        $CLI_PATH/program/driver --insert $driver_name --params $params_string
+        $CLI_PATH/program/driver --insert $driver_name --params $params_string --remote $deploy_option "${servers_family_list[@]}"
         ;;
       opennic)
         #early exit

@@ -4,8 +4,9 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil program driver --insert $driver_name --params $params_string
-#example: /opt/sgrt/cli/sgutil program driver --insert      onic.ko --params RS_FEC_ENABLED=0
+#usage:        $CLI_PATH/sgutil program driver --insert $driver_name --params   $params_string --remote $deploy_option
+#examples: /opt/sgrt/cli/sgutil program driver --insert      onic.ko --params RS_FEC_ENABLED=0 --remote              0
+#          /opt/sgrt/cli/sgutil program driver --remove      onic
 
 #early exit
 url="${HOSTNAME}"
@@ -23,9 +24,16 @@ fi
 #inputs
 driver_name=$2
 params_string=$4
+deploy_option=$6
+servers_family_list=$7
 
 #all inputs must be provided (params_string can be empty)
 if [ "$driver_name" = "" ]; then
+    exit
+fi
+
+#check on remote aboslute path
+if [ "$deploy_option" = "1" ] && [[ "$driver_name" == "./"* ]]; then
     exit
 fi
 
@@ -48,44 +56,75 @@ insert_driver="0"
 if ! lsmod | grep -q ${driver_name_base%.ko}; then
     insert_driver="1"
 else
-    echo "The driver ${bold}${driver_name_base%.ko}${normal} is already inserted. Do you want to remove it and insert it again (y/n)?"
-    while true; do
-        read -p "" yn
-        case $yn in
-            "y")
-                #driver will be reinserted
-                insert_driver="1"
-                
-                #change directory (this is important)
-                cd $MY_DRIVERS_PATH
-                
-                #adding echo
-                echo ""
+    #check on deploy_option
+    #if [ "$deploy_option" = "1" ]; then
+    #    #driver will be reinserted
+    #    insert_driver="1"
+    #    
+    #    #change directory (this is important)
+    #    cd $MY_DRIVERS_PATH
+    #    
+    #    #adding echo
+    #    echo ""
+    #
+    #    #remove module
+    #    echo "${bold}Removing ${driver_name_base%.ko} module:${normal}"
+    #    echo ""
+    #    echo "sudo rmmod ${driver_name_base%.ko}"
+    #    echo ""
+    #    sudo rmmod ${driver_name_base%.ko}
+    #
+    #    echo "${bold}Deleting driver from $MY_DRIVERS_PATH:${normal}"
+    #    echo ""
+    #    echo "sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
+    #    echo "sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*"
+    #    #echo ""
+    #
+    #    #change ownership to ensure writing permissions and remove
+    #    sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
+    #    sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*
+    #else
+        echo "The driver ${bold}${driver_name_base%.ko}${normal} is already inserted. Do you want to remove it and insert it again (y/n)?"
+        #deploy_dialog
+        while true; do
+            read -p "" yn
+            case $yn in
+                "y")
+                    #driver will be reinserted
+                    insert_driver="1"
+                    
+                    #change directory (this is important)
+                    cd $MY_DRIVERS_PATH
+                    
+                    #adding echo
+                    echo ""
 
-                #remove module
-                echo "${bold}Removing ${driver_name_base%.ko} module:${normal}"
-                echo ""
-                echo "sudo rmmod ${driver_name_base%.ko}"
-                echo ""
-                sudo rmmod ${driver_name_base%.ko}
+                    #remove module
+                    echo "${bold}Removing ${driver_name_base%.ko} module:${normal}"
+                    echo ""
+                    echo "sudo rmmod ${driver_name_base%.ko}"
+                    echo ""
+                    sudo rmmod ${driver_name_base%.ko}
 
-                echo "${bold}Deleting driver from $MY_DRIVERS_PATH:${normal}"
-                echo ""
-                echo "sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
-                echo "sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*"
-                #echo ""
+                    echo "${bold}Deleting driver from $MY_DRIVERS_PATH:${normal}"
+                    echo ""
+                    echo "sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
+                    echo "sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*"
+                    #echo ""
 
-                #change ownership to ensure writing permissions and remove
-                sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
-                sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*
-                break
-                ;;
-            "n") 
-                #compile="0"
-                break
-                ;;
-        esac
-    done
+                    #change ownership to ensure writing permissions and remove
+                    sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
+                    sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*
+                    break
+                    ;;
+                "n") 
+                    #compile="0"
+                    break
+                    ;;
+            esac
+        done
+    #fi
+    #echo "The driver ${bold}${driver_name_base%.ko}${normal} is already inserted. Do you want to remove it and insert it again (y/n)?"
     echo ""
 fi
 
@@ -110,6 +149,11 @@ if [ "$insert_driver" = "1" ]; then
     echo "${bold}Inserting $driver_name_base module:${normal}"
     echo ""
 
+    #check on params_string
+    if [ "$params_string" = "none" ]; then
+        params_string=""
+    fi
+
     #replace commas with spaces
     params_string=$(echo "$params_string" | tr ',' ' ')
     params_string=$(echo "$params_string" | tr ';' ' ')
@@ -122,5 +166,19 @@ if [ "$insert_driver" = "1" ]; then
     sleep 1
     echo ""
 fi
+
+#check on params_string
+if [ "$params_string" = "" ]; then
+    params_string="none"
+fi
+
+#programming remote servers (if applies)
+#programming_string="$CLI_PATH/program/driver --insert $driver_name --params $params_string --remote 0"
+
+programming_string_1="sudo rmmod ${driver_name_base%.ko}; sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH; sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*"
+$CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string_1" "$servers_family_list"
+
+programming_string_2="$CLI_PATH/program/driver --insert $driver_name --params $params_string --remote 0"
+$CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string_2" "$servers_family_list"
 
 #author: https://github.com/jmoya82

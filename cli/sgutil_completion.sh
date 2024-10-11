@@ -398,7 +398,7 @@ _sgutil_completions()
                 program)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         driver)
-                            COMPREPLY=($(compgen -W "--insert --params --remove --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--insert --params --remote --remove --help" -- ${cur}))
                             ;;
                         opennic)
                             COMPREPLY=($(compgen -W "--commit --device --project --remote --help" -- ${cur}))
@@ -410,7 +410,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--device --remote --help" -- ${cur}))
                             ;;
                         vivado) 
-                            COMPREPLY=($(compgen -W "--bitstream --device --remote --help" -- ${cur})) # --driver 
+                            COMPREPLY=($(compgen -W "--bitstream --device --remote --help" -- ${cur}))
                             ;;
                     esac
                     ;;
@@ -464,7 +464,9 @@ _sgutil_completions()
             #COMP_WORDS[2]=coyote
             #COMP_WORDS[3]=other_flags
             #COMP_WORDS[4]=value
-            #Example: sgutil program coyote --device 1 -- (there are five words)
+            #Example: sgutil program coyote --device       1 -- (there are five words)
+            #         sgutil program driver --insert onic.ko -- (there are five words)
+            #         sgutil program driver --remove    onic -- (there are five words)
 
             #build
             if [ "$is_build" = "0" ]; then
@@ -487,10 +489,18 @@ _sgutil_completions()
             other_flags=( "--commit" "--project" "--push")
             command_completion_5 "$cur" "$COMP_CWORD" "new" "opennic" "${other_flags[@]}"
 
-            #program
-            other_flags=( "--insert" "--params " ) #--remove
-            command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "${other_flags[@]}"
+            #program driver
+            other_flags=( "--insert" "--remove" )
+            command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "" "${other_flags[@]}"
 
+            # For sgutil program driver --insert
+            other_flags=( "--params" "--remote" )
+            command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "--insert" "${other_flags[@]}"
+
+            # For sgutil program driver --remove
+            command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "--remove" ""  # No suggestions for --remove
+
+            #program
             other_flags=( "--commit" "--device" "--project" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "opennic" "${other_flags[@]}"
 
@@ -552,8 +562,15 @@ _sgutil_completions()
             #other_flags=( "--insert" )
             #command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--params" "${other_flags[@]}"
 
-            other_flags=( "" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--remove" "${other_flags[@]}"
+            other_flags=( "--params" "--remote" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--insert" "${other_flags[@]}"
+
+            # For sgutil program driver --remove
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "--remove" ""  # No suggestions for --remove
+
+            # For sgutil program driver without any flag
+            other_flags=( "--insert" "--remove" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "" "${other_flags[@]}"
             
             #program opennic
             other_flags=( "--device" "--project" "--remote" )
@@ -624,45 +641,16 @@ _sgutil_completions()
             #COMP_WORDS[8]=0
             #Example: sgutil program coyote --device 1 --project hello_world --commit 0 -- (there are nine words)
 
-            #build opennic --commit
-            #other_flags=( "--platform" "--project" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--commit" "--config" "${other_flags[@]}"
-            
-            #other_flags=( "--config" "--project" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--commit" "--platform" "${other_flags[@]}"
+            #sgutil program driver --insert
+            other_flags=( "--params" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "driver" "--insert" "${other_flags[@]}"
 
-            #other_flags=( "--config" "--platform" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--commit" "--project" "${other_flags[@]}"
-            
-            #build opennic --config
-            #other_flags=( "--platform" "--project" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--config" "--commit" "${other_flags[@]}"
-            
-            #other_flags=( "--commit" "--project" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--config" "--platform" "${other_flags[@]}"
+            #sgutil program driver --remove
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "driver" "--remove" ""  # No suggestions for --remove
 
-            #other_flags=( "--commit" "--platform" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--config" "--project" "${other_flags[@]}"
-
-            #build opennic --platform
-            #other_flags=( "--config" "--project" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--platform" "--commit" "${other_flags[@]}"
-            
-            #other_flags=( "--commit" "--project" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--platform" "--config" "${other_flags[@]}"
-
-            #other_flags=( "--commit" "--config" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--platform" "--project" "${other_flags[@]}"
-
-            #build opennic --project
-            #other_flags=( "--config" "--platform" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--project" "--commit" "${other_flags[@]}"
-            
-            #other_flags=( "--commit" "--platform" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--project" "--config" "${other_flags[@]}"
-
-            #other_flags=( "--commit" "--config" )
-            #command_completion_9 "$cur" "$COMP_CWORD" "build" "opennic" "--project" "--platform" "${other_flags[@]}"
+            #sgutil program driver without any flag
+            other_flags=( "--insert" "--remove" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "driver" "" "${other_flags[@]}"
 
             #program opennic --commit
             other_flags=( "--project" "--remote" )

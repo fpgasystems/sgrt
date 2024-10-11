@@ -22,7 +22,12 @@
   &nbsp; &nbsp; A comma separated list of module parameters.
 </p>
 
-<code>-r, --remove <string></code>
+<code>   --remote <string></code>
+<p>
+  &nbsp; &nbsp; Local or remote deployment.
+</p>
+
+<code>    --remove <string></code>
 <p>
   &nbsp; &nbsp; Removes an existing module.
 </p>
