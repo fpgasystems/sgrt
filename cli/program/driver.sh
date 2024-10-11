@@ -56,75 +56,45 @@ insert_driver="0"
 if ! lsmod | grep -q ${driver_name_base%.ko}; then
     insert_driver="1"
 else
-    #check on deploy_option
-    #if [ "$deploy_option" = "1" ]; then
-    #    #driver will be reinserted
-    #    insert_driver="1"
-    #    
-    #    #change directory (this is important)
-    #    cd $MY_DRIVERS_PATH
-    #    
-    #    #adding echo
-    #    echo ""
-    #
-    #    #remove module
-    #    echo "${bold}Removing ${driver_name_base%.ko} module:${normal}"
-    #    echo ""
-    #    echo "sudo rmmod ${driver_name_base%.ko}"
-    #    echo ""
-    #    sudo rmmod ${driver_name_base%.ko}
-    #
-    #    echo "${bold}Deleting driver from $MY_DRIVERS_PATH:${normal}"
-    #    echo ""
-    #    echo "sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
-    #    echo "sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*"
-    #    #echo ""
-    #
-    #    #change ownership to ensure writing permissions and remove
-    #    sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
-    #    sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*
-    #else
-        echo "The driver ${bold}${driver_name_base%.ko}${normal} is already inserted. Do you want to remove it and insert it again (y/n)?"
-        #deploy_dialog
-        while true; do
-            read -p "" yn
-            case $yn in
-                "y")
-                    #driver will be reinserted
-                    insert_driver="1"
-                    
-                    #change directory (this is important)
-                    cd $MY_DRIVERS_PATH
-                    
-                    #adding echo
-                    echo ""
+    echo "The driver ${bold}${driver_name_base%.ko}${normal} is already inserted. Do you want to remove it and insert it again (y/n)?"
+    #deploy_dialog
+    while true; do
+        read -p "" yn
+        case $yn in
+            "y")
+                #driver will be reinserted
+                insert_driver="1"
+                
+                #change directory (this is important)
+                cd $MY_DRIVERS_PATH
+                
+                #adding echo
+                echo ""
 
-                    #remove module
-                    echo "${bold}Removing ${driver_name_base%.ko} module:${normal}"
-                    echo ""
-                    echo "sudo rmmod ${driver_name_base%.ko}"
-                    echo ""
-                    sudo rmmod ${driver_name_base%.ko}
+                #remove module
+                echo "${bold}Removing ${driver_name_base%.ko} module:${normal}"
+                echo ""
+                echo "sudo rmmod ${driver_name_base%.ko}"
+                echo ""
+                sudo rmmod ${driver_name_base%.ko}
 
-                    echo "${bold}Deleting driver from $MY_DRIVERS_PATH:${normal}"
-                    echo ""
-                    echo "sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
-                    echo "sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*"
-                    #echo ""
+                echo "${bold}Deleting driver from $MY_DRIVERS_PATH:${normal}"
+                echo ""
+                echo "sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH"
+                echo "sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*"
+                #echo ""
 
-                    #change ownership to ensure writing permissions and remove
-                    sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
-                    sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*
-                    break
-                    ;;
-                "n") 
-                    #compile="0"
-                    break
-                    ;;
-            esac
-        done
-    #fi
-    #echo "The driver ${bold}${driver_name_base%.ko}${normal} is already inserted. Do you want to remove it and insert it again (y/n)?"
+                #change ownership to ensure writing permissions and remove
+                sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH
+                sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*
+                break
+                ;;
+            "n") 
+                #compile="0"
+                break
+                ;;
+        esac
+    done
     echo ""
 fi
 
@@ -173,8 +143,6 @@ if [ "$params_string" = "" ]; then
 fi
 
 #programming remote servers (if applies)
-#programming_string="$CLI_PATH/program/driver --insert $driver_name --params $params_string --remote 0"
-
 programming_string_1="sudo rmmod ${driver_name_base%.ko}; sudo $CLI_PATH/common/chown $USER vivado_developers $MY_DRIVERS_PATH; sudo $CLI_PATH/common/rm $MY_DRIVERS_PATH/${driver_name_base%.ko}.*"
 $CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string_1" "$servers_family_list"
 
