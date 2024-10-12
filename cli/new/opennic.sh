@@ -9,8 +9,15 @@ normal=$(tput sgr0)
 #example: /opt/sgrt/cli/sgutil new opennic --commit            807775            1cf2578 --project hello_world --push            0
 
 #early exit
+url="${HOSTNAME}"
+hostname="${url%%.*}"
+is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-if [ "$is_vivado_developer" = "0" ]; then
+vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+if [ "$is_build" = "0" ] && [ "$vivado_enabled" = "0" ]; then
     exit 1
 fi
 
