@@ -17,6 +17,8 @@ is_vivado_developer=${10}
 
 #constants
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
+ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
+ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
 
 #legend
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
@@ -62,7 +64,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
             echo "FLAGS:"
             echo "       ${bold}--project${normal}   - Specifies your OpenNIC project name." 
             echo "       ${bold}--push${normal}      - Pushes your OpenNIC project to your GitHub account." 
-            echo "   ${bold}-t, --tag${normal}       - GitHub tag identifier (default: ${bold}$AVED_TAG${normal})."
+            echo "   ${bold}-t, --tag${normal}       - GitHub tag ID (default: ${bold}$AVED_TAG${normal})."
             echo ""
             echo "   ${bold}-h, --help${normal}      - Help to use this command."
             echo ""
