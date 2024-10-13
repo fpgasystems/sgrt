@@ -24,7 +24,7 @@
 
 <code>-t, --tag <string></code>
 <p>
-  &nbsp; &nbsp; GitHub tag identifier.
+  &nbsp; &nbsp; GitHub tag ID.
 </p>
 
 <code>-h, --help <string></code>

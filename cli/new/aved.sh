@@ -22,40 +22,43 @@ if [ ! "$is_build" = "1" ] && { [ "$is_asoc" = "0" ] || [ "$vivado_enabled" = "0
 fi
 
 #inputs
-tag=$2
+github_tag=$2
 new_name=$4
 push_option=$6
 
 #all inputs must be provided
-if [ "$tag" = "" ] || [ "$new_name" = "" ] || [ "$push_option" = "" ]; then
+if [ "$github_tag" = "" ] || [ "$new_name" = "" ] || [ "$push_option" = "" ]; then
     exit
 fi
 
 #constants
-ACAP_SERVERS_LIST="$CLI_PATH/constants/ACAP_SERVERS_LIST"
-BUILD_SERVERS_LIST="$CLI_PATH/constants/BUILD_SERVERS_LIST"
-DEVICES_LIST_NETWORKING="$CLI_PATH/devices_network"
-FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
-GPU_SERVERS_LIST="$CLI_PATH/constants/GPU_SERVERS_LIST"
+#ACAP_SERVERS_LIST="$CLI_PATH/constants/ACAP_SERVERS_LIST"
+#BUILD_SERVERS_LIST="$CLI_PATH/constants/BUILD_SERVERS_LIST"
+#DEVICES_LIST_NETWORKING="$CLI_PATH/devices_network"
+#FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
+#GPU_SERVERS_LIST="$CLI_PATH/constants/GPU_SERVERS_LIST"
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
-NETWORKING_DEVICE_INDEX="1"
-NETWORKING_PORT_INDEX="1"
-WORKFLOW="opennic"
+#NETWORKING_DEVICE_INDEX="1"
+#NETWORKING_PORT_INDEX="1"
+WORKFLOW="aved"
 
 #get devices number
-if [ -s "$DEVICES_LIST_NETWORKING" ]; then
-  source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST_NETWORKING"
-fi
+#if [ -s "$DEVICES_LIST_NETWORKING" ]; then
+#  source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST_NETWORKING"
+#fi
 
 #get hostname
-url="${HOSTNAME}"
-hostname="${url%%.*}"
+#url="${HOSTNAME}"
+#hostname="${url%%.*}"
 
 #define directories
-DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$new_name"
+DIR="$MY_PROJECTS_PATH/$WORKFLOW/$github_tag/$new_name"
+
+#create directories
+mkdir -p $DIR
 
 #change directory
-cd $MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell
+cd $MY_PROJECTS_PATH/$WORKFLOW/$github_tag
 
 #create repository
 if [ "$push_option" = "1" ]; then 
@@ -66,47 +69,32 @@ else
 fi
 
 #clone repository
-$CLI_PATH/common/git_clone_opennic $DIR $commit_name_shell $commit_name_driver
+$CLI_PATH/common/git_clone_aved $DIR $github_tag
 
 #change to project directory
 #cd $DIR
 
-#save commit_name_shell
-echo "$commit_name_shell" > $DIR/ONIC_SHELL_COMMIT
-echo "$commit_name_driver" > $DIR/ONIC_DRIVER_COMMIT
+#save github_tag
+echo "$github_tag" > $DIR/AVED_TAG
+
+#move files
+mv $DIR/AVED/* $DIR/
+rm -rf $DIR/AVED
+
+#remove files
+rm $DIR/README.md
 
 #add template files
-#mkdir -p $DIR/src
-cp $SGRT_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
-cp $SGRT_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
-cp $SGRT_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
-cp $SGRT_PATH/templates/$WORKFLOW/Makefile $DIR/Makefile
-cp -r $SGRT_PATH/templates/$WORKFLOW/configs $DIR
-cp -r $SGRT_PATH/templates/$WORKFLOW/src $DIR
+#cp $SGRT_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
+#cp $SGRT_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
+#cp $SGRT_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
+#cp $SGRT_PATH/templates/$WORKFLOW/Makefile $DIR/Makefile
+#cp -r $SGRT_PATH/templates/$WORKFLOW/configs $DIR
+#cp -r $SGRT_PATH/templates/$WORKFLOW/src $DIR
 
 #compile files
-chmod +x $DIR/config_add
-chmod +x $DIR/config_delete
-
-#get interface name
-interface_name=$($CLI_PATH/get/get_nic_config $NETWORKING_DEVICE_INDEX $NETWORKING_PORT_INDEX DEVICE)
-
-#read SERVERS_LISTS excluding the current hostname
-IFS=$'\n' read -r -d '' -a remote_servers < <(cat "$ACAP_SERVERS_LIST" "$BUILD_SERVERS_LIST" "$FPGA_SERVERS_LIST" "$GPU_SERVERS_LIST" | grep -v "^$hostname$" | sort -u && printf '\0')
-
-#get target host
-target_host=""
-connected=""
-for server in "${remote_servers[@]}"; do
-    # Check connectivity to the current server
-    if [[ "$(check_connectivity "$interface_name" "$server")" == "1" ]]; then
-        target_host="$server"
-        break
-    fi
-done
-
-#update remote_server in config_parameters
-sed -i "/^remote_server/s/xxxx-xxxxx-xx/$target_host/" "$DIR/config_parameters"
+#chmod +x $DIR/config_add
+#chmod +x $DIR/config_delete
 
 #push files
 if [ "$push_option" = "1" ]; then 

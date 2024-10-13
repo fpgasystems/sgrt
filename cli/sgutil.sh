@@ -196,7 +196,7 @@ CHECK_ON_DRIVER_ERR_MSG="Please, choose a valid driver name."
 CHECK_ON_DRIVER_PARAMS_ERR_MSG="Please, choose a valid list of module parameters." 
 CHECK_ON_FEC_ERR_MSG="Please, choose a valid FEC option."
 CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to your GitHub account."
-CHECK_ON_GH_TAG_ERR_MSG="Please, choose a valid GitHub tag identifier."
+CHECK_ON_GH_TAG_ERR_MSG="Please, choose a valid GitHub tag ID."
 CHECK_ON_HOSTNAME_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_IFACE_ERR_MSG="Please, choose a valid interface name."
 CHECK_ON_VALUE_ERR_MSG="Please, choose a valid value."
@@ -2091,10 +2091,21 @@ case "$command" in
             fi
         fi
 
-        #mes
+        #checks (command line)
+        if [ ! "$flags_array" = "" ]; then
+          new_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+          push_check "$CLI_PATH" "${flags_array[@]}"
+        fi
 
-        echo "HEY I am here!"
-
+        #dialogs
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
+        echo ""
+        new_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+        push_dialog  "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+  
+        #run
+        $CLI_PATH/new/aved --tag $tag_name --project $new_name --push $push_option
         ;;
       hip)
         #early exit

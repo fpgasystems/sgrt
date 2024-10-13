@@ -12,9 +12,9 @@
     #- hacc-box-01.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
     #- alveo-u55c-01.inf.ethz.ch
-    #- versal-v80-04.inf.ethz.ch
-    - alveo-u55c-01.inf.ethz.ch
-    - alveo-u55c-02.inf.ethz.ch
+    - versal-v80-04.inf.ethz.ch
+    #- alveo-u55c-01.inf.ethz.ch
+    #- alveo-u55c-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -29,18 +29,19 @@
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
     #cli installation
+    aved: false
     bitstreams: false
     build: false
-    common: false
+    common: true
     directories: false
     enable: false
     examine: false
     get: false
-    help: false
+    help: true
     hip: false
-    new: false
-    opennic: true
-    program: true
+    new: true
+    opennic: false
+    program: false
     reboot: false
     run: false
     set: false
@@ -279,7 +280,10 @@
         - get_workflow
         - gh_auth_status
         - gh_commit_check
+        - gh_tag_check
+        - git_clone_aved
         - git_clone_opennic
+        - github_tag_dialog_check
         - iface_dialog_check
         - is_acap
         - is_asoc
@@ -396,6 +400,7 @@
         mode: "0755"
       when: all or new
       loop:
+        - aved
         - hip
         - opennic
     #program
@@ -523,6 +528,33 @@
         - vitis
 
     #copying workflows
+    #aved
+    - name: copying aved workflow
+      block:
+        - name: copying aved workflow
+          debug:
+            msg: ""
+        - name: new
+          copy:
+            src: "../cli/new/aved.sh"
+            dest: "{{ cli_path }}/new/aved"
+            mode: "0755"
+        #- name: build
+        #  copy:
+        #    src: "../cli/build/aved.sh"
+        #    dest: "{{ cli_path }}/build/aved"
+        #    mode: "0755"
+        #- name: run
+        #  copy:
+        #    src: "../cli/run/aved.sh"
+        #    dest: "{{ cli_path }}/run/aved"
+        #    mode: "0755"
+        #- name: validate
+        #  copy:
+        #    src: "../cli/validate/aved.sh"
+        #    dest: "{{ cli_path }}/validate/aved"
+        #    mode: "0755"
+      when: all or aved
     #hip
     - name: copying hip workflow
       block:
