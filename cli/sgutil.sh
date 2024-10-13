@@ -1602,7 +1602,9 @@ validate_help() {
     fi
     echo "" 
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
+    if [ ! "$is_build" = "1" ]; then
     echo ""
+    fi
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $vitis_enabled "0" $vivado_enabled $gpu_enabled
     echo ""
     exit
