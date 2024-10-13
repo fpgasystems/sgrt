@@ -78,6 +78,9 @@ hostname="${url%%.*}"
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell/$new_name"
 
+#create directories
+mkdir -p $DIR
+
 #change directory
 cd $MY_PROJECTS_PATH/$WORKFLOW/$commit_name_shell
 
