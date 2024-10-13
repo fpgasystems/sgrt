@@ -226,6 +226,9 @@ _sgutil_completions()
                     if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
                     fi
+                    if [ "$is_build" = "1" ] || { [ "$is_asoc" = "1" ] && [ "$vivado_enabled" = "1" ]; }; then
+                        commands="${commands} aved"
+                    fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
                     commands_string=$(echo "${commands_array[@]}")
@@ -387,6 +390,9 @@ _sgutil_completions()
                     ;;
                 new) 
                     case ${COMP_WORDS[COMP_CWORD-1]} in
+                        aved)
+                            COMPREPLY=($(compgen -W "--project --push --tag --help" -- ${cur}))
+                            ;;
                         hip)
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;
@@ -486,7 +492,10 @@ _sgutil_completions()
             command_completion_5 "$cur" "$COMP_CWORD" "get" "network" "${other_flags[@]}"
 
             #new
-            other_flags=( "--commit" "--project" "--push")
+            other_flags=( "--project" "--push" "--tag" )
+            command_completion_5 "$cur" "$COMP_CWORD" "new" "aved" "${other_flags[@]}"
+            
+            other_flags=( "--commit" "--project" "--push" )
             command_completion_5 "$cur" "$COMP_CWORD" "new" "opennic" "${other_flags[@]}"
 
             #program driver
@@ -544,6 +553,16 @@ _sgutil_completions()
 
             other_flags=( "--commit" "--platform" )
             command_completion_7 "$cur" "$COMP_CWORD" "build" "opennic" "--project" "${other_flags[@]}"
+            
+            #new aved
+            other_flags=( "--push" "--tag" )
+            command_completion_7 "$cur" "$COMP_CWORD" "new" "aved" "--project" "${other_flags[@]}"
+
+            other_flags=( "--project" "--tag" )
+            command_completion_7 "$cur" "$COMP_CWORD" "new" "aved" "--push" "${other_flags[@]}"
+
+            other_flags=( "--project" "--push" )
+            command_completion_7 "$cur" "$COMP_CWORD" "new" "aved" "--tag" "${other_flags[@]}"
             
             #new opennic
             other_flags=( "--project" "--push" )

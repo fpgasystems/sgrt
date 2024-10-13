@@ -13,6 +13,7 @@ command=$1
 arguments=$2
 
 #constants
+AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
 IS_GPU_DEVELOPER="1"
@@ -195,6 +196,7 @@ CHECK_ON_DRIVER_ERR_MSG="Please, choose a valid driver name."
 CHECK_ON_DRIVER_PARAMS_ERR_MSG="Please, choose a valid list of module parameters." 
 CHECK_ON_FEC_ERR_MSG="Please, choose a valid FEC option."
 CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to your GitHub account."
+CHECK_ON_GH_TAG_ERR_MSG="Please, choose a valid GitHub tag identifier."
 CHECK_ON_HOSTNAME_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_IFACE_ERR_MSG="Please, choose a valid interface name."
 CHECK_ON_VALUE_ERR_MSG="Please, choose a valid value."
@@ -991,6 +993,34 @@ sudo_check() {
   fi
 }
 
+tag_check() {
+  local CLI_PATH=$1
+  local CLI_NAME=$2
+  local command=$3 #program
+  local WORKFLOW=$4 #arguments and workflow are the same (i.e. opennic)
+  local GITHUB_CLI_PATH=$5
+  local REPO_ADDRESS=$6
+  local DEFAULT_TAG=$7
+  shift 7
+  local flags_array=("$@")
+  #commit_dialog_check
+  result="$("$CLI_PATH/common/github_tag_dialog_check" "${flags_array[@]}")"
+  tag_found=$(echo "$result" | sed -n '1p')
+  tag_name=$(echo "$result" | sed -n '2p')
+  #check if commit exists
+  exists=$($CLI_PATH/common/gh_tag_check $GITHUB_CLI_PATH $REPO_ADDRESS $tag_name)
+  #forbidden combinations
+  if [ "$tag_found" = "0" ]; then 
+    tag_found="1"
+    tag_name=$DEFAULT_TAG
+  elif [ "$tag_found" = "1" ] && ([ "$tag_name" = "" ] || [ "$exists" = "0" ]); then 
+      echo ""
+      echo $CHECK_ON_GH_TAG_ERR_MSG
+      echo ""
+      exit 1
+  fi
+}
+
 value_check() {
   local CLI_PATH=$1
   local VALUE_MIN=$2
@@ -1284,12 +1314,17 @@ new_help() {
   exit
 }
 
-new_hip_help() {
-  #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+new_aved_help() {
+  is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-  #is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+  $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
+  exit
+}
+
+new_hip_help() {
+  is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
-  #is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
   $CLI_PATH/help/new $CLI_PATH $CLI_NAME "hip" "0" "0" $is_build "0" $is_gpu $IS_GPU_DEVELOPER "0"
   exit
 }
@@ -1299,7 +1334,6 @@ new_opennic_help() {
   is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  #is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
   is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
   $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_asoc $is_build $is_fpga "0" "0" $is_vivado_developer
   exit
@@ -1986,6 +2020,80 @@ case "$command" in
       -h|--help)
         new_help
         ;;
+      aved)
+        #early exit
+        if [ ! "$is_build" = "1" ] && { [ "$is_asoc" = "0" ] || [ "$vivado_enabled" = "0" ]; }; then
+          exit 1
+        fi
+
+        #check on groups
+        vivado_developers_check "$USER"
+        
+        #check on software
+        gh_check "$CLI_PATH"
+
+        #check on flags
+        valid_flags="-t --tag --project --push -h --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #check_on_tag
+        tag_found=""
+        tag_name=""
+        if [ "$flags_array" = "" ]; then
+            #commit dialog
+            tag_found="1"
+            tag_name=$AVED_TAG
+            #checks (command line) ?????????????????????????????
+            #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        else
+            #github_tag_dialog_check
+            result="$("$CLI_PATH/common/github_tag_dialog_check" "${flags_array[@]}")"
+            tag_found=$(echo "$result" | sed -n '1p')
+            tag_name=$(echo "$result" | sed -n '2p')
+
+            #check if tag_name is empty
+            if [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
+                exit
+            fi
+            
+            #check if tag_name contains exactly one comma
+            if [ "$tag_found" = "1" ] && ! [[ "$tag_name" =~ ^[^,]+,[^,]+$ ]]; then
+                echo ""
+                echo $CHECK_ON_GH_TAG_ERR_MSG
+                echo ""
+                exit
+            fi
+            
+            #get shell and driver commits (shell_commit,driver_commit)
+            tag_name=${tag_name%%,*}
+
+            #check if tag exist
+            exists_tag=$($CLI_PATH/common/gh_tag_check $GITHUB_CLI_PATH $ONIC_SHELL_REPO $tag_name)
+            
+            if [ "$tag_found" = "0" ]; then 
+                tag_name=$AVED_TAG
+            elif [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then 
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
+                exit
+            elif [ "$tag_found" = "1" ] && ([ "$exists_tag" = "0" ] || [ "$exists_driver" = "0" ]); then 
+                if [ "$exists_tag" = "0" ]; then
+                  echo ""
+                  echo $CHECK_ON_GH_TAG_ERR_MSG
+                  echo ""
+                  exit 1
+                fi
+            fi
+        fi
+
+        #mes
+
+        echo "HEY I am here!"
+
+        ;;
       hip)
         #early exit
         if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
@@ -2037,7 +2145,7 @@ case "$command" in
             commit_name_shell=$ONIC_SHELL_COMMIT
             commit_name_driver=$ONIC_DRIVER_COMMIT
             #checks (command line)
-            device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+            #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         else
             #commit_dialog_check
             result="$("$CLI_PATH/common/commit_dialog_check" "${flags_array[@]}")"
@@ -2046,7 +2154,8 @@ case "$command" in
 
             #check if commit_name is empty
             if [ "$commit_found" = "1" ] && [ "$commit_name" = "" ]; then
-                $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
+                #$CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_asoc $is_build $is_fpga "0" "0" $is_vivado_developer
                 exit
             fi
             
@@ -2070,7 +2179,8 @@ case "$command" in
                 commit_name_shell=$ONIC_SHELL_COMMIT
                 commit_name_driver=$ONIC_DRIVER_COMMIT
             elif [ "$commit_found" = "1" ] && ([ "$commit_name_shell" = "" ] || [ "$commit_name_driver" = "" ]); then 
-                $CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
+                #$CLI_PATH/help/validate_opennic $CLI_PATH $CLI_NAME
+                $CLI_PATH/help/new $CLI_PATH $CLI_NAME "opennic" $is_acap $is_asoc $is_build $is_fpga "0" "0" $is_vivado_developer
                 exit
             elif [ "$commit_found" = "1" ] && ([ "$exists_shell" = "0" ] || [ "$exists_driver" = "0" ]); then 
                 if [ "$exists_shell" = "0" ]; then

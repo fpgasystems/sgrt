@@ -16,8 +16,7 @@ is_gpu_developer=$9
 is_vivado_developer=${10}
 
 #constants
-ONIC_SHELL_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_COMMIT)
-ONIC_DRIVER_COMMIT=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_COMMIT)
+AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 
 #legend
 COLOR_ON1=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_CPU)
@@ -39,6 +38,9 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         echo "Creates a new project of your choice."
         echo ""
         echo "ARGUMENTS:"
+        if [ "$is_build" = "1" ] || { [ "$is_asoc" = "1" ] && [ "$vivado_enabled" = "1" ]; }; then
+        echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Generates an AMD Versal Example Design (AVED) project."
+        fi
         if [ "$gpu_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Portable single-source ROCm applications."
         fi
@@ -50,6 +52,23 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         echo ""
         $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $gpu_enabled
         echo ""
+    elif [ "$parameter" = "aved" ]; then
+        if [ "$is_build" = "1" ] || { [ "$is_asoc" = "1" ] && [ "$vivado_enabled" = "1" ]; }; then
+            echo ""
+            echo "${bold}$CLI_NAME new aved [flags] [--help]${normal}"
+            echo ""
+            echo "Generates an AMD Versal Example Design (AVED) project."
+            echo ""
+            echo "FLAGS:"
+            echo "       ${bold}--project${normal}   - Specifies your OpenNIC project name." 
+            echo "       ${bold}--push${normal}      - Pushes your OpenNIC project to your GitHub account." 
+            echo "   ${bold}-t, --tag${normal}       - GitHub tag identifier (default: ${bold}$AVED_TAG${normal})."
+            echo ""
+            echo "   ${bold}-h, --help${normal}      - Help to use this command."
+            echo ""
+            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "1" "1" "1" "0" "yes"
+            echo ""
+        fi
     elif [ "$parameter" = "hip" ]; then
         if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
             echo ""

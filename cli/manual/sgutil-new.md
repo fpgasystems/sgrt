@@ -13,6 +13,7 @@
 
 ### Arguments
 
+* [aved](./sgutil-new-aved.md#sgutil-new-aved)
 * [hip](./sgutil-new-hip.md#sgutil-new-hip)
 * [opennic](./sgutil-new-opennic.md#sgutil-new-opennic)
 
