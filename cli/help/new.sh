@@ -31,6 +31,7 @@ COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 #evaluate integrations
 gpu_enabled=$([ "$is_gpu_developer" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
 vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
 
 if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]; then
     if [ "$parameter" = "--help" ]; then
@@ -55,7 +56,7 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $gpu_enabled
         echo ""
     elif [ "$parameter" = "aved" ]; then
-        if [ "$is_build" = "1" ] || { [ "$is_asoc" = "1" ] && [ "$vivado_enabled" = "1" ]; }; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
             echo ""
             echo "${bold}$CLI_NAME new aved [flags] [--help]${normal}"
             echo ""

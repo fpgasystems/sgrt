@@ -132,6 +132,7 @@ _sgutil_completions()
     #evaluate integrations
     gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
     vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+    vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
 
     case ${COMP_CWORD} in
         1)
@@ -182,6 +183,9 @@ _sgutil_completions()
             case ${COMP_WORDS[COMP_CWORD-1]} in
                 build)
                     commands="c --help"
+                    if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
+                        commands="${commands} opennic"
+                    fi
                     if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
                     fi
@@ -220,14 +224,14 @@ _sgutil_completions()
                     ;;
                 new)
                     commands="--help"
+                    if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
+                        commands="${commands} aved"
+                    fi
                     if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
                     fi
                     if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
                         commands="${commands} opennic"
-                    fi
-                    if [ "$is_build" = "1" ] || { [ "$is_asoc" = "1" ] && [ "$vivado_enabled" = "1" ]; }; then
-                        commands="${commands} aved"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))

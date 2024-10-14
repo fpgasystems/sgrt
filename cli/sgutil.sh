@@ -80,6 +80,7 @@ fi
 #evaluate integrations
 gpu_enabled=$([ "$IS_GPU_DEVELOPER" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
 vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
 
 #help
 cli_help() {
@@ -1124,6 +1125,16 @@ build_help() {
     exit
 }
 
+build_aved_help() {
+    is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+    is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+    is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
+    is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+    is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
+    $CLI_PATH/help/build_aved $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_build $is_fpga $is_vivado_developer
+    exit
+}
+
 build_c_help() {
     $CLI_PATH/help/build_c $CLI_NAME
     exit
@@ -2025,8 +2036,8 @@ case "$command" in
         ;;
       aved)
         #early exit
-        if [ ! "$is_build" = "1" ] && { [ "$is_asoc" = "0" ] || [ "$vivado_enabled" = "0" ]; }; then
-          exit 1
+        if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "0" ]; then
+            exit 1
         fi
 
         #check on groups
