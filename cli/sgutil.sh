@@ -1808,13 +1808,6 @@ case "$command" in
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
 
-        echo "tag_found: $tag_found"
-        echo "tag_name: $tag_name"
-        echo "project_found: $project_found"
-        echo "project_name: $project_name"
-
-        echo "here!"
-
         #run
         $CLI_PATH/build/aved --project $project_name --tag $tag_name --version $vivado_version --all $is_build
         ;;
@@ -2947,7 +2940,7 @@ case "$command" in
     ;;
   validate)
     #create workflow directory
-    mkdir -p "$MY_PROJECTS_PATH/$arguments"
+    #mkdir -p "$MY_PROJECTS_PATH/$arguments"
 
     case "$arguments" in
       docker)
@@ -2960,6 +2953,9 @@ case "$command" in
           exit
         fi
 
+        #create workflow directory
+        mkdir -p "$MY_PROJECTS_PATH/$arguments"
+
         valid_flags="-d --device -h --help"
         command_run $command_arguments_flags"@"$valid_flags
         ;;
@@ -2968,6 +2964,9 @@ case "$command" in
         if [ "$is_build" = "1" ] || [ "$is_virtualized" = "1" ] || [ "$vivado_enabled" = "0" ]; then
           exit
         fi
+
+        #create workflow directory
+        mkdir -p "$MY_PROJECTS_PATH/$arguments"
 
         #temporal exit condition
         if [ "$is_asoc" = "1" ]; then
