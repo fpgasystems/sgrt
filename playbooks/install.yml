@@ -122,6 +122,7 @@
       loop:
         - ACAP_SERVERS_LIST
         - ASOC_SERVERS_LIST
+        - AVED_REPO
         - AVED_TAG
         - BUILD_SERVERS_LIST
         - COLOR_ACAP
