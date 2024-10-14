@@ -995,6 +995,41 @@ sudo_check() {
   fi
 }
 
+tag_dialog() {
+  local CLI_PATH=$1
+  local CLI_NAME=$2
+  local MY_PROJECTS_PATH=$3
+  local command=$4 #program
+  local WORKFLOW=$5 #arguments and workflow are the same (i.e. opennic)
+  local GITHUB_CLI_PATH=$6
+  local REPO_ADDRESS=$7
+  local DEFAULT_TAG=$8
+  shift 8
+  local flags_array=("$@")
+  
+  tag_found=""
+  tag_name=""
+  if [ "$flags_array" = "" ]; then
+    #check on PWD
+    project_path=$(dirname "$PWD")
+    tag_name=$(basename "$project_path")
+    project_found="0"
+    if [ "$project_path" = "$MY_PROJECTS_PATH/$WORKFLOW/$tag_name" ]; then 
+        tag_found="1"
+        project_found="1"
+        project_name=$(basename "$PWD")
+    elif [ "$tag_name" = "$WORKFLOW" ]; then
+        tag_found="1"
+        tag_name="${PWD##*/}"
+    else
+        tag_found="1"
+        tag_name=$DEFAULT_TAG
+    fi
+  else
+    tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$WORKFLOW" "$GITHUB_CLI_PATH" "$REPO_ADDRESS" "$DEFAULT_TAG" "${flags_array[@]}"
+  fi
+}
+
 tag_check() {
   local CLI_PATH=$1
   local CLI_NAME=$2
@@ -1765,9 +1800,22 @@ case "$command" in
         echo "tag_name: $tag_name"
         echo "project_found: $project_found"
         echo "project_name: $project_name"
-        exit
 
         #dialogs
+        tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
+        echo ""
+        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+
+        echo "tag_found: $tag_found"
+        echo "tag_name: $tag_name"
+        echo "project_found: $project_found"
+        echo "project_name: $project_name"
+
+        echo "here!"
+
+        
 
         ;;
       c)
