@@ -314,6 +314,9 @@ _sgutil_completions()
             case ${COMP_WORDS[COMP_CWORD-2]} in
                 build)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
+                        aved)
+                            COMPREPLY=($(compgen -W "--project --tag --help" -- ${cur}))
+                            ;;
                         c)
                             COMPREPLY=($(compgen -W "--source --help" -- ${cur}))
                             ;;
@@ -479,6 +482,9 @@ _sgutil_completions()
             #         sgutil program driver --remove    onic -- (there are five words)
 
             #build
+            other_flags=( "--project" "--tag" )
+            command_completion_5 "$cur" "$COMP_CWORD" "build" "aved" "${other_flags[@]}"
+
             if [ "$is_build" = "0" ]; then
                 #platform is not offered
                 other_flags=( "--commit" "--project" )
@@ -547,6 +553,16 @@ _sgutil_completions()
             #COMP_WORDS[5]=--project / --remote
             #COMP_WORDS[6]=hello_world
             #Example: sgutil program coyote --device 1 --project hello_world -- (there are seven words)
+            
+            #build aved
+            #other_flags=( "--platform" "--project" )
+            #command_completion_7 "$cur" "$COMP_CWORD" "build" "aved" "--commit" "${other_flags[@]}"
+            
+            #other_flags=( "--commit" "--project" )
+            #command_completion_7 "$cur" "$COMP_CWORD" "build" "aved" "--platform" "${other_flags[@]}"
+
+            #other_flags=( "--commit" "--platform" )
+            #command_completion_7 "$cur" "$COMP_CWORD" "build" "aved" "--project" "${other_flags[@]}"
             
             #build opennic
             other_flags=( "--platform" "--project" )

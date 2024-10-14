@@ -1758,7 +1758,7 @@ case "$command" in
         #checks on command line
         if [ ! "$flags_array" = "" ]; then
           tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
-          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
         fi
 
         echo "tag_found: $tag_found"
