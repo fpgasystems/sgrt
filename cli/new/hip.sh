@@ -26,9 +26,10 @@ fi
 
 # create hip directory
 DIR="$MY_PROJECTS_PATH/$WORKFLOW"
-if ! [ -d "$DIR" ]; then
-    mkdir ${DIR}
-fi
+#if ! [ -d "$DIR" ]; then
+#    mkdir ${DIR}
+#fi
+mkdir -p $DIR
 
 # create project
 echo ""
