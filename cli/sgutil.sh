@@ -1815,8 +1815,8 @@ case "$command" in
 
         echo "here!"
 
-        
-
+        #run
+        $CLI_PATH/build/aved --project $project_name --tag $tag_name --version $vivado_version --all $is_build
         ;;
       c)
         #check on flags
