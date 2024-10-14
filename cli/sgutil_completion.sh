@@ -183,8 +183,8 @@ _sgutil_completions()
             case ${COMP_WORDS[COMP_CWORD-1]} in
                 build)
                     commands="c --help"
-                    if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
-                        commands="${commands} opennic"
+                    if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
+                        commands="${commands} aved"
                     fi
                     if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"

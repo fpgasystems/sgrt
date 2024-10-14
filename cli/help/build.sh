@@ -22,6 +22,7 @@ COLOR_OFF=$($CLI_PATH/common/get_constant $CLI_PATH COLOR_OFF)
 #evaluate integrations
 gpu_enabled=$([ "$is_gpu_developer" = "1" ] && [ "$is_gpu" = "1" ] && echo 1 || echo 0)
 vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
+vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
 
 #print help
 echo ""
@@ -31,6 +32,9 @@ echo "Creates binaries, bitstreams, and drivers for your accelerated application
 echo ""
 echo "ARGUMENTS:"
 echo "   ${bold}c${normal}               - Generates C and C++ binaries."
+if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON2}aved${normal}${COLOR_OFF}            - AVED's hardware and software generation."  
+fi
 if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON5}hip${normal}${COLOR_OFF}             - Generates HIP binaries for your projects."  
 fi

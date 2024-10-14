@@ -46,7 +46,7 @@
     run: false
     set: false
     sgutil: true 
-    templates: true
+    templates: false
     update: false
     validate: false
     vitis: false
@@ -389,6 +389,7 @@
         mode: "0755"
       when: all or help
       loop:
+        - build_aved
         - build_c
         - build_hip
         - build_opennic
@@ -558,11 +559,11 @@
             src: "../cli/new/aved.sh"
             dest: "{{ cli_path }}/new/aved"
             mode: "0755"
-        #- name: build
-        #  copy:
-        #    src: "../cli/build/aved.sh"
-        #    dest: "{{ cli_path }}/build/aved"
-        #    mode: "0755"
+        - name: build
+          copy:
+            src: "../cli/build/aved.sh"
+            dest: "{{ cli_path }}/build/aved"
+            mode: "0755"
         #- name: run
         #  copy:
         #    src: "../cli/run/aved.sh"

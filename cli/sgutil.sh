@@ -1734,6 +1734,42 @@ case "$command" in
       -h|--help)
         build_help
         ;;
+      aved)
+        #early exit
+        if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "0" ]; then
+          exit 1
+        fi
+
+        #check on groups
+        vivado_developers_check "$USER"
+        
+        #check on software
+        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        vivado_check "$VIVADO_PATH" "$vivado_version"
+        gh_check "$CLI_PATH"
+
+        #check on flags
+        valid_flags="-p --project -t --tag -h --help" 
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #checks on command line
+        if [ ! "$flags_array" = "" ]; then
+          tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
+          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        fi
+
+        echo "tag_found: $tag_found"
+        echo "tag_name: $tag_name"
+        echo "project_found: $project_found"
+        echo "project_name: $project_name"
+        exit
+
+        #dialogs
+
+        ;;
       c)
         #check on flags
         valid_flags="-s --source -h --help" 
@@ -1770,7 +1806,6 @@ case "$command" in
         ;;
       hip)
         #early exit
-        #if [ "$IS_GPU_DEVELOPER" = "0" ]; then
         if [ "$is_build" = "0" ] && [ "$gpu_enabled" = "0" ]; then
           exit 1
         fi
