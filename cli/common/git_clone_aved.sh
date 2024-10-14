@@ -8,7 +8,10 @@ DIR=$1
 AVED_TAG=$2
 
 #constants
-AVED_REPO="https://github.com/Xilinx/AVED.git"
+AVED_REPO=$($CLI_PATH/common/get_constant $CLI_PATH AVED_REPO)
+
+#derived
+AVED_REPO="https://github.com/$AVED_REPO.git"
 
 #print
 echo "${bold}Checking out AVED:${normal}"

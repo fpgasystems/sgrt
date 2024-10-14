@@ -14,6 +14,7 @@ arguments=$2
 
 #constants
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
+AVED_REPO=$($CLI_PATH/common/get_constant $CLI_PATH AVED_REPO)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
 IS_GPU_DEVELOPER="1"
@@ -2063,25 +2064,25 @@ case "$command" in
             fi
             
             #check if tag_name contains exactly one comma
-            if [ "$tag_found" = "1" ] && ! [[ "$tag_name" =~ ^[^,]+,[^,]+$ ]]; then
-                echo ""
-                echo $CHECK_ON_GH_TAG_ERR_MSG
-                echo ""
-                exit
-            fi
+            #if [ "$tag_found" = "1" ] && ! [[ "$tag_name" =~ ^[^,]+,[^,]+$ ]]; then
+            #    echo ""
+            #    echo $CHECK_ON_GH_TAG_ERR_MSG
+            #    echo ""
+            #    exit
+            #fi
             
             #get shell and driver commits (shell_commit,driver_commit)
-            tag_name=${tag_name%%,*}
+            #tag_name=${tag_name%%,*}
 
             #check if tag exist
-            exists_tag=$($CLI_PATH/common/gh_tag_check $GITHUB_CLI_PATH $ONIC_SHELL_REPO $tag_name)
+            exists_tag=$($CLI_PATH/common/gh_tag_check $GITHUB_CLI_PATH $AVED_REPO $tag_name)
             
             if [ "$tag_found" = "0" ]; then 
                 tag_name=$AVED_TAG
             elif [ "$tag_found" = "1" ] && [ "$tag_name" = "" ]; then 
                 $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
                 exit
-            elif [ "$tag_found" = "1" ] && ([ "$exists_tag" = "0" ] || [ "$exists_driver" = "0" ]); then 
+            elif [ "$tag_found" = "1" ] && [ "$exists_tag" = "0" ]; then 
                 if [ "$exists_tag" = "0" ]; then
                   echo ""
                   echo $CHECK_ON_GH_TAG_ERR_MSG
