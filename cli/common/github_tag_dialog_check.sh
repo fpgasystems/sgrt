@@ -9,7 +9,7 @@ declare -g commit_name=""
 #read flags
 for (( i=0; i<${#flags[@]}; i++ ))
 do
-    if [[ " ${flags[$i]} " =~ " -c " ]] || [[ " ${flags[$i]} " =~ " --commit " ]]; then
+    if [[ " ${flags[$i]} " =~ " -t " ]] || [[ " ${flags[$i]} " =~ " --tag " ]]; then
         commit_found="1"
         commit_idx=$(($i+1))
         commit_name=${flags[$commit_idx]}
