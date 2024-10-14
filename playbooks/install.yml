@@ -29,10 +29,10 @@
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
     #cli installation
-    aved: false
+    aved: true
     bitstreams: false
     build: false
-    common: true
+    common: false
     directories: false
     enable: false
     examine: false
@@ -46,11 +46,10 @@
     run: false
     set: false
     sgutil: true 
+    templates: true
     update: false
     validate: false
     vitis: false
-    #templates
-    templates: false
     #release
     #    1. Merge a development branch into main.
     #    2. Login to a server (i.e., hacc-box-01), run "sgutil update," and capture COMMIT and COMMIT_DATE. Remeber that "sgutil update" is only for sudo users.
@@ -193,6 +192,24 @@
         dest: "{{ cli_path }}/platforminfo"
         mode: "0644"
       when: all and not platforminfo_stat.stat.exists
+    #templates
+    #aved
+    - name: managing aved template
+      block:
+        - name: managing aved template
+          debug:
+            msg: ""
+        - name: deleting aved template
+          file:
+            path: "{{ sgrt_base_path }}/templates/aved"
+            state: absent
+          register: aved_templates
+        - name: copying aved template
+          copy:
+            src: "../templates/aved"
+            dest: "{{ sgrt_base_path }}/templates"
+            mode: "0755"
+      when: all or (templates and aved)
     #hip
     - name: managing hip template
       block:
