@@ -32,24 +32,10 @@ if [ "$github_tag" = "" ] || [ "$new_name" = "" ] || [ "$push_option" = "" ]; th
 fi
 
 #constants
-#ACAP_SERVERS_LIST="$CLI_PATH/constants/ACAP_SERVERS_LIST"
-#BUILD_SERVERS_LIST="$CLI_PATH/constants/BUILD_SERVERS_LIST"
-#DEVICES_LIST_NETWORKING="$CLI_PATH/devices_network"
-#FPGA_SERVERS_LIST="$CLI_PATH/constants/FPGA_SERVERS_LIST"
-#GPU_SERVERS_LIST="$CLI_PATH/constants/GPU_SERVERS_LIST"
+AVED_SMBUS_IP=$($CLI_PATH/common/get_constant $CLI_PATH AVED_SMBUS_IP)
+AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
-#NETWORKING_DEVICE_INDEX="1"
-#NETWORKING_PORT_INDEX="1"
 WORKFLOW="aved"
-
-#get devices number
-#if [ -s "$DEVICES_LIST_NETWORKING" ]; then
-#  source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST_NETWORKING"
-#fi
-
-#get hostname
-#url="${HOSTNAME}"
-#hostname="${url%%.*}"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$github_tag/$new_name"
@@ -83,6 +69,16 @@ rm -rf $DIR/AVED
 
 #remove files
 rm $DIR/README.md
+
+#get AVED example design name
+aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
+
+#get SMBus version
+smbus_version=$(find "$SGRT_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip" -type d -name 'smbus_v*' -print -quit)
+smbus_version=$(basename "$smbus_version")
+
+#copy SMBus IP
+cp -r $SGRT_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip/$smbus_version $DIR/hw/$aved_name/src/iprepo/$smbus_version
 
 #add template files
 #cp $SGRT_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
