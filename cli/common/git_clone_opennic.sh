@@ -9,8 +9,12 @@ COMMIT_SHELL=$2
 COMMIT_DRIVER=$3
 
 #constants
-ONIC_REPO_SHELL="https://github.com/Xilinx/open-nic-shell.git"
-ONIC_REPO_DRIVER="https://github.com/Xilinx/open-nic-driver.git"
+ONIC_DRIVER_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_DRIVER_REPO)
+ONIC_SHELL_REPO=$($CLI_PATH/common/get_constant $CLI_PATH ONIC_SHELL_REPO)
+
+#derived
+ONIC_DRIVER_REPO="https://github.com/$ONIC_DRIVER_REPO.git"
+ONIC_SHELL_REPO="https://github.com/$ONIC_SHELL_REPO.git"
 
 #print
 echo "${bold}Checking out OpenNIC shell:${normal}"
@@ -20,7 +24,7 @@ echo ""
 cd $DIR
 
 #clone shell repository
-git clone $ONIC_REPO_SHELL
+git clone $ONIC_SHELL_REPO
 
 #change to repository directory
 cd $DIR/open-nic-shell
@@ -39,7 +43,7 @@ echo ""
 cd $DIR
 
 #clone driver repository
-git clone $ONIC_REPO_DRIVER
+git clone $ONIC_DRIVER_REPO
 
 #change to repository directory
 cd $DIR/open-nic-driver
