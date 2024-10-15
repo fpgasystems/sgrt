@@ -78,7 +78,8 @@ if [ "$all" = "1" ]; then
     #launch vivado
     if [ "$compile" = "1" ]; then 
         #PDI compilation
-        echo "${bold}PDI compilation (tag ID: $tag_name)${normal}"
+        #echo "${bold}PDI compilation (tag ID: $tag_name)${normal}"
+        echo "${bold}Programmable Device Image (PDI) compilation${normal}"
         echo ""
 
         #read configuration
