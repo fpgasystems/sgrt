@@ -142,33 +142,4 @@ package_name=$(basename "$DIR"/ami_*.deb)
 echo "The package ${bold}$package_name${normal} was generated!"
 echo ""
 
-#application compilation
-#echo "${bold}Application compilation:${normal}"
-#echo ""
-#echo "cd $DIR"
-#echo "make"
-#echo ""
-#cd $DIR
-#make
-
-#copy driver
-#cp -f $DRIVER_DIR/$DRIVER_NAME $DIR/$DRIVER_NAME
-
-#remove drivier files (generated while compilation)
-#rm $DRIVER_DIR/Module.symvers
-#rm -rf $DRIVER_DIR/hwmon
-#rm $DRIVER_DIR/modules.order
-#rm $DRIVER_DIR/$DRIVER_NAME
-#rm $DRIVER_DIR/onic.mod
-#rm $DRIVER_DIR/onic.mod.c
-#rm $DRIVER_DIR/onic.mod.o
-#rm $DRIVER_DIR/onic.o
-#rm $DRIVER_DIR/onic_common.o
-#rm $DRIVER_DIR/onic_ethtool.o
-#rm $DRIVER_DIR/onic_hardware.o
-#rm $DRIVER_DIR/onic_lib.o
-#rm $DRIVER_DIR/onic_main.o
-#rm $DRIVER_DIR/onic_netdev.o
-#rm $DRIVER_DIR/onic_sysfs.o
-
 #author: https://github.com/jmoya82
