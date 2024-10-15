@@ -1808,6 +1808,9 @@ case "$command" in
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
 
+        #full compilation allowed on deployment servers (hacc-build-01 would need 22.04 too)
+        is_build="1"
+        
         #run
         $CLI_PATH/build/aved --project $project_name --tag $tag_name --version $vivado_version --all $is_build
         ;;
