@@ -134,7 +134,12 @@ timestamp=$(basename "$DIR/sw/AMI/output"/*/)
 
 #copy .deb to project folder
 cp $DIR_PACKAGE/$timestamp/ami_*.deb $DIR
-echo "cp $DIR_PACKAGE/$timestamp/ami_*.deb $DIR"
+#echo "cp $DIR_PACKAGE/$timestamp/ami_*.deb $DIR"
+
+#get package_name
+package_name=$(basename "$DIR"/ami_*.deb)
+
+echo "The package ${bold}$package_name${normal} was generated!"
 echo ""
 
 #application compilation
