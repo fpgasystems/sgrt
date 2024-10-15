@@ -35,6 +35,7 @@ WORKFLOW="aved"
 
 #define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$project_name"
+DIR_PACKAGE="$DIR/sw/AMI/output"
 
 #get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
 aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
@@ -114,14 +115,27 @@ if [ "$all" = "1" ]; then
     fi
 fi
 
+#cleanup timestamp folders (we only want the one that will be generated)
+rm -r $DIR_PACKAGE/*/
+
 #compile driver
-echo "${bold}Driver and application compilation:${normal}"
+echo "${bold}Package (driver and application) generation:${normal}"
 echo ""
 echo "cd $DIR/sw/AMI"
 echo "python3 scripts/gen_package.py"
-echo ""
+#echo ""
+
+#create package
 cd $DIR/sw/AMI
 python3 scripts/gen_package.py
+
+#get current timestamp
+timestamp=$(basename "$DIR/sw/AMI/output"/*/)
+
+#copy .deb to project folder
+cp $DIR_PACKAGE/$timestamp/ami_*.deb $DIR
+echo "cp $DIR_PACKAGE/$timestamp/ami_*.deb $DIR"
+echo ""
 
 #application compilation
 #echo "${bold}Application compilation:${normal}"
