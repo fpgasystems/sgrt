@@ -41,13 +41,13 @@ if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1
         echo "Creates a new project of your choice."
         echo ""
         echo "ARGUMENTS:"
-        if [ "$is_build" = "1" ] || { [ "$is_asoc" = "1" ] && [ "$vivado_enabled" = "1" ]; }; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Generates an AMD Versal Example Design (AVED) project."
         fi
-        if [ "$gpu_enabled" = "1" ]; then
+        if [ "$is_build" = "1" ] || [ "$gpu_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Portable single-source ROCm applications."
         fi
-        if [ "$vivado_enabled" = "1" ]; then
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "1" ]; then
         echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Smart Network Interface Card (SmartNIC) applications with OpenNIC."
         fi
         echo ""
