@@ -79,16 +79,15 @@ smbus_version=$(basename "$smbus_version")
 cp -r $SGRT_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip/$smbus_version $DIR/hw/$aved_name/src/iprepo/$smbus_version
 
 #add template files
-#cp $SGRT_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
-#cp $SGRT_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
-#cp $SGRT_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
-#cp $SGRT_PATH/templates/$WORKFLOW/Makefile $DIR/Makefile
-#cp -r $SGRT_PATH/templates/$WORKFLOW/configs $DIR
+cp $SGRT_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
+cp $SGRT_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
+cp $SGRT_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
+cp -r $SGRT_PATH/templates/$WORKFLOW/configs $DIR
 #cp -r $SGRT_PATH/templates/$WORKFLOW/src $DIR
 
 #compile files
-#chmod +x $DIR/config_add
-#chmod +x $DIR/config_delete
+chmod +x $DIR/config_add
+chmod +x $DIR/config_delete
 
 #push files
 if [ "$push_option" = "1" ]; then 
