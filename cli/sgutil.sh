@@ -1636,6 +1636,9 @@ validate_help() {
     echo "Infrastructure functionality assessment."
     echo ""
     echo "ARGUMENTS:"
+    if [ "$vivado_enabled_asoc" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Pre-build Alveo Versal Example Design (AVED) validation."
+    fi
     echo "   ${bold}docker${normal}          - Validates Docker installation on the server."
     if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Validates OpenNIC on the selected device."
@@ -1655,6 +1658,24 @@ validate_help() {
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $vitis_enabled "0" $vivado_enabled $gpu_enabled
     echo ""
     exit
+}
+
+validate_aved_help() {
+  if [ "$vivado_enabled_asoc" = "1" ]; then
+    echo ""
+    echo "${bold}$CLI_NAME validate aved [flags] [--help]${normal}"
+    echo ""
+    echo "Pre-build Alveo Versal Example Design (AVED) validation."
+    echo ""
+    echo "FLAGS:"
+    echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+    echo ""
+    echo "   ${bold}-h, --help${normal}      - Help to use HIP validation."
+    echo ""
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" "1" "0" "yes"
+    echo ""
+  fi
+  exit
 }
 
 validate_docker_help() {
@@ -2628,7 +2649,7 @@ case "$command" in
         read -r -a flags_array <<< "$flags"
 
         #checks (command line)
-        if [ "$flags" = "" ]; then
+        if [ "$flags_array" = "" ]; then
           #program_vivado_help
           echo ""
           echo "Your targeted bitstream and device are missing."
@@ -2950,6 +2971,55 @@ case "$command" in
     #mkdir -p "$MY_PROJECTS_PATH/$arguments"
 
     case "$arguments" in
+      aved)
+        #early exit
+        if [ "$vivado_enabled_asoc" = "0" ]; then
+          exit
+        fi
+
+        #check on flags
+        valid_flags="-d --device --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #checks (command line 2/2)
+        if [ ! "$flags_array" = "" ]; then
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        fi
+
+        #dialogs
+        if [ "$multiple_devices" = "0" ]; then
+          device_found="1"
+          device_index="1"
+          device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+          if [ "$device_type" = "asoc" ]; then
+            echo ""
+            echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
+            echo ""
+          else
+            echo ""
+            echo "Sorry, this command is not available on device $device_index."
+            echo ""
+            exit
+          fi
+        else
+          echo ""
+          echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
+          echo ""
+          device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          if [ ! "$device_type" = "asoc" ]; then
+            echo ""
+            echo "Sorry, this command is not available on device $device_index."
+            echo ""
+            exit
+          fi
+        fi
+
+        #run
+        $CLI_PATH/validate/aved --device $device_index
+        ;;
       docker)
         valid_flags="-h --help"
         command_run $command_arguments_flags"@"$valid_flags

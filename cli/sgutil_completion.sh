@@ -293,6 +293,9 @@ _sgutil_completions()
                     ;;
                 validate)
                     commands="docker --help"
+                    if [ "$vivado_enabled_asoc" = "1" ]; then
+                        commands="${commands} aved"
+                    fi
                     if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
                     fi
@@ -455,6 +458,9 @@ _sgutil_completions()
                     ;;
                 validate)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
+                        aved)
+                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
+                            ;;
                         docker)
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
                             ;;

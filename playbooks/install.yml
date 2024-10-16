@@ -7,9 +7,9 @@
     #- alveo_u55c
     #- versal_v80
     #- versal_vck5000
-    #- hacc_build 
+    - hacc_build 
     #- hacc_boxes
-    #- hacc-box-01.inf.ethz.ch
+    - hacc-box-01.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
     #- alveo-u55c-01.inf.ethz.ch
     - versal-v80-04.inf.ethz.ch
@@ -255,6 +255,7 @@
         mode: "0755"
       when: all or build
       loop:
+        - aved
         - c
         - hip
         - opennic
@@ -542,6 +543,7 @@
         mode: "0755"
       when: all or validate
       loop:
+        - aved
         - docker
         - hip
         - opennic
@@ -569,11 +571,11 @@
         #    src: "../cli/run/aved.sh"
         #    dest: "{{ cli_path }}/run/aved"
         #    mode: "0755"
-        #- name: validate
-        #  copy:
-        #    src: "../cli/validate/aved.sh"
-        #    dest: "{{ cli_path }}/validate/aved"
-        #    mode: "0755"
+        - name: validate
+          copy:
+            src: "../cli/validate/aved.sh"
+            dest: "{{ cli_path }}/validate/aved"
+            mode: "0755"
       when: all or aved
     #hip
     - name: copying hip workflow
