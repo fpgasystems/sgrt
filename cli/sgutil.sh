@@ -1796,17 +1796,21 @@ case "$command" in
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
         fi
 
-        echo "tag_found: $tag_found"
-        echo "tag_name: $tag_name"
-        echo "project_found: $project_found"
-        echo "project_name: $project_name"
-
         #dialogs
         tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
         echo ""
         echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+        #we force the user to create a configuration
+        if [ ! -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$tag_name/configs/device_config" ]; then
+            #get current path
+            current_path=$(pwd)
+            cd "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name"
+            echo "${bold}Adding device and host configurations with ./config_add:${normal}"
+            ./config_add
+            cd "$current_path"
+        fi
 
         #full compilation allowed on deployment servers (hacc-build-01 would need 22.04 too)
         is_build="1"

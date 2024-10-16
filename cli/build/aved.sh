@@ -44,6 +44,10 @@ aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
 pdi_name="${aved_name}_nofpt.pdi"
 xsa_name="${aved_name}.xsa"
 
+#project files
+pdi_project_name="${aved_name}.$vivado_version.pdi"
+xsa_project_name="${aved_name}.$vivado_version.xsa"
+
 #bitstream compilation is only allowed on CPU (build) servers
 if [ "$all" = "1" ]; then
     #check on bitstream configuration
@@ -53,16 +57,16 @@ if [ "$all" = "1" ]; then
     #fi
 
     compile="0"
-    if [ ! -e "$DIR/$pdi_name" ]; then
+    if [ ! -e "$DIR/$pdi_project_name" ]; then
         compile="1"
-    elif [ -e "$DIR/$pdi_name" ] && [ "$are_equals" = "0" ] && [ "$project_name" != "validate_aved.$hostname.$tag_name.$vivado_version" ]; then
+    elif [ -e "$DIR/$pdi_project_name" ] && [ "$are_equals" = "0" ] && [ "$project_name" != "validate_aved.$hostname.$tag_name.$vivado_version" ]; then
         #echo ""
-        echo "The Programmable Device Image ${bold}$pdi_name${normal} already exists. Do you want to remove it and compile it again (y/n)?"
+        echo "The Programmable Device Image ${bold}$pdi_project_name${normal} already exists. Do you want to remove it and compile it again (y/n)?"
         while true; do
             read -p "" yn
             case $yn in
                 "y")
-                    rm -f $DIR/$pdi_name 
+                    rm -f $DIR/$pdi_project_name 
                     rm -rf $DIR/hw/$aved_name/build 
                     compile="1"
                     break
@@ -97,26 +101,24 @@ if [ "$all" = "1" ]; then
 
         #copy to project folder
         if [ -f "$DIR/hw/$aved_name/build/$pdi_name" ]; then
-
-            echo "I am here 4"
-
-            #pdi and xsa
-            cp "$DIR/hw/$aved_name/build/$pdi_name" "$DIR/$pdi_name"
-            cp "$DIR/hw/$aved_name/build/$xsa_name" "$DIR/$xsa_name"
+            #save to project
+            cp "$DIR/hw/$aved_name/build/$pdi_name" "$DIR/$pdi_project_name"
+            cp "$DIR/hw/$aved_name/build/$xsa_name" "$DIR/$xsa_project_name"
 
             #.device_config
             #cp $DIR/configs/device_config $DIR/.device_config
             #chmod a-w "$DIR/.device_config"
 
             #print message
-            echo "${bold}$pdi_name is done!${normal}"
+            echo ""
+            echo "${bold}$pdi_project_name is done!${normal}"
             echo ""
         fi
     fi
 fi
 
 #cleanup timestamp folders (we only want the one that will be generated)
-rm -r $DIR_PACKAGE/*/
+rm -r $DIR_PACKAGE/*/ 2>/dev/null
 
 #compile driver
 echo "${bold}Package (driver and application) generation:${normal}"
@@ -133,13 +135,20 @@ python3 scripts/gen_package.py
 timestamp=$(basename "$DIR/sw/AMI/output"/*/)
 
 #copy .deb to project folder
-cp $DIR_PACKAGE/$timestamp/ami_*.deb $DIR
+cp $DIR_PACKAGE/$timestamp/ami_*.deb $DIR/$aved_name.$vivado_version.deb
 #echo "cp $DIR_PACKAGE/$timestamp/ami_*.deb $DIR"
 
 #get package_name
 package_name=$(basename "$DIR"/ami_*.deb)
 
 echo "The package ${bold}$package_name${normal} was generated!"
+echo ""
+
+echo "${bold}Copying files to project folder:${normal}"
+echo ""
+echo "$aved_name.$vivado_version.deb"
+echo "$aved_name.$vivado_version.pdi"
+echo "$aved_name.$vivado_version.xsa"
 echo ""
 
 #author: https://github.com/jmoya82
