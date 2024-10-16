@@ -2987,30 +2987,35 @@ case "$command" in
         #checks (command line 2/2)
         if [ ! "$flags_array" = "" ]; then
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        fi
-
-        #dialogs
-        if [ "$multiple_devices" = "0" ]; then
-          device_found="1"
-          device_index="1"
           device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-          if [ "$device_type" = "asoc" ]; then
-            echo ""
-            echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
-            echo ""
-          else
+          if [ ! "$device_type" = "asoc" ]; then
             echo ""
             echo "Sorry, this command is not available on device $device_index."
             echo ""
             exit
           fi
+        fi
+
+        #dialogs
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments${normal}"
+        echo ""
+        if [ "$multiple_devices" = "0" ]; then
+          device_found="1"
+          device_index="1"
+          #device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+          #if [ ! "$device_type" = "asoc" ]; then
+          #  echo "Sorry, this command is not available on device $device_index."
+          #  echo ""
+          #  exit
+          #fi
         else
-          echo ""
-          echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
-          echo ""
+          #echo ""
+          #echo "${bold}$CLI_NAME $command $arguments${normal}"
+          #echo ""
           device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
           if [ ! "$device_type" = "asoc" ]; then
-            echo ""
             echo "Sorry, this command is not available on device $device_index."
             echo ""
             exit
