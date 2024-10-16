@@ -13,15 +13,10 @@
 
 ### Arguments
 
+* [aved](./sgutil-validate-aved.md#sgutil-validate-aved)
 * [docker](./sgutil-validate-docker.md#sgutil-validate-docker)
-
-<!-- Extra line -->
-
 * [opennic](./sgutil-validate-opennic.md#sgutil-validate-opennic)
 * [vitis](./sgutil-validate-vitis.md#sgutil-validate-vitis)
-
-<!-- Extra line -->
-
 * [hip](./sgutil-validate-hip.md#sgutil-validate-hip)
 
 <code>-h, --help</code>
