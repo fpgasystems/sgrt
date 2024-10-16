@@ -31,8 +31,6 @@ fi
 #get device_name
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
-echo "upstream_port: $upstream_port"
-
 #ami_tool validation
 ami_tool overview
 ami_tool mfg_info -d $upstream_port
