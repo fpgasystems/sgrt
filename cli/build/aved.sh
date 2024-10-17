@@ -52,9 +52,9 @@ xsa_project_name="${aved_name}.$vivado_version.xsa"
 if [ "$all" = "1" ]; then
     #check on bitstream configuration
     are_equals="0"
-    #if [ -f "$DIR/.device_config" ]; then
-    #    are_equals=$($CLI_PATH/common/compare_files "$DIR/configs/device_config" "$DIR/.device_config")
-    #fi
+    if [ -f "$DIR/.device_config" ]; then
+        are_equals=$($CLI_PATH/common/compare_files "$DIR/configs/device_config" "$DIR/.device_config")
+    fi
 
     compile="0"
     if [ ! -e "$DIR/$pdi_project_name" ]; then
@@ -83,7 +83,6 @@ if [ "$all" = "1" ]; then
     #launch vivado
     if [ "$compile" = "1" ]; then 
         #PDI compilation
-        #echo "${bold}PDI compilation (tag ID: $tag_name)${normal}"
         echo "${bold}Programmable Device Image (PDI) compilation${normal}"
         echo ""
 
@@ -106,8 +105,8 @@ if [ "$all" = "1" ]; then
             cp "$DIR/hw/$aved_name/build/$xsa_name" "$DIR/$xsa_project_name"
 
             #.device_config
-            #cp $DIR/configs/device_config $DIR/.device_config
-            #chmod a-w "$DIR/.device_config"
+            cp $DIR/configs/device_config $DIR/.device_config
+            chmod a-w "$DIR/.device_config"
 
             #print message
             echo ""
@@ -139,7 +138,7 @@ cp $DIR_PACKAGE/$timestamp/ami_*.deb $DIR/$aved_name.$vivado_version.deb
 #echo "cp $DIR_PACKAGE/$timestamp/ami_*.deb $DIR"
 
 #get package_name
-package_name=$(basename "$DIR"/ami_*.deb)
+package_name=$(basename "$DIR_PACKAGE/$timestamp"/ami_*.deb)
 
 echo "The package ${bold}$package_name${normal} was generated!"
 echo ""
