@@ -1824,7 +1824,7 @@ case "$command" in
         echo ""
         project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
         #we force the user to create a configuration
-        if [ ! -f "$MY_PROJECTS_PATH/$arguments/$commit_name/$tag_name/configs/device_config" ]; then
+        if [ ! -f "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/configs/device_config" ]; then
             #get current path
             current_path=$(pwd)
             cd "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name"
