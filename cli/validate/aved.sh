@@ -22,12 +22,16 @@ fi
 device_index=$2
 
 #constants
+AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
 
 #all inputs must be provided
 if [ "$device_index" = "" ]; then
     exit
 fi
+
+#get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
+aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
 
 #get device_name
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
@@ -44,11 +48,12 @@ if [ "$current_uuid" != "$AVED_UUID" ]; then
     echo ""
     echo "${bold}Programming pre-built AVED:${normal}"
     echo ""
-    echo "cd /opt/amd/aved/amd_v80_gen5x8_23.2_exdes_2_xbtest_stress:"
-    echo "sudo ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0"
+    echo "cd /opt/amd/aved/${aved_name}_xbtest_stress"
+    echo "sudo ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0 -y"
     echo ""
-    cd /opt/amd/aved/amd_v80_gen5x8_23.2_exdes_2_xbtest_stress
-    sudo ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0
+    cd /opt/amd/aved/${aved_name}_xbtest_stress
+    sudo ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0 -y
+    #sudo ami_tool cfgmem_copy -d $upstream_port -i primary:0 -p primary:1
 fi
 
 #ami_tool validation
@@ -56,8 +61,8 @@ ami_tool overview
 ami_tool mfg_info -d $upstream_port
 
 #xbtest validation
-xbtest -d $upstream_port -c verify
-xbtest -d $upstream_port -c memory
+sudo xbtest -d $upstream_port -c verify
+sudo xbtest -d $upstream_port -c memory
 
 echo ""
 
