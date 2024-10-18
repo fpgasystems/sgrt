@@ -2998,8 +2998,8 @@ case "$command" in
 
         #dialogs
         echo ""
-        echo "${bold}$CLI_NAME $command $arguments${normal}"
-        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (tag ID: $AVED_TAG)${normal}"
+        #echo ""
         if [ "$multiple_devices" = "0" ]; then
           device_found="1"
           device_index="1"
@@ -3007,6 +3007,7 @@ case "$command" in
           device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
           if [ ! "$device_type" = "asoc" ]; then
+            echo ""
             echo "Sorry, this command is not available on device $device_index."
             echo ""
             exit
