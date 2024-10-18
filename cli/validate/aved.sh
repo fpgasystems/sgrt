@@ -22,6 +22,7 @@ fi
 device_index=$2
 
 #constants
+AVED_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_PATH)
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
 
@@ -43,17 +44,26 @@ product_name=$(ami_tool mfg_info -d $upstream_port | grep "Product Name" | awk -
 current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
 
 #compare UUIDs
+echo ""
+echo "${bold}Programming pre-built AVED:${normal}"
+echo ""
+echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
 if [ "$current_uuid" != "$AVED_UUID" ]; then
-    # Code to execute if they are not equal
-    echo ""
-    echo "${bold}Programming pre-built AVED:${normal}"
-    echo ""
-    echo "cd /opt/amd/aved/${aved_name}_xbtest_stress"
+    #reprogramming happens with -y
+    #echo ""
+    #echo "${bold}Programming pre-built AVED:${normal}"
+    #echo ""
+    echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
     echo "sudo ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0 -y"
     echo ""
-    cd /opt/amd/aved/${aved_name}_xbtest_stress
+    cd $AVED_PATH/${aved_name}_xbtest_stress
     sudo ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0 -y
-    #sudo ami_tool cfgmem_copy -d $upstream_port -i primary:0 -p primary:1
+else
+    #reprogramming can happen if the user wants to (this can be useful when validation fails -- it happens with amd_v80_gen5x8_23.2_exdes_2_20240408)
+    echo "sudo ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0"
+    echo ""
+    cd $AVED_PATH/${aved_name}_xbtest_stress
+    sudo ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0
 fi
 
 #ami_tool validation
