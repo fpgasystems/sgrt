@@ -46,7 +46,7 @@
     run: false
     set: false
     sgutil: true 
-    templates: false
+    templates: true
     update: false
     validate: false
     vitis: false
@@ -124,6 +124,7 @@
         - AVED_REPO
         - AVED_SMBUS_IP
         - AVED_TAG
+        - AVED_UUID
         - BUILD_SERVERS_LIST
         - COLOR_ACAP
         - COLOR_CPU
