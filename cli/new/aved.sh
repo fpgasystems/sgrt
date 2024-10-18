@@ -82,6 +82,10 @@ cp -r $SGRT_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip/$smbus_version $DIR/hw/$a
 cp $SGRT_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
 cp $SGRT_PATH/templates/$WORKFLOW/config_delete.sh $DIR/config_delete
 cp $SGRT_PATH/templates/$WORKFLOW/config_parameters $DIR/config_parameters
+#cp $SGRT_PATH/templates/$WORKFLOW/get_incoming_uuid.c $DIR/sw/AMI/app/cmd_handlers/get_incoming_uuid.c
+#adds the flag -n to cmd_cfgmem_program.c (Quit after returning new_uuid)
+#cp $SGRT_PATH/templates/$WORKFLOW/cmd_cfgmem_program.c $DIR/sw/AMI/app/cmd_handlers/cmd_cfgmem_program.c
+
 cp -r $SGRT_PATH/templates/$WORKFLOW/configs $DIR
 #cp -r $SGRT_PATH/templates/$WORKFLOW/src $DIR
 
