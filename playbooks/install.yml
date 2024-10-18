@@ -46,7 +46,7 @@
     run: false
     set: false
     sgutil: true 
-    templates: true
+    templates: false
     update: false
     validate: false
     vitis: false
@@ -121,6 +121,7 @@
       loop:
         - ACAP_SERVERS_LIST
         - ASOC_SERVERS_LIST
+        - AVED_PATH
         - AVED_REPO
         - AVED_SMBUS_IP
         - AVED_TAG
