@@ -372,6 +372,9 @@ _sgutil_completions()
                         network) 
                             COMPREPLY=($(compgen -W "--device --port --help" -- ${cur}))
                             ;;
+                        partitions) 
+                            COMPREPLY=($(compgen -W "--device --type --help" -- ${cur}))
+                            ;;
                         platform) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
@@ -506,6 +509,9 @@ _sgutil_completions()
 
             other_flags=( "--device" "--port" )
             command_completion_5 "$cur" "$COMP_CWORD" "get" "network" "${other_flags[@]}"
+
+            other_flags=( "--device" "--type" )
+            command_completion_5 "$cur" "$COMP_CWORD" "get" "partitions" "${other_flags[@]}"
 
             #new
             other_flags=( "--project" "--push" "--tag" )

@@ -17,6 +17,11 @@
   &nbsp; &nbsp; Device Index (according to sgutil examine).
 </p>
 
+<code>-t, --type <string></code>
+<p>
+  &nbsp; &nbsp; Boot device type (primary or secondary).
+</p>
+
 <code>-h, --help <string></code>
 <p>
   &nbsp; &nbsp; Help to use this command.

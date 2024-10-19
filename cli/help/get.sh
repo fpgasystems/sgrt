@@ -159,6 +159,7 @@ elif [ "$parameter" = "partitions" ]; then
             echo ""
             echo "FLAGS:"
             echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+            echo "   ${bold}-t, --type${normal}      - Boot device type (primary or secondary)."
             echo ""
             echo "   ${bold}-h, --help${normal}      - Help to use this command."
             echo ""
