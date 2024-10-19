@@ -38,7 +38,7 @@ source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
 MAX_DEVICES=$(grep -E "fpga|acap|asoc" $DEVICES_LIST | wc -l)
 
 #all inputs must be provided
-#if [ "$device_index" = "" ]; then
+if [ "$device_index" = "" ]; then
     echo ""
     #print devices information
     for device_index in $(seq 1 $MAX_DEVICES); do 
@@ -48,16 +48,21 @@ MAX_DEVICES=$(grep -E "fpga|acap|asoc" $DEVICES_LIST | wc -l)
             upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
             partitions=$(ami_tool cfgmem_info -d $upstream_port -t $TYPE | awk '/^Partition/ {flag=1; next} flag && /^[0-9]/' | wc -l)
             partitions=$((partitions - 1))
+            #print
+            echo "$device_index: 0 ... $partitions"
+        else
+            #print
+            echo "$device_index: "
         fi
-        #print
-        echo "$device_index: 0 ... $partitions"
     done
     echo ""
-#else
-
-#    echo "not is empty"
-
-#fi
+else
+    upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
+    partitions=$(ami_tool cfgmem_info -d $upstream_port -t $TYPE | awk '/^Partition/ {flag=1; next} flag && /^[0-9]/' | wc -l)
+    partitions=$((partitions - 1))
+    #print
+    echo "$device_index: 0 ... $partitions"
+fi
 
 #exit
 
