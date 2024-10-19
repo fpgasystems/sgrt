@@ -1294,6 +1294,13 @@ get_network_help() {
   exit
 }
 
+get_partitions_help() {
+  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
+  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "partitions" "-" "$is_asoc" "-" "-" "-"
+  exit 
+}
+
 get_platform_help() {
   is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
@@ -2062,6 +2069,55 @@ case "$command" in
 
         valid_flags="-h --help -d --device -p --port"
         command_run $command_arguments_flags"@"$valid_flags
+        ;;
+      partitions)
+        #early exit
+        if [ "$is_asoc" = "0" ]; then
+          exit
+        fi
+
+        #check on flags
+        valid_flags="-d --device --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #checks (command line 2/2)
+        if [ ! "$flags_array" = "" ]; then
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+          if [ ! "$device_type" = "asoc" ]; then
+            echo ""
+            echo "Sorry, this command is not available on device $device_index."
+            echo ""
+            exit
+          fi
+        fi
+
+        #get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
+        #aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
+
+        #dialogs
+        #echo ""
+        #echo "${bold}$CLI_NAME $command $arguments (deployment_name: ${aved_name}_xbtest_stress)${normal}"
+        #echo ""
+        #if [ "$multiple_devices" = "0" ]; then
+        #  device_found="1"
+        #  device_index="1"
+        #else
+        #  device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        #  device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+        #  if [ ! "$device_type" = "asoc" ]; then
+        #    echo ""
+        #    echo "Sorry, this command is not available on device $device_index."
+        #    echo ""
+        #    exit
+        #  fi
+        #fi
+
+        #run
+        $CLI_PATH/get/partitions --device $device_index
         ;;
       platform)
         #early exit

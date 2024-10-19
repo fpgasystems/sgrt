@@ -50,6 +50,7 @@ if [ "$parameter" = "--help" ]; then
         echo -e "   ${bold}${COLOR_ON2}bdf${COLOR_OFF}${normal}             - Bus Device Function."
         echo -e "   ${bold}${COLOR_ON2}name${COLOR_OFF}${normal}            - Device names."
         echo -e "   ${bold}${COLOR_ON2}network${COLOR_OFF}${normal}         - Networking information."
+        echo -e "   ${bold}${COLOR_ON2}partitions${COLOR_OFF}${normal}      - Device partitions."
         echo -e "   ${bold}${COLOR_ON2}serial${COLOR_OFF}${normal}          - Serial numbers."
         echo -e "   ${bold}${COLOR_ON2}workflow${COLOR_OFF}${normal}        - Current workflow."
         fi
@@ -149,6 +150,21 @@ elif [ "$parameter" = "ifconfig" ]; then
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
+elif [ "$parameter" = "partitions" ]; then
+    if [ "$is_asoc" = "1" ]; then
+            echo ""
+            echo "${bold}$CLI_NAME get partitions [flags] [--help]${normal}"
+            echo ""
+            echo "Device partitions."
+            echo ""
+            echo "FLAGS:"
+            echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+            echo ""
+            echo "   ${bold}-h, --help${normal}      - Help to use this command."
+            echo ""
+            $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
+            echo ""
+    fi
 elif [ "$parameter" = "platform" ]; then
     if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
         echo ""

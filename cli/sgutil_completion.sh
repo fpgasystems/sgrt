@@ -209,7 +209,7 @@ _sgutil_completions()
                         commands="${commands} bdf clock memory name network platform resource serial slr workflow"
                     fi
                     if [ "$is_asoc" = "1" ]; then
-                        commands="${commands} bdf name network serial workflow"
+                        commands="${commands} bdf name network partitions serial workflow"
                     fi
                     if [ "$is_gpu" = "1" ]; then
                         commands="${commands} bus"

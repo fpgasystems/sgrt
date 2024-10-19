@@ -35,8 +35,8 @@
     common: false
     directories: false
     enable: false
-    examine: false
-    get: false
+    examine: true
+    get: true
     help: true
     hip: false
     new: true
@@ -376,6 +376,7 @@
         - memory
         - name
         - network
+        - partitions
         - platform
         - resource
         - serial
