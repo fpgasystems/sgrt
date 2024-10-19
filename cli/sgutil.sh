@@ -2105,7 +2105,7 @@ case "$command" in
           boot_type_check "$CLI_PATH" "${flags_array[@]}"
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-          if [ ! "$device_type" = "asoc" ]; then
+          if [ "$device_found" = "1" ] && [ ! "$device_type" = "asoc" ]; then
             echo ""
             echo "Sorry, this command is not available on device $device_index."
             echo ""
