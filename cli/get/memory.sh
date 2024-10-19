@@ -68,7 +68,8 @@ read -a flags <<< "$@"
 device_found=""
 device_index=""
 if [ "$flags" = "" ]; then
-    echo ""
+    #echo ""
+    print_echo="0"
     #print devices information
     for device_index in $(seq 1 $MAX_DEVICES); do 
         #get platform
@@ -79,10 +80,17 @@ if [ "$flags" = "" ]; then
 
         #print        
         if [ -n "$memory" ]; then
+            print_echo="1"
+            if [ "$device_index" = "1" ]; then
+                echo ""
+            fi
             echo "$device_index: $memory"
         fi
     done
-    echo ""
+    #echo ""
+    if [ "$print_echo" = "1" ]; then
+        echo ""
+    fi
 else
     #device_dialog_check
     result="$("$CLI_PATH/common/device_dialog_check" "${flags[@]}")"
