@@ -78,7 +78,7 @@ if [ "$flags" = "" ]; then
         memory=$(get_platforminfo_parameter "$PLATFORMINFO_PARAMETER" "$platform" "$PLATFORMINFO_LIST")
 
         #print        
-        if [ -n "$platform" ]; then
+        if [ -n "$memory" ]; then
             echo "$device_index: $memory"
         fi
     done
@@ -112,7 +112,9 @@ else
     memory=$(get_platforminfo_parameter "$PLATFORMINFO_PARAMETER" "$platform" "$PLATFORMINFO_LIST")
 
     #print
-    echo ""
-    echo "$device_index: $memory"
-    echo ""
+    if [ -n "$memory" ]; then
+        echo ""
+        echo "$device_index: $memory"
+        echo ""
+    fi
 fi
