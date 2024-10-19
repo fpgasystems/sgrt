@@ -42,9 +42,9 @@ if [ "$device_index" = "" ]; then
             partitions=$((partitions - 1))
             #print
             echo "$device_index: [0 ... $partitions]"
-        else
-            #print
-            echo "$device_index: "
+        #else
+        #    #print
+        #    echo "$device_index: "
         fi
     done
     echo ""
