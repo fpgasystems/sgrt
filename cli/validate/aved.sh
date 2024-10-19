@@ -47,7 +47,7 @@ current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$
 echo ""
 echo "${bold}Programming pre-built AVED:${normal}"
 echo ""
-echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
+#echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
 if [ "$current_uuid" != "$AVED_UUID" ]; then
     #reprogramming happens with -y
     #echo ""
@@ -59,11 +59,27 @@ if [ "$current_uuid" != "$AVED_UUID" ]; then
     cd $AVED_PATH/${aved_name}_xbtest_stress
     sudo ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0 -y
 else
-    #reprogramming can happen if the user wants to (this can be useful when validation fails -- it happens with amd_v80_gen5x8_23.2_exdes_2_20240408)
-    echo "sudo ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0"
-    echo ""
-    cd $AVED_PATH/${aved_name}_xbtest_stress
-    sudo ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0
+    #reprogramming can happen if the user wants to (this can be useful when validation fails -- it happens with amd_v80_gen5x8_23.2_exdes_2_20240408) =========> here we need our own dialog... Hey pre-built AVED is already there... Do you want to reprogram????
+    echo "The pre-built AVED is already programmed on the device. Do you want to program it again (y/n)?"
+    while true; do
+        read -p "" yn
+        case $yn in
+            "y")
+                echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
+                echo "sudo ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0 -y"
+                echo ""
+                cd $AVED_PATH/${aved_name}_xbtest_stress
+                sudo ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0 -y          
+                break
+                ;;
+            "n")
+                echo ""
+                echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
+                cd $AVED_PATH/${aved_name}_xbtest_stress
+                break
+                ;;
+        esac
+    done
 fi
 
 #ami_tool validation
