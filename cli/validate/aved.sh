@@ -65,6 +65,7 @@ else
         read -p "" yn
         case $yn in
             "y")
+                echo ""
                 echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
                 echo "sudo ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0 -y"
                 echo ""
