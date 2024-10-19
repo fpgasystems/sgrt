@@ -19,81 +19,46 @@ if [ "$is_asoc" = "0" ]; then
 fi
 
 echo "Hey I am here"
-exit
+
 
 #inputs
 device_index=$2
 
 #constants
-AVED_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_PATH)
-AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
-AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
+#AVED_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_PATH)
+#AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
+#AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
+DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
+TYPE="primary"
+
+#check on DEVICES_LIST
+source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
+
+#get number of fpga and acap devices present
+MAX_DEVICES=$(grep -E "fpga|acap|asoc" $DEVICES_LIST | wc -l)
 
 #all inputs must be provided
-if [ "$device_index" = "" ]; then
-    exit
-fi
-
-#get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
-aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
-
-#get device_name
-upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
-
-#get product_name
-product_name=$(ami_tool mfg_info -d $upstream_port | grep "Product Name" | awk -F'|' '{print $2}' | xargs)
-
-#get uuid
-current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
-
-#compare UUIDs
-echo ""
-echo "${bold}Programming pre-built AVED:${normal}"
-echo ""
-#echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
-if [ "$current_uuid" != "$AVED_UUID" ]; then
-    #reprogramming happens with -y
-    #echo ""
-    #echo "${bold}Programming pre-built AVED:${normal}"
-    #echo ""
-    echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
-    echo "sudo ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0 -y"
+#if [ "$device_index" = "" ]; then
     echo ""
-    cd $AVED_PATH/${aved_name}_xbtest_stress
-    sudo ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0 -y
-else
-    #reprogramming can happen if the user wants to (this can be useful when validation fails -- it happens with amd_v80_gen5x8_23.2_exdes_2_20240408) =========> here we need our own dialog... Hey pre-built AVED is already there... Do you want to reprogram????
-    echo "The pre-built AVED is already programmed on the device. Do you want to program it again (y/n)?"
-    while true; do
-        read -p "" yn
-        case $yn in
-            "y")
-                echo ""
-                echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
-                echo "sudo ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0 -y"
-                echo ""
-                cd $AVED_PATH/${aved_name}_xbtest_stress
-                sudo ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0 -y          
-                break
-                ;;
-            "n")
-                echo ""
-                echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
-                cd $AVED_PATH/${aved_name}_xbtest_stress
-                break
-                ;;
-        esac
+    #print devices information
+    for device_index in $(seq 1 $MAX_DEVICES); do 
+        device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+        partitions=""
+        if [ "$device_type" = "asoc" ]; then
+            upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
+            partitions=$(ami_tool cfgmem_info -d $upstream_port -t $TYPE | awk '/^Partition/ {flag=1; next} flag && /^[0-9]/' | wc -l)
+            partitions=$((partitions - 1))
+        fi
+        #print
+        echo "$device_index: 0 ... $partitions"
     done
-fi
+    echo ""
+#else
 
-#ami_tool validation
-ami_tool overview
-ami_tool mfg_info -d $upstream_port
+#    echo "not is empty"
 
-#xbtest validation
-sudo xbtest -d $upstream_port -c verify
-sudo xbtest -d $upstream_port -c memory
+#fi
 
-echo ""
+#exit
 
 #author: https://github.com/jmoya82
