@@ -5,8 +5,8 @@ CLI_NAME="sgutil"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil get partitions --device $device_index
-#example: /opt/sgrt/cli/sgutil get partitions --device             1
+#usage:       $CLI_PATH/sgutil get partitions --device $device_index --type $boot_type
+#example: /opt/sgrt/cli/sgutil get partitions --device             1 --type    primary
 
 #early exit
 url="${HOSTNAME}"
@@ -18,10 +18,10 @@ fi
 
 #inputs
 device_index=$2
+boot_type=$4
 
 #constants
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
-TYPE="primary"
 
 #check on DEVICES_LIST
 source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
@@ -29,8 +29,13 @@ source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST"
 #get number of fpga and acap devices present
 MAX_DEVICES=$(grep -E "fpga|acap|asoc" $DEVICES_LIST | wc -l)
 
+#check on boot_type
+if [ "$boot_type" = "" ]; then
+    boot_type="primary"
+fi
+
 #all inputs must be provided
-if [ "$device_index" = "" ]; then
+if [ "$device_index" = "none" ]; then
     echo ""
     #print devices information
     for device_index in $(seq 1 $MAX_DEVICES); do 
@@ -38,7 +43,7 @@ if [ "$device_index" = "" ]; then
         partitions=""
         if [ "$device_type" = "asoc" ]; then
             upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
-            partitions=$(ami_tool cfgmem_info -d $upstream_port -t $TYPE | awk '/^Partition/ {flag=1; next} flag && /^[0-9]/' | wc -l)
+            partitions=$(ami_tool cfgmem_info -d $upstream_port -t $boot_type | awk '/^Partition/ {flag=1; next} flag && /^[0-9]/' | wc -l)
             partitions=$((partitions - 1))
             #print
             if [ -n "$partitions" ]; then
@@ -52,7 +57,7 @@ if [ "$device_index" = "" ]; then
     echo ""
 else
     upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
-    partitions=$(ami_tool cfgmem_info -d $upstream_port -t $TYPE | awk '/^Partition/ {flag=1; next} flag && /^[0-9]/' | wc -l)
+    partitions=$(ami_tool cfgmem_info -d $upstream_port -t $boot_type | awk '/^Partition/ {flag=1; next} flag && /^[0-9]/' | wc -l)
     partitions=$((partitions - 1))
     #print
     if [ -n "$partitions" ]; then
