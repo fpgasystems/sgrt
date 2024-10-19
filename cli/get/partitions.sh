@@ -41,7 +41,9 @@ if [ "$device_index" = "" ]; then
             partitions=$(ami_tool cfgmem_info -d $upstream_port -t $TYPE | awk '/^Partition/ {flag=1; next} flag && /^[0-9]/' | wc -l)
             partitions=$((partitions - 1))
             #print
-            echo "$device_index: [0 ... $partitions]"
+            if [ -n "$partitions" ]; then
+                echo "$device_index: [0 ... $partitions]"
+            fi
         #else
         #    #print
         #    echo "$device_index: "
@@ -53,9 +55,11 @@ else
     partitions=$(ami_tool cfgmem_info -d $upstream_port -t $TYPE | awk '/^Partition/ {flag=1; next} flag && /^[0-9]/' | wc -l)
     partitions=$((partitions - 1))
     #print
-    echo ""
-    echo "$device_index: 0 ... $partitions"
-    echo ""
+    if [ -n "$partitions" ]; then
+        echo ""
+        echo "$device_index: 0 ... $partitions"
+        echo ""
+    fi
 fi
 
 #author: https://github.com/jmoya82
