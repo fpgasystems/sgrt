@@ -190,6 +190,7 @@ CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
 
 #error messages
 CHECK_ON_XRT_SHELL_ERR_MSG="Sorry, this command is only available for XRT shells."
+CHECK_ON_BOOT_TYPE_ERR_MSG="Please, choose a valid boot type option."
 CHECK_ON_BITSTREAM_ERR_MSG="Your targeted bitstream is missing."
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
 CHECK_ON_CONFIG_ERR_MSG="Please, create a valid configuration first."
@@ -214,6 +215,22 @@ CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
 CHECK_ON_WORKFLOW_ERR_MSG="Please, program your device first."
 CHECK_ON_XRT_ERR_MSG="Please, choose a valid XRT version."
+
+boot_type_check() {
+  local CLI_PATH=$1
+  shift 1
+  local flags_array=("$@")
+  result="$("$CLI_PATH/common/boot_type_check" "${flags_array[@]}")"
+  boot_type_found=$(echo "$result" | sed -n '1p')
+  boot_type=$(echo "$result" | sed -n '2p')
+  #forbidden combinations
+  if [ "$boot_type_found" = "1" ] && { [ "$boot_type" = "" ] || ([ "$boot_type" != "primary" ] && [ "$boot_type" != "secondary" ]); }; then
+    echo ""
+    echo "$CHECK_ON_BOOT_TYPE_ERR_MSG"
+    echo ""
+    exit
+  fi
+}
 
 commit_dialog() {
   local CLI_PATH=$1
@@ -2085,6 +2102,7 @@ case "$command" in
 
         #checks (command line 2/2)
         if [ ! "$flags_array" = "" ]; then
+          boot_type_check "$CLI_PATH" "${flags_array[@]}"
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
           if [ ! "$device_type" = "asoc" ]; then
@@ -2095,8 +2113,12 @@ case "$command" in
           fi
         fi
 
-        boot_type="primary"
+        #check on boot_type
+        if [ "$boot_type" = "" ]; then
+            boot_type="primary"
+        fi
 
+        #check on device_index
         if [ "$device_index" = "" ]; then
           device_index="none"
         fi
