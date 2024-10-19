@@ -153,6 +153,9 @@ if [[ -s "$DEVICE_LIST_FPGA" ]]; then
         diff=$(( $NETWORKING_STR_LENGTH - ${#add_0} ))
         add_0="$add_0$(printf '%*s' $diff)"
         add_1="$add_1$(printf '%*s' $diff)"
+        #convert to capital
+        add_0=$(echo "$add_0" | tr '[:lower:]' '[:upper:]')
+        add_1=$(echo "$add_1" | tr '[:lower:]' '[:upper:]')
         #print row
         echo "$id            : $upstream_port ($bdf)   : $device_type_name : $serial_number : $add_0 : $workflow"
         echo "                                                                            $add_1"
