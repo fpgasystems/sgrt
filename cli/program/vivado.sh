@@ -89,8 +89,11 @@ if [ "$extension" = "bit" ]; then
         sudo $CLI_PATH/program/pci_hot_plug 1 $upstream_port $root_port $LinkCtl
     fi
 elif [ "$extension" = "pdi" ]; then
-    echo "${bold}programming image:${normal}"
-    echo "We program something else!"
+    #get upstream_port
+    upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
+
+    echo "${bold}Programming image:${normal}"
+    sudo ami_tool cfgmem_program -d $upstream_port -t primary -i $file_name -p 0
 fi
 
 #echo "${bold}Programming bitstream:${normal}"
