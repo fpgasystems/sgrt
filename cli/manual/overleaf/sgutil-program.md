@@ -5,7 +5,7 @@ Back to CLI
 
 sgutil program [arguments [flags]] [--help]
 
-  &nbsp; &nbsp; Driver and bitstream programming.
+  &nbsp; &nbsp; Driver and device programming.
 
 
 ### Arguments

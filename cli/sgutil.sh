@@ -103,7 +103,7 @@ cli_help() {
   fi
   #if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
   if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
-  echo "    ${bold}program${normal}        - Driver and bitstream programming."
+  echo "    ${bold}program${normal}        - Driver and device programming."
   fi
   if [ "$is_sudo" = "1" ] || ([ "$is_build" = "0" ] && [ "$is_vivado_developer" = "1" ]); then
   echo "    ${bold}reboot${normal}         - Reboots the server (warm boot)."
@@ -576,9 +576,10 @@ flags_check() {
 fpga_check() {
   local CLI_PATH=$1
   local hostname=$2
+  asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
   acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
+  if [ "$asoc" = "0" ] && [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
       echo ""
       echo $CHECK_ON_HOSTNAME_ERR_MSG
       echo ""
@@ -1418,7 +1419,7 @@ program_help() {
     echo ""
     echo "${bold}$CLI_NAME program [arguments [flags]] [--help]${normal}"
     echo ""
-    echo "Driver and bitstream programming."
+    echo "Driver and device programming."
     echo ""
     echo "ARGUMENTS:"
     if [ "$is_vivado_developer" = "1" ]; then
@@ -1434,7 +1435,7 @@ program_help() {
       echo -e "   ${bold}${COLOR_ON2}revert${COLOR_OFF}${normal}          - Returns a device to its default fabric setup."
     fi
     if [ "$is_vivado_developer" = "1" ]; then
-    echo -e "   ${bold}${COLOR_ON2}vivado${COLOR_OFF}${normal}          - Programs a Vivado bitstream to a given device."
+    echo -e "   ${bold}${COLOR_ON2}vivado${COLOR_OFF}${normal}          - Programs a Vivado bitstream or image to a given device."
     fi
     echo ""
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
@@ -2227,8 +2228,6 @@ case "$command" in
             #commit dialog
             tag_found="1"
             tag_name=$AVED_TAG
-            #checks (command line) ?????????????????????????????
-            #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         else
             #github_tag_dialog_check
             result="$("$CLI_PATH/common/github_tag_dialog_check" "${flags_array[@]}")"
@@ -2240,17 +2239,6 @@ case "$command" in
                 $CLI_PATH/help/new $CLI_PATH $CLI_NAME "aved" "0" $is_asoc $is_build "0" "0" "0" $is_vivado_developer
                 exit
             fi
-            
-            #check if tag_name contains exactly one comma
-            #if [ "$tag_found" = "1" ] && ! [[ "$tag_name" =~ ^[^,]+,[^,]+$ ]]; then
-            #    echo ""
-            #    echo $CHECK_ON_GH_TAG_ERR_MSG
-            #    echo ""
-            #    exit
-            #fi
-            
-            #get shell and driver commits (shell_commit,driver_commit)
-            #tag_name=${tag_name%%,*}
 
             #check if tag exist
             exists_tag=$($CLI_PATH/common/gh_tag_check $GITHUB_CLI_PATH $AVED_REPO $tag_name)
@@ -2705,7 +2693,9 @@ case "$command" in
         vivado_check "$VIVADO_PATH" "$vivado_version"
 
         #check on flags
-        valid_flags="-b --bitstream -d --device -r --remote -v --version -h --help" # -v --version are not exposed and not shown in help command or completion
+        #NOTE 1: -v --version are not exposed and not shown in help command or completion
+        #NOTE 2: -f --file replaces -b --bitstream but we keep the bitstream flags for backward compatibility
+        valid_flags="-b --bitstream -d --device -f --file -r --remote -v --version -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -2715,7 +2705,7 @@ case "$command" in
         if [ "$flags_array" = "" ]; then
           #program_vivado_help
           echo ""
-          echo "Your targeted bitstream and device are missing."
+          echo "Your targeted file and device are missing."
           echo ""
           exit
         else #if [ ! "$flags_array" = "" ]; then      
@@ -2723,17 +2713,17 @@ case "$command" in
           remote_check "$CLI_PATH" "${flags_array[@]}"
           #bitstream_dialog_check
           result="$("$CLI_PATH/common/bitstream_dialog_check" "${flags_array[@]}")"
-          bitstream_found=$(echo "$result" | sed -n '1p')
-          bitstream_name=$(echo "$result" | sed -n '2p')
+          file_found=$(echo "$result" | sed -n '1p')
+          file_name=$(echo "$result" | sed -n '2p')
           #forbidden combinations (1/2)
-          if [ "$bitstream_found" = "0" ] || ([ "$bitstream_found" = "1" ] && ([ "$bitstream_name" = "" ] || [ ! -f "$bitstream_name" ] || [ "${bitstream_name##*.}" != "bit" ])); then
+          if [ "$file_found" = "0" ] || ([ "$file_found" = "1" ] && ([ "$file_name" = "" ] || [ ! -f "$file_name" ] || [ "${file_name##*.}" != "bit" ] || [ "${file_name##*.}" != "pdi" ])); then
               echo ""
-              echo "Please, choose a valid bitstream name."
+              echo "Please, choose a valid file name."
               echo ""
               exit
           fi
           #forbidden combinations (2/2)
-          if [ "$multiple_devices" = "1" ] && [ "$bitstream_found" = "1" ] && [ "$device_found" = "0" ]; then # this means bitstream always needs --device when multiple_devices
+          if [ "$multiple_devices" = "1" ] && [ "$file_found" = "1" ] && [ "$device_found" = "0" ]; then # this means bitstream always needs --device when multiple_devices
               echo ""
               echo $CHECK_ON_DEVICE_ERR_MSG
               echo ""
@@ -2750,14 +2740,14 @@ case "$command" in
         remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
         #check on remote aboslute path
-        if [ "$deploy_option" = "1" ] && [[ "$bitstream_name" == "./"* ]]; then
+        if [ "$deploy_option" = "1" ] && [[ "$file_name" == "./"* ]]; then
           echo $CHECK_ON_REMOTE_FILE_ERR_MSG
           echo ""
           exit
         fi
 
         #run
-        $CLI_PATH/program/vivado --bitstream $bitstream_name --device $device_index --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
+        $CLI_PATH/program/vivado --file $file_name --device $device_index --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
         ;;
       *)
         program_help

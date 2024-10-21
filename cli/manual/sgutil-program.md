@@ -8,7 +8,7 @@
 
 <code>sgutil program [arguments [flags]] [--help]</code>
 <p>
-  &nbsp; &nbsp; Driver and bitstream programming.
+  &nbsp; &nbsp; Driver and device programming.
 </p>
 
 ### Arguments

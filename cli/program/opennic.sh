@@ -94,7 +94,7 @@ before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
 #program bitstream 
-$CLI_PATH/program/vivado --bitstream $DIR/$BITSTREAM_NAME --device $device_index --version $vivado_version --remote 0
+$CLI_PATH/program/vivado --file $DIR/$BITSTREAM_NAME --device $device_index --version $vivado_version --remote 0
 
 #get RS_FEC_ENABLED from .device_config
 rs_fec=$($CLI_PATH/common/get_config_param $CLI_PATH "$DIR/.device_config" "rs_fec")

@@ -5,7 +5,7 @@ Back to sgutil program
 
 sgutil program vivado [flags] [--help]
 
-  &nbsp; &nbsp; Programs a Vivado bitstream to a given device.
+  &nbsp; &nbsp; Programs a Vivado bitstream or image to a given device.
 
 
 ### Flags
