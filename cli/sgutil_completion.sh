@@ -429,7 +429,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--device --remote --help" -- ${cur}))
                             ;;
                         vivado) 
-                            COMPREPLY=($(compgen -W "--bitstream --device --remote --help" -- ${cur}))
+                            COMPREPLY=($(compgen -W "--device --file --remote --help" -- ${cur}))
                             ;;
                     esac
                     ;;
@@ -538,7 +538,7 @@ _sgutil_completions()
             other_flags=( "--device" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "revert" "${other_flags[@]}"
 
-            other_flags=( "--bitstream" "--remote" "--device" )
+            other_flags=( "--file" "--remote" "--device" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "vivado" "${other_flags[@]}"
 
             #run
@@ -637,13 +637,13 @@ _sgutil_completions()
             command_completion_7 "$cur" "$COMP_CWORD" "program" "opennic" "--remote" "${other_flags[@]}"
 
             #program vivado
-            other_flags=( "--device" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--bitstream" "${other_flags[@]}"
-            
-            other_flags=( "--bitstream" "--remote" )
+            other_flags=( "--file" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--device" "${other_flags[@]}"
+            
+            other_flags=( "--device" "--remote" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--file" "${other_flags[@]}"
 
-            other_flags=( "--bitstream" "--device" )
+            other_flags=( "--file" "--device" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--remote" "${other_flags[@]}"
 
             #run opennic
