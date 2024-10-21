@@ -2716,7 +2716,7 @@ case "$command" in
           file_found=$(echo "$result" | sed -n '1p')
           file_name=$(echo "$result" | sed -n '2p')
           #forbidden combinations (1/2)
-          if [ "$file_found" = "0" ] || ([ "$file_found" = "1" ] && ([ "$file_name" = "" ] || [ ! -f "$file_name" ] || [ "${file_name##*.}" != "bit" ] || [ "${file_name##*.}" != "pdi" ])); then
+          if [ "$file_found" = "0" ] || ([ "$file_found" = "1" ] && ([ "$file_name" = "" ] || [ ! -f "$file_name" ] || { [ "${file_name##*.}" != "bit" ] && [ "${file_name##*.}" != "pdi" ]; })); then
               echo ""
               echo "Please, choose a valid file name."
               echo ""
