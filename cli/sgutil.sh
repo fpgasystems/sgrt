@@ -578,7 +578,7 @@ fpga_check() {
   local hostname=$2
   acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
   fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  if [ "$acap" = "0" ] && [ "$fpga" = "0" ]; then
+  if [ "$acap" = "0" ] && [ "$asoc" = "0" ] && [ "$fpga" = "0" ]; then
       echo ""
       echo $CHECK_ON_HOSTNAME_ERR_MSG
       echo ""
