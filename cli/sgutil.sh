@@ -2545,7 +2545,6 @@ case "$command" in
         fi
 
         #check on server
-        #virtualized_check "$CLI_PATH" "$hostname"
         fpga_check "$CLI_PATH" "$hostname"
 
         #check on groups
@@ -2613,8 +2612,6 @@ case "$command" in
         echo "partition_index: $partition_index"
         echo "file_path_found: $file_path_found"
         echo "file_path: $file_path"
-
-        exit
 
         #run
         $CLI_PATH/program/image --device $device_index --partition $partition_index --path $file_path --remote $deploy_option "${servers_family_list[@]}" 
