@@ -206,6 +206,7 @@ CHECK_ON_HOSTNAME_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_IFACE_ERR_MSG="Please, choose a valid interface name."
 CHECK_ON_VALUE_ERR_MSG="Please, choose a valid value."
 CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
+CHECK_ON_PARTITION_ERR_MSG="Please, choose a valid partition index."
 CHECK_ON_PORT_ERR_MSG="Please, choose a valid port index."
 CHECK_ON_PROJECT_ERR_MSG="Please, choose a valid project name."
 CHECK_ON_PUSH_ERR_MSG="Please, choose a valid push option."
@@ -701,6 +702,31 @@ new_check(){
       echo $CHECK_ON_PROJECT_ERR_MSG
       echo ""
       exit 1
+  fi
+}
+
+partition_check() {
+  local CLI_PATH=$1
+  local device_index=$2
+  shift 2
+  local flags_array=("$@")
+  result="$("$CLI_PATH/common/partition_dialog_check" "${flags_array[@]}")"
+  partition_found=$(echo "$result" | sed -n '1p')
+  partition_index=$(echo "$result" | sed -n '2p')
+  #get partitions
+  MAX_PARTITIONS=$($CLI_PATH/sgutil get partitions --device $device_index | sed -n 's/.*\([0-9]\)]/\1/p')
+  if [ "$partition_found" = "0" ]; then
+    partition_found="1"
+    partition_index="0"
+  else
+    #forbidden combinations
+    if { [ "$partition_found" = "1" ] && [ "$partition_index" = "" ]; } || \
+      { [ "$partition_found" = "1" ] && { [ "$partition_index" -gt "$MAX_PARTITIONS" ] || [ "$partition_index" -lt 0 ]; }; }; then
+        echo ""
+        echo $CHECK_ON_PARTITION_ERR_MSG
+        echo ""
+        exit
+    fi
   fi
 }
 
@@ -2253,8 +2279,6 @@ case "$command" in
             #commit dialog
             tag_found="1"
             tag_name=$AVED_TAG
-            #checks (command line) ?????????????????????????????
-            #device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
         else
             #github_tag_dialog_check
             result="$("$CLI_PATH/common/github_tag_dialog_check" "${flags_array[@]}")"
@@ -2267,17 +2291,6 @@ case "$command" in
                 exit
             fi
             
-            #check if tag_name contains exactly one comma
-            #if [ "$tag_found" = "1" ] && ! [[ "$tag_name" =~ ^[^,]+,[^,]+$ ]]; then
-            #    echo ""
-            #    echo $CHECK_ON_GH_TAG_ERR_MSG
-            #    echo ""
-            #    exit
-            #fi
-            
-            #get shell and driver commits (shell_commit,driver_commit)
-            #tag_name=${tag_name%%,*}
-
             #check if tag exist
             exists_tag=$($CLI_PATH/common/gh_tag_check $GITHUB_CLI_PATH $AVED_REPO $tag_name)
             
@@ -2539,8 +2552,6 @@ case "$command" in
         vivado_developers_check "$USER"
 
         #check on software  
-        #vivado_version=$($CLI_PATH/common/get_xilinx_version vivado) #------------------------------------------------------------------------------------
-        #vivado_check "$VIVADO_PATH" "$vivado_version"
         ami_check "$AMI_TOOL_PATH"
 
         #check on flags
@@ -2557,22 +2568,23 @@ case "$command" in
           echo "Your targeted device and image are missing."
           echo ""
           exit
-        else #if [ ! "$flags_array" = "" ]; then      
+        else
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          partition_check "$CLI_PATH" "$device_index" "${flags_array[@]}"
           remote_check "$CLI_PATH" "${flags_array[@]}"
-          #bitstream_dialog_check
-          result="$("$CLI_PATH/common/bitstream_dialog_check" "${flags_array[@]}")"
-          bitstream_found=$(echo "$result" | sed -n '1p')
-          bitstream_name=$(echo "$result" | sed -n '2p')
+          #file_path_dialog_check
+          result="$("$CLI_PATH/common/file_path_dialog_check" "${flags_array[@]}")"
+          file_path_found=$(echo "$result" | sed -n '1p')
+          file_path=$(echo "$result" | sed -n '2p')
           #forbidden combinations (1/2)
-          if [ "$bitstream_found" = "0" ] || ([ "$bitstream_found" = "1" ] && ([ "$bitstream_name" = "" ] || [ ! -f "$bitstream_name" ] || [ "${bitstream_name##*.}" != "bit" ])); then
+          if [ "$file_path_found" = "0" ] || ([ "$file_path_found" = "1" ] && ([ "$file_path" = "" ] || [ ! -f "$file_path" ] || [ "${file_path##*.}" != "pdi" ])); then
               echo ""
-              echo "Please, choose a valid bitstream name."
+              echo "Please, choose a valid image path."
               echo ""
               exit
           fi
           #forbidden combinations (2/2)
-          if [ "$multiple_devices" = "1" ] && [ "$bitstream_found" = "1" ] && [ "$device_found" = "0" ]; then # this means bitstream always needs --device when multiple_devices
+          if [ "$multiple_devices" = "1" ] && [ "$file_path_found" = "1" ] && [ "$device_found" = "0" ]; then # this means image always needs --device when multiple_devices
               echo ""
               echo $CHECK_ON_DEVICE_ERR_MSG
               echo ""
@@ -2589,14 +2601,23 @@ case "$command" in
         remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
         #check on remote aboslute path
-        if [ "$deploy_option" = "1" ] && [[ "$bitstream_name" == "./"* ]]; then
+        if [ "$deploy_option" = "1" ] && [[ "$file_path" == "./"* ]]; then
           echo $CHECK_ON_REMOTE_FILE_ERR_MSG
           echo ""
           exit
         fi
 
+        echo "HEY I am here"
+        echo "device_index: $device_index"
+        echo "partition_found: $partition_found"
+        echo "partition_index: $partition_index"
+        echo "file_path_found: $file_path_found"
+        echo "file_path: $file_path"
+
+        exit
+
         #run
-        $CLI_PATH/program/vivado --bitstream $bitstream_name --device $device_index --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
+        $CLI_PATH/program/image --device $device_index --partition $partition_index --path $file_path --remote $deploy_option "${servers_family_list[@]}" 
         ;;
       opennic)
         #early exit
