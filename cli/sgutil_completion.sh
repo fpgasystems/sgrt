@@ -419,6 +419,9 @@ _sgutil_completions()
                     ;;
                 program)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
+                        aved)
+                            COMPREPLY=($(compgen -W "--device --project --tag --remote --help" -- ${cur})) # --type
+                            ;;
                         driver)
                             COMPREPLY=($(compgen -W "--insert --params --remote --remove --help" -- ${cur}))
                             ;;
@@ -538,6 +541,9 @@ _sgutil_completions()
             command_completion_5 "$cur" "$COMP_CWORD" "program" "driver" "--remove" ""  # No suggestions for --remove
 
             #program
+            other_flags=( "--device" "--project" "--tag" "--remote" )
+            command_completion_5 "$cur" "$COMP_CWORD" "program" "aved" "${other_flags[@]}"
+            
             other_flags=( "--device" "--partition" "--path" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "image" "${other_flags[@]}"
             
@@ -632,6 +638,19 @@ _sgutil_completions()
             other_flags=( "--insert" "--remove" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "driver" "" "${other_flags[@]}"
             
+            #program aved
+            other_flags=( "--project" "--tag" "--remote" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "aved" "--device" "${other_flags[@]}"
+            
+            other_flags=( "--device" "--tag" "--remote" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "aved" "--project" "${other_flags[@]}"
+
+            other_flags=( "--device" "--project" "--remote" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "aved" "--tag" "${other_flags[@]}"
+
+            other_flags=( "--device" "--project" "--tag" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "aved" "--remote" "${other_flags[@]}"
+            
             #program image
             other_flags=( "--partition" "--path" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "image" "--device" "${other_flags[@]}"
@@ -725,6 +744,46 @@ _sgutil_completions()
             other_flags=( "--insert" "--remove" )
             command_completion_9 "$cur" "$COMP_CWORD" "program" "driver" "" "${other_flags[@]}"
 
+            #program aved --device
+            other_flags=( "--tag" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--device" "--project" "${other_flags[@]}"
+            
+            other_flags=( "--project" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--device" "--tag" "${other_flags[@]}"
+
+            other_flags=( "--project" "--tag" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--device" "--remote" "${other_flags[@]}"
+
+            #program aved --project
+            other_flags=( "--tag" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--project" "--device" "${other_flags[@]}"
+            
+            other_flags=( "--device" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--project" "--tag" "${other_flags[@]}"
+
+            other_flags=( "--device" "--tag" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--project" "--remote" "${other_flags[@]}"
+
+            #program aved --tag
+            other_flags=( "--project" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--tag" "--device" "${other_flags[@]}"
+            
+            other_flags=( "--device" "--remote" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--tag" "--project" "${other_flags[@]}"
+
+            other_flags=( "--device" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--tag" "--remote" "${other_flags[@]}"
+
+            #program aved --remote
+            other_flags=( "--project" "--tag" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--remote" "--device" "${other_flags[@]}"
+            
+            other_flags=( "--device" "--tag" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--remote" "--project" "${other_flags[@]}"
+
+            other_flags=( "--device" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--remote" "--tag" "${other_flags[@]}"
+
             #program image --device
             other_flags=( "--path" "--remote" )
             command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--device" "--partition" "${other_flags[@]}"
@@ -735,7 +794,7 @@ _sgutil_completions()
             other_flags=( "--partition" "--path" )
             command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--device" "--remote" "${other_flags[@]}"
 
-            #program image --device
+            #program image --partition
             other_flags=( "--path" "--remote" )
             command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--partition" "--device" "${other_flags[@]}"
             
