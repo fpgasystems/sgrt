@@ -32,7 +32,7 @@
     aved: false
     bitstreams: false
     build: false
-    common: false
+    common: true
     directories: false
     enable: false
     examine: false
@@ -322,6 +322,7 @@
         - new_dialog
         - new_dialog_check
         - params_dialog_check
+        - partition_dialog_check
         - platform_dialog
         - platform_dialog_check
         - port_dialog_check
