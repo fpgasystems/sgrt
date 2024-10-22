@@ -2606,13 +2606,6 @@ case "$command" in
           exit
         fi
 
-        echo "HEY I am here"
-        echo "device_index: $device_index"
-        echo "partition_found: $partition_found"
-        echo "partition_index: $partition_index"
-        echo "file_path_found: $file_path_found"
-        echo "file_path: $file_path"
-
         #run
         $CLI_PATH/program/image --device $device_index --partition $partition_index --path $file_path --remote $deploy_option "${servers_family_list[@]}" 
         ;;

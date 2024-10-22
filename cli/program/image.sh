@@ -68,14 +68,12 @@ upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 #call ami_tool
 echo "${bold}Calling AVED Management Interface Tool:${normal}"
 echo ""
-echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $BOOT_DEVICE_TYPE -i ./$file -p $partition_index"
+echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $BOOT_DEVICE_TYPE -i ./$file -p $partition_index -y"
 echo ""
-sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $BOOT_DEVICE_TYPE -i ./$file -p $partition_index
-
-exit
+sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $BOOT_DEVICE_TYPE -i ./$file -p $partition_index -y
 
 #programming remote servers (if applies)
-programming_string="$CLI_PATH/program/vivado --bitstream $bitstream_name --device $device_index --version $vivado_version --remote 0"
+programming_string="$CLI_PATH/program/image --device $device_index --partition $partition_index --path $file_path --remote 0"
 $CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list"
 
 #author: https://github.com/jmoya82
