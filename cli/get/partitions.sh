@@ -75,7 +75,7 @@ else
     #print
     if [ -n "$partitions" ]; then
         echo ""
-        echo "$device_index: 0 ... $partitions"
+        echo "$device_index: [0 ... $partitions]"
         echo ""
     fi
 fi
