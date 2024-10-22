@@ -29,17 +29,17 @@
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
     #cli installation
-    aved: true
+    aved: false
     bitstreams: false
     build: false
-    common: true
+    common: false
     directories: false
     enable: false
-    examine: true
-    get: true
-    help: true
+    examine: false
+    get: false
+    help: false
     hip: false
-    new: true
+    new: false
     opennic: false
     program: true
     reboot: false
@@ -288,6 +288,7 @@
         - device_list_check
         - driver_dialog_check
         - fec_dialog_check
+        - file_path_dialog_check
         - get_devices_acap_fpga_coyote
         - get_config_param
         - get_config_string
