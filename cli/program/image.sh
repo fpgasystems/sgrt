@@ -7,16 +7,14 @@ normal=$(tput sgr0)
 #usage:       $CLI_PATH/sgutil program image --device $device_index --partition $partition_index --path          $image_name --remote $deploy_option 
 #example: /opt/sgrt/cli/sgutil program image --device             1 --partition                0 --path path_to_my_image.pdi --remote              0
 
-#arly exit
+#early exit
 url="${HOSTNAME}"
 hostname="${url%%.*}"
-is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
 is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
 is_build=$($CLI_PATH/common/is_build $CLI_PATH $hostname)
-is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
 is_vivado_developer=$($CLI_PATH/common/is_member $USER vivado_developers)
-vivado_enabled=$([ "$is_vivado_developer" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; } && echo 1 || echo 0)
-if [ "$is_build" = "1" ] || [ "$vivado_enabled" = "0" ]; then
+vivado_enabled_asoc=$([ "$is_vivado_developer" = "1" ] && [ "$is_asoc" = "1" ] && echo 1 || echo 0)
+if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
     exit
 fi
 

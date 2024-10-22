@@ -14,6 +14,7 @@ arguments=$2
 
 #constants
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
+AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_REPO=$($CLI_PATH/common/get_constant $CLI_PATH AVED_REPO)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
@@ -39,6 +40,7 @@ url="${HOSTNAME}"
 hostname="${url%%.*}"
 
 #derived
+AMI_TOOL_PATH="$AVED_TOOLS_PATH/ami_tool"
 DEVICES_LIST="$CLI_PATH/devices_acap_fpga"
 DEVICES_LIST_NETWORKING="$CLI_PATH/devices_network"
 REPO_URL="https://github.com/fpgasystems/$REPO_NAME.git"
@@ -189,7 +191,7 @@ CHECK_ON_PUSH_MSG="${bold}Would you like to add the project to your GitHub accou
 CHECK_ON_REMOTE_MSG="${bold}Please, choose your deployment servers:${normal}"
 
 #error messages
-CHECK_ON_XRT_SHELL_ERR_MSG="Sorry, this command is only available for XRT shells."
+CHECK_ON_AMI_TOOL_ERR_MSG="Please, install a valid ami_tool version."
 CHECK_ON_BOOT_TYPE_ERR_MSG="Please, choose a valid boot type option."
 CHECK_ON_BITSTREAM_ERR_MSG="Your targeted bitstream is missing."
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
@@ -215,6 +217,18 @@ CHECK_ON_VIVADO_ERR_MSG="Please, choose a valid Vivado version."
 CHECK_ON_VIVADO_DEVELOPERS_ERR_MSG="Sorry, this command is not available for $USER."
 CHECK_ON_WORKFLOW_ERR_MSG="Please, program your device first."
 CHECK_ON_XRT_ERR_MSG="Please, choose a valid XRT version."
+CHECK_ON_XRT_SHELL_ERR_MSG="Sorry, this command is only available for XRT shells."
+
+ami_check() {
+  local AMI_TOOL_PATH=$1
+  ami_tool_path=$(which ami_tool)
+  if [[ "$ami_tool_path" = "" || "$ami_tool_path" != "$AMI_TOOL_PATH" ]]; then
+    echo ""
+    echo $CHECK_ON_AMI_TOOL_ERR_MSG
+    echo ""
+    exit 1
+  fi
+}
 
 boot_type_check() {
   local CLI_PATH=$1
@@ -1424,7 +1438,7 @@ program_help() {
     if [ "$is_vivado_developer" = "1" ]; then
     echo "   ${bold}driver${normal}          - Inserts or removes a driver or module into the Linux kernel."
     fi
-    if [ "$is_asoc" = "1" ]; then
+    if [ "$vivado_enabled_asoc" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}image${COLOR_OFF}${normal}           - Programs an AVED Programmable Device Image (PDI) to a given device."
     fi
     if [ ! "$is_virtualized" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
@@ -2510,6 +2524,79 @@ case "$command" in
 
         #run
         $CLI_PATH/program/driver --insert $driver_name --params $params_string --remote $deploy_option "${servers_family_list[@]}"
+        ;;
+      image)
+        #early exit
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
+          exit
+        fi
+
+        #check on server
+        #virtualized_check "$CLI_PATH" "$hostname"
+        fpga_check "$CLI_PATH" "$hostname"
+
+        #check on groups
+        vivado_developers_check "$USER"
+
+        #check on software  
+        #vivado_version=$($CLI_PATH/common/get_xilinx_version vivado) #------------------------------------------------------------------------------------
+        #vivado_check "$VIVADO_PATH" "$vivado_version"
+        ami_check "$AMI_TOOL_PATH"
+
+        #check on flags
+        valid_flags="-d --device --partition --path -r --remote -h --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #checks (command line)
+        if [ "$flags_array" = "" ]; then
+          #program_vivado_help
+          echo ""
+          echo "Your targeted device and image are missing."
+          echo ""
+          exit
+        else #if [ ! "$flags_array" = "" ]; then      
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          remote_check "$CLI_PATH" "${flags_array[@]}"
+          #bitstream_dialog_check
+          result="$("$CLI_PATH/common/bitstream_dialog_check" "${flags_array[@]}")"
+          bitstream_found=$(echo "$result" | sed -n '1p')
+          bitstream_name=$(echo "$result" | sed -n '2p')
+          #forbidden combinations (1/2)
+          if [ "$bitstream_found" = "0" ] || ([ "$bitstream_found" = "1" ] && ([ "$bitstream_name" = "" ] || [ ! -f "$bitstream_name" ] || [ "${bitstream_name##*.}" != "bit" ])); then
+              echo ""
+              echo "Please, choose a valid bitstream name."
+              echo ""
+              exit
+          fi
+          #forbidden combinations (2/2)
+          if [ "$multiple_devices" = "1" ] && [ "$bitstream_found" = "1" ] && [ "$device_found" = "0" ]; then # this means bitstream always needs --device when multiple_devices
+              echo ""
+              echo $CHECK_ON_DEVICE_ERR_MSG
+              echo ""
+              exit
+          fi
+          #device values when there is only a device
+          if [[ $multiple_devices = "0" ]]; then
+              device_found="1"
+              device_index="1"
+          fi
+        fi
+        echo ""
+
+        remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
+
+        #check on remote aboslute path
+        if [ "$deploy_option" = "1" ] && [[ "$bitstream_name" == "./"* ]]; then
+          echo $CHECK_ON_REMOTE_FILE_ERR_MSG
+          echo ""
+          exit
+        fi
+
+        #run
+        $CLI_PATH/program/vivado --bitstream $bitstream_name --device $device_index --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
         ;;
       opennic)
         #early exit

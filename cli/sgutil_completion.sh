@@ -253,7 +253,7 @@ _sgutil_completions()
                     if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
                         commands="${commands} revert"
                     fi
-                    if [ "$is_asoc" = "1" ]; then
+                    if [ "$vivado_enabled_asoc" = "1" ]; then
                         commands="${commands} image"
                     fi
                     commands_array=($commands)
