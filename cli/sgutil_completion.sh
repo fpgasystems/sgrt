@@ -254,7 +254,7 @@ _sgutil_completions()
                         commands="${commands} revert"
                     fi
                     if [ "$vivado_enabled_asoc" = "1" ]; then
-                        commands="${commands} image"
+                        commands="${commands} image aved"
                     fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))

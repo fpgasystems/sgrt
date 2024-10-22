@@ -1461,6 +1461,9 @@ program_help() {
     echo "Driver and bitstream programming."
     echo ""
     echo "ARGUMENTS:"
+    if [ "$vivado_enabled_asoc" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Programs a self-built AVED project to a given device."
+    fi
     if [ "$is_vivado_developer" = "1" ]; then
     echo "   ${bold}driver${normal}          - Inserts or removes a driver or module into the Linux kernel."
     fi
@@ -1483,6 +1486,15 @@ program_help() {
     echo "   ${bold}-h, --help${normal}      - Help to use this command."
     echo ""
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0"
+    echo ""
+  fi
+  exit
+}
+
+program_aved_help() {
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
+    $CLI_PATH/help/program_aved $CLI_PATH $CLI_NAME
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
   fi
   exit
@@ -1713,7 +1725,7 @@ validate_help() {
     echo ""
     echo "ARGUMENTS:"
     if [ "$vivado_enabled_asoc" = "1" ]; then
-    echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Pre-build Alveo Versal Example Design (AVED) validation."
+    echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Pre-built Alveo Versal Example Design (AVED) validation."
     fi
     echo "   ${bold}docker${normal}          - Validates Docker installation on the server."
     if [ ! "$is_build" = "1" ] && [ ! "$is_virtualized" = "1" ] && [ "$vivado_enabled" = "1" ]; then
@@ -1741,7 +1753,7 @@ validate_aved_help() {
     echo ""
     echo "${bold}$CLI_NAME validate aved [flags] [--help]${normal}"
     echo ""
-    echo "Pre-build Alveo Versal Example Design (AVED) validation."
+    echo "Pre-built Alveo Versal Example Design (AVED) validation."
     echo ""
     echo "FLAGS:"
     echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
@@ -2454,6 +2466,80 @@ case "$command" in
     case "$arguments" in
       -h|--help)
         program_help
+        ;;
+      aved)
+        #early exit
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
+          exit
+        fi
+
+        echo "Hey I am here!"
+        exit
+
+        #temporal exit condition
+        if [ "$is_asoc" = "1" ]; then
+            echo ""
+            echo "Sorry, we are working on this!"
+            echo ""
+            exit
+        fi
+
+        #check on server
+        virtualized_check "$CLI_PATH" "$hostname"
+        fpga_check "$CLI_PATH" "$hostname"
+        
+        #check on groups
+        vivado_developers_check "$USER"
+        
+        #check on software
+        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        vivado_check "$VIVADO_PATH" "$vivado_version"
+        gh_check "$CLI_PATH"
+      
+        #check on flags
+        valid_flags="-c --commit -d --device -p --project -r --remote -h --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        #checks (command line)
+        if [ ! "$flags_array" = "" ]; then
+          commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+          remote_check "$CLI_PATH" "${flags_array[@]}"
+        fi
+
+        #dialogs
+        commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
+        echo ""
+        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+        
+        #bitstream check
+        FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
+        bitstream_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/${ONIC_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
+        if ! [ -e "$bitstream_path" ]; then
+          echo "$CHECK_ON_BITSTREAM_ERR_MSG Please, use ${bold}$CLI_NAME build $arguments.${normal}"
+          echo ""
+          exit 1
+        fi
+
+        #driver check
+        driver_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/$ONIC_DRIVER_NAME"
+        if ! [ -e "$driver_path" ]; then
+          echo "Your targeted driver is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
+          echo ""
+          exit 1
+        fi
+
+        remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
+
+        #run
+        $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
         ;;
       driver)
         #early exit

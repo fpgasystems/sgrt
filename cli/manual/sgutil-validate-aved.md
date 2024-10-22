@@ -8,7 +8,7 @@
 
 <code>sgutil validate aved [flags] [--help]</code>
 <p>
-  &nbsp; &nbsp; Pre-build Alveo Versal Example Design (AVED) validation.
+  &nbsp; &nbsp; Pre-built Alveo Versal Example Design (AVED) validation.
 </p>
 
 ### Flags

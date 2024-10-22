@@ -29,19 +29,19 @@
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
     #cli installation
-    aved: false
+    aved: true
     bitstreams: false
     build: false
-    common: true
+    common: false
     directories: false
     enable: false
     examine: false
     get: false
-    help: false
+    help: true
     hip: false
     new: false
     opennic: false
-    program: true
+    program: false
     reboot: false
     run: false
     set: false
@@ -411,6 +411,7 @@
         - get_topo
         - get
         - new
+        - program_aved
         - program_driver
         - program_image
         - program_opennic
@@ -440,6 +441,7 @@
         mode: "0755"
       when: all or program
       loop:
+        - aved
         - driver
         - image
         - fpga_chmod
@@ -574,6 +576,11 @@
           copy:
             src: "../cli/build/aved.sh"
             dest: "{{ cli_path }}/build/aved"
+            mode: "0755"
+        - name: program
+          copy:
+            src: "../cli/program/aved.sh"
+            dest: "{{ cli_path }}/program/aved"
             mode: "0755"
         #- name: run
         #  copy:
