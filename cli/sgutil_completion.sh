@@ -253,6 +253,9 @@ _sgutil_completions()
                     if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
                         commands="${commands} revert"
                     fi
+                    if [ "$is_asoc" = "1" ]; then
+                        commands="${commands} image"
+                    fi
                     commands_array=($commands)
                     commands_array=($(echo "${commands_array[@]}" | tr ' ' '\n' | sort | uniq))
                     commands_string=$(echo "${commands_array[@]}")
@@ -418,6 +421,9 @@ _sgutil_completions()
                     case ${COMP_WORDS[COMP_CWORD-1]} in
                         driver)
                             COMPREPLY=($(compgen -W "--insert --params --remote --remove --help" -- ${cur}))
+                            ;;
+                        image)
+                            COMPREPLY=($(compgen -W "--device --partition --path --remotes --type --help" -- ${cur}))
                             ;;
                         opennic)
                             COMPREPLY=($(compgen -W "--commit --device --project --remote --help" -- ${cur}))

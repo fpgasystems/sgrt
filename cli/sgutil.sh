@@ -1424,6 +1424,9 @@ program_help() {
     if [ "$is_vivado_developer" = "1" ]; then
     echo "   ${bold}driver${normal}          - Inserts or removes a driver or module into the Linux kernel."
     fi
+    if [ "$is_asoc" = "1" ]; then
+    echo -e "   ${bold}${COLOR_ON2}image${COLOR_OFF}${normal}           - Programs an AVED Programmable Device Image (PDI) to a given device."
+    fi
     if [ ! "$is_virtualized" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
     echo -e "   ${bold}${COLOR_ON2}opennic${COLOR_OFF}${normal}         - Programs OpenNIC to a given device."
     fi
@@ -1448,6 +1451,15 @@ program_help() {
 program_driver_help() {
   if [ ! "$is_build" = "1" ] && [ "$vivado_enabled" = "1" ]; then
     $CLI_PATH/help/program_driver $CLI_NAME
+  fi
+  exit
+}
+
+program_image_help() {
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
+    $CLI_PATH/help/program_image $CLI_NAME
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
+    echo ""
   fi
   exit
 }
