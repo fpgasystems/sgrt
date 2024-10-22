@@ -41,7 +41,7 @@
     hip: false
     new: true
     opennic: false
-    program: false
+    program: true
     reboot: false
     run: false
     set: false
@@ -409,6 +409,7 @@
         - get
         - new
         - program_driver
+        - program_image
         - program_opennic
         - program_reset
         - program_revert
