@@ -125,6 +125,7 @@
         - AVED_REPO
         - AVED_SMBUS_IP
         - AVED_TAG
+        - AVED_TOOLS_PATH
         - AVED_UUID
         - BUILD_SERVERS_LIST
         - COLOR_ACAP
