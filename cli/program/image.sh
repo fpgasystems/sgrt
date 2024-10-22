@@ -71,6 +71,7 @@ echo ""
 echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $BOOT_DEVICE_TYPE -i ./$file -p $partition_index -y"
 echo ""
 sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $BOOT_DEVICE_TYPE -i ./$file -p $partition_index -y
+echo ""
 
 #programming remote servers (if applies)
 programming_string="$CLI_PATH/program/image --device $device_index --partition $partition_index --path $file_path --remote 0"
