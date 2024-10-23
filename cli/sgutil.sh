@@ -2517,9 +2517,6 @@ case "$command" in
         #image check
         pdi_project_name="${aved_name}.$vivado_version.pdi"
         image_path="$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/$pdi_project_name"
-
-        echo $image_path
-
         if ! [ -e "$image_path" ]; then
           echo "$CHECK_ON_IMAGE_ERR_MSG Please, use ${bold}$CLI_NAME build $arguments.${normal}"
           echo ""
@@ -2528,15 +2525,8 @@ case "$command" in
 
         remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
-        echo "device_index: $device_index"
-        echo "project_name: $project_name"
-        echo "tag_name: $tag_name"
-        echo "deploy_option: $deploy_option"
-
-        exit
-
         #run
-        $CLI_PATH/program/aved --device $device_index --project $project_name --tag $tag_name --remote $deploy_option "${servers_family_list[@]}"
+        $CLI_PATH/program/aved --device $device_index --project $project_name --tag $tag_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}"
         ;;
       driver)
         #early exit
