@@ -204,6 +204,7 @@ CHECK_ON_GH_ERR_MSG="Please, use ${bold}$CLI_NAME set gh${normal} to log in to y
 CHECK_ON_GH_TAG_ERR_MSG="Please, choose a valid tag ID."
 CHECK_ON_HOSTNAME_ERR_MSG="Sorry, this command is not available on $hostname."
 CHECK_ON_IFACE_ERR_MSG="Please, choose a valid interface name."
+CHECK_ON_IMAGE_ERR_MSG="Your targeted image is missing."
 CHECK_ON_VALUE_ERR_MSG="Please, choose a valid value."
 CHECK_ON_PLATFORM_ERR_MSG="Please, choose a valid platform name."
 CHECK_ON_PARTITION_ERR_MSG="Please, choose a valid partition index."
@@ -2473,19 +2474,7 @@ case "$command" in
           exit
         fi
 
-        echo "Hey I am here!"
-        exit
-
-        #temporal exit condition
-        if [ "$is_asoc" = "1" ]; then
-            echo ""
-            echo "Sorry, we are working on this!"
-            echo ""
-            exit
-        fi
-
         #check on server
-        virtualized_check "$CLI_PATH" "$hostname"
         fpga_check "$CLI_PATH" "$hostname"
         
         #check on groups
@@ -2495,9 +2484,10 @@ case "$command" in
         vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
         vivado_check "$VIVADO_PATH" "$vivado_version"
         gh_check "$CLI_PATH"
+        ami_check "$AMI_TOOL_PATH"
       
         #check on flags
-        valid_flags="-c --commit -d --device -p --project -r --remote -h --help"
+        valid_flags="-d --device -p --project -t --tag -r --remote -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -2505,41 +2495,48 @@ case "$command" in
 
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
-          commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          #commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
           remote_check "$CLI_PATH" "${flags_array[@]}"
         fi
 
         #dialogs
-        commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        #commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
         echo ""
-        echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
+        echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
         echo ""
-        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-        
-        #bitstream check
-        FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
-        bitstream_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/${ONIC_SHELL_NAME%.bit}.$FDEV_NAME.$vivado_version.bit"
-        if ! [ -e "$bitstream_path" ]; then
-          echo "$CHECK_ON_BITSTREAM_ERR_MSG Please, use ${bold}$CLI_NAME build $arguments.${normal}"
-          echo ""
-          exit 1
-        fi
 
-        #driver check
-        driver_path="$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/$ONIC_DRIVER_NAME"
-        if ! [ -e "$driver_path" ]; then
-          echo "Your targeted driver is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
+        #get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
+        aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
+
+        #image check
+        pdi_project_name="${aved_name}.$vivado_version.pdi"
+        image_path="$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/$pdi_project_name"
+
+        echo $image_path
+
+        if ! [ -e "$image_path" ]; then
+          echo "$CHECK_ON_IMAGE_ERR_MSG Please, use ${bold}$CLI_NAME build $arguments.${normal}"
           echo ""
           exit 1
         fi
 
         remote_dialog "$CLI_PATH" "$command" "$arguments" "$hostname" "$USER" "${flags_array[@]}"
 
+        echo "device_index: $device_index"
+        echo "project_name: $project_name"
+        echo "tag_name: $tag_name"
+        echo "deploy_option: $deploy_option"
+
+        exit
+
         #run
-        $CLI_PATH/program/opennic --commit $commit_name --device $device_index --project $project_name --version $vivado_version --remote $deploy_option "${servers_family_list[@]}" 
+        $CLI_PATH/program/aved --device $device_index --project $project_name --tag $tag_name --remote $deploy_option "${servers_family_list[@]}"
         ;;
       driver)
         #early exit
