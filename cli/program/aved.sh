@@ -36,23 +36,8 @@ AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="aved"
 
-#derived
-#VIVADO_PATH="$XILINX_TOOLS_PATH/Vivado"
-
-#get devices number
-#if [ -s "$DEVICES_LIST_NETWORKING" ]; then
-#  source "$CLI_PATH/common/device_list_check" "$DEVICES_LIST_NETWORKING"
-#fi
-
-#get hostname
-#url="${HOSTNAME}"
-#hostname="${url%%.*}"
-
-#define directories (1)
+#define directories
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$project_name"
-
-#get FDEV_NAME
-#FDEV_NAME=$($CLI_PATH/common/get_FDEV_NAME $CLI_PATH $device_index)
 
 #get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
 aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
