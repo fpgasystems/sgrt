@@ -43,12 +43,11 @@ product_name=$(ami_tool mfg_info -d $upstream_port | grep "Product Name" | awk -
 #get uuid
 current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
 
-#compare UUIDs
-echo ""
-echo "${bold}Programming pre-built AVED:${normal}"
-echo ""
-#echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
+#AVED programming
 if [ "$current_uuid" != "$AVED_UUID" ]; then
+    echo ""
+    echo "${bold}Programming pre-built AVED:${normal}"
+    echo ""
     #reprogramming happens with -y
     echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
     echo "sudo ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0 -y"
@@ -56,28 +55,31 @@ if [ "$current_uuid" != "$AVED_UUID" ]; then
     cd $AVED_PATH/${aved_name}_xbtest_stress
     sudo ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0 -y
 else
-    #reprogramming can happen if the user wants to (this can be useful when validation fails -- it happens with amd_v80_gen5x8_23.2_exdes_2_20240408) =========> here we need our own dialog... Hey pre-built AVED is already there... Do you want to reprogram????
-    echo "The pre-built AVED is already programmed on the device. Do you want to program it again (y/n)?"
-    while true; do
-        read -p "" yn
-        case $yn in
-            "y")
-                echo ""
-                echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
-                echo "sudo ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0 -y"
-                echo ""
-                cd $AVED_PATH/${aved_name}_xbtest_stress
-                sudo ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0 -y          
-                break
-                ;;
-            "n")
-                echo ""
-                echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
-                cd $AVED_PATH/${aved_name}_xbtest_stress
-                break
-                ;;
-        esac
-    done
+    echo ""
+    echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
+    cd $AVED_PATH/${aved_name}_xbtest_stress
+#    #reprogramming can happen if the user wants to (this can be useful when validation fails -- it happens with amd_v80_gen5x8_23.2_exdes_2_20240408) =========> here we need our own dialog... Hey pre-built AVED is already there... Do you want to reprogram????
+#    echo "The pre-built AVED is already programmed on the device. Do you want to program it again (y/n)?"
+#    while true; do
+#        read -p "" yn
+#        case $yn in
+#            "y")
+#                echo ""
+#                echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
+#                echo "sudo ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0 -y"
+#                echo ""
+#                cd $AVED_PATH/${aved_name}_xbtest_stress
+#                sudo ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0 -y          
+#                break
+#                ;;
+#            "n")
+#                echo ""
+#                echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
+#                cd $AVED_PATH/${aved_name}_xbtest_stress
+#                break
+#                ;;
+#        esac
+#    done
 fi
 
 #ami_tool validation
