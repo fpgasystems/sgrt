@@ -9,7 +9,7 @@
     #- versal_vck5000
     - hacc_build 
     #- hacc_boxes
-    - hacc-box-01.inf.ethz.ch
+    #- hacc-box-01.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
     #- alveo-u55c-01.inf.ethz.ch
     - versal-v80-04.inf.ethz.ch
@@ -37,7 +37,7 @@
     enable: false
     examine: false
     get: false
-    help: true
+    help: false
     hip: false
     new: false
     opennic: false
@@ -121,6 +121,7 @@
       loop:
         - ACAP_SERVERS_LIST
         - ASOC_SERVERS_LIST
+        - AVED_DRIVER_NAME
         - AVED_PATH
         - AVED_REPO
         - AVED_SMBUS_IP
