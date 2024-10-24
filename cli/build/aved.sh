@@ -82,19 +82,12 @@ if [ "$all" = "1" ]; then
 
     #launch vivado
     if [ "$compile" = "1" ]; then 
-        #PDI compilation
+        #PDI (hardware) compilation
         echo "${bold}Programmable Device Image (PDI) compilation${normal}"
         echo ""
-
-        #read configuration
-        #tcl_args=$($CLI_PATH/common/get_tclargs $DIR/configs/device_config)
-        
-        #echo "vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args"
-        #cd $SHELL_BUILD_DIR
-        #vivado -mode batch -source build.tcl -tclargs -board a$FDEV_NAME -jobs $NUM_JOBS -impl 1 $tcl_args
-        #echo ""
-
-        #build hardware
+        echo "cd $DIR/hw/$aved_name"
+        echo "./build_all.sh"
+        echo ""
         cd $DIR/hw/$aved_name
         ./build_all.sh
 
@@ -116,15 +109,24 @@ if [ "$all" = "1" ]; then
     fi
 fi
 
+#building driver, API, CLI App
+echo "${bold}Building driver, API, and CLI App:${normal}"
+echo ""
+echo "cd $DIR/sw/AMI"
+echo "./scripts/build.sh"
+echo ""
+cd $DIR/sw/AMI
+./scripts/build.sh
+
 #cleanup timestamp folders (we only want the one that will be generated)
 rm -r $DIR_PACKAGE/*/ 2>/dev/null
 
-#compile driver
-echo "${bold}Package (driver and application) generation:${normal}"
+#generating .deb
+echo "${bold}Building Debian package:${normal}"
 echo ""
 echo "cd $DIR/sw/AMI"
 echo "python3 scripts/gen_package.py"
-#echo ""
+echo ""
 
 #create package
 cd $DIR/sw/AMI
