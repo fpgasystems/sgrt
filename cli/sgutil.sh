@@ -13,6 +13,7 @@ command=$1
 arguments=$2
 
 #constants
+AVED_DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH AVED_DRIVER_NAME)
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_REPO=$($CLI_PATH/common/get_constant $CLI_PATH AVED_REPO)
@@ -2492,6 +2493,14 @@ case "$command" in
 
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
+
+        #check on driver (on the contrary to OpenNIC, the driver must be present--at system level--before programming)
+        if ! lsmod | grep -q ${AVED_DRIVER_NAME%.ko}; then
+          echo ""
+          echo "Your targeted driver ($AVED_DRIVER_NAME) is missing."
+          echo ""
+          exit
+        fi
 
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
