@@ -154,11 +154,25 @@ echo ""
 cd $DIR/sw/AMI
 ./scripts/build.sh -no_workspace
 
+echo ""
+
 echo "${bold}Copying files to project folder:${normal}"
+echo ""
+echo "Debian pakage artifacts:"
 echo ""
 echo "$aved_name.$vivado_version.deb"
 echo "$aved_name.$vivado_version.pdi"
 echo "$aved_name.$vivado_version.xsa"
 echo ""
+echo "Driver, API, and CLI App artifacts:"
+echo ""
+echo "ami.ko"
+echo "ami_tool"
+echo "libami.a"
+echo ""
+
+cp "$DIR/sw/AMI/api/build/libami.a" "$DIR/libami.a"
+cp "$DIR/sw/AMI/app/build/ami_tool" "$DIR/ami_tool"
+cp "$DIR/sw/AMI/driver/ami.ko" "$DIR/ami.ko"
 
 #author: https://github.com/jmoya82
