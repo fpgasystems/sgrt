@@ -116,7 +116,7 @@ echo "cd $DIR/sw/AMI"
 echo "./scripts/build.sh"
 echo ""
 cd $DIR/sw/AMI
-./scripts/build.sh
+./scripts/build.sh -no_workspace
 
 #cleanup timestamp folders (we only want the one that will be generated)
 rm -r $DIR_PACKAGE/*/ 2>/dev/null
