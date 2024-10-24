@@ -110,13 +110,13 @@ if [ "$all" = "1" ]; then
 fi
 
 #building driver, API, CLI App
-echo "${bold}Building driver, API, and CLI App:${normal}"
-echo ""
-echo "cd $DIR/sw/AMI"
-echo "./scripts/build.sh"
-echo ""
-cd $DIR/sw/AMI
-./scripts/build.sh -no_workspace
+#echo "${bold}Building driver, API, and CLI App:${normal}"
+#echo ""
+#echo "cd $DIR/sw/AMI"
+#echo "./scripts/build.sh"
+#echo ""
+#cd $DIR/sw/AMI
+#./scripts/build.sh -no_workspace
 
 #cleanup timestamp folders (we only want the one that will be generated)
 rm -r $DIR_PACKAGE/*/ 2>/dev/null
@@ -144,6 +144,15 @@ package_name=$(basename "$DIR_PACKAGE/$timestamp"/ami_*.deb)
 
 echo "The package ${bold}$package_name${normal} was generated!"
 echo ""
+
+#building driver, API, CLI App
+echo "${bold}Building driver, API, and CLI App:${normal}"
+echo ""
+echo "cd $DIR/sw/AMI"
+echo "./scripts/build.sh"
+echo ""
+cd $DIR/sw/AMI
+./scripts/build.sh -no_workspace
 
 echo "${bold}Copying files to project folder:${normal}"
 echo ""
