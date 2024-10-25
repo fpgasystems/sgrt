@@ -37,7 +37,7 @@
     enable: false
     examine: false
     get: false
-    help: false
+    help: true
     hip: false
     new: false
     opennic: false
@@ -420,6 +420,7 @@
         - program_revert
         - program_vivado
         - reboot
+        - run_aved
         - run_opennic
         - set_keys
         - validate_opennic
@@ -489,6 +490,7 @@
         mode: "0755"
       when: all or run
       loop:
+        - aved
         - hip
         - opennic
     #set
@@ -583,11 +585,11 @@
             src: "../cli/program/aved.sh"
             dest: "{{ cli_path }}/program/aved"
             mode: "0755"
-        #- name: run
-        #  copy:
-        #    src: "../cli/run/aved.sh"
-        #    dest: "{{ cli_path }}/run/aved"
-        #    mode: "0755"
+        - name: run
+          copy:
+            src: "../cli/run/aved.sh"
+            dest: "{{ cli_path }}/run/aved"
+            mode: "0755"
         - name: validate
           copy:
             src: "../cli/validate/aved.sh"

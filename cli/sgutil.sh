@@ -1574,6 +1574,9 @@ run_help() {
     echo "Executes your accelerated application."
     echo ""
     echo "ARGUMENTS:"
+    if [ "$vivado_enabled_asoc" = "1" ]; then
+      echo -e "   ${bold}${COLOR_ON2}aved${COLOR_OFF}${normal}            - Runs AVED on a given device."
+    fi
     if [ "$gpu_enabled" = "1" ]; then
       echo -e "   ${bold}${COLOR_ON5}hip${COLOR_OFF}${normal}             - Runs your HIP application on a given device."
     fi
@@ -1586,6 +1589,15 @@ run_help() {
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" "0" $vivado_enabled $gpu_enabled
     echo ""
   fi  
+  exit
+}
+
+run_aved_help() {
+  if [ ! "$is_build" = "1" ] && [ "$vivado_enabled_asoc" = "1" ]; then
+    $CLI_PATH/help/run_aved $CLI_PATH $CLI_NAME
+    $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
+    echo ""
+  fi
   exit
 }
 
@@ -2979,6 +2991,89 @@ case "$command" in
     case "$arguments" in
       -h|--help)
         run_help
+        ;;
+      aved)
+        #early exit
+        if [ "$is_build" = "1" ] || [ "$vivado_enabled_asoc" = "0" ]; then
+          exit
+        fi
+
+        #check on server
+        fpga_check "$CLI_PATH" "$hostname"
+        
+        #check on groups
+        vivado_developers_check "$USER"
+        
+        #check on software
+        vivado_version=$($CLI_PATH/common/get_xilinx_version vivado)
+        vivado_check "$VIVADO_PATH" "$vivado_version"
+        gh_check "$CLI_PATH"
+        ami_check "$AMI_TOOL_PATH"
+      
+        #check on flags
+        valid_flags="-c --config -d --device -p --project -t --tag -h --help"
+        flags_check $command_arguments_flags"@"$valid_flags
+
+        #inputs (split the string into an array)
+        read -r -a flags_array <<< "$flags"
+
+        echo "Hey I am here!"
+        exit
+
+        #constants
+        CONFIG_PREFIX="host_config_"
+
+        #checks (command line)
+        if [ ! "$flags_array" = "" ]; then
+          commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+          config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
+        fi
+
+        #early onic workflow check
+        if [ "$device_found" = "1" ]; then
+          workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+          if [ ! "$workflow" = "opennic" ]; then
+              echo ""
+              echo "$CHECK_ON_WORKFLOW_ERR_MSG"
+              echo ""
+              exit
+          fi
+        fi
+        
+        #dialogs
+        commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        echo ""
+        echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
+        echo ""
+        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
+        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
+        if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/$config_name" ]; then
+            echo ""
+            echo "$CHECK_ON_CONFIG_ERR_MSG"
+            echo ""
+            exit
+        fi
+        device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+
+        #onic workflow check
+        workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+        if [ ! "$workflow" = "opennic" ]; then
+            echo "$CHECK_ON_WORKFLOW_ERR_MSG"
+            echo ""
+            exit
+        fi
+
+        #onic application check
+        if [ ! -x "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/onic" ]; then
+          echo "Your targeted application is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
+          echo ""
+          exit 1
+        fi
+
+        #run
+        $CLI_PATH/run/opennic --commit $commit_name --config $config_index --device $device_index --project $project_name 
         ;;
       hip)
         #early exit

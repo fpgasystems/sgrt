@@ -162,7 +162,7 @@ _sgutil_completions()
             if [ ! "$is_build" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
                 commands="${commands} program"
             fi
-            if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ]); then
+            if [ ! "$is_build" = "1" ] && ([ "$gpu_enabled" = "1" ] || [ "$vivado_enabled" = "1" ] || [ "$vivado_enabled_asoc" = "1" ]); then
                 commands="${commands} run"
             fi
 
@@ -266,6 +266,9 @@ _sgutil_completions()
                     ;;
                 run)
                     commands="--help"
+                    if [ "$vivado_enabled_asoc" = "1" ]; then
+                        commands="${commands} aved"
+                    fi
                     if [ ! "$is_build" = "1" ] && [ "$gpu_enabled" = "1" ]; then
                         commands="${commands} hip"
                     fi
@@ -444,6 +447,9 @@ _sgutil_completions()
                     ;;
                 run)
                     case ${COMP_WORDS[COMP_CWORD-1]} in
+                        aved)
+                            COMPREPLY=($(compgen -W "--config --device --project --tag --help" -- ${cur})) 
+                            ;;
                         hip)
                             COMPREPLY=($(compgen -W "--device --project --help" -- ${cur}))
                             ;;
@@ -557,6 +563,9 @@ _sgutil_completions()
             command_completion_5 "$cur" "$COMP_CWORD" "program" "vivado" "${other_flags[@]}"
 
             #run
+            other_flags=( "--config" "--device" "--project" "--tag" )
+            command_completion_5 "$cur" "$COMP_CWORD" "run" "aved" "${other_flags[@]}"
+            
             other_flags=( "--device" "--project" )
             command_completion_5 "$cur" "$COMP_CWORD" "run" "hip" "${other_flags[@]}"
 
@@ -687,6 +696,19 @@ _sgutil_completions()
             other_flags=( "--bitstream" "--device" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--remote" "${other_flags[@]}"
 
+            #run aved
+            other_flags=( "--device" "--project" "--tag" )
+            command_completion_7 "$cur" "$COMP_CWORD" "run" "aved" "--config" "${other_flags[@]}"
+
+            other_flags=( "--config" "--project" "--tag" )
+            command_completion_7 "$cur" "$COMP_CWORD" "run" "aved" "--device" "${other_flags[@]}"
+
+            other_flags=( "--config" "--device" "--tag" )
+            command_completion_7 "$cur" "$COMP_CWORD" "run" "aved" "--project" "${other_flags[@]}"
+
+            other_flags=( "--config" "--device" "--project" )
+            command_completion_7 "$cur" "$COMP_CWORD" "run" "aved" "--tag" "${other_flags[@]}"
+            
             #run opennic
             other_flags=( "--config" "--device" "--project" )
             command_completion_7 "$cur" "$COMP_CWORD" "run" "opennic" "--commit" "${other_flags[@]}"
@@ -863,6 +885,46 @@ _sgutil_completions()
 
             other_flags=( "--commit" "--device" )
             command_completion_9 "$cur" "$COMP_CWORD" "program" "opennic" "--remote" "--project" "${other_flags[@]}"
+
+            #run aved --config
+            other_flags=( "--project" "--tag" )
+            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--config" "--device" "${other_flags[@]}"
+            
+            other_flags=( "--device" "--tag" )
+            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--config" "--project" "${other_flags[@]}"
+
+            other_flags=( "--device" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--config" "--tag" "${other_flags[@]}"
+            
+            #run aved --device
+            other_flags=( "--project" "--tag" )
+            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--device" "--config" "${other_flags[@]}"
+            
+            other_flags=( "--config" "--tag" )
+            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--device" "--project" "${other_flags[@]}"
+
+            other_flags=( "--config" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--device" "--tag" "${other_flags[@]}"
+
+            #run aved --project
+            other_flags=( "--device" "--tag" )
+            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--project" "--config" "${other_flags[@]}"
+            
+            other_flags=( "--config" "--tag" )
+            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--project" "--device" "${other_flags[@]}"
+
+            other_flags=( "--config" "--device" )
+            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--project" "--tag" "${other_flags[@]}"
+
+            #run aved --tag
+            other_flags=( "--device" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--tag" "--config" "${other_flags[@]}"
+            
+            other_flags=( "--config" "--project" )
+            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--tag" "--device" "${other_flags[@]}"
+
+            other_flags=( "--config" "--device" )
+            command_completion_9 "$cur" "$COMP_CWORD" "run" "aved" "--tag" "--project" "${other_flags[@]}"
 
             #run opennic --commit
             other_flags=( "--device" "--project" )

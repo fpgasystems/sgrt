@@ -13,11 +13,9 @@
 
 ### Arguments
 
-* [opennic](./sgutil-run-opennic.md#sgutil-run-opennic)
-
-<!-- Extra line -->
-
+* [aved](./sgutil-run-aved.md#sgutil-run-aved)
 * [hip](./sgutil-run-hip.md#sgutil-run-hip)
+* [opennic](./sgutil-run-opennic.md#sgutil-run-opennic)
 
 <code>-h, --help</code>
 <p>
