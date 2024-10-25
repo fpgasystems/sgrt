@@ -12,7 +12,7 @@
 </p>
 
 ### Flags
-<code>-c, --commit <string></code>
+<code>    --commit <string></code>
 <p>
   &nbsp; &nbsp; GitHub commit ID.
 </p>
