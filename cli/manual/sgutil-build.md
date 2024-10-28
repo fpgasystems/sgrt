@@ -13,6 +13,7 @@
 
 ### Arguments
 
+* [aved](./sgutil-build-aved.md#sgutil-build-aved)
 * [hip](./sgutil-build-hip.md#sgutil-build-hip)
 * [opennic](./sgutil-build-opennic.md#sgutil-build-opennic)
 
