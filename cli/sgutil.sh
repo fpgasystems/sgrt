@@ -3017,39 +3017,38 @@ case "$command" in
         #inputs (split the string into an array)
         read -r -a flags_array <<< "$flags"
 
-        echo "Hey I am here!"
-        exit
-
         #constants
         CONFIG_PREFIX="host_config_"
 
         #checks (command line)
         if [ ! "$flags_array" = "" ]; then
-          commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          #commit_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+          tag_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-          config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
+          project_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+          config_check "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
         fi
 
         #early onic workflow check
-        if [ "$device_found" = "1" ]; then
-          workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-          if [ ! "$workflow" = "opennic" ]; then
-              echo ""
-              echo "$CHECK_ON_WORKFLOW_ERR_MSG"
-              echo ""
-              exit
-          fi
-        fi
-        
+        #if [ "$device_found" = "1" ]; then
+        #  workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+        #  if [ ! "$workflow" = "opennic" ]; then
+        #      echo ""
+        #      echo "$CHECK_ON_WORKFLOW_ERR_MSG"
+        #      echo ""
+        #      exit
+        #  fi
+        #fi
+
         #dialogs
-        commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        #commit_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$ONIC_SHELL_REPO" "$ONIC_SHELL_COMMIT" "${flags_array[@]}"
+        tag_dialog "$CLI_PATH" "$CLI_NAME" "$MY_PROJECTS_PATH" "$command" "$arguments" "$GITHUB_CLI_PATH" "$AVED_REPO" "$AVED_TAG" "${flags_array[@]}"
         echo ""
-        echo "${bold}$CLI_NAME $command $arguments (commit ID: $commit_name)${normal}"
+        echo "${bold}$CLI_NAME $command $arguments (tag ID: $tag_name)${normal}"
         echo ""
-        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "${flags_array[@]}"
-        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$commit_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
-        if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/configs/$config_name" ]; then
+        project_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "${flags_array[@]}"
+        config_dialog "$CLI_PATH" "$MY_PROJECTS_PATH" "$arguments" "$tag_name" "$project_name" "$CONFIG_PREFIX" "${flags_array[@]}"
+        if [ "$project_found" = "1" ] && [ ! -e "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/configs/$config_name" ]; then
             echo ""
             echo "$CHECK_ON_CONFIG_ERR_MSG"
             echo ""
@@ -3058,22 +3057,22 @@ case "$command" in
         device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
 
         #onic workflow check
-        workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-        if [ ! "$workflow" = "opennic" ]; then
-            echo "$CHECK_ON_WORKFLOW_ERR_MSG"
-            echo ""
-            exit
-        fi
+        #workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+        #if [ ! "$workflow" = "opennic" ]; then
+        #    echo "$CHECK_ON_WORKFLOW_ERR_MSG"
+        #    echo ""
+        #    exit
+        #fi
 
         #onic application check
-        if [ ! -x "$MY_PROJECTS_PATH/$arguments/$commit_name/$project_name/onic" ]; then
-          echo "Your targeted application is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
-          echo ""
-          exit 1
-        fi
-
+        #if [ ! -x "$MY_PROJECTS_PATH/$arguments/$tag_name/$project_name/onic" ]; then
+        #  echo "Your targeted application is missing. Please, use ${bold}$CLI_NAME build $arguments.${normal}"
+        #  echo ""
+        #  exit 1
+        #fi
+        
         #run
-        $CLI_PATH/run/opennic --commit $commit_name --config $config_index --device $device_index --project $project_name 
+        $CLI_PATH/run/opennic --config $config_index --device $device_index --project $project_name --tag $tag_name 
         ;;
       hip)
         #early exit
