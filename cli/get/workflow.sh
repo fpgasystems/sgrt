@@ -92,7 +92,15 @@ if [ "$flags" = "" ]; then
                 echo "$device_index: vivado"
             fi
         elif [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 2 ]]; then
-            echo "$device_index: vitis"
+            #check on asoc
+            is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+
+            #check on workflows
+            if [ "$is_asoc" = "1" ]; then
+                echo "$device_index: aved"
+            else
+                echo "$device_index: vitis"
+            fi
         else
             echo "$device_index: unknown"
         fi
@@ -135,7 +143,15 @@ else
             echo "$device_index: vivado"
         fi
     elif [[ $(lspci | grep Xilinx | grep $bdf | wc -l) = 2 ]]; then
-        echo "$device_index: vitis"
+        #check on asoc
+        is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
+
+        #check on workflows
+        if [ "$is_asoc" = "1" ]; then
+            echo "$device_index: aved"
+        else
+            echo "$device_index: vitis"
+        fi
     else
         echo "$device_index: unknown"
     fi
