@@ -196,7 +196,7 @@ CHECK_ON_AMI_TOOL_ERR_MSG="Please, install a valid ami_tool version."
 CHECK_ON_BOOT_TYPE_ERR_MSG="Please, choose a valid boot type option."
 CHECK_ON_BITSTREAM_ERR_MSG="Your targeted bitstream is missing."
 CHECK_ON_COMMIT_ERR_MSG="Please, choose a valid commit ID."
-CHECK_ON_CONFIG_ERR_MSG="Please, create a valid configuration first."
+CHECK_ON_CONFIG_ERR_MSG="Please, choose a valid configuration index."
 CHECK_ON_DEVICE_ERR_MSG="Please, choose a valid device index."
 CHECK_ON_DRIVER_ERR_MSG="Please, choose a valid driver name."
 CHECK_ON_DRIVER_PARAMS_ERR_MSG="Please, choose a valid list of module parameters." 
@@ -3070,7 +3070,7 @@ case "$command" in
         #  echo ""
         #  exit 1
         #fi
-        
+
         #run
         $CLI_PATH/run/opennic --config $config_index --device $device_index --project $project_name --tag $tag_name 
         ;;
