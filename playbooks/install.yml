@@ -7,13 +7,13 @@
     #- alveo_u55c
     #- versal_v80
     #- versal_vck5000
-    - hacc_build 
+    #- hacc_build 
     #- hacc_boxes
     #- hacc-box-01.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
     #- alveo-u55c-01.inf.ethz.ch
-    - versal-v80-04.inf.ethz.ch
-    #- alveo-u55c-01.inf.ethz.ch
+    #- versal-v80-04.inf.ethz.ch
+    - alveo-u55c-01.inf.ethz.ch
     #- alveo-u55c-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
@@ -32,7 +32,7 @@
     aved: true
     bitstreams: false
     build: false
-    common: false
+    common: true
     directories: false
     enable: false
     examine: false
@@ -41,7 +41,7 @@
     hip: false
     new: false
     opennic: false
-    program: false
+    program: true
     reboot: false
     run: false
     set: false
@@ -413,12 +413,12 @@
         - get
         - new
         - program_aved
+        - program_bitstream
         - program_driver
         - program_image
         - program_opennic
         - program_reset
         - program_revert
-        - program_vivado
         - reboot
         - run_aved
         - run_opennic
@@ -444,6 +444,7 @@
       when: all or program
       loop:
         - aved
+        - bitstream
         - driver
         - image
         - fpga_chmod
@@ -453,7 +454,7 @@
         - remote
         - reset
         - revert
-        - vivado
+        - vivado #program bitstream should be used, but we keep it for backward compatibility
     - name: copying program tcl
       copy:
         src: "../cli/program/{{ item }}"
@@ -739,6 +740,7 @@
         - opennic_validate
         - update
         - new_opennic
+        - program_vivado
     #mpi
     - name: deleting mpi workflow
       file:

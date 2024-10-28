@@ -242,7 +242,7 @@ _sgutil_completions()
                 program)
                     commands="--help"
                     if [ "$is_vivado_developer" = "1" ]; then
-                        commands="${commands} driver vivado"
+                        commands="${commands} bitstream driver" #vivado
                     fi
                     if [ ! "$is_virtualized" = "1" ] && [ "$is_vivado_developer" = "1" ]; then
                         commands="${commands} opennic"
@@ -425,6 +425,9 @@ _sgutil_completions()
                         aved)
                             COMPREPLY=($(compgen -W "--device --project --tag --remote --help" -- ${cur})) # --type
                             ;;
+                        bitstream) 
+                            COMPREPLY=($(compgen -W "--device --path --remote --help" -- ${cur})) #--bitstream
+                            ;;
                         driver)
                             COMPREPLY=($(compgen -W "--insert --params --remote --remove --help" -- ${cur}))
                             ;;
@@ -440,9 +443,9 @@ _sgutil_completions()
                         revert)
                             COMPREPLY=($(compgen -W "--device --remote --help" -- ${cur}))
                             ;;
-                        vivado) 
-                            COMPREPLY=($(compgen -W "--bitstream --device --remote --help" -- ${cur}))
-                            ;;
+                        #vivado) 
+                        #    COMPREPLY=($(compgen -W "--bitstream --device --remote --help" -- ${cur}))
+                        #    ;;
                     esac
                     ;;
                 run)
@@ -550,6 +553,9 @@ _sgutil_completions()
             other_flags=( "--device" "--project" "--tag" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "aved" "${other_flags[@]}"
             
+            other_flags=( "--device" "--path" "--remote" )
+            command_completion_5 "$cur" "$COMP_CWORD" "program" "bitstream" "${other_flags[@]}"
+
             other_flags=( "--device" "--partition" "--path" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "image" "${other_flags[@]}"
             
@@ -559,8 +565,8 @@ _sgutil_completions()
             other_flags=( "--device" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "revert" "${other_flags[@]}"
 
-            other_flags=( "--bitstream" "--remote" "--device" )
-            command_completion_5 "$cur" "$COMP_CWORD" "program" "vivado" "${other_flags[@]}"
+            #other_flags=( "--bitstream" "--remote" "--device" )
+            #command_completion_5 "$cur" "$COMP_CWORD" "program" "vivado" "${other_flags[@]}"
 
             #run
             other_flags=( "--config" "--device" "--project" "--tag" )
@@ -660,6 +666,16 @@ _sgutil_completions()
             other_flags=( "--device" "--project" "--tag" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "aved" "--remote" "${other_flags[@]}"
             
+            #program bitstream
+            other_flags=( "--path" "--remote" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "bitstream" "--device" "${other_flags[@]}"
+
+            other_flags=( "--device" "--remote" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "bitstream" "--path" "${other_flags[@]}"
+
+            other_flags=( "--path" "--device" )
+            command_completion_7 "$cur" "$COMP_CWORD" "program" "bitstream" "--remote" "${other_flags[@]}"
+            
             #program image
             other_flags=( "--partition" "--path" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "image" "--device" "${other_flags[@]}"
@@ -687,14 +703,14 @@ _sgutil_completions()
             command_completion_7 "$cur" "$COMP_CWORD" "program" "opennic" "--remote" "${other_flags[@]}"
 
             #program vivado
-            other_flags=( "--device" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--bitstream" "${other_flags[@]}"
+            #other_flags=( "--device" "--remote" )
+            #command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--bitstream" "${other_flags[@]}"
             
-            other_flags=( "--bitstream" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--device" "${other_flags[@]}"
+            #other_flags=( "--bitstream" "--remote" )
+            #command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--device" "${other_flags[@]}"
 
-            other_flags=( "--bitstream" "--device" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--remote" "${other_flags[@]}"
+            #other_flags=( "--bitstream" "--device" )
+            #command_completion_7 "$cur" "$COMP_CWORD" "program" "vivado" "--remote" "${other_flags[@]}"
 
             #run aved
             other_flags=( "--device" "--project" "--tag" )
