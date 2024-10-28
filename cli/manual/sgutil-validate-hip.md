@@ -21,8 +21,3 @@
 <p>
   &nbsp; &nbsp; Help to use HIP validation.
 </p>
-
-### Examples
-```
-$ sgutil validate hip
-```

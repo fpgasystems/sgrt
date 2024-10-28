@@ -31,8 +31,3 @@
 <p>
   &nbsp; &nbsp; Help to use this command.
 </p>
-
-### Examples
-```
-$ sgutil set mtu -v 4200
-```

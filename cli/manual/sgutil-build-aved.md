@@ -26,8 +26,3 @@
 <p>
   &nbsp; &nbsp; Help to build OpenNIC.
 </p>
-
-### Examples
-```
-$ sgutil build aved
-```

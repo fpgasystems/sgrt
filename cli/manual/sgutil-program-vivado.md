@@ -31,9 +31,3 @@
 <p>
   &nbsp; &nbsp; Help to program a bitstream.
 </p>
-
-### Examples
-```
-$ sgutil program vivado --bitstream my_bitstream.bit 
-$ sgutil program vivado --bitstream my_bitstream.bit --device 1 
-```

@@ -31,9 +31,3 @@
 <p>
   &nbsp; &nbsp; Help to use this command.
 </p>
-
-### Examples
-```
-$ sgutil validate opennic
-$ sgutil validate opennic -d 1 -f 0
-```

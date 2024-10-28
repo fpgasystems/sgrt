@@ -15,8 +15,3 @@
 <p>
   &nbsp; &nbsp; This command has no flags.
 </p>
-
-### Examples
-```
-$ sgutil enable vivado
-```

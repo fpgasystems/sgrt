@@ -20,9 +20,3 @@
 <p>
   &nbsp; &nbsp; Help to use this command.
 </p>
-
-### Examples
-```
-$ sgutil set keys -h
-$ sgutil set keys
-```

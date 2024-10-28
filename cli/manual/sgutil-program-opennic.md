@@ -36,9 +36,3 @@
 <p>
   &nbsp; &nbsp; Help to use this command.
 </p>
-
-### Examples
-```
-$ sgutil program opennic
-$ sgutil program opennic -d 1 -p hello_world --remote 0
-```

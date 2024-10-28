@@ -21,8 +21,3 @@
 <p>
   &nbsp; &nbsp; Help to use Vitis validation.
 </p>
-
-### Examples
-```
-$ sgutil validate aved
-```

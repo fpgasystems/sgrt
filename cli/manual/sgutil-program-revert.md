@@ -26,8 +26,3 @@
 <p>
   &nbsp; &nbsp; Help to revert a device.
 </p>
-
-### Examples
-```
-$ sgutil program revert -d 0
-```
