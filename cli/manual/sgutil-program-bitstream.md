@@ -6,20 +6,20 @@
 
 ## sgutil program vivado
 
-<code>sgutil program vivado [flags] [--help]</code>
+<code>sgutil program bitstream [flags] [--help]</code>
 <p>
   &nbsp; &nbsp; Programs a Vivado bitstream to a given device.
 </p>
 
 ### Flags
-<code>-b, --bitstream <string></code>
-<p>
-  &nbsp; &nbsp; Full path to the .bit bitstream to be programmed.
-</p>
-
 <code>-d, --device <string></code>
 <p>
   &nbsp; &nbsp; Device Index (according to sgutil examine).
+</p>
+
+<code>-p, --path <string></code>
+<p>
+  &nbsp; &nbsp; Full path to the .bit bitstream to be programmed.
 </p>
 
 <code>-r, --remote <string></code>

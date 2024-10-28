@@ -14,11 +14,11 @@
 ### Arguments
 
 * [aved](./sgutil-program-aved.md#sgutil-program-aved)
+* [bitstream](./sgutil-program-bitstream.md#sgutil-program-bitstream)
 * [driver](./sgutil-program-driver.md#sgutil-program-driver)
 * [opennic](./sgutil-program-opennic.md#sgutil-program-opennic)
 * [reset](./sgutil-program-reset.md#sgutil-program-reset)
 * [revert](./sgutil-program-revert.md#sgutil-program-revert)
-* [vivado](./sgutil-program-vivado.md#sgutil-program-vivado)
 
 <code>-h, --help</code>
 <p>
