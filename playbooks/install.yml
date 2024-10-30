@@ -1,20 +1,16 @@
 ---
 
 - hosts: 
-    #- alveo_u250
-    #- alveo_u280
-    #- alveo_u50d
-    #- alveo_u55c
-    #- versal_v80
-    #- versal_vck5000
-    #- hacc_build 
-    #- hacc_boxes
+    - alveo_u250
+    - alveo_u280
+    - alveo_u50d
+    - alveo_u55c
+    - versal_v80
+    - versal_vck5000
+    - hacc_build 
+    - hacc_boxes
     #- hacc-box-01.inf.ethz.ch
     #- hacc-box-02.inf.ethz.ch
-    #- alveo-u55c-01.inf.ethz.ch
-    #- versal-v80-04.inf.ethz.ch
-    - alveo-u55c-01.inf.ethz.ch
-    #- alveo-u55c-02.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -27,25 +23,25 @@
     cli_name: sgutil
     templates_path: "{{ sgrt_base_path }}/templates"
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
-    all: false
+    all: true
     #cli installation
-    aved: true
+    aved: false
     bitstreams: false
     build: false
-    common: true
+    common: false
     directories: false
     enable: false
     examine: false
     get: false
-    help: true
+    help: false
     hip: false
     new: false
     opennic: false
-    program: true
+    program: false
     reboot: false
     run: false
     set: false
-    sgutil: true 
+    sgutil: false 
     templates: false
     update: false
     validate: false
@@ -532,10 +528,10 @@
           lineinfile:
             path: "/etc/bash.bashrc"
             line: "export CLI_PATH={{ cli_path }}"
-        - name: export TEMPLATES_PATH
-          lineinfile:
-            path: "/etc/bash.bashrc"
-            line: "export TEMPLATES_PATH={{ templates_path }}"
+        #- name: export TEMPLATES_PATH
+        #  lineinfile:
+        #    path: "/etc/bash.bashrc"
+        #    line: "export TEMPLATES_PATH={{ templates_path }}"
       when: all or sgutil
     #update
     #- name: copying update
