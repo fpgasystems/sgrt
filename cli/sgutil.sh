@@ -16,6 +16,7 @@ arguments=$2
 AVED_DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH AVED_DRIVER_NAME)
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
+AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
 AVED_REPO=$($CLI_PATH/common/get_constant $CLI_PATH AVED_REPO)
 BITSTREAMS_PATH="$CLI_PATH/bitstreams"
 GITHUB_CLI_PATH=$($CLI_PATH/common/get_constant $CLI_PATH GITHUB_CLI_PATH)
@@ -1549,7 +1550,7 @@ program_reset_help() {
 }
 
 program_revert_help() {
-  if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; }; then
+  if [ ! "$is_virtualized" = "1" ] && { [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; }; then
     $CLI_PATH/help/program_revert $CLI_NAME $COLOR_ON2 $COLOR_OFF
     $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME $is_acap $is_asoc $is_fpga "0" "yes"
     echo ""
@@ -2914,7 +2915,7 @@ case "$command" in
         ;;
       revert)
         #early exit
-        if [ "$is_virtualized" = "1" ] || ( [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ] ); then
+        if [ "$is_virtualized" = "1" ] || ( [ "$is_acap" = "0" ] && [ "$is_asoc" = "0" ] && [ "$is_fpga" = "0" ] ); then
           exit
         fi
 
@@ -2942,14 +2943,26 @@ case "$command" in
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
           remote_check "$CLI_PATH" "${flags_array[@]}"
         fi
-        
+
         #dialogs
         if [ "$multiple_devices" = "0" ]; then
           device_found="1"
           device_index="1"
-          workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-          if [[ $workflow = "vitis" ]]; then
+          #check on device_type
+          device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+          if [ "$device_type" = "asoc" ]; then
+            #get current_uuid
+            upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
+            product_name=$(ami_tool mfg_info -d $upstream_port | grep "Product Name" | awk -F'|' '{print $2}' | xargs)
+            current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
+            if [ "$current_uuid" = "$AVED_UUID" ]; then
               exit
+            fi
+          elif [ "$device_type" = "acap" ] || [ "$device_type" = "fpga" ]; then
+            workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+            if [[ $workflow = "vitis" ]]; then
+                exit
+            fi
           fi
           echo ""
           echo "${bold}$CLI_NAME $command $arguments${normal}"
@@ -2959,14 +2972,38 @@ case "$command" in
           echo "${bold}$CLI_NAME $command $arguments${normal}"    
           echo ""
           device_dialog "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-          workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-          if [[ $workflow = "vitis" ]]; then
+          #check on device_type
+          device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+          if [ "$device_type" = "asoc" ]; then
+            #get current_uuid
+            upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
+            product_name=$(ami_tool mfg_info -d $upstream_port | grep "Product Name" | awk -F'|' '{print $2}' | xargs)
+            current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
+            if [ "$current_uuid" = "$AVED_UUID" ]; then
               exit
+            fi
+          elif [ "$device_type" = "acap" ] || [ "$device_type" = "fpga" ]; then
+            workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+            if [[ $workflow = "vitis" ]]; then
+                exit
+            fi
           fi
         elif [ "$device_found" = "1" ]; then   
-          workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
-          if [[ $workflow = "vitis" ]]; then
+          #check on device_type
+          device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+          if [ "$device_type" = "asoc" ]; then
+            #get current_uuid
+            upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
+            product_name=$(ami_tool mfg_info -d $upstream_port | grep "Product Name" | awk -F'|' '{print $2}' | xargs)
+            current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
+            if [ "$current_uuid" = "$AVED_UUID" ]; then
               exit
+            fi
+          elif [ "$device_type" = "acap" ] || [ "$device_type" = "fpga" ]; then
+            workflow=$($CLI_PATH/common/get_workflow $CLI_PATH $device_index)
+            if [[ $workflow = "vitis" ]]; then
+                exit
+            fi
           fi
           echo ""
           echo "${bold}$CLI_NAME $command $arguments${normal}"    
