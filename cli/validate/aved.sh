@@ -24,6 +24,7 @@ device_index=$2
 #constants
 AVED_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_PATH)
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
+AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
 
 #all inputs must be provided
@@ -50,10 +51,10 @@ if [ "$current_uuid" != "$AVED_UUID" ]; then
     echo ""
     #reprogramming happens with -y
     echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
-    echo "sudo ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0 -y"
+    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0 -y"
     echo ""
     cd $AVED_PATH/${aved_name}_xbtest_stress
-    sudo ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0 -y
+    sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0 -y
 else
     echo ""
     echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
