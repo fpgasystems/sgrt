@@ -69,24 +69,28 @@ rm -rf $DIR/AVED
 rm $DIR/README.md
 
 #get AVED example design name
-aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
+aved_name=$(echo "$github_tag" | sed 's/_[^_]*$//')
 
 #get SMBus version
 smbus_version=$(find "$SGRT_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip" -type d -name 'smbus_v*' -print -quit)
 smbus_version=$(basename "$smbus_version")
 
 #copy SMBus IP
-case $github_tag in
-    amd_v80_gen5x8_23.2_exdes_2_20240408)
-        cp -r $SGRT_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip/$smbus_version $DIR/hw/$aved_name/src/iprepo/$smbus_version
-        # Place code to start the program here
-        ;;
-    amd_v80_gen5x8_24.1_20241002)
-        #we need to find smbus location
-        echo "$smbus_version will be copied"
-        echo ""
-        ;;
-esac
+cp -r $SGRT_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip/$smbus_version $DIR/hw/$aved_name/src/iprepo/$smbus_version
+#case $github_tag in
+#    amd_v80_gen5x8_23.2_exdes_2_20240408)
+#        cp -r $SGRT_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip/$smbus_version $DIR/hw/$aved_name/src/iprepo/$smbus_version
+#        # Place code to start the program here
+#        ;;
+#    amd_v80_gen5x8_24.1_20241002)
+#        #we need to find smbus location
+#        echo $AVED_TAG
+#        echo $aved_name
+#        echo "$DIR/hw/$aved_name/src/iprepo/$smbus_version"
+#        cp -r $SGRT_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip/$smbus_version $DIR/hw/$aved_name/src/iprepo/$smbus_version
+#        echo ""
+#        ;;
+#esac
 
 #add template files
 cp $SGRT_PATH/templates/$WORKFLOW/config_add.sh $DIR/config_add
