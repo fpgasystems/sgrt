@@ -40,7 +40,7 @@ WORKFLOW="aved"
 DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$project_name"
 
 #get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
-aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
+aved_name=$(echo "$tag_name" | sed 's/_[^_]*$//')
 
 #get file_path
 pdi_project_name="${aved_name}.$vivado_version.pdi"

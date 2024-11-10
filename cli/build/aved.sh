@@ -38,7 +38,7 @@ DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$project_name"
 DIR_PACKAGE="$DIR/sw/AMI/output"
 
 #get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
-aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
+aved_name=$(echo "$tag_name" | sed 's/_[^_]*$//')
 
 #define PDI (Programmable Device Images) and XSA names (i.e., amd_v80_gen5x8_23.2_exdes_2_nofpt.pdi and amd_v80_gen5x8_23.2_exdes_2.xsa)
 pdi_name="${aved_name}_nofpt.pdi"
@@ -146,33 +146,33 @@ echo "The package ${bold}$package_name${normal} was generated!"
 echo ""
 
 #building driver, API, CLI App
-echo "${bold}Building driver, API, and CLI App:${normal}"
-echo ""
-echo "cd $DIR/sw/AMI"
-echo "./scripts/build.sh"
-echo ""
-cd $DIR/sw/AMI
-./scripts/build.sh -no_workspace
+#echo "${bold}Building driver, API, and CLI App:${normal}"
+#echo ""
+#echo "cd $DIR/sw/AMI"
+#echo "./scripts/build.sh"
+#echo ""
+#cd $DIR/sw/AMI
+#./scripts/build.sh -no_workspace
 
-echo ""
+#echo ""
 
 echo "${bold}Copying files to project folder:${normal}"
 echo ""
-echo "Debian pakage artifacts:"
-echo ""
+#echo "Debian pakage artifacts:"
+#echo ""
 echo "$aved_name.$vivado_version.deb"
 echo "$aved_name.$vivado_version.pdi"
 echo "$aved_name.$vivado_version.xsa"
 echo ""
-echo "Driver, API, and CLI App artifacts:"
-echo ""
-echo "ami.ko"
-echo "ami_tool"
-echo "libami.a"
-echo ""
+#echo "Driver, API, and CLI App artifacts:"
+#echo ""
+#echo "ami.ko"
+#echo "ami_tool"
+#echo "libami.a"
+#echo ""
 
-cp "$DIR/sw/AMI/api/build/libami.a" "$DIR/libami.a"
-cp "$DIR/sw/AMI/app/build/ami_tool" "$DIR/ami_tool"
-cp "$DIR/sw/AMI/driver/ami.ko" "$DIR/ami.ko"
+#cp "$DIR/sw/AMI/api/build/libami.a" "$DIR/libami.a"
+#cp "$DIR/sw/AMI/app/build/ami_tool" "$DIR/ami_tool"
+#cp "$DIR/sw/AMI/driver/ami.ko" "$DIR/ami.ko"
 
 #author: https://github.com/jmoya82
