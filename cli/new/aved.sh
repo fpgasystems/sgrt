@@ -5,7 +5,7 @@ SGRT_PATH=$(dirname "$CLI_PATH")
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil new aved --tag                          $github_tag --project   $new_name --push $push_option
+#usage:       $CLI_PATH/sgutil new aved --tag                            $tag_name --project   $new_name --push $push_option
 #example: /opt/sgrt/cli/sgutil new aved --tag amd_v80_gen5x8_23.2_exdes_2_20240408 --project hello_world --push            0
 
 #early exit
@@ -20,12 +20,12 @@ if [ "$is_build" = "0" ] && [ "$vivado_enabled_asoc" = "0" ]; then
 fi
 
 #inputs
-github_tag=$2
+tag_name=$2
 new_name=$4
 push_option=$6
 
 #all inputs must be provided
-if [ "$github_tag" = "" ] || [ "$new_name" = "" ] || [ "$push_option" = "" ]; then
+if [ "$tag_name" = "" ] || [ "$new_name" = "" ] || [ "$push_option" = "" ]; then
     exit
 fi
 
@@ -35,13 +35,13 @@ MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
 WORKFLOW="aved"
 
 #define directories
-DIR="$MY_PROJECTS_PATH/$WORKFLOW/$github_tag/$new_name"
+DIR="$MY_PROJECTS_PATH/$WORKFLOW/$tag_name/$new_name"
 
 #create directories
 mkdir -p $DIR
 
 #change directory
-cd $MY_PROJECTS_PATH/$WORKFLOW/$github_tag
+cd $MY_PROJECTS_PATH/$WORKFLOW/$tag_name
 
 #create repository
 if [ "$push_option" = "1" ]; then 
@@ -52,13 +52,13 @@ else
 fi
 
 #clone repository
-$CLI_PATH/common/git_clone_aved $DIR $github_tag
+$CLI_PATH/common/git_clone_aved $DIR $tag_name
 
 #change to project directory
 #cd $DIR
 
-#save github_tag
-echo "$github_tag" > $DIR/AVED_TAG
+#save tag_name
+echo "$tag_name" > $DIR/AVED_TAG
 
 #move files
 mv $DIR/AVED/* $DIR/
@@ -68,7 +68,7 @@ rm -rf $DIR/AVED
 rm $DIR/README.md
 
 #get AVED example design name
-aved_name=$(echo "$github_tag" | sed 's/_[^_]*$//')
+aved_name=$(echo "$tag_name" | sed 's/_[^_]*$//')
 
 #get SMBus version
 smbus_version=$(find "$SGRT_PATH/templates/$WORKFLOW/$AVED_SMBUS_IP/ip" -type d -name 'smbus_v*' -print -quit)
