@@ -708,31 +708,6 @@ new_check(){
   fi
 }
 
-partition_check() {
-  local CLI_PATH=$1
-  local device_index=$2
-  shift 2
-  local flags_array=("$@")
-  result="$("$CLI_PATH/common/partition_dialog_check" "${flags_array[@]}")"
-  partition_found=$(echo "$result" | sed -n '1p')
-  partition_index=$(echo "$result" | sed -n '2p')
-  #get partitions
-  MAX_PARTITIONS=$($CLI_PATH/sgutil get partitions --device $device_index | sed -n 's/.*\([0-9]\)]/\1/p')
-  if [ "$partition_found" = "0" ]; then
-    partition_found="1"
-    partition_index="0"
-  else
-    #forbidden combinations
-    if { [ "$partition_found" = "1" ] && [ "$partition_index" = "" ]; } || \
-      { [ "$partition_found" = "1" ] && { [ "$partition_index" -gt "$MAX_PARTITIONS" ] || [ "$partition_index" -lt 0 ]; }; }; then
-        echo ""
-        echo $CHECK_ON_PARTITION_ERR_MSG
-        echo ""
-        exit
-    fi
-  fi
-}
-
 platform_dialog() {
   local CLI_PATH=$1
   local XILINX_PLATFORMS_PATH=$2
@@ -1352,13 +1327,6 @@ get_network_help() {
     echo ""
   fi
   exit
-}
-
-get_partitions_help() {
-  is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-  is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-  $CLI_PATH/help/get $CLI_PATH $CLI_NAME "partitions" "-" "$is_asoc" "-" "-" "-"
-  exit 
 }
 
 get_platform_help() {
@@ -2178,45 +2146,6 @@ case "$command" in
 
         valid_flags="-h --help -d --device -p --port"
         command_run $command_arguments_flags"@"$valid_flags
-        ;;
-      partitions)
-        #early exit
-        if [ "$is_asoc" = "0" ]; then
-          exit
-        fi
-
-        #check on flags
-        valid_flags="-d --device -t --type --help"
-        flags_check $command_arguments_flags"@"$valid_flags
-
-        #inputs (split the string into an array)
-        read -r -a flags_array <<< "$flags"
-
-        #checks (command line 2/2)
-        if [ ! "$flags_array" = "" ]; then
-          boot_type_check "$CLI_PATH" "${flags_array[@]}"
-          device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
-          device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-          if [ "$device_found" = "1" ] && [ ! "$device_type" = "asoc" ]; then
-            echo ""
-            echo "Sorry, this command is not available on device $device_index."
-            echo ""
-            exit
-          fi
-        fi
-
-        #check on boot_type
-        if [ "$boot_type" = "" ]; then
-            boot_type="primary"
-        fi
-
-        #check on device_index
-        if [ "$device_index" = "" ]; then
-          device_index="none"
-        fi
-
-        #run
-        $CLI_PATH/get/partitions --device $device_index --type $boot_type
         ;;
       platform)
         #early exit

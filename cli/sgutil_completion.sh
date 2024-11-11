@@ -209,7 +209,7 @@ _sgutil_completions()
                         commands="${commands} bdf clock memory name network platform resource serial slr workflow"
                     fi
                     if [ "$is_asoc" = "1" ]; then
-                        commands="${commands} name network partitions serial workflow"
+                        commands="${commands} name network serial workflow"
                     fi
                     if [ "$is_gpu" = "1" ]; then
                         commands="${commands} bus"
@@ -378,9 +378,6 @@ _sgutil_completions()
                         network) 
                             COMPREPLY=($(compgen -W "--device --port --help" -- ${cur}))
                             ;;
-                        partitions) 
-                            COMPREPLY=($(compgen -W "--device --type --help" -- ${cur}))
-                            ;;
                         platform) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
@@ -527,9 +524,6 @@ _sgutil_completions()
 
             other_flags=( "--device" "--port" )
             command_completion_5 "$cur" "$COMP_CWORD" "get" "network" "${other_flags[@]}"
-
-            other_flags=( "--device" "--type" )
-            command_completion_5 "$cur" "$COMP_CWORD" "get" "partitions" "${other_flags[@]}"
 
             #new
             other_flags=( "--project" "--push" "--tag" )

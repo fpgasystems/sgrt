@@ -24,7 +24,6 @@
 * [memory](./sgutil-get-memory.md#sgutil-get-memory)
 * [name](./sgutil-get-name.md#sgutil-get-name)
 * [network](./sgutil-get-network.md#sgutil-get-network)
-* [partitions](./sgutil-get-partitions.md#sgutil-get-partitions)
 * [platform](./sgutil-get-platform.md#sgutil-get-platform)
 * [resource](./sgutil-get-resource.md#sgutil-get-resource)
 * [serial](./sgutil-get-serial.md#sgutil-get-serial)
