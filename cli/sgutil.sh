@@ -2123,7 +2123,7 @@ case "$command" in
         ;;
       bdf)
         #early exit
-        if [ "$is_acap" = "0" ]&& [ "$is_asoc" = "0" ] && [ "$is_fpga" = "0" ]; then
+        if [ "$is_acap" = "0" ]&& [ "$is_fpga" = "0" ]; then
           exit
         fi
 

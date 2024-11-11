@@ -47,7 +47,6 @@ if [ "$parameter" = "--help" ]; then
         echo -e "   ${bold}${COLOR_ON2}slr${COLOR_OFF}${normal}             - Resource Availability and Memory Information per SLR."
         echo -e "   ${bold}${COLOR_ON2}workflow${COLOR_OFF}${normal}        - Current workflow."
         elif [ "$is_asoc" = "1" ]; then
-        echo -e "   ${bold}${COLOR_ON2}bdf${COLOR_OFF}${normal}             - Bus Device Function."
         echo -e "   ${bold}${COLOR_ON2}name${COLOR_OFF}${normal}            - Device names."
         echo -e "   ${bold}${COLOR_ON2}network${COLOR_OFF}${normal}         - Networking information."
         echo -e "   ${bold}${COLOR_ON2}partitions${COLOR_OFF}${normal}      - Device partitions."
@@ -64,7 +63,7 @@ if [ "$parameter" = "--help" ]; then
         echo ""
     fi
 elif [ "$parameter" = "bdf" ]; then
-    if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
+    if [ "$is_acap" = "1" ] || [ "$is_fpga" = "1" ]; then
         echo ""
         echo "${bold}$CLI_NAME get bdf [flags] [--help]${normal}"
         echo ""
