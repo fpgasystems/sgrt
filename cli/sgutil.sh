@@ -3398,11 +3398,11 @@ case "$command" in
         fi
 
         #get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
-        aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
+        #aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
 
         #dialogs
         echo ""
-        echo "${bold}$CLI_NAME $command $arguments (deployment_name: ${aved_name}_xbtest_stress)${normal}"
+        echo "${bold}$CLI_NAME $command $arguments (tag ID: $AVED_TAG)${normal}"
         #echo ""
         if [ "$multiple_devices" = "0" ]; then
           device_found="1"

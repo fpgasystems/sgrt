@@ -26,14 +26,13 @@ AVED_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_PATH)
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
+PARTITION_INDEX="0"
+PARTITION_TYPE="primary"
 
 #all inputs must be provided
 if [ "$device_index" = "" ]; then
     exit
 fi
-
-#get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
-aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
 
 #get device_name
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
@@ -50,37 +49,15 @@ if [ "$current_uuid" != "$AVED_UUID" ]; then
     echo "${bold}Programming pre-built AVED:${normal}"
     echo ""
     #reprogramming happens with -y
-    echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
-    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0 -y"
+    echo "cd $AVED_PATH/$AVED_TAG"
+    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d c4:00.0 -t $PARTITION_TYPE -i ./design.pdi -p $PARTITION_INDEX -y"
     echo ""
-    cd $AVED_PATH/${aved_name}_xbtest_stress
-    sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0 -y
+    cd $AVED_PATH/$AVED_TAG
+    sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./design.pdi -p $PARTITION_INDEX -y
 else
     echo ""
-    echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
-    cd $AVED_PATH/${aved_name}_xbtest_stress
-#    #reprogramming can happen if the user wants to (this can be useful when validation fails -- it happens with amd_v80_gen5x8_23.2_exdes_2_20240408) =========> here we need our own dialog... Hey pre-built AVED is already there... Do you want to reprogram????
-#    echo "The pre-built AVED is already programmed on the device. Do you want to program it again (y/n)?"
-#    while true; do
-#        read -p "" yn
-#        case $yn in
-#            "y")
-#                echo ""
-#                echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
-#                echo "sudo ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0 -y"
-#                echo ""
-#                cd $AVED_PATH/${aved_name}_xbtest_stress
-#                sudo ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0 -y          
-#                break
-#                ;;
-#            "n")
-#                echo ""
-#                echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
-#                cd $AVED_PATH/${aved_name}_xbtest_stress
-#                break
-#                ;;
-#        esac
-#    done
+    echo "cd $AVED_PATH/$AVED_TAG"
+    cd $AVED_PATH/$AVED_TAG
 fi
 
 #ami_tool validation
