@@ -378,6 +378,7 @@
         - memory
         - name
         - network
+        - partitions
         - platform
         - resource
         - serial
@@ -738,12 +739,12 @@
         - new_opennic
         - program_vivado
     #get
-    - name: deleting get scripts
-      file:
-        path: "{{ cli_path }}/get/{{ item }}"
-        state: absent
-      loop:
-        - partitions
+    #- name: deleting get scripts
+    #  file:
+    #    path: "{{ cli_path }}/get/{{ item }}"
+    #    state: absent
+    #  loop:
+    #    - partitions
     #mpi
     - name: deleting mpi workflow
       file:
