@@ -87,12 +87,12 @@ else
     current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
     AVED_UUID=$(< ./AVED_UUID)
     if [ "$current_uuid" = "$AVED_UUID" ]; then
-        echo "${bold}Booting device from partition:${normal}"
-        echo ""
-        echo "sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $PARTITION_INDEX"
-        echo ""
-        echo "Will do a hot reset to boot into partition $PARTITION_INDEX. This may take two seconds..."
-        sleep 2
+        #echo "${bold}Booting device from partition:${normal}"
+        #echo ""
+        #echo "sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $PARTITION_INDEX"
+        #echo ""
+        #echo "Will do a hot reset to boot into partition $PARTITION_INDEX. This may take two seconds..."
+        #sleep 2
         echo "OK. Partition selected ($PARTITION_INDEX) - already programmed."
         echo "***********************************************"
         echo ""
@@ -108,8 +108,10 @@ else
         echo ""
         current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
         AVED_UUID=$(< ./AVED_UUID)
-        if [ "$current_uuid" = "$AVED_UUID" ]; then
+        if [ ! "$current_uuid" = "$AVED_UUID" ]; then
             #exactly the same as if AVED_UUID does not exist
+            echo "Flash image update is required..."
+            echo ""
             echo "${bold}Programming partition and booting device:${normal}"
             echo ""
             echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $PARTITION_INDEX -y"
