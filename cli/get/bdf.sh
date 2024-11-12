@@ -8,8 +8,9 @@ normal=$(tput sgr0)
 url="${HOSTNAME}"
 hostname="${url%%.*}"
 is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
+is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
 is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-if [ "$is_acap" = "0" ] && [ "$is_fpga" = "0" ]; then
+if [ "$is_acap" = "0" ] && [ "$is_asoc" = "0" ] && [ "$is_fpga" = "0" ]; then
     exit
 fi
 
@@ -36,10 +37,15 @@ if [ "$flags" = "" ]; then
     #print devices information
     for device_index in $(seq 1 $MAX_DEVICES); do 
         upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
-        bdf="${upstream_port::-1}1"
-        if [ -n "$bdf" ]; then
-            echo "$device_index: $bdf"
+        device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+        if [ "$device_type" = "asoc" ]; then
+            bdf=$upstream_port
+        else
+            bdf="${upstream_port::-1}1"
         fi
+        #if [ -n "$bdf" ]; then
+            echo "$device_index: $bdf"
+        #fi
     done
     echo ""
 else
@@ -65,7 +71,12 @@ else
     fi
     #print
     upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
-    bdf="${upstream_port::-1}1"
+    device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
+    if [ "$device_type" = "asoc" ]; then
+        bdf=$upstream_port
+    else
+        bdf="${upstream_port::-1}1"
+    fi
     echo ""
     echo "$device_index: $bdf"
     echo ""
