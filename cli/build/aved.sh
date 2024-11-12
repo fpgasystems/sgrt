@@ -83,7 +83,7 @@ if [ "$all" = "1" ]; then
     #launch vivado
     if [ "$compile" = "1" ]; then 
         #PDI (hardware) compilation
-        echo "${bold}Programmable Device Image (PDI) compilation${normal}"
+        echo "${bold}Programmable Device Image (PDI) compilation:${normal}"
         echo ""
         echo "cd $DIR/hw/$aved_name"
         echo "./build_all.sh"
