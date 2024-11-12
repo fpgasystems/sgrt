@@ -37,7 +37,8 @@ fi
 
 #constants
 AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
-BOOT_DEVICE_TYPE="primary"
+PARTITION_INDEX="1"
+PARTITION_TYPE="primary"
 
 #derived
 AMI_TOOL_PATH="$AVED_TOOLS_PATH/ami_tool"
@@ -65,16 +66,62 @@ cd $path
 #get upstream_port
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
-#call ami_tool
-echo "${bold}Calling AVED Management Interface Tool:${normal}"
-echo ""
-echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $BOOT_DEVICE_TYPE -i ./$file -p $partition_index -y"
-echo ""
-sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $BOOT_DEVICE_TYPE -i ./$file -p $partition_index -y
-echo ""
+#get product_name
+product_name=$(ami_tool mfg_info -d $upstream_port | grep "Product Name" | awk -F'|' '{print $2}' | xargs)
+
+#check on AVED_UUID (this represents user’s UUID and is different from constants/AVED_UUID)
+if [[ ! -e ./AVED_UUID ]]; then
+    #AVED_UUID does not exist
+    echo "${bold}Programming partition and booting device:${normal}"
+    echo ""
+    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $PARTITION_INDEX -y"
+    echo ""
+    sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $PARTITION_INDEX -y
+    echo ""
+    #get current_uuid
+    current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}') ############## use AVED_TOOLS_PATH
+    #create AVED_UUID
+    echo "$current_uuid" > ./AVED_UUID
+else
+    #AVED_UUID exists
+    current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
+    AVED_UUID=$(< ./AVED_UUID)
+    if [ "$current_uuid" = "$AVED_UUID" ]; then
+        echo "${bold}Booting device from partition:${normal}"
+        echo ""
+        echo "sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $PARTITION_INDEX"
+        echo ""
+        echo "Will do a hot reset to boot into partition $PARTITION_INDEX. This may take two seconds..."
+        sleep 2
+        echo "OK. Partition selected ($PARTITION_INDEX) - already programmed."
+        echo "***********************************************"
+        echo ""
+    else
+        #es programa amb boot (rapid) i es llig current uuid... si no es igual a AVED_UUID es fa la proigramacio completa (lenta)
+
+        #program from partiton
+        echo "${bold}Booting device from partition:${normal}"
+        echo ""
+        echo "sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $PARTITION_INDEX"
+        echo ""
+        sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p 1
+        echo ""
+        current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
+        AVED_UUID=$(< ./AVED_UUID)
+        if [ "$current_uuid" = "$AVED_UUID" ]; then
+            #exactly the same as if AVED_UUID does not exist
+            echo "${bold}Programming partition and booting device:${normal}"
+            echo ""
+            echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $PARTITION_INDEX -y"
+            echo ""
+            sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $PARTITION_INDEX -y
+            echo ""
+        fi
+    fi
+fi
 
 #programming remote servers (if applies)
-programming_string="$CLI_PATH/program/image --device $device_index --partition $partition_index --path $file_path --remote 0"
+programming_string="$CLI_PATH/program/image --device $device_index --partition $PARTITION_INDEX --path $file_path --remote 0"
 $CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list"
 
 #author: https://github.com/jmoya82

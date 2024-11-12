@@ -34,6 +34,7 @@ fi
 #constants
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 MY_PROJECTS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH MY_PROJECTS_PATH)
+PARTITION_INDEX="1"
 WORKFLOW="aved"
 
 #define directories
@@ -46,14 +47,11 @@ aved_name=$(echo "$tag_name" | sed 's/_[^_]*$//')
 pdi_project_name="${aved_name}.$vivado_version.pdi"
 file_path="$DIR/$pdi_project_name"
 
-#temporal solution
-partition_index="0"
-
 #program image
-$CLI_PATH/program/image --device $device_index --partition $partition_index --path $file_path --remote 0
+$CLI_PATH/program/image --device $device_index --partition $PARTITION_INDEX --path $file_path --remote 0
 
 #programming remote servers (if applies)
-programming_string="$CLI_PATH/program/image --device $device_index --partition $partition_index --path $file_path --remote 0"
+programming_string="$CLI_PATH/program/image --device $device_index --partition $PARTITION_INDEX --path $file_path --remote 0"
 $CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list"
 
 #author: https://github.com/jmoya82
