@@ -86,6 +86,7 @@ else
     current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
     AVED_UUID=$(< ./AVED_UUID)
     if [ "$current_uuid" = "$AVED_UUID" ]; then
+        sleep 2
         echo "OK. Partition selected ($partition_index) - already programmed."
         echo "***********************************************"
         echo ""
