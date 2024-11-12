@@ -87,18 +87,10 @@ else
     current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
     AVED_UUID=$(< ./AVED_UUID)
     if [ "$current_uuid" = "$AVED_UUID" ]; then
-        #echo "${bold}Booting device from partition:${normal}"
-        #echo ""
-        #echo "sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $PARTITION_INDEX"
-        #echo ""
-        #echo "Will do a hot reset to boot into partition $PARTITION_INDEX. This may take two seconds..."
-        #sleep 2
         echo "OK. Partition selected ($PARTITION_INDEX) - already programmed."
         echo "***********************************************"
         echo ""
     else
-        #es programa amb boot (rapid) i es llig current uuid... si no es igual a AVED_UUID es fa la proigramacio completa (lenta)
-
         #program from partiton
         echo "${bold}Booting device from partition:${normal}"
         echo ""
