@@ -80,7 +80,9 @@ if [[ ! -e ./AVED_UUID ]]; then
     #get current_uuid
     current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}') ############## use AVED_TOOLS_PATH
     #create AVED_UUID
-    echo "$current_uuid" > ./AVED_UUID
+    if [[ -w "$path" ]]; then
+        echo "$current_uuid" > ./AVED_UUID
+    fi
 else
     #AVED_UUID exists
     current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
