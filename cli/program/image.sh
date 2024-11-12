@@ -37,7 +37,6 @@ fi
 
 #constants
 AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
-PARTITION_INDEX="1"
 PARTITION_TYPE="primary"
 
 #derived
@@ -74,9 +73,9 @@ if [[ ! -e ./AVED_UUID ]]; then
     #AVED_UUID does not exist
     echo "${bold}Programming partition and booting device:${normal}"
     echo ""
-    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $PARTITION_INDEX -y"
+    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $partition_index -y"
     echo ""
-    sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $PARTITION_INDEX -y
+    sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $partition_index -y
     echo ""
     #get current_uuid
     current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}') ############## use AVED_TOOLS_PATH
@@ -87,14 +86,14 @@ else
     current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
     AVED_UUID=$(< ./AVED_UUID)
     if [ "$current_uuid" = "$AVED_UUID" ]; then
-        echo "OK. Partition selected ($PARTITION_INDEX) - already programmed."
+        echo "OK. Partition selected ($partition_index) - already programmed."
         echo "***********************************************"
         echo ""
     else
         #program from partiton
         echo "${bold}Booting device from partition:${normal}"
         echo ""
-        echo "sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $PARTITION_INDEX"
+        echo "sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $partition_index"
         echo ""
         sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p 1
         echo ""
@@ -106,16 +105,16 @@ else
             echo ""
             echo "${bold}Programming partition and booting device:${normal}"
             echo ""
-            echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $PARTITION_INDEX -y"
+            echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $partition_index -y"
             echo ""
-            sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $PARTITION_INDEX -y
+            sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $partition_index -y
             echo ""
         fi
     fi
 fi
 
 #programming remote servers (if applies)
-programming_string="$CLI_PATH/program/image --device $device_index --partition $PARTITION_INDEX --path $file_path --remote 0"
+programming_string="$CLI_PATH/program/image --device $device_index --partition $partition_index --path $file_path --remote 0"
 $CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list"
 
 #author: https://github.com/jmoya82
