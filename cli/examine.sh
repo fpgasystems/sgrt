@@ -138,14 +138,6 @@ if [[ -s "$DEVICE_LIST_FPGA" ]]; then
         mac=$($CLI_PATH/get/get_fpga_device_param $i MAC)
         workflow=$($CLI_PATH/get/workflow -d $i)
         workflow=$(echo "$workflow" $i | cut -d' ' -f2 | sed '/^\s*$/d')
-        #check on device_type
-        #if [ "$device_type" = "asoc" ]; then
-        #  bdf=$upstream_port
-        #  #upstream_port="c4:00.0"
-        #  upstream_port="       "
-        #else
-        #  bdf="${upstream_port::-1}1"
-        #fi
         #adjust device type and name string length
         aux="$device_type ($device_name)"
         diff=$(( $DEVICE_TYPE_NAME_STR_LENGTH - ${#aux} ))

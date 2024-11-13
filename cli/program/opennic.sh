@@ -90,9 +90,6 @@ fi
 #get system interfaces (before adding the OpenNIC interface)
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
 
-#get upstream port
-#upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
-
 #program bitstream 
 $CLI_PATH/program/bitstream --path $DIR/$BITSTREAM_NAME --device $device_index --version $vivado_version --remote 0
 

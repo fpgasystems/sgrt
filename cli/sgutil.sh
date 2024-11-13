@@ -2224,10 +2224,6 @@ case "$command" in
       topo)
         valid_flags="-h --help"
         command_run $command_arguments_flags"@"$valid_flags
-        #is_acap=$($CLI_PATH/common/is_acap $CLI_PATH $hostname)
-        #is_asoc=$($CLI_PATH/common/is_asoc $CLI_PATH $hostname)
-        #is_fpga=$($CLI_PATH/common/is_fpga $CLI_PATH $hostname)
-        #is_gpu=$($CLI_PATH/common/is_gpu $CLI_PATH $hostname)
         #legend
         legend="${legend}${bold}${COLOR_ON1}NICs${COLOR_OFF}${normal}"
         if [ "$is_acap" = "1" ] || [ "$is_asoc" = "1" ] || [ "$is_fpga" = "1" ]; then
