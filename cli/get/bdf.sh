@@ -38,11 +38,11 @@ if [ "$flags" = "" ]; then
     for device_index in $(seq 1 $MAX_DEVICES); do 
         upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
         device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-        if [ "$device_type" = "asoc" ]; then
+        #if [ "$device_type" = "asoc" ]; then
             bdf=$upstream_port
-        else
-            bdf="${upstream_port::-1}1"
-        fi
+        #else
+        #    bdf="${upstream_port::-1}1"
+        #fi
         #if [ -n "$bdf" ]; then
             echo "$device_index: $bdf"
         #fi
@@ -72,11 +72,11 @@ else
     #print
     upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
     device_type=$($CLI_PATH/get/get_fpga_device_param $device_index device_type)
-    if [ "$device_type" = "asoc" ]; then
+    #if [ "$device_type" = "asoc" ]; then
         bdf=$upstream_port
-    else
-        bdf="${upstream_port::-1}1"
-    fi
+    #else
+    #    bdf="${upstream_port::-1}1"
+    #fi
     echo ""
     echo "$device_index: $bdf"
     echo ""

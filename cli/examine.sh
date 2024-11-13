@@ -45,17 +45,17 @@ split_addresses (){
 
 print_nic_devices_header (){
   echo -e "${bold}${COLOR_ON1}Device Index : BDF     : Device Type (Name)   : Networking                        : Device (state) ${COLOR_OFF}${normal}"
-  echo -e "${bold}${COLOR_ON1}------------------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
+  echo -e "${bold}${COLOR_ON1}------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
 }
 
 print_reconfigurable_devices_header (){
-  echo -e "${bold}${COLOR_ON2}Device Index : Upstream port (BDF) : Device Type (Name)   : Serial Number : Networking                        : Workflow${COLOR_OFF}${normal}"
-  echo -e "${bold}${COLOR_ON2}------------------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
+  echo -e "${bold}${COLOR_ON2}Device Index : BDF     : Device Type (Name)   : Serial Number : Networking                        : Workflow${COLOR_OFF}${normal}"
+  echo -e "${bold}${COLOR_ON2}------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
 }
 
 print_gpu_devices_header (){
   echo -e "${bold}${COLOR_ON5}Device Index : PCI BUS : Device Type (GPU ID) : Serial Number : Unique ID${COLOR_OFF}${normal}"
-  echo -e "${bold}${COLOR_ON5}------------------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
+  echo -e "${bold}${COLOR_ON5}------------------------------------------------------------------------------------------------------------${COLOR_OFF}${normal}"
 }
 
 #declare string
@@ -138,7 +138,14 @@ if [[ -s "$DEVICE_LIST_FPGA" ]]; then
         mac=$($CLI_PATH/get/get_fpga_device_param $i MAC)
         workflow=$($CLI_PATH/get/workflow -d $i)
         workflow=$(echo "$workflow" $i | cut -d' ' -f2 | sed '/^\s*$/d')
-        bdf="${upstream_port::-1}1"
+        #check on device_type
+        #if [ "$device_type" = "asoc" ]; then
+        #  bdf=$upstream_port
+        #  #upstream_port="c4:00.0"
+        #  upstream_port="       "
+        #else
+        #  bdf="${upstream_port::-1}1"
+        #fi
         #adjust device type and name string length
         aux="$device_type ($device_name)"
         diff=$(( $DEVICE_TYPE_NAME_STR_LENGTH - ${#aux} ))
@@ -157,8 +164,8 @@ if [[ -s "$DEVICE_LIST_FPGA" ]]; then
         add_0=$(echo "$add_0" | tr '[:lower:]' '[:upper:]')
         add_1=$(echo "$add_1" | tr '[:lower:]' '[:upper:]')
         #print row
-        echo "$id            : $upstream_port ($bdf)   : $device_type_name : $serial_number : $add_0 : $workflow"
-        echo "                                                                            $add_1"
+        echo "$id            : $upstream_port : $device_type_name : $serial_number : $add_0 : $workflow"
+        echo "                                                                $add_1"
       fi
     done
     echo ""
