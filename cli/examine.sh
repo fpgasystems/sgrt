@@ -129,7 +129,8 @@ if [[ -s "$DEVICE_LIST_FPGA" ]]; then
     for ((i=1; i<=$MAX_RECONF_DEVICES; i++)); do
       id=$($CLI_PATH/get/get_fpga_device_param $i id)
       #print table
-      if [ -n "$id" ]; then  
+      if [ -n "$id" ]; then
+        #after Vitis discontinued BDF is the upstream_port (function .0) 
         upstream_port=$($CLI_PATH/get/get_fpga_device_param $i upstream_port)
         device_type=$($CLI_PATH/get/get_fpga_device_param $i device_type)
         device_name=$($CLI_PATH/get/get_fpga_device_param $i device_name)
