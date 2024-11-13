@@ -79,9 +79,10 @@ else
     #header (2/2)
     echo ""
     echo "${bold}sgutil build $WORKFLOW${normal}"
+    echo ""
     #project_dialog (forgotten mandatory 1)
     if [[ $project_found = "0" ]]; then
-        echo ""
+        
         echo "${bold}Please, choose your $WORKFLOW project:${normal}"
         echo ""
         result=$($CLI_PATH/common/project_dialog $MY_PROJECTS_PATH/$WORKFLOW)
