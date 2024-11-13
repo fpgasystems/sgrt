@@ -78,14 +78,11 @@ BITSTREAM_NAME=${BITSTREAM_NAME%.bit}.$FDEV_NAME.$vivado_version.bit
 workflow=$($CLI_PATH/get/workflow -d $device_index | grep -v '^[[:space:]]*$' | awk -F': ' '{print $2}' | xargs)
 
 #revert device (it DOES NOT remove the driver)
-if [[ "$workflow" = "vivado" ]]; then
+if [[ "$workflow" = "vivado" ]] || [[ "$workflow" = "opennic" ]]; then
     echo "${bold}$CLI_NAME program revert${normal}"    
     echo ""
 fi
 $CLI_PATH/program/revert -d $device_index --version $vivado_version --remote 0
-if [[ "$workflow" = "vivado" ]]; then
-    echo ""
-fi
 
 #get system interfaces (before adding the OpenNIC interface)
 before=$(ifconfig -a | grep '^[a-zA-Z0-9]' | awk '{print $1}' | tr -d ':')
