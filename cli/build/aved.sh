@@ -41,12 +41,12 @@ DIR_PACKAGE="$DIR/sw/AMI/output"
 aved_name=$(echo "$tag_name" | sed 's/_[^_]*$//')
 
 #define PDI (Programmable Device Images) and XSA names (i.e., amd_v80_gen5x8_23.2_exdes_2_nofpt.pdi and amd_v80_gen5x8_23.2_exdes_2.xsa)
-pdi_name="${aved_name}_nofpt.pdi"
-xsa_name="${aved_name}.xsa"
+#pdi_name="${aved_name}_nofpt.pdi"
+#xsa_name="${aved_name}.xsa"
 
 #project files
 pdi_project_name="${aved_name}.$vivado_version.pdi"
-xsa_project_name="${aved_name}.$vivado_version.xsa"
+#xsa_project_name="${aved_name}.$vivado_version.xsa"
 
 #bitstream compilation is only allowed on CPU (build) servers
 if [ "$all" = "1" ]; then
@@ -92,10 +92,11 @@ if [ "$all" = "1" ]; then
         ./build_all.sh
 
         #copy to project folder
-        if [ -f "$DIR/hw/$aved_name/build/$pdi_name" ]; then
-            #save to project
-            cp "$DIR/hw/$aved_name/build/$pdi_name" "$DIR/$pdi_project_name"
-            cp "$DIR/hw/$aved_name/build/$xsa_name" "$DIR/$xsa_project_name"
+        if [ -f "$DIR/hw/$aved_name/$aved_name.pdi" ]; then
+            #save to project (my_project_24.1/hw/amd_v80_gen5x8_24.1)
+            #cp "$DIR/hw/$aved_name/build/$pdi_name" "$DIR/$pdi_project_name"
+            #cp "$DIR/hw/$aved_name/build/$xsa_name" "$DIR/$xsa_project_name"
+            cp "$DIR/hw/$aved_name/$aved_name.pdi" "$DIR/$pdi_project_name"
 
             #.device_config
             cp $DIR/configs/device_config $DIR/.device_config
@@ -162,7 +163,7 @@ echo ""
 #echo ""
 echo "$aved_name.$vivado_version.deb"
 echo "$aved_name.$vivado_version.pdi"
-echo "$aved_name.$vivado_version.xsa"
+#echo "$aved_name.$vivado_version.xsa"
 echo ""
 #echo "Driver, API, and CLI App artifacts:"
 #echo ""
