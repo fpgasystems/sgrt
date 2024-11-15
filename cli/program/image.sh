@@ -39,9 +39,6 @@ fi
 AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 PARTITION_TYPE="primary"
 
-#derived
-AMI_TOOL_PATH="$AVED_TOOLS_PATH/ami_tool"
-
 echo "${bold}sgutil program image${normal}"
 echo ""
 
@@ -66,7 +63,7 @@ cd $path
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
 #get product_name
-product_name=$(ami_tool mfg_info -d $upstream_port | grep "Product Name" | awk -F'|' '{print $2}' | xargs)
+product_name=$($AVED_TOOLS_PATH/ami_tool mfg_info -d $upstream_port | grep "Product Name" | awk -F'|' '{print $2}' | xargs)
 
 #check on AVED_UUID (this represents user’s UUID and is different from constants/AVED_UUID)
 if [[ ! -e ./AVED_UUID ]]; then
@@ -78,14 +75,14 @@ if [[ ! -e ./AVED_UUID ]]; then
     sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $partition_index -y
     echo ""
     #get current_uuid
-    current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}') ############## use AVED_TOOLS_PATH
+    current_uuid=$($AVED_TOOLS_PATH/ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}') ############## use AVED_TOOLS_PATH
     #create AVED_UUID
     if [[ -w "$path" ]]; then
         echo "$current_uuid" > ./AVED_UUID
     fi
 else
     #AVED_UUID exists
-    current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
+    current_uuid=$($AVED_TOOLS_PATH/ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
     AVED_UUID=$(< ./AVED_UUID)
     if [ "$current_uuid" = "$AVED_UUID" ]; then
         sleep 2
@@ -100,7 +97,7 @@ else
         echo ""
         sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p 1
         echo ""
-        current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
+        current_uuid=$($AVED_TOOLS_PATH/ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
         AVED_UUID=$(< ./AVED_UUID)
         if [ ! "$current_uuid" = "$AVED_UUID" ]; then
             #exactly the same as if AVED_UUID does not exist
