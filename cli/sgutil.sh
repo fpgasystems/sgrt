@@ -14,6 +14,7 @@ arguments=$2
 
 #constants
 AVED_DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH AVED_DRIVER_NAME)
+AVED_PARTITION_TYPE="primary"
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
@@ -717,7 +718,7 @@ partition_check() {
   partition_found=$(echo "$result" | sed -n '1p')
   partition_index=$(echo "$result" | sed -n '2p')
   #get partitions
-  MAX_PARTITIONS=$($CLI_PATH/sgutil get partitions --device $device_index | sed -n 's/.*\([0-9]\)]/\1/p')
+  MAX_PARTITIONS=$($CLI_PATH/get/partitions --device $device_index --type $AVED_PARTITION_TYPE | sed -n 's/.*\([0-9]\)]/\1/p')
   if [ "$partition_found" = "0" ]; then
     partition_found="1"
     partition_index="1"
@@ -2718,6 +2719,11 @@ case "$command" in
           exit
         else
           device_check "$CLI_PATH" "$CLI_NAME" "$command" "$arguments" "$multiple_devices" "$MAX_DEVICES" "${flags_array[@]}"
+          #device values when there is only a device
+          if [[ $multiple_devices = "0" ]]; then
+              device_found="1"
+              device_index="1"
+          fi
           partition_check "$CLI_PATH" "$device_index" "${flags_array[@]}"
           remote_check "$CLI_PATH" "${flags_array[@]}"
           #file_path_dialog_check
@@ -2737,11 +2743,6 @@ case "$command" in
               echo $CHECK_ON_DEVICE_ERR_MSG
               echo ""
               exit
-          fi
-          #device values when there is only a device
-          if [[ $multiple_devices = "0" ]]; then
-              device_found="1"
-              device_index="1"
           fi
         fi
         echo ""
