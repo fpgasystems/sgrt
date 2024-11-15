@@ -29,6 +29,9 @@ AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
 PARTITION_INDEX="0"
 PARTITION_TYPE="primary"
 
+#derived
+AVED_DESIGN="fpt_setup_$AVED_TAG.pdi"
+
 #all inputs must be provided
 if [ "$device_index" = "" ]; then
     exit
@@ -49,15 +52,15 @@ if [ "$current_uuid" != "$AVED_UUID" ]; then
     echo "${bold}Programming pre-built AVED:${normal}"
     echo ""
     #reprogramming happens with -y
-    echo "cd $AVED_PATH/$AVED_TAG"
-    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./design.pdi -p $PARTITION_INDEX -y"
+    echo "cd $AVED_PATH/$AVED_TAG/flash_setup"
+    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$AVED_DESIGN -p $PARTITION_INDEX -y"
     echo ""
-    cd $AVED_PATH/$AVED_TAG
-    sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./design.pdi -p $PARTITION_INDEX -y
+    cd $AVED_PATH/$AVED_TAG/flash_setup
+    sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$AVED_DESIGN -p $PARTITION_INDEX -y
 else
     echo ""
-    echo "cd $AVED_PATH/$AVED_TAG"
-    cd $AVED_PATH/$AVED_TAG
+    echo "cd $AVED_PATH/$AVED_TAG/flash_setup"
+    cd $AVED_PATH/$AVED_TAG/flash_setup
 fi
 
 #ami_tool validation
