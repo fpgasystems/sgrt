@@ -50,7 +50,7 @@ if [ "$current_uuid" != "$AVED_UUID" ]; then
     echo ""
     #reprogramming happens with -y
     echo "cd $AVED_PATH/$AVED_TAG"
-    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d c4:00.0 -t $PARTITION_TYPE -i ./design.pdi -p $PARTITION_INDEX -y"
+    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./design.pdi -p $PARTITION_INDEX -y"
     echo ""
     cd $AVED_PATH/$AVED_TAG
     sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./design.pdi -p $PARTITION_INDEX -y
@@ -61,12 +61,12 @@ else
 fi
 
 #ami_tool validation
-ami_tool overview
-ami_tool mfg_info -d $upstream_port
+$AVED_TOOLS_PATH/ami_tool overview
+$AVED_TOOLS_PATH/ami_tool mfg_info -d $upstream_port
 
 #xbtest validation
-sudo xbtest -d $upstream_port -c verify
-sudo xbtest -d $upstream_port -c memory
+sudo $AVED_TOOLS_PATH/xbtest -d $upstream_port -c verify
+sudo $AVED_TOOLS_PATH/xbtest -d $upstream_port -c memory
 
 echo ""
 
