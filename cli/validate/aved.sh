@@ -82,23 +82,6 @@ else
     fi
 fi
 
-#AVED programming
-#if [ "$current_uuid" != "$AVED_UUID" ]; then
-#    echo ""
-#    echo "${bold}Programming pre-built AVED:${normal}"
-#    echo ""
-#    #reprogramming happens with -y
-#    echo "cd $AVED_PATH/$AVED_TAG/flash_setup"
-#    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$AVED_DESIGN -p $PARTITION_INDEX -y"
-#    echo ""
-#    cd $AVED_PATH/$AVED_TAG/flash_setup
-#    sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$AVED_DESIGN -p $PARTITION_INDEX -y
-#else
-#    echo ""
-#    echo "cd $AVED_PATH/$AVED_TAG/flash_setup"
-#    cd $AVED_PATH/$AVED_TAG/flash_setup
-#fi
-
 #ami_tool validation
 $AVED_TOOLS_PATH/ami_tool overview
 $AVED_TOOLS_PATH/ami_tool mfg_info -d $upstream_port
