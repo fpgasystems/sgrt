@@ -95,7 +95,7 @@ else
         echo ""
         echo "sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $partition_index"
         echo ""
-        sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p 1
+        sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $partition_index
         echo ""
         current_uuid=$($AVED_TOOLS_PATH/ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
         AVED_UUID=$(< ./AVED_UUID)
