@@ -30,38 +30,74 @@ PARTITION_INDEX="0"
 PARTITION_TYPE="primary"
 
 #derived
-AVED_DESIGN="fpt_setup_$AVED_TAG.pdi"
+AVED_VALIDATE_DESIGN="fpt_setup_$AVED_TAG.pdi"
 
 #all inputs must be provided
 if [ "$device_index" = "" ]; then
     exit
 fi
 
-#get device_name
+#get upstream_port
 upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
 #get product_name
 product_name=$(ami_tool mfg_info -d $upstream_port | grep "Product Name" | awk -F'|' '{print $2}' | xargs)
 
-#get uuid
+#add echo
+echo ""
+
+#change directory
+echo "${bold}Changing directory:${normal}"
+echo ""
+echo "cd $AVED_PATH/$AVED_TAG/flash_setup"
+echo ""
+cd $AVED_PATH/$AVED_TAG/flash_setup
+
+#similar to program image
 current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
+if [ "$current_uuid" = "$AVED_UUID" ]; then
+    sleep 2
+    echo "OK. Partition selected ($PARTITION_INDEX) - already programmed."
+    echo "***********************************************"
+    #echo ""
+else
+    #program from partiton
+    echo "${bold}Booting device from partition:${normal}"
+    echo ""
+    echo "sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $partition_index"
+    echo ""
+    sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p 1
+    echo ""
+    current_uuid=$($AVED_TOOLS_PATH/ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
+    if [ ! "$current_uuid" = "$AVED_UUID" ]; then
+        #exactly the same as if AVED_UUID does not exist
+        echo "Flash image update is required..."
+        echo ""
+        echo "${bold}Programming partition and booting device:${normal}"
+        echo ""
+        echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$AVED_VALIDATE_DESIGN -p $partition_index -y"
+        echo ""
+        sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$AVED_VALIDATE_DESIGN -p $partition_index -y
+        echo ""
+    fi
+fi
 
 #AVED programming
-if [ "$current_uuid" != "$AVED_UUID" ]; then
-    echo ""
-    echo "${bold}Programming pre-built AVED:${normal}"
-    echo ""
-    #reprogramming happens with -y
-    echo "cd $AVED_PATH/$AVED_TAG/flash_setup"
-    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$AVED_DESIGN -p $PARTITION_INDEX -y"
-    echo ""
-    cd $AVED_PATH/$AVED_TAG/flash_setup
-    sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$AVED_DESIGN -p $PARTITION_INDEX -y
-else
-    echo ""
-    echo "cd $AVED_PATH/$AVED_TAG/flash_setup"
-    cd $AVED_PATH/$AVED_TAG/flash_setup
-fi
+#if [ "$current_uuid" != "$AVED_UUID" ]; then
+#    echo ""
+#    echo "${bold}Programming pre-built AVED:${normal}"
+#    echo ""
+#    #reprogramming happens with -y
+#    echo "cd $AVED_PATH/$AVED_TAG/flash_setup"
+#    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$AVED_DESIGN -p $PARTITION_INDEX -y"
+#    echo ""
+#    cd $AVED_PATH/$AVED_TAG/flash_setup
+#    sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$AVED_DESIGN -p $PARTITION_INDEX -y
+#else
+#    echo ""
+#    echo "cd $AVED_PATH/$AVED_TAG/flash_setup"
+#    cd $AVED_PATH/$AVED_TAG/flash_setup
+#fi
 
 #ami_tool validation
 $AVED_TOOLS_PATH/ami_tool overview
