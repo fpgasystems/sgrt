@@ -85,6 +85,7 @@ fi
 #ami_tool validation
 $AVED_TOOLS_PATH/ami_tool overview
 $AVED_TOOLS_PATH/ami_tool mfg_info -d $upstream_port
+$AVED_TOOLS_PATH/ami_tool sensors -d $upstream_port
 
 #xbtest validation
 sudo $AVED_TOOLS_PATH/xbtest -d $upstream_port -c verify
