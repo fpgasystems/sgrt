@@ -2635,7 +2635,7 @@ case "$command" in
           #get actual filename (i.e. onik.ko without the path)
           driver_name_base=$(basename "$driver_name")
 
-          if lsmod | grep -q "${driver_name_base%.ko}"; then
+          if lsmod | grep -q "${driver_name_base%.ko}" && ls "$MY_DRIVERS_PATH/$driver_name".* &>/dev/null; then
             echo ""
             echo "${bold}$CLI_NAME $command $arguments${normal}"
             echo ""
