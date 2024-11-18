@@ -43,7 +43,6 @@ aved_name=$(echo "$tag_name" | sed 's/_[^_]*$//')
 #project files
 pdi_project_name="${aved_name}.$vivado_version.pdi"
 pdi_name="${aved_name}_nofpt.pdi"
-#xsa_project_name="${aved_name}.$vivado_version.xsa"
 
 #bitstream compilation is only allowed on CPU (build) servers
 if [ "$all" = "1" ]; then
@@ -89,10 +88,8 @@ if [ "$all" = "1" ]; then
         ./build_all.sh
 
         #copy to project folder
-        #if [ -f "$DIR/hw/$aved_name/$aved_name.pdi" ]; then
         if [ -f "$DIR/hw/$aved_name/build/$pdi_name" ]; then
             #save to project
-            #cp "$DIR/hw/$aved_name/$aved_name.pdi" "$DIR/$pdi_project_name"
             cp "$DIR/hw/$aved_name/build/$pdi_name" "$DIR/$pdi_project_name"
 
             #.device_config
