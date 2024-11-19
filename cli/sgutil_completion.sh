@@ -429,7 +429,7 @@ _sgutil_completions()
                             COMPREPLY=($(compgen -W "--insert --params --remote --remove --help" -- ${cur}))
                             ;;
                         image)
-                            COMPREPLY=($(compgen -W "--device --partition --path --remote --help" -- ${cur})) # --type
+                            COMPREPLY=($(compgen -W "--device --path --remote --help" -- ${cur})) # --type --partition
                             ;;
                         opennic)
                             COMPREPLY=($(compgen -W "--commit --device --project --remote --help" -- ${cur}))
@@ -550,7 +550,7 @@ _sgutil_completions()
             other_flags=( "--device" "--path" "--remote" )
             command_completion_5 "$cur" "$COMP_CWORD" "program" "bitstream" "${other_flags[@]}"
 
-            other_flags=( "--device" "--partition" "--path" "--remote" )
+            other_flags=( "--device" "--path" "--remote" ) #"--partition"
             command_completion_5 "$cur" "$COMP_CWORD" "program" "image" "${other_flags[@]}"
             
             other_flags=( "--commit" "--device" "--project" "--remote" )
@@ -667,20 +667,20 @@ _sgutil_completions()
             other_flags=( "--device" "--remote" )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "bitstream" "--path" "${other_flags[@]}"
 
-            other_flags=( "--path" "--device" )
+            other_flags=( "--device" "--path"  )
             command_completion_7 "$cur" "$COMP_CWORD" "program" "bitstream" "--remote" "${other_flags[@]}"
             
             #program image
-            other_flags=( "--partition" "--path" "--remote" )
+            other_flags=( "--path" "--remote" ) #"--partition"
             command_completion_7 "$cur" "$COMP_CWORD" "program" "image" "--device" "${other_flags[@]}"
             
-            other_flags=( "--device" "--path" "--remote" )
-            command_completion_7 "$cur" "$COMP_CWORD" "program" "image" "--partition" "${other_flags[@]}"
+            #other_flags=( "--device" "--path" "--remote" )
+            #command_completion_7 "$cur" "$COMP_CWORD" "program" "image" "--partition" "${other_flags[@]}"
 
-            other_flags=( "--device" "--partition" "--remote" )
+            other_flags=( "--device" "--remote" ) #"--partition" 
             command_completion_7 "$cur" "$COMP_CWORD" "program" "image" "--path" "${other_flags[@]}"
 
-            other_flags=(  "--device" "--partition" "--path" )
+            other_flags=(  "--device" "--path" ) #"--partition" 
             command_completion_7 "$cur" "$COMP_CWORD" "program" "image" "--remote" "${other_flags[@]}"
             
             #program opennic
@@ -817,44 +817,44 @@ _sgutil_completions()
             command_completion_9 "$cur" "$COMP_CWORD" "program" "aved" "--remote" "--tag" "${other_flags[@]}"
 
             #program image --device
-            other_flags=( "--path" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--device" "--partition" "${other_flags[@]}"
+            #other_flags=( "--path" "--remote" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--device" "--partition" "${other_flags[@]}"
             
-            other_flags=( "--partition" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--device" "--path" "${other_flags[@]}"
+            #other_flags=( "--partition" "--remote" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--device" "--path" "${other_flags[@]}"
 
-            other_flags=( "--partition" "--path" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--device" "--remote" "${other_flags[@]}"
+            #other_flags=( "--partition" "--path" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--device" "--remote" "${other_flags[@]}"
 
             #program image --partition
-            other_flags=( "--path" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--partition" "--device" "${other_flags[@]}"
+            #other_flags=( "--path" "--remote" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--partition" "--device" "${other_flags[@]}"
             
-            other_flags=( "--device" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--partition" "--path" "${other_flags[@]}"
+            #other_flags=( "--device" "--remote" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--partition" "--path" "${other_flags[@]}"
 
-            other_flags=( "--device" "--path" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--partition" "--remote" "${other_flags[@]}"
+            #other_flags=( "--device" "--path" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--partition" "--remote" "${other_flags[@]}"
 
             #program image --path
-            other_flags=( "--partition" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--path" "--device" "${other_flags[@]}"
+            #other_flags=( "--partition" "--remote" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--path" "--device" "${other_flags[@]}"
             
-            other_flags=( "--device" "--remote" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--path" "--partition" "${other_flags[@]}"
+            #other_flags=( "--device" "--remote" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--path" "--partition" "${other_flags[@]}"
 
-            other_flags=( "--device" "--partition" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--path" "--remote" "${other_flags[@]}"
+            #other_flags=( "--device" "--partition" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--path" "--remote" "${other_flags[@]}"
 
             #program image --remote
-            other_flags=( "--partition" "--path" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--remote" "--device" "${other_flags[@]}"
+            #other_flags=( "--partition" "--path" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--remote" "--device" "${other_flags[@]}"
             
-            other_flags=( "--device" "--path" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--remote" "--partition" "${other_flags[@]}"
+            #other_flags=( "--device" "--path" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--remote" "--partition" "${other_flags[@]}"
 
-            other_flags=( "--device" "--partition" )
-            command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--remote" "--path" "${other_flags[@]}"
+            #other_flags=( "--device" "--partition" )
+            #command_completion_9 "$cur" "$COMP_CWORD" "program" "image" "--remote" "--path" "${other_flags[@]}"
             
             #program opennic --commit
             other_flags=( "--project" "--remote" )

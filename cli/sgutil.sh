@@ -709,30 +709,30 @@ new_check(){
   fi
 }
 
-partition_check() {
-  local CLI_PATH=$1
-  local device_index=$2
-  shift 2
-  local flags_array=("$@")
-  result="$("$CLI_PATH/common/partition_dialog_check" "${flags_array[@]}")"
-  partition_found=$(echo "$result" | sed -n '1p')
-  partition_index=$(echo "$result" | sed -n '2p')
-  #get partitions
-  MAX_PARTITIONS=$($CLI_PATH/get/partitions --device $device_index --type $AVED_PARTITION_TYPE | sed -n 's/.*\([0-9]\)]/\1/p')
-  if [ "$partition_found" = "0" ]; then
-    partition_found="1"
-    partition_index="1"
-  else
-    #forbidden combinations
-    if { [ "$partition_found" = "1" ] && [ "$partition_index" = "" ]; } || \
-      { [ "$partition_found" = "1" ] && { [ "$partition_index" -gt "$MAX_PARTITIONS" ] || [ "$partition_index" -lt 0 ]; }; }; then
-        echo ""
-        echo $CHECK_ON_PARTITION_ERR_MSG
-        echo ""
-        exit
-    fi
-  fi
-}
+#partition_check() {
+#  local CLI_PATH=$1
+#  local device_index=$2
+#  shift 2
+#  local flags_array=("$@")
+#  result="$("$CLI_PATH/common/partition_dialog_check" "${flags_array[@]}")"
+#  partition_found=$(echo "$result" | sed -n '1p')
+#  partition_index=$(echo "$result" | sed -n '2p')
+#  #get partitions
+#  MAX_PARTITIONS=$($CLI_PATH/get/partitions --device $device_index --type $AVED_PARTITION_TYPE | sed -n 's/.*\([0-9]\)]/\1/p')
+#  if [ "$partition_found" = "0" ]; then
+#    partition_found="1"
+#    partition_index="1"
+#  else
+#    #forbidden combinations
+#    if { [ "$partition_found" = "1" ] && [ "$partition_index" = "" ]; } || \
+#      { [ "$partition_found" = "1" ] && { [ "$partition_index" -gt "$MAX_PARTITIONS" ] || [ "$partition_index" -lt 0 ]; }; }; then
+#        echo ""
+#        echo $CHECK_ON_PARTITION_ERR_MSG
+#        echo ""
+#        exit
+#    fi
+#  fi
+#}
 
 platform_dialog() {
   local CLI_PATH=$1
@@ -2704,7 +2704,7 @@ case "$command" in
         ami_check "$AMI_TOOL_PATH"
 
         #check on flags
-        valid_flags="-d --device --partition --path -r --remote -h --help"
+        valid_flags="-d --device -p --path -r --remote -h --help"
         flags_check $command_arguments_flags"@"$valid_flags
 
         #inputs (split the string into an array)
@@ -2724,7 +2724,7 @@ case "$command" in
               device_found="1"
               device_index="1"
           fi
-          partition_check "$CLI_PATH" "$device_index" "${flags_array[@]}"
+          #partition_check "$CLI_PATH" "$device_index" "${flags_array[@]}"
           remote_check "$CLI_PATH" "${flags_array[@]}"
           #file_path_dialog_check
           result="$("$CLI_PATH/common/file_path_dialog_check" "${flags_array[@]}")"
@@ -2757,7 +2757,7 @@ case "$command" in
         fi
 
         #run
-        $CLI_PATH/program/image --device $device_index --partition $partition_index --path $file_path --remote $deploy_option "${servers_family_list[@]}" 
+        $CLI_PATH/program/image --device $device_index --path $file_path --remote $deploy_option "${servers_family_list[@]}" #--partition $partition_index
         ;;
       opennic)
         #early exit

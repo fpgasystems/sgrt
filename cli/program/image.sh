@@ -4,8 +4,8 @@ CLI_PATH="$(dirname "$(dirname "$0")")"
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-#usage:       $CLI_PATH/sgutil program image --device $device_index --partition $partition_index --path          $image_path --remote $deploy_option 
-#example: /opt/sgrt/cli/sgutil program image --device             1 --partition                0 --path path_to_my_image.pdi --remote              0
+#usage:       $CLI_PATH/sgutil program image --device $device_index --path          $image_path --remote $deploy_option 
+#example: /opt/sgrt/cli/sgutil program image --device             1 --path path_to_my_image.pdi --remote              0
 
 #early exit
 url="${HOSTNAME}"
@@ -20,13 +20,12 @@ fi
 
 #inputs
 device_index=$2
-partition_index=$4
-image_path=$6
-deploy_option=$8
-servers_family_list=$9
+image_path=$4
+deploy_option=$6
+servers_family_list=$7
 
 #all inputs must be provided
-if [ "$device_index" = "" ] || [ "$partition_index" = "" ] || [ "$image_path" = "" ] || [ "$deploy_option" = "" ]; then
+if [ "$device_index" = "" ] || [ "$image_path" = "" ] || [ "$deploy_option" = "" ]; then #|| [ "$partition_index" = "" ]
     exit
 fi
 
@@ -37,6 +36,7 @@ fi
 
 #constants
 AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
+PARTITION_INDEX="1"
 PARTITION_TYPE="primary"
 
 echo "${bold}sgutil program image${normal}"
@@ -70,9 +70,9 @@ if [[ ! -e ./AVED_UUID ]]; then
     #AVED_UUID does not exist
     echo "${bold}Programming partition and booting device:${normal}"
     echo ""
-    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $partition_index -y"
+    echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $PARTITION_INDEX -y"
     echo ""
-    sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $partition_index -y
+    sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $PARTITION_INDEX -y
     echo ""
     #get current_uuid
     current_uuid=$($AVED_TOOLS_PATH/ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}') ############## use AVED_TOOLS_PATH
@@ -86,16 +86,16 @@ else
     AVED_UUID=$(< ./AVED_UUID)
     if [ "$current_uuid" = "$AVED_UUID" ]; then
         sleep 2
-        echo "OK. Partition selected ($partition_index) - already programmed."
+        echo "OK. Partition selected ($PARTITION_INDEX) - already programmed."
         echo "***********************************************"
         echo ""
     else
         #program from partiton
         echo "${bold}Booting device from partition:${normal}"
         echo ""
-        echo "sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $partition_index"
+        echo "sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $PARTITION_INDEX"
         echo ""
-        sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $partition_index
+        sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $PARTITION_INDEX
         echo ""
         current_uuid=$($AVED_TOOLS_PATH/ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
         AVED_UUID=$(< ./AVED_UUID)
@@ -105,16 +105,16 @@ else
             echo ""
             echo "${bold}Programming partition and booting device:${normal}"
             echo ""
-            echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $partition_index -y"
+            echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $PARTITION_INDEX -y"
             echo ""
-            sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $partition_index -y
+            sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$file -p $PARTITION_INDEX -y
             echo ""
         fi
     fi
 fi
 
 #programming remote servers (if applies)
-programming_string="$CLI_PATH/program/image --device $device_index --partition $partition_index --path $file_path --remote 0"
+programming_string="$CLI_PATH/program/image --device $device_index --path $file_path --remote 0" #--partition $partition_index
 $CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list"
 
 #author: https://github.com/jmoya82
