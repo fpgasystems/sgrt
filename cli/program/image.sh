@@ -25,7 +25,7 @@ deploy_option=$6
 servers_family_list=$7
 
 #all inputs must be provided
-if [ "$device_index" = "" ] || [ "$image_path" = "" ] || [ "$deploy_option" = "" ]; then #|| [ "$partition_index" = "" ]
+if [ "$device_index" = "" ] || [ "$image_path" = "" ] || [ "$deploy_option" = "" ]; then
     exit
 fi
 
@@ -114,7 +114,7 @@ else
 fi
 
 #programming remote servers (if applies)
-programming_string="$CLI_PATH/program/image --device $device_index --path $file_path --remote 0" #--partition $partition_index
+programming_string="$CLI_PATH/program/image --device $device_index --path $file_path --remote 0"
 $CLI_PATH/program/remote "$CLI_PATH" "$USER" "$deploy_option" "$programming_string" "$servers_family_list"
 
 #author: https://github.com/jmoya82

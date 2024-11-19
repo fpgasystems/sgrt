@@ -14,7 +14,7 @@ arguments=$2
 
 #constants
 AVED_DRIVER_NAME=$($CLI_PATH/common/get_constant $CLI_PATH AVED_DRIVER_NAME)
-AVED_PARTITION_TYPE="primary"
+#AVED_PARTITION_TYPE="primary"
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
@@ -2757,7 +2757,7 @@ case "$command" in
         fi
 
         #run
-        $CLI_PATH/program/image --device $device_index --path $file_path --remote $deploy_option "${servers_family_list[@]}" #--partition $partition_index
+        $CLI_PATH/program/image --device $device_index --path $file_path --remote $deploy_option "${servers_family_list[@]}"
         ;;
       opennic)
         #early exit
