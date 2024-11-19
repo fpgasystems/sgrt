@@ -11,7 +11,9 @@
     #- hacc_boxes
     #- hacc-box-01.inf.ethz.ch
     - versal-v80-04.inf.ethz.ch
-    #- alveo-u55c-02.inf.ethz.ch
+    #- alveo-u55c-01.inf.ethz.ch
+    #- alveo-u55c-05.inf.ethz.ch
+    #- alveo-u55c-06.inf.ethz.ch
   become: true
   become_method: community.general.sudosu
   become_user: root
@@ -38,7 +40,7 @@
     hip: false
     new: false
     opennic: false
-    program: true
+    program: false
     reboot: false
     run: false
     set: false
@@ -386,6 +388,7 @@
         - servers
         - syslog
         - topo
+        - uuid
         - workflow
     #help
     - name: copying help scripts

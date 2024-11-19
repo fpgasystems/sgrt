@@ -209,7 +209,7 @@ _sgutil_completions()
                         commands="${commands} bdf clock memory name network platform resource serial slr workflow"
                     fi
                     if [ "$is_asoc" = "1" ]; then
-                        commands="${commands} bdf name network serial workflow"
+                        commands="${commands} bdf name network serial uuid workflow"
                     fi
                     if [ "$is_gpu" = "1" ]; then
                         commands="${commands} bus"
@@ -398,6 +398,9 @@ _sgutil_completions()
                             ;;
                         topo) 
                             COMPREPLY=($(compgen -W "--help" -- ${cur}))
+                            ;;
+                        uuid)
+                            COMPREPLY=($(compgen -W "--device --help" -- ${cur}))
                             ;;
                         workflow) 
                             COMPREPLY=($(compgen -W "--device --help" -- ${cur}))

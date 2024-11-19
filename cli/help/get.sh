@@ -51,6 +51,7 @@ if [ "$parameter" = "--help" ]; then
         echo -e "   ${bold}${COLOR_ON2}name${COLOR_OFF}${normal}            - Device names."
         echo -e "   ${bold}${COLOR_ON2}network${COLOR_OFF}${normal}         - Networking information."
         echo -e "   ${bold}${COLOR_ON2}serial${COLOR_OFF}${normal}          - Serial numbers."
+        echo -e "   ${bold}${COLOR_ON2}uuid${COLOR_OFF}${normal}            - Programmable Device Image (PDI) Universally Unique IDentifier (UUID)."
         echo -e "   ${bold}${COLOR_ON2}workflow${COLOR_OFF}${normal}        - Current workflow."
         fi
         if [ "$is_gpu" = "1" ]; then
@@ -231,6 +232,21 @@ elif [ "$parameter" = "syslog" ]; then
         echo "   This command has no flags."
         echo ""
         echo "   ${bold}-h, --help${normal}      - Help to use this command."
+        echo ""
+    fi
+elif [ "$parameter" = "uuid" ]; then
+    if [ "$is_asoc" = "1" ]; then
+        echo ""
+        echo "${bold}$CLI_NAME get uuid [flags] [--help]${normal}"
+        echo ""
+        echo "Programmable Device Image (PDI) Universally Unique IDentifier (UUID)."
+        echo ""
+        echo "FLAGS:"
+        echo "   ${bold}-d, --device${normal}    - Device Index (according to ${bold}$CLI_NAME examine${normal})."
+        echo ""
+        echo "   ${bold}-h, --help${normal}      - Help to use this command."
+        echo ""
+        $CLI_PATH/common/print_legend $CLI_PATH $CLI_NAME "0" $is_asoc "0" "0" "yes"
         echo ""
     fi
 elif [ "$parameter" = "workflow" ]; then
