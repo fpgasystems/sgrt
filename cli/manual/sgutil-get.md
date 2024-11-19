@@ -28,6 +28,7 @@
 * [resource](./sgutil-get-resource.md#sgutil-get-resource)
 * [serial](./sgutil-get-serial.md#sgutil-get-serial)
 * [slr](./sgutil-get-slr.md#sgutil-get-slr)
+* [uuid](./sgutil-get-uuid.md#sgutil-get-uuid)
 * [workflow](./sgutil-get-workflow.md#sgutil-get-workflow)
 
 <!-- Extra line -->
