@@ -30,7 +30,8 @@ PARTITION_INDEX="0"
 PARTITION_TYPE="primary"
 
 #derived
-AVED_VALIDATE_DESIGN="fpt_setup_$AVED_TAG.pdi"
+#AVED_VALIDATE_DESIGN="fpt_setup_$AVED_TAG.pdi"
+AVED_VALIDATE_DESIGN="design.pdi"
 
 #all inputs must be provided
 if [ "$device_index" = "" ]; then
@@ -49,9 +50,11 @@ echo ""
 #change directory
 echo "${bold}Changing directory:${normal}"
 echo ""
-echo "cd $AVED_PATH/$AVED_TAG/flash_setup"
+#echo "cd $AVED_PATH/$AVED_TAG/flash_setup"
+echo "cd $AVED_PATH/$AVED_TAG"
 echo ""
-cd $AVED_PATH/$AVED_TAG/flash_setup
+#cd $AVED_PATH/$AVED_TAG/flash_setup
+cd $AVED_PATH/$AVED_TAG
 
 #similar to program image
 current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
