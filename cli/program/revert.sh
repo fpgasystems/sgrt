@@ -34,6 +34,9 @@ AVED_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_PATH)
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
+AVED_VALIDATE_DESIGN="design.pdi"
+PARTITION_INDEX="0"
+PARTITION_TYPE="primary"
 SERVERADDR="localhost"
 XILINX_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH XILINX_TOOLS_PATH)
 
@@ -48,26 +51,46 @@ if [ "$device_type" = "asoc" ]; then
     #get AVED example design name (amd_v80_gen5x8_23.2_exdes_2)
     aved_name=$(echo "$AVED_TAG" | sed 's/_[^_]*$//')
 
-    #get device_name
+    #get upstream_port
     upstream_port=$($CLI_PATH/get/get_fpga_device_param $device_index upstream_port)
 
     #get product_name
     product_name=$(ami_tool mfg_info -d $upstream_port | grep "Product Name" | awk -F'|' '{print $2}' | xargs)
 
-    #get uuid
-    current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
+    #change directory
+    echo "${bold}Changing directory:${normal}"
+    echo ""
+    echo "cd $AVED_PATH/$AVED_TAG"
+    echo ""
+    cd $AVED_PATH/$AVED_TAG
 
-    #AVED programming
-    if [ "$current_uuid" != "$AVED_UUID" ]; then
-        echo "${bold}Programming pre-built AVED:${normal}"
+    #similar to program image (and validate)
+    current_uuid=$(ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
+    if [ "$current_uuid" = "$AVED_UUID" ]; then
+        sleep 2
+        echo "OK. Partition selected ($PARTITION_INDEX) - already programmed."
+        echo "***********************************************"
+        #echo ""
+    else
+        #program from partiton
+        echo "${bold}Booting device from partition:${normal}"
         echo ""
-        #reprogramming happens with -y
-        echo "cd $AVED_PATH/${aved_name}_xbtest_stress"
-        echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d c4:00.0 -t primary -i ./design.pdi -p 0 -y"
+        echo "sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $PARTITION_INDEX"
         echo ""
-        cd $AVED_PATH/${aved_name}_xbtest_stress
-        sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t primary -i ./design.pdi -p 0 -y
+        sudo $AVED_TOOLS_PATH/ami_tool device_boot -d $upstream_port -p $PARTITION_INDEX
         echo ""
+        current_uuid=$($AVED_TOOLS_PATH/ami_tool overview | grep "^$upstream_port" | tr -d '|' | sed "s/$product_name//g" | awk '{print $2}')
+        if [ ! "$current_uuid" = "$AVED_UUID" ]; then
+            #exactly the same as if AVED_UUID does not exist
+            echo "Flash image update is required..."
+            echo ""
+            echo "${bold}Programming partition and booting device:${normal}"
+            echo ""
+            echo "sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$AVED_VALIDATE_DESIGN -p $PARTITION_INDEX -y"
+            echo ""
+            sudo $AVED_TOOLS_PATH/ami_tool cfgmem_program -d $upstream_port -t $PARTITION_TYPE -i ./$AVED_VALIDATE_DESIGN -p $PARTITION_INDEX -y
+            echo ""
+        fi
     fi
 elif [ "$device_type" = "acap" ] || [ "$device_type" = "fpga" ]; then
     #check on workflow
