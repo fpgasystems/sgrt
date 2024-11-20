@@ -26,12 +26,9 @@ AVED_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_PATH)
 AVED_TAG=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TAG)
 AVED_TOOLS_PATH=$($CLI_PATH/common/get_constant $CLI_PATH AVED_TOOLS_PATH)
 AVED_UUID=$($CLI_PATH/common/get_constant $CLI_PATH AVED_UUID)
+AVED_VALIDATE_DESIGN="design.pdi"
 PARTITION_INDEX="0"
 PARTITION_TYPE="primary"
-
-#derived
-#AVED_VALIDATE_DESIGN="fpt_setup_$AVED_TAG.pdi"
-AVED_VALIDATE_DESIGN="design.pdi"
 
 #all inputs must be provided
 if [ "$device_index" = "" ]; then
@@ -50,10 +47,8 @@ echo ""
 #change directory
 echo "${bold}Changing directory:${normal}"
 echo ""
-#echo "cd $AVED_PATH/$AVED_TAG/flash_setup"
 echo "cd $AVED_PATH/$AVED_TAG"
 echo ""
-#cd $AVED_PATH/$AVED_TAG/flash_setup
 cd $AVED_PATH/$AVED_TAG
 
 #similar to program image
