@@ -28,15 +28,15 @@
     #installation control (all means we attempt to create and copy all directories, files, and functions or scripts)
     all: false
     #cli installation
-    aved: true
+    aved: false
     bitstreams: false
     build: false
     common: false
     directories: false
     enable: false
     examine: false
-    get: true
-    help: true
+    get: false
+    help: false
     hip: false
     new: false
     opennic: false
@@ -532,18 +532,8 @@
           lineinfile:
             path: "/etc/bash.bashrc"
             line: "export CLI_PATH={{ cli_path }}"
-        #- name: export TEMPLATES_PATH
-        #  lineinfile:
-        #    path: "/etc/bash.bashrc"
-        #    line: "export TEMPLATES_PATH={{ templates_path }}"
       when: all or sgutil
     #update
-    #- name: copying update
-    #  copy:
-    #    src: "../cli/update.sh"
-    #    dest: "{{ cli_path }}/update"
-    #    mode: "0755"
-    #  when: all or update
     - name: copying update (to sgrt_base_path)
       copy:
         src: "../update.sh"
