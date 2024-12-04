@@ -88,11 +88,11 @@ If you use this repository in your work, we kindly request that you cite it as f
 ```
 @misc{moya2023sgrt,
   author       = {Javier Moya, Mario Ruiz, Gustavo Alonso},
-  title        = {fpgasystems/sgrt: ETHZ-SGRT 2022.2.5.4.3},
+  title        = {fpgasystems/sgrt: ETHZ-SGRT},
   howpublished = {Zenodo},
   year         = {2023},
   month        = sep,
-  note         = {\url{https://doi.org/10.5281/zenodo.10075311}},
+  note         = {\url{https://doi.org/10.5281/zenodo.8346565}},
   doi          = {10.5281/zenodo.8346565}
 }
 ```
