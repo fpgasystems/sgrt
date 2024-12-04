@@ -87,7 +87,7 @@ If you use this repository in your work, we kindly request that you cite it as f
 
 ```
 @misc{moya2023sgrt,
-  author       = {Javier Moya and Gustavo Alonso},
+  author       = {Javier Moya, Mario Ruiz, Gustavo Alonso},
   title        = {fpgasystems/sgrt: ETHZ-SGRT 2022.2.5.4.3},
   howpublished = {Zenodo},
   year         = {2023},
